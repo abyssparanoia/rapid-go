@@ -1,0 +1,17 @@
+version: "3"
+
+volumes:
+  vendor:
+
+services:
+  api:
+    build: ./api
+    volumes:
+      - ./api/src:/go/src/github.com/abyssparanoia/gke-beego/api/src
+      - vendor:/go/src/github.com/abyssparanoia/gke-beego/api/vendor
+    ports:
+      - "3001:3001"
+    environment:
+      - CLOUDSQL_SAMPLE_CONNECTION_NAME=192.168.0.0
+      - CLOUDSQL_SAMPLE_USER=root
+      - CLOUDSQL_SAMPLE_PASSWORD=root
