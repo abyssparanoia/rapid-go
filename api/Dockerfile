@@ -1,9 +1,9 @@
 FROM golang:1.11-alpine3.8
 
-COPY . /go/src/github.com/abyssparanoia/gke-beego/api
-WORKDIR /go/src/github.com/abyssparanoia/gke-beego/api/src
+COPY . /go/src/github.com/abyssparanoia/rapid-go/api
+WORKDIR /go/src/github.com/abyssparanoia/rapid-go/api/src
 
-RUN apk update \
+RUN apk --no-cache --update upgrade \
     && apk add --no-cache git \
     && go get -u github.com/codegangsta/gin \
     && go get -u github.com/golang/dep/cmd/dep \

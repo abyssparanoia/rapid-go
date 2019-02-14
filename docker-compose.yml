@@ -6,12 +6,28 @@ volumes:
 services:
   api:
     build: ./api
+    depends_on:
+      - db
     volumes:
-      - ./api/src:/go/src/github.com/abyssparanoia/gke-beego/api/src
-      - vendor:/go/src/github.com/abyssparanoia/gke-beego/api/vendor
+      - ./api/src:/go/src/github.com/abyssparanoia/rapid-go/api/src
+      - vendor:/go/src/github.com/abyssparanoia/rapid-go/api/vendor
     ports:
       - "3001:3001"
     environment:
-      - CLOUDSQL_SAMPLE_CONNECTION_NAME=192.168.0.0
-      - CLOUDSQL_SAMPLE_USER=root
-      - CLOUDSQL_SAMPLE_PASSWORD=root
+      - ENV=develop
+      - DB_HOST=db:3306
+      - DB_USER=user01
+      - DB_PASSWORD=pass01
+      - DB_DATABASE=rapid-go
+  db:
+    build: ./mysql
+    volumes:
+      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      TZ: "Asia/Tokyo"
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user01
+      MYSQL_PASSWORD: pass01
+      MYSQL_DATABASE: rapid-go

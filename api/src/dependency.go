@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/abyssparanoia/gke-beego/api/src/handler/api"
-	"github.com/abyssparanoia/gke-beego/api/src/lib/firebaseauth"
-	"github.com/abyssparanoia/gke-beego/api/src/lib/httpheader"
-	"github.com/abyssparanoia/gke-beego/api/src/repository"
-	"github.com/abyssparanoia/gke-beego/api/src/service"
+	"github.com/abyssparanoia/rapid-go/api/src/handler/api"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/firebaseauth"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/httpheader"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/mysql"
+	"github.com/abyssparanoia/rapid-go/api/src/repository"
+	"github.com/abyssparanoia/rapid-go/api/src/service"
 )
 
 // Dependency ... 依存性
@@ -20,13 +21,13 @@ type Dependency struct {
 // Inject ... 依存性を注入する
 func (d *Dependency) Inject() {
 	// Config
-	// dbCfg := config.GetCSQLConfig("sample")
+	dbCfg := mysql.GetSQLConfig()
 
 	// Lib
-	// dbConn := cloudsql.NewCSQLClient(dbCfg)
+	dbConn := mysql.NewSQLClient(dbCfg)
 
 	// Repository
-	repo := repository.NewSample(nil)
+	repo := repository.NewSample(dbConn)
 
 	// Service
 	dfaSvc := firebaseauth.NewDummyService()

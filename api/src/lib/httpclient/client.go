@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/abyssparanoia/gke-beego/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
 
 	"github.com/davecgh/go-spew/spew"
 )

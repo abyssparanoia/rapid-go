@@ -364,6 +364,7 @@
     "go.mercari.io/datastore/boom",
     "golang.org/x/text/encoding/japanese",
     "golang.org/x/text/transform",
+    "google.golang.org/api/option",
     "gopkg.in/go-playground/validator.v9",
   ]
   solver-name = "gps-cdcl"

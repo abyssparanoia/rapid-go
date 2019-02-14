@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/abyssparanoia/gke-beego/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
 
 	"github.com/go-chi/chi"
 )

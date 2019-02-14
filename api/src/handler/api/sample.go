@@ -4,12 +4,12 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/abyssparanoia/gke-beego/api/src/handler"
-	"github.com/abyssparanoia/gke-beego/api/src/lib/firebaseauth"
-	"github.com/abyssparanoia/gke-beego/api/src/lib/httpheader"
-	"github.com/abyssparanoia/gke-beego/api/src/lib/log"
-	"github.com/abyssparanoia/gke-beego/api/src/model"
-	"github.com/abyssparanoia/gke-beego/api/src/service"
+	"github.com/abyssparanoia/rapid-go/api/src/handler"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/firebaseauth"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/httpheader"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/api/src/model"
+	"github.com/abyssparanoia/rapid-go/api/src/service"
 )
 
 // SampleHandler ... 記事のハンドラ
@@ -63,19 +63,6 @@ func (h *SampleHandler) Sample(w http.ResponseWriter, r *http.Request) {
 		Sample: sample,
 		Hoge:   "",
 	})
-}
-
-// TestDataStore ... DataStoreテスト
-func (h *SampleHandler) TestDataStore(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	err := h.Svc.TestDataStore(ctx)
-	if err != nil {
-		h.handleError(ctx, w, http.StatusInternalServerError, "h.Svc.TestDataStore: "+err.Error())
-		return
-	}
-
-	handler.RenderSuccess(w)
 }
 
 // TestCloudSQL ... CloudSQLテスト

@@ -3,9 +3,9 @@ package main
 import (
 	"net/http"
 
-	"github.com/abyssparanoia/gke-beego/api/src/config"
-	"github.com/abyssparanoia/gke-beego/api/src/handler"
-	"github.com/abyssparanoia/gke-beego/api/src/middleware"
+	"github.com/abyssparanoia/rapid-go/api/src/config"
+	"github.com/abyssparanoia/rapid-go/api/src/handler"
+	"github.com/abyssparanoia/rapid-go/api/src/middleware"
 
 	"github.com/go-chi/chi"
 )
@@ -16,7 +16,7 @@ func Routing(r *chi.Mux, d *Dependency) {
 	r.Use(middleware.AccessControl)
 
 	// 認証なし(Stagingのみ)
-	if config.IsEnvStaging() {
+	if config.IsEnvDeveloping() {
 		r.Route("/noauth/v1", func(r chi.Router) {
 			r.Use(d.DummyFirebaseAuth.Handle)
 			r.Use(d.DummyHTTPHeader.Handle)
@@ -33,6 +33,7 @@ func Routing(r *chi.Mux, d *Dependency) {
 
 	// Ping
 	r.Get("/ping", handler.Ping)
+	r.Get("/", handler.Ping)
 
 	http.Handle("/", r)
 }
@@ -40,7 +41,6 @@ func Routing(r *chi.Mux, d *Dependency) {
 func subRouting(r chi.Router, d *Dependency) {
 	// API
 	r.Get("/sample", d.SampleHandler.Sample)
-	r.Get("/testdatastore", d.SampleHandler.TestDataStore)
 	r.Get("/testcloudsql", d.SampleHandler.TestCloudSQL)
 	r.Get("/testhttp", d.SampleHandler.TestHTTP)
 

@@ -1,19 +1,19 @@
-package cloudsql
+package mysql
 
 import (
 	"context"
 	"database/sql"
 	"fmt"
 
-	"github.com/abyssparanoia/gke-beego/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
 
 	sq "github.com/Masterminds/squirrel"
 	_ "github.com/go-sql-driver/mysql" // MySQL Driverの読み込み
 )
 
-// NewCSQLClient ... CloudSQLのクライアントを取得する
-func NewCSQLClient(cfg *CSQLConfig) *sql.DB {
-	ds := fmt.Sprintf("%s:%s@cloudsql(%s)/",
+// NewSQLClient ... MySQLのクライアントを取得する
+func NewSQLClient(cfg *SQLConfig) *sql.DB {
+	ds := fmt.Sprintf("%s:%s@tcp(%s)/unbuilt-rental",
 		cfg.User,
 		cfg.Password,
 		cfg.ConnectionName)

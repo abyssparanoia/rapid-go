@@ -1,43 +1,48 @@
-package cloudsql
+package mysql
 
 import (
 	"fmt"
 	"os"
-	"strings"
 )
 
-// CSQLConfig ... CloudSQLの接続情報
-type CSQLConfig struct {
+// CSQLConfig ... MySQLの接続情報
+type SQLConfig struct {
 	ConnectionName string
 	User           string
 	Password       string
+	Database       string
 }
 
-// GetCSQLConfig ... CloudSQLの接続情報を取得する
-func GetCSQLConfig(db string) *CSQLConfig {
-	db = strings.ToUpper(db)
-
-	cnKey := fmt.Sprintf("CLOUDSQL_%s_CONNECTION_NAME", db)
+// GetSQLConfig ... MySQLの接続情報を取得する
+func GetSQLConfig() *SQLConfig {
+	cnKey := "DB_HOST"
 	cn := os.Getenv(cnKey)
 	if cn == "" {
 		panic(fmt.Errorf("no config key %s", cnKey))
 	}
 
-	uKey := fmt.Sprintf("CLOUDSQL_%s_USER", db)
+	uKey := "DB_USER"
 	u := os.Getenv(uKey)
 	if u == "" {
 		panic(fmt.Errorf("no config key %s", uKey))
 	}
 
-	pKey := fmt.Sprintf("CLOUDSQL_%s_PASSWORD", db)
+	pKey := "DB_PASSWORD"
 	p := os.Getenv(pKey)
 	if p == "" {
 		panic(fmt.Errorf("no config key %s", pKey))
 	}
 
-	return &CSQLConfig{
+	dKey := "DB_DATABASE"
+	d := os.Getenv(dKey)
+	if d == "" {
+		panic(fmt.Errorf("no config key %s", dKey))
+	}
+
+	return &SQLConfig{
 		ConnectionName: cn,
 		User:           u,
 		Password:       p,
+		Database:       d,
 	}
 }

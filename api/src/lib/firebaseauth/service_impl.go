@@ -4,9 +4,12 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 
-	"github.com/abyssparanoia/gke-beego/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
+	"google.golang.org/api/option"
 
 	"firebase.google.com/go"
 	"firebase.google.com/go/auth"
@@ -66,7 +69,10 @@ func (s *service) Authentication(ctx context.Context, r *http.Request) (string, 
 }
 
 func (s *service) getAuthClient(ctx context.Context) (*auth.Client, error) {
-	app, err := firebase.NewApp(ctx, nil)
+	exe, err := os.Executable()
+	dirPath := filepath.Dir(exe)
+	opt := option.WithCredentialsFile(dirPath + "/unbuilt-rental-firebase-adminsdk-eu8bw-b5d30bd3d0.json")
+	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		log.Warningf(ctx, "create firebase app error: %s", err.Error())
 		return nil, err
