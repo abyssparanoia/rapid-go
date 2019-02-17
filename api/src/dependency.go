@@ -16,6 +16,7 @@ type Dependency struct {
 	DummyHTTPHeader   *httpheader.Middleware
 	HTTPHeader        *httpheader.Middleware
 	SampleHandler     *api.SampleHandler
+	UserHandler       *api.UserHandler
 }
 
 // Inject ... 依存性を注入する
@@ -28,6 +29,7 @@ func (d *Dependency) Inject() {
 
 	// Repository
 	repo := repository.NewSample(dbConn)
+	uRepo := repository.NewUser(dbConn)
 
 	// Service
 	dfaSvc := firebaseauth.NewDummyService()
@@ -35,6 +37,7 @@ func (d *Dependency) Inject() {
 	dhhSvc := httpheader.NewDummyService()
 	hhSvc := httpheader.NewService()
 	svc := service.NewSample(repo)
+	uSvc := service.NewUser(uRepo)
 
 	// Middleware
 	d.DummyFirebaseAuth = firebaseauth.NewMiddleware(dfaSvc)
@@ -44,4 +47,5 @@ func (d *Dependency) Inject() {
 
 	// Handler
 	d.SampleHandler = api.NewSampleHandler(svc)
+	d.UserHandler = api.NewUserHandler(uSvc)
 }

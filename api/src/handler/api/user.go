@@ -55,3 +55,10 @@ func (h *UserHandler) handleError(ctx context.Context, w http.ResponseWriter, st
 	log.Errorf(ctx, msg)
 	handler.RenderError(w, status, msg)
 }
+
+// NewUserHandler ... ユーザーハンドラーを取得する
+func NewUserHandler(Svc service.User) *UserHandler {
+	return &UserHandler{
+		Svc: Svc,
+	}
+}

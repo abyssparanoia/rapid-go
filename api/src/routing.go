@@ -41,5 +41,8 @@ func Routing(r *chi.Mux, d *Dependency) {
 func subRouting(r chi.Router, d *Dependency) {
 	// API
 	r.Get("/sample", d.SampleHandler.Sample)
+	r.Route("/users", func(r chi.Router) {
+		r.Get("/{userID}", d.UserHandler.Get)
+	})
 
 }
