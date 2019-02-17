@@ -1,0 +1,1 @@
+CREATE DATABASE rapid_go
