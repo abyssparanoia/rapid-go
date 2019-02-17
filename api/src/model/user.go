@@ -9,7 +9,7 @@ type User struct {
 	ID         int64     ``
 	Name       string    ``
 	AvatarPath string    ``
-	sex        string    ``
+	Sex        string    ``
 	Enabled    bool      ``
 	CreatedAt  time.Time ``
 	UpdatedAt  time.Time ``
