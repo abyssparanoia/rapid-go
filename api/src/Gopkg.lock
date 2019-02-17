@@ -139,22 +139,6 @@
   revision = "b9786414de4d903830df7ac38eea68a0e3267a35"
 
 [[projects]]
-  digest = "1:e583fc00497ee3eaf30bde9edf05601f60d5a8668f7fe4c657b3f935ddca03f7"
-  name = "go.mercari.io/datastore"
-  packages = [
-    ".",
-    "aedatastore",
-    "boom",
-    "internal",
-    "internal/c/atomiccache",
-    "internal/c/fields",
-    "internal/shared",
-  ]
-  pruneopts = "UT"
-  revision = "7a323a3747d39b6c9cdf825697d09cb36907d4cb"
-  version = "v1.3.0"
-
-[[projects]]
   digest = "1:381ccafa5e013a0e3f9b54604ae522a73b9533a375a6a714b483c634d5e927ab"
   name = "go.opencensus.io"
   packages = [
@@ -267,12 +251,11 @@
   revision = "0a71a4356c3f4bcbdd16294c78ca2a31fda36cca"
 
 [[projects]]
-  digest = "1:cf126009d7ce40b1abc70f01384d181e07f23225ad5fcee7b72c0120682fc10f"
+  digest = "1:e0244364c406b721b0dbd37142a58deae8ee445751a9ebb760d23b7d748433a1"
   name = "google.golang.org/appengine"
   packages = [
     ".",
     "cloudsql",
-    "datastore",
     "internal",
     "internal/app_identity",
     "internal/base",
@@ -359,9 +342,6 @@
     "github.com/go-chi/chi",
     "github.com/go-sql-driver/mysql",
     "github.com/unrolled/render",
-    "go.mercari.io/datastore",
-    "go.mercari.io/datastore/aedatastore",
-    "go.mercari.io/datastore/boom",
     "golang.org/x/text/encoding/japanese",
     "golang.org/x/text/transform",
     "google.golang.org/api/option",

@@ -41,7 +41,5 @@ func Routing(r *chi.Mux, d *Dependency) {
 func subRouting(r chi.Router, d *Dependency) {
 	// API
 	r.Get("/sample", d.SampleHandler.Sample)
-	r.Get("/testcloudsql", d.SampleHandler.TestCloudSQL)
-	r.Get("/testhttp", d.SampleHandler.TestHTTP)
 
 }

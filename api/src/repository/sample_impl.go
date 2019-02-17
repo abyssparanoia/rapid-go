@@ -13,7 +13,6 @@ import (
 	"github.com/abyssparanoia/rapid-go/api/src/model"
 
 	sq "github.com/Masterminds/squirrel"
-	_ "go.mercari.io/datastore/aedatastore" // mercari/datastoreの初期化
 )
 
 type sample struct {

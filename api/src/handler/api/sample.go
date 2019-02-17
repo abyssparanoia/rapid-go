@@ -50,7 +50,7 @@ func (h *SampleHandler) Sample(w http.ResponseWriter, r *http.Request) {
 	log.Debugf(ctx, "Claims: %v", claims)
 
 	// Serviceを実行する
-	sample, err := h.Svc.Sample(ctx)
+	sample, err := h.Svc.GetAll(ctx)
 	if err != nil {
 		h.handleError(ctx, w, http.StatusInternalServerError, "h.Service.Sample: "+err.Error())
 		return
@@ -63,32 +63,6 @@ func (h *SampleHandler) Sample(w http.ResponseWriter, r *http.Request) {
 		Sample: sample,
 		Hoge:   "",
 	})
-}
-
-// TestCloudSQL ... CloudSQLテスト
-func (h *SampleHandler) TestCloudSQL(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	err := h.Svc.TestCloudSQL(ctx)
-	if err != nil {
-		h.handleError(ctx, w, http.StatusInternalServerError, "h.Svc.TestCloudSQL: "+err.Error())
-		return
-	}
-
-	handler.RenderSuccess(w)
-}
-
-// TestHTTP ... HTTPテスト
-func (h *SampleHandler) TestHTTP(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	err := h.Svc.TestHTTP(ctx)
-	if err != nil {
-		h.handleError(ctx, w, http.StatusInternalServerError, "h.Svc.TestHTTP: "+err.Error())
-		return
-	}
-
-	handler.RenderSuccess(w)
 }
 
 func (h *SampleHandler) handleError(ctx context.Context, w http.ResponseWriter, status int, msg string) {

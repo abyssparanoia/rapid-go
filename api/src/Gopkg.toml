@@ -50,10 +50,6 @@
   name = "github.com/unrolled/render"
 
 [[constraint]]
-  name = "go.mercari.io/datastore"
-  version = "1.3.0"
-
-[[constraint]]
   name = "golang.org/x/text"
   version = "0.3.0"
 
