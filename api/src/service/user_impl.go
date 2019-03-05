@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/api/src/lib/util"
 	"github.com/abyssparanoia/rapid-go/api/src/model"
 	"github.com/abyssparanoia/rapid-go/api/src/repository"
-	"github.com/rabee-inc/salontia-backend/src/lib/util"
 )
 
 type user struct {
