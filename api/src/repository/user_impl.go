@@ -17,34 +17,39 @@ type user struct {
 
 func (r *user) Get(ctx context.Context, userID int64) (*model.User, error) {
 
-	q := sq.Select("id", "name", "avatar_path", "sex", "enabled", "created_at", "updated_at").
+	q := sq.Select(
+		"id",
+		"name",
+		"avatar_path",
+		"sex",
+		"enabled",
+		"created_at",
+		"updated_at").
 		From("m_users").
 		Where(sq.Eq{"id": userID})
 
 	mysql.DumpSelectQuery(ctx, q)
 
-	rows, err := q.RunWith(r.sql).QueryContext(ctx)
+	row, err := q.RunWith(r.sql).QueryContext(ctx)
 	if err != nil {
 		log.Errorf(ctx, "Get: %s", err.Error())
 		return nil, err
 	}
 
 	var ret *model.User
-	for rows.Next() {
-		err := rows.Scan(
-			&ret.ID,
-			&ret.Name,
-			&ret.AvatarPath,
-			&ret.Sex,
-			&ret.Enabled,
-			&ret.CreatedAt,
-			&ret.UpdatedAt)
-		if err != nil {
-			log.Errorf(ctx, "Get: %s", err.Error())
-			rows.Close()
-			return nil, err
-		}
-		break
+	err = row.Scan(
+		&ret.ID,
+		&ret.Name,
+		&ret.AvatarPath,
+		&ret.Sex,
+		&ret.Enabled,
+		&ret.CreatedAt,
+		&ret.UpdatedAt)
+
+	if err != nil {
+		log.Errorf(ctx, "Get: %s", err.Error())
+		row.Close()
+		return nil, err
 	}
 
 	return ret, nil
@@ -52,8 +57,20 @@ func (r *user) Get(ctx context.Context, userID int64) (*model.User, error) {
 
 func (r *user) Insert(ctx context.Context, src *model.User) error {
 	q := sq.Insert("m_users").
-		Columns("name", "avatar_path", "sex", "enabled", "created_at", "updated_at").
-		Values(src.Name, src.AvatarPath, src.Sex, src.Enabled, src.CreatedAt, src.UpdatedAt)
+		Columns(
+			"name",
+			"avatar_path",
+			"sex",
+			"enabled",
+			"created_at",
+			"updated_at").
+		Values(
+			src.Name,
+			src.AvatarPath,
+			src.Sex,
+			src.Enabled,
+			src.CreatedAt,
+			src.UpdatedAt)
 
 	mysql.DumpInsertQuery(ctx, q)
 
