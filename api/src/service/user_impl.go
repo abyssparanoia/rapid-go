@@ -14,7 +14,7 @@ type user struct {
 }
 
 func (s *user) Get(ctx context.Context, userID int64) (*model.User, error) {
-	user, err := s.uRepo.Get(ctx, 12345)
+	user, err := s.uRepo.Get(ctx, userID)
 	if err != nil {
 		log.Errorf(ctx, "s.uRepo.Get: %s", err.Error())
 		return nil, err
