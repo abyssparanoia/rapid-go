@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// CSQLConfig ... MySQLの接続情報
+// SQLConfig ... MySQLの接続情報
 type SQLConfig struct {
 	ConnectionName string
 	User           string
