@@ -13,10 +13,11 @@ import (
 
 // NewSQLClient ... MySQLのクライアントを取得する
 func NewSQLClient(cfg *SQLConfig) *sql.DB {
-	ds := fmt.Sprintf("%s:%s@tcp(%s)/unbuilt-rental",
+	ds := fmt.Sprintf("%s:%s@tcp(%s)/%s",
 		cfg.User,
 		cfg.Password,
-		cfg.ConnectionName)
+		cfg.ConnectionName,
+		cfg.Database)
 
 	cli, err := sql.Open("mysql", ds)
 	if err != nil {
