@@ -51,6 +51,37 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	handler.RenderJSON(w, http.StatusOK, userHandlerGetResponse{User: user})
 }
 
+type userHandlerCreateRequestParam struct {
+	Name       string `validate:"required" json:"name"`
+	AvatarPath string `validate:"required" json:"avatar_path"`
+	Sex        string `validate:"required" json:"sex"`
+}
+
+// Create ... ユーザーを作成する
+func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var param userHandlerCreateRequestParam
+	err := handler.GetJSON(r, &param)
+	if err != nil {
+		h.handleError(ctx, w, http.StatusBadRequest, "handler.GetJSON error: "+err.Error())
+		return
+	}
+
+	v := validator.New()
+	if err = v.Struct(param); err != nil {
+		h.handleError(ctx, w, http.StatusBadRequest, "validation error: "+err.Error())
+		return
+	}
+
+	err = h.Svc.Create(ctx, param.Name, param.AvatarPath, param.Sex)
+	if err != nil {
+		h.handleError(ctx, w, http.StatusInternalServerError, "h.Svc.Get: "+err.Error())
+	}
+
+	handler.RenderSuccess(w)
+}
+
 func (h *UserHandler) handleError(ctx context.Context, w http.ResponseWriter, status int, msg string) {
 	log.Errorf(ctx, msg)
 	handler.RenderError(w, status, msg)
