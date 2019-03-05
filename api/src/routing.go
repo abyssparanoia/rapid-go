@@ -42,6 +42,7 @@ func subRouting(r chi.Router, d *Dependency) {
 	// API
 	r.Get("/sample", d.SampleHandler.Sample)
 	r.Route("/users", func(r chi.Router) {
+		r.Post("/", d.UserHandler.Create)
 		r.Get("/{userID}", d.UserHandler.Get)
 	})
 
