@@ -15,7 +15,7 @@ services:
       - "3001:3001"
     environment:
       - ENV=develop
-      - DB_HOST=db:3306
+      - DB_HOST=tcp(db:3306)
       - DB_USER=root
       - DB_PASSWORD=password
       - DB_DATABASE=rapid_go

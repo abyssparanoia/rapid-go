@@ -15,7 +15,6 @@ type Dependency struct {
 	FirebaseAuth      *firebaseauth.Middleware
 	DummyHTTPHeader   *httpheader.Middleware
 	HTTPHeader        *httpheader.Middleware
-	SampleHandler     *api.SampleHandler
 	UserHandler       *api.UserHandler
 }
 
@@ -28,7 +27,6 @@ func (d *Dependency) Inject() {
 	dbConn := mysql.NewSQLClient(dbCfg)
 
 	// Repository
-	repo := repository.NewSample(dbConn)
 	uRepo := repository.NewUser(dbConn)
 
 	// Service
@@ -36,7 +34,6 @@ func (d *Dependency) Inject() {
 	faSvc := firebaseauth.NewService()
 	dhhSvc := httpheader.NewDummyService()
 	hhSvc := httpheader.NewService()
-	svc := service.NewSample(repo)
 	uSvc := service.NewUser(uRepo)
 
 	// Middleware
@@ -46,6 +43,5 @@ func (d *Dependency) Inject() {
 	d.HTTPHeader = httpheader.NewMiddleware(hhSvc)
 
 	// Handler
-	d.SampleHandler = api.NewSampleHandler(svc)
 	d.UserHandler = api.NewUserHandler(uSvc)
 }

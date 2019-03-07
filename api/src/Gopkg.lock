@@ -62,6 +62,14 @@
   version = "v3.3.3"
 
 [[projects]]
+  digest = "1:670d1f29fa2aa15ea777cc5bcf95881f379bf8a71dbbe145be0774da97fede72"
+  name = "github.com/go-gorp/gorp"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4df78490a9aa9a78b9b02b0c913df8dc1954faee"
+  version = "2.1"
+
+[[projects]]
   digest = "1:e1ff887e232b2d8f4f7c7db15a5fac7be418025afc4dda53c59c765dbb5aa6b4"
   name = "github.com/go-playground/locales"
   packages = [
@@ -340,6 +348,7 @@
     "github.com/Masterminds/squirrel",
     "github.com/davecgh/go-spew/spew",
     "github.com/go-chi/chi",
+    "github.com/go-gorp/gorp",
     "github.com/go-sql-driver/mysql",
     "github.com/unrolled/render",
     "golang.org/x/text/encoding/japanese",
