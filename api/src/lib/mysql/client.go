@@ -2,32 +2,29 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 
 	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
-	"github.com/go-gorp/gorp"
+	"github.com/jinzhu/gorm"
 
 	sq "github.com/Masterminds/squirrel"
 	_ "github.com/go-sql-driver/mysql" // MySQL Driverの読み込み
 )
 
 // NewSQLClient ... MySQLのクライアントを取得する
-func NewSQLClient(cfg *SQLConfig) *gorp.DbMap {
+func NewSQLClient(cfg *SQLConfig) *gorm.DB {
 	ds := fmt.Sprintf("%s:%s@%s/%s?parseTime=true",
 		cfg.User,
 		cfg.Password,
 		cfg.ConnectionName,
 		cfg.Database)
 
-	db, err := sql.Open("mysql", ds)
+	db, err := gorm.Open("mysql", ds)
 	if err != nil {
 		panic(err)
 	}
 
-	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
-
-	return dbmap
+	return db
 }
 
 // DumpSelectQuery ... SELECTクエリを出力

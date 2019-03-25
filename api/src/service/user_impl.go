@@ -21,25 +21,7 @@ func (s *user) Get(ctx context.Context, userID int64) (*model.User, error) {
 	return user, nil
 }
 
-// func (s *user) Create(ctx context.Context, Name string, AvatarPath string, Sex string) error {
-// 	now := util.TimeNow()
-// 	user := &model.User{
-// 		Name:       Name,
-// 		AvatarPath: AvatarPath,
-// 		Sex:        Sex,
-// 		Enabled:    true,
-// 		CreatedAt:  now,
-// 		UpdatedAt:  now,
-// 	}
-// 	err := s.uRepo.Insert(ctx, user)
-// 	if err != nil {
-// 		log.Errorf(ctx, "s.uRepo.Insert: %s", err.Error())
-// 		return err
-// 	}
-// 	return nil
-// }
-
-// NewUser ... 新しいユーザーサービスを取得する
+// NewUser ... ユーザーサービスを取得する
 func NewUser(uRepo repository.User) User {
 	return &user{
 		uRepo: uRepo,

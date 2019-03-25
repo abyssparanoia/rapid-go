@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/abyssparanoia/rapid-go/api/src/lib/errcode"
 	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/api/src/model"
 
 	"github.com/unrolled/render"
 	"golang.org/x/text/encoding/japanese"
@@ -14,22 +16,42 @@ import (
 )
 
 // HandleError ... 一番典型的なエラーハンドリング
-func HandleError(ctx context.Context, w http.ResponseWriter, status int, format string, args ...interface{}) {
-	msg := fmt.Sprintf(format, args...)
-	log.Errorf(ctx, msg)
-	RenderError(w, status, msg)
+func HandleError(ctx context.Context, w http.ResponseWriter, msg string, err error) {
+	code, ok := errcode.Get(err)
+	if !ok {
+		RenderError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	switch code {
+	case http.StatusBadRequest:
+		msg := fmt.Sprintf("%d StatusBadRequest: %s, %s", code, msg, err.Error())
+		log.Warningf(ctx, msg)
+		RenderError(w, code, msg)
+	case http.StatusForbidden:
+		msg := fmt.Sprintf("%d Forbidden: %s, %s", code, msg, err.Error())
+		log.Warningf(ctx, msg)
+		RenderError(w, code, msg)
+	case http.StatusNotFound:
+		msg := fmt.Sprintf("%d NotFound: %s, %s", code, msg, err.Error())
+		log.Warningf(ctx, msg)
+		RenderError(w, code, msg)
+	default:
+		msg := fmt.Sprintf("%d: %s, %s", code, msg, err.Error())
+		log.Errorf(ctx, msg)
+		RenderError(w, code, msg)
+	}
 }
 
 // RenderSuccess ... 成功レスポンスをレンダリングする
 func RenderSuccess(w http.ResponseWriter) {
 	r := render.New()
-	r.Text(w, http.StatusOK, "success")
+	r.JSON(w, http.StatusOK, model.NewResponseOK(http.StatusOK))
 }
 
 // RenderError ... エラーレスポンスをレンダリングする
 func RenderError(w http.ResponseWriter, status int, msg string) {
 	r := render.New()
-	r.Text(w, status, fmt.Sprintf("%d %s", status, msg))
+	r.JSON(w, status, model.NewResponseError(status, msg))
 }
 
 // RenderJSON ... JSONをレンダリングする

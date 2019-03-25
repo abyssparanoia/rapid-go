@@ -62,14 +62,6 @@
   version = "v3.3.3"
 
 [[projects]]
-  digest = "1:670d1f29fa2aa15ea777cc5bcf95881f379bf8a71dbbe145be0774da97fede72"
-  name = "github.com/go-gorp/gorp"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "4df78490a9aa9a78b9b02b0c913df8dc1954faee"
-  version = "2.1"
-
-[[projects]]
   digest = "1:e1ff887e232b2d8f4f7c7db15a5fac7be418025afc4dda53c59c765dbb5aa6b4"
   name = "github.com/go-playground/locales"
   packages = [
@@ -121,6 +113,22 @@
   pruneopts = "UT"
   revision = "b001040cd31805261cbd978842099e326dfa857b"
   version = "v2.0.2"
+
+[[projects]]
+  digest = "1:d4e6e8584d0a94ce567d237e19192dae44d57d2767ac7e1d7fbf5626d176381a"
+  name = "github.com/jinzhu/gorm"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "472c70caa40267cb89fd8facb07fe6454b578626"
+  version = "v1.9.2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:fd97437fbb6b7dce04132cf06775bd258cce305c44add58eb55ca86c6c325160"
+  name = "github.com/jinzhu/inflection"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "04140366298a54a039076d798123ffa108fff46c"
 
 [[projects]]
   branch = "master"
@@ -348,8 +356,8 @@
     "github.com/Masterminds/squirrel",
     "github.com/davecgh/go-spew/spew",
     "github.com/go-chi/chi",
-    "github.com/go-gorp/gorp",
     "github.com/go-sql-driver/mysql",
+    "github.com/jinzhu/gorm",
     "github.com/unrolled/render",
     "golang.org/x/text/encoding/japanese",
     "golang.org/x/text/transform",
