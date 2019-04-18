@@ -3,8 +3,8 @@ package worker
 import (
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/api/src/handler"
-	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/handler"
+	"github.com/abyssparanoia/rapid-go/src/lib/log"
 )
 
 // AdminHandler ... 管理用のハンドラ

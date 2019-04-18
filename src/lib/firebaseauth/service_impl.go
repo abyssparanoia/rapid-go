@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/lib/log"
 	"google.golang.org/api/option"
 
 	"firebase.google.com/go"

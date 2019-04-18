@@ -1,12 +1,12 @@
-package main
+package dependency
 
 import (
-	"github.com/abyssparanoia/rapid-go/api/src/handler/api"
-	"github.com/abyssparanoia/rapid-go/api/src/lib/firebaseauth"
-	"github.com/abyssparanoia/rapid-go/api/src/lib/httpheader"
-	"github.com/abyssparanoia/rapid-go/api/src/lib/mysql"
-	"github.com/abyssparanoia/rapid-go/api/src/repository"
-	"github.com/abyssparanoia/rapid-go/api/src/service"
+	"github.com/abyssparanoia/rapid-go/src/handler/api"
+	"github.com/abyssparanoia/rapid-go/src/lib/firebaseauth"
+	"github.com/abyssparanoia/rapid-go/src/lib/httpheader"
+	"github.com/abyssparanoia/rapid-go/src/lib/mysql"
+	"github.com/abyssparanoia/rapid-go/src/repository"
+	"github.com/abyssparanoia/rapid-go/src/service"
 )
 
 // Dependency ... 依存性

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/lib/log"
 	"github.com/jinzhu/gorm"
 
 	sq "github.com/Masterminds/squirrel"

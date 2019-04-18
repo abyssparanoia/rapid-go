@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/abyssparanoia/rapid-go/api/src/model"
+	"github.com/abyssparanoia/rapid-go/src/model"
 )
 
 // User ... ユーザーレポジトリのinterface

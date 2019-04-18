@@ -5,12 +5,12 @@ volumes:
 
 services:
   api:
-    build: ./api
+    build: .
     depends_on:
       - db
     volumes:
-      - ./api/src:/go/src/github.com/abyssparanoia/rapid-go/api/src
-      - vendor:/go/src/github.com/abyssparanoia/rapid-go/api/vendor
+      - ./src:/go/src/github.com/abyssparanoia/rapid-go/src
+      - vendor:/go/src/github.com/abyssparanoia/rapid-go/vendor
     ports:
       - "3001:3001"
     environment:

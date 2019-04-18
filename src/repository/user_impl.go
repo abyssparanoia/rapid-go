@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
-	"github.com/abyssparanoia/rapid-go/api/src/lib/log"
-	"github.com/abyssparanoia/rapid-go/api/src/model"
+	"github.com/abyssparanoia/rapid-go/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/model"
 	"github.com/jinzhu/gorm"
 )
 
