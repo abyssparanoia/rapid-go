@@ -10,7 +10,6 @@ services:
       - db
     volumes:
       - .:/go/src/github.com/abyssparanoia/rapid-go
-      - vendor:/go/src/github.com/abyssparanoia/rapid-go/vendor
     ports:
       - "3001:3001"
     environment:
