@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/abyssparanoia/rapid-go/src/domain/model"
 	"github.com/abyssparanoia/rapid-go/src/lib/errcode"
 	"github.com/abyssparanoia/rapid-go/src/lib/log"
-	"github.com/abyssparanoia/rapid-go/src/model"
 
 	"github.com/unrolled/render"
 	"golang.org/x/text/encoding/japanese"

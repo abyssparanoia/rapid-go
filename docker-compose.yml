@@ -9,7 +9,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./src:/go/src/github.com/abyssparanoia/rapid-go/src
+      - .:/go/src/github.com/abyssparanoia/rapid-go
       - vendor:/go/src/github.com/abyssparanoia/rapid-go/vendor
     ports:
       - "3001:3001"

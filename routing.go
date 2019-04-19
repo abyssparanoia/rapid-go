@@ -1,17 +1,16 @@
-package routing
+package main
 
 import (
 	"net/http"
 
 	"github.com/abyssparanoia/rapid-go/src/config"
-	"github.com/abyssparanoia/rapid-go/src/dependency"
 	"github.com/abyssparanoia/rapid-go/src/handler"
 	"github.com/abyssparanoia/rapid-go/src/middleware"
 	"github.com/go-chi/chi"
 )
 
 // Routing ... ルーティング設定
-func Routing(r chi.Router, d *dependency.Dependency) {
+func Routing(r chi.Router, d Dependency) {
 	// アクセスコントロール
 	r.Use(middleware.AccessControl)
 
@@ -38,7 +37,7 @@ func Routing(r chi.Router, d *dependency.Dependency) {
 	http.Handle("/", r)
 }
 
-func subRouting(r chi.Router, d *dependency.Dependency) {
+func subRouting(r chi.Router, d Dependency) {
 	// API
 	r.Route("/users", func(r chi.Router) {
 		//r.Post("/", d.UserHandler.Create)

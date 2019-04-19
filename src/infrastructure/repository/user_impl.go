@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
+	"github.com/abyssparanoia/rapid-go/src/domain/repository"
 	"github.com/abyssparanoia/rapid-go/src/infrastructure/entity"
 	"github.com/abyssparanoia/rapid-go/src/lib/log"
-	"github.com/abyssparanoia/rapid-go/src/repository"
 	"github.com/jinzhu/gorm"
 )
 

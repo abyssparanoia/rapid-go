@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/abyssparanoia/rapid-go/src/model"
+	"github.com/abyssparanoia/rapid-go/src/domain/model"
 )
 
 // User ... ユーザーサービスのインターフェイス

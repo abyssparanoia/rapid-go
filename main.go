@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/src/dependency"
 	"github.com/abyssparanoia/rapid-go/src/lib/log"
-	"github.com/abyssparanoia/rapid-go/src/routing"
 	"github.com/go-chi/chi"
 )
 
@@ -14,12 +12,12 @@ var addr = ":3001"
 
 func main() {
 	// Dependency
-	d := &dependency.Dependency{}
+	d := Dependency{}
 	d.Inject()
 
 	// Routing
 	r := chi.NewRouter()
-	routing.Routing(r, d)
+	Routing(r, d)
 
 	// Run
 

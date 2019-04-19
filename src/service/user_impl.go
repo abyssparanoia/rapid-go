@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 
+	"github.com/abyssparanoia/rapid-go/src/domain/model"
+	"github.com/abyssparanoia/rapid-go/src/domain/repository"
 	"github.com/abyssparanoia/rapid-go/src/lib/log"
-	"github.com/abyssparanoia/rapid-go/src/model"
-	"github.com/abyssparanoia/rapid-go/src/repository"
 )
 
 type user struct {
@@ -18,7 +18,7 @@ func (s *user) Get(ctx context.Context, userID int64) (*model.User, error) {
 		log.Errorf(ctx, "s.uRepo.Get: %s", err.Error())
 		return nil, err
 	}
-	return user, nil
+	return model.NewUserFromEntity(user), nil
 }
 
 // NewUser ... ユーザーサービスを取得する

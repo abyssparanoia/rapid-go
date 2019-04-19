@@ -9,4 +9,4 @@ RUN apk --no-cache --update upgrade \
     && go get -u github.com/golang/dep/cmd/dep \
     && dep ensure
 
-CMD gin -i run main.go
+CMD gin -i run main.go routing.go dependency.go
