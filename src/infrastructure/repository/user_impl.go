@@ -3,9 +3,11 @@ package repository
 import (
 	"context"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/abyssparanoia/rapid-go/src/domain/repository"
 	"github.com/abyssparanoia/rapid-go/src/infrastructure/entity"
 	"github.com/abyssparanoia/rapid-go/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/lib/mysql"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -16,8 +18,18 @@ type user struct {
 func (r *user) Get(ctx context.Context, userID int64) (*entity.User, error) {
 
 	user := &entity.User{}
-	user.ID = userID
-	rows, err := r.sql.Queryx("SELECT * FROM users WHERE id=1")
+
+	qb := sq.Select("*").From("users").Where(sq.Eq{"id": userID})
+
+	mysql.DumpSelectQuery(ctx, qb)
+
+	query, attrs, err := qb.ToSql()
+	if err != nil {
+		log.Errorf(ctx, "sq.Select: %s", err.Error())
+		return nil, err
+	}
+
+	rows, err := r.sql.Queryx(query, attrs...)
 	if err != nil {
 		log.Errorf(ctx, "r.sql.Queryx: %s", err.Error())
 		return nil, err
