@@ -27,11 +27,11 @@
 
 [[constraint]]
   name = "firebase.google.com/go"
-  version = "3.4.0"
+  version = "3.7.0"
 
 [[constraint]]
   name = "github.com/Masterminds/squirrel"
-  version = "1.0.0"
+  version = "1.1.0"
 
 [[constraint]]
   name = "github.com/davecgh/go-spew"
@@ -39,23 +39,31 @@
 
 [[constraint]]
   name = "github.com/go-chi/chi"
-  version = "3.3.3"
+  version = "4.0.2"
 
 [[constraint]]
   name = "github.com/go-sql-driver/mysql"
   version = "1.4.1"
 
 [[constraint]]
-  branch = "master"
+  name = "github.com/jmoiron/sqlx"
+  version = "1.2.0"
+
+[[constraint]]
   name = "github.com/unrolled/render"
+  version = "1.0.0"
 
 [[constraint]]
   name = "golang.org/x/text"
   version = "0.3.0"
 
 [[constraint]]
+  name = "google.golang.org/api"
+  version = "0.3.2"
+
+[[constraint]]
   name = "gopkg.in/go-playground/validator.v9"
-  version = "9.23.0"
+  version = "9.28.0"
 
 [prune]
   go-tests = true

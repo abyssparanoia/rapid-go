@@ -5,21 +5,21 @@ import (
 	"fmt"
 
 	"github.com/abyssparanoia/rapid-go/src/lib/log"
-	"github.com/jinzhu/gorm"
 
 	sq "github.com/Masterminds/squirrel"
 	_ "github.com/go-sql-driver/mysql" // MySQL Driverの読み込み
+	"github.com/jmoiron/sqlx"
 )
 
 // NewSQLClient ... MySQLのクライアントを取得する
-func NewSQLClient(cfg *SQLConfig) *gorm.DB {
+func NewSQLClient(cfg *SQLConfig) *sqlx.DB {
 	ds := fmt.Sprintf("%s:%s@%s/%s?parseTime=true",
 		cfg.User,
 		cfg.Password,
 		cfg.ConnectionName,
 		cfg.Database)
 
-	db, err := gorm.Open("mysql", ds)
+	db, err := sqlx.Open("mysql", ds)
 	if err != nil {
 		panic(err)
 	}
