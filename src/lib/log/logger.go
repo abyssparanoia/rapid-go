@@ -2,9 +2,9 @@ package log
 
 import (
 	"context"
+	"fmt"
 
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 type loggerKey struct{}
@@ -32,31 +32,32 @@ func NewLogger(ctx context.Context, isDev bool) {
 
 // Logger ... contextからloggerを取得する
 func Logger(ctx context.Context) *zap.Logger {
-	logger := ctx.Value(loggerKey{}).(*zap.Logger)
+	logger, _ := ctx.Value(loggerKey{}).(*zap.Logger)
 
 	if logger == nil {
-		panic("no logger in context")
+		logger, _ := zap.NewDevelopment()
+		return logger
 	}
 
 	return logger
 }
 
 // Debugf ... Debugログを出力する
-func Debugf(ctx context.Context, msg string, fields ...zapcore.Field) {
-	Logger(ctx).Debug(msg, fields...)
+func Debugf(ctx context.Context, msg string, fields ...interface{}) {
+	Logger(ctx).Debug(fmt.Sprintf(msg, fields...))
 }
 
 // Infof ... Infoログを出力する
-func Infof(ctx context.Context, msg string, fields ...zapcore.Field) {
-	Logger(ctx).Info(msg, fields...)
+func Infof(ctx context.Context, msg string, fields ...interface{}) {
+	Logger(ctx).Info(fmt.Sprintf(msg, fields...))
 }
 
 // Warningf ... Warningログを出力する
-func Warningf(ctx context.Context, msg string, fields ...zapcore.Field) {
-	Logger(ctx).Warn(msg, fields...)
+func Warningf(ctx context.Context, msg string, fields ...interface{}) {
+	Logger(ctx).Warn(fmt.Sprintf(msg, fields...))
 }
 
 // Errorf ... Errorログを出力する
-func Errorf(ctx context.Context, msg string, fields ...zapcore.Field) {
-	Logger(ctx).Error(msg, fields...)
+func Errorf(ctx context.Context, msg string, fields ...interface{}) {
+	Logger(ctx).Error(fmt.Sprintf(msg, fields...))
 }

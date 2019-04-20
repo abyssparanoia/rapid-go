@@ -1,17 +1,20 @@
 package log
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/abyssparanoia/rapid-go/src/config"
 )
 
-// Log ... リクエストログ掃き出し用のmiddleware
-func Logger(h http.Handler) http.Handler {
+// Middleware ... loggerを生成し、 リクエストログ掃き出し用のmiddleware
+func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		rAddr := r.RemoteAddr
 		method := r.Method
 		path := r.URL.Path
-		log.Printf("Remote: %s [%s] %s", rAddr, method, path)
-		h.ServeHTTP(w, r)
+		ctx := r.Context()
+		NewLogger(ctx, config.IsEnvDeveloping())
+		Infof(ctx, "Remote: %s [%s] %s", rAddr, method, path)
+		next.ServeHTTP(w, r)
 	})
 }
