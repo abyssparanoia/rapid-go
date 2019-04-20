@@ -29,7 +29,7 @@ func (r *user) Get(ctx context.Context, userID int64) (*entity.User, error) {
 		return nil, err
 	}
 
-	rows, err := r.sql.Queryx(query, attrs...)
+	rows, err := r.sql.QueryxContext(ctx, query, attrs...)
 	if err != nil {
 		log.Errorf(ctx, "r.sql.Queryx: %s", err.Error())
 		return nil, err

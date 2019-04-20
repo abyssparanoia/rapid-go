@@ -59,10 +59,10 @@ func (d *Dependency) GracefulShutdown(ctx context.Context, server *http.Server) 
 		fmt.Printf("failed to gracefully shutdown: %s\n", err)
 	}
 
-	err = d.DBConnection.Close()
-	if err != nil {
-		fmt.Printf("failed to gracefully db connection closed: %s\n", err)
-	}
+	// err = d.DBConnection.Close()
+	// if err != nil {
+	// 	fmt.Printf("failed to gracefully db connection closed: %s\n", err)
+	// }
 
 	fmt.Printf("server shutdown completed\n")
 }
