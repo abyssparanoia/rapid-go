@@ -44,8 +44,5 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := server.Shutdown(ctx); err != nil {
-		fmt.Printf("failed to gracefully shutdown: %s\n", err)
-	}
-	fmt.Printf("server shutdown completed\n")
+	d.GracefulShutdown(ctx, &server)
 }
