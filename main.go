@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/abyssparanoia/rapid-go/src/lib/log"
 	"github.com/go-chi/chi"
 )
 
@@ -21,5 +22,5 @@ func main() {
 	// Run
 
 	fmt.Printf("[START] server. port: %s\n", addr)
-	http.ListenAndServe(addr, r)
+	http.ListenAndServe(addr, log.Middleware(r))
 }

@@ -2,8 +2,6 @@ package log
 
 import (
 	"net/http"
-
-	"github.com/abyssparanoia/rapid-go/src/config"
 )
 
 // Middleware ... loggerを生成し、 リクエストログ掃き出し用のmiddleware
@@ -13,8 +11,8 @@ func Middleware(next http.Handler) http.Handler {
 		method := r.Method
 		path := r.URL.Path
 		ctx := r.Context()
-		NewLogger(ctx, config.IsEnvDeveloping())
+		ctx = NewLogger(ctx)
 		Infof(ctx, "Remote: %s [%s] %s", rAddr, method, path)
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

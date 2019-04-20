@@ -18,7 +18,6 @@ func (s *user) Get(ctx context.Context, userID int64) (*model.User, error) {
 		log.Errorf(ctx, "s.uRepo.Get: %s", err.Error())
 		return nil, err
 	}
-	log.Debugf(ctx, "test")
 	return model.NewUserFromEntity(user), nil
 }
 

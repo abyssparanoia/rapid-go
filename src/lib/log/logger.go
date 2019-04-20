@@ -4,16 +4,17 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/abyssparanoia/rapid-go/src/config"
 	"go.uber.org/zap"
 )
 
 type loggerKey struct{}
 
 // NewLogger ... loggerを生成し、contextに仕込む。
-func NewLogger(ctx context.Context, isDev bool) {
+func NewLogger(ctx context.Context) context.Context {
 
 	// 開発環境
-	if isDev {
+	if config.IsEnvDeveloping() {
 		logger, err := zap.NewDevelopment()
 		if err != nil {
 			panic(err)
@@ -27,7 +28,7 @@ func NewLogger(ctx context.Context, isDev bool) {
 		}
 		context.WithValue(ctx, loggerKey{}, logger)
 	}
-
+	return ctx
 }
 
 // Logger ... contextからloggerを取得する
