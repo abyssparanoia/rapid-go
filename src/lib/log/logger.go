@@ -2,53 +2,61 @@ package log
 
 import (
 	"context"
-	"fmt"
-	"log"
-	"runtime"
-	"strings"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
+type loggerKey struct{}
+
+// NewLogger ... loggerを生成し、contextに仕込む。
+func NewLogger(ctx context.Context, isDev bool) {
+
+	// 開発環境
+	if isDev {
+		logger, err := zap.NewDevelopment()
+		if err != nil {
+			panic(err)
+		}
+		context.WithValue(ctx, loggerKey{}, logger)
+		// production環境
+	} else {
+		logger, err := zap.NewProduction()
+		if err != nil {
+			panic(err)
+		}
+		context.WithValue(ctx, loggerKey{}, logger)
+	}
+
+}
+
+// Logger ... contextからloggerを取得する
+func Logger(ctx context.Context) *zap.Logger {
+	logger := ctx.Value(loggerKey{}).(*zap.Logger)
+
+	if logger == nil {
+		panic("no logger in context")
+	}
+
+	return logger
+}
+
 // Debugf ... Debugログを出力する
-func Debugf(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	//log.Debugf(ctx, fl+format, args...)
-	log.Printf("[DEBUG]:"+format, args)
+func Debugf(ctx context.Context, msg string, fields ...zapcore.Field) {
+	Logger(ctx).Debug(msg, fields...)
 }
 
 // Infof ... Infoログを出力する
-func Infof(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	//log.Infof(ctx, fl+format, args...)
-	log.Printf("[INFO]:"+format, args)
+func Infof(ctx context.Context, msg string, fields ...zapcore.Field) {
+	Logger(ctx).Info(msg, fields...)
 }
 
 // Warningf ... Warningログを出力する
-func Warningf(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	//log.Warningf(ctx, fl+format, args...)
-	log.Printf("[WARNING]:"+format, args)
+func Warningf(ctx context.Context, msg string, fields ...zapcore.Field) {
+	Logger(ctx).Warn(msg, fields...)
 }
 
 // Errorf ... Errorログを出力する
-func Errorf(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	// log.Errorf(ctx, fl+format, args...)
-	log.Printf("[ERROR]:"+format, args)
-}
-
-// Criticalf ... Criticalログを出力する
-func Criticalf(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	// log.Criticalf(ctx, fl+format, args...)
-	log.Printf("[CRITICAL]:"+format, args)
-}
-
-func getFileLine() string {
-	var ret string
-	if _, file, line, ok := runtime.Caller(2); ok {
-		parts := strings.Split(file, "/")
-		length := len(parts)
-		ret = fmt.Sprintf("%s/%s:%d ", parts[length-2], parts[length-1], line)
-	}
-	return ret
+func Errorf(ctx context.Context, msg string, fields ...zapcore.Field) {
+	Logger(ctx).Error(msg, fields...)
 }
