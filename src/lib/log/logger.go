@@ -10,17 +10,17 @@ import (
 
 type loggerKey struct{}
 
-// NewLogger ... loggerを生成し、contextに仕込む。
+// NewLogger ... create logger and set it in contenxt
 func NewLogger(ctx context.Context) context.Context {
 
-	// 開発環境
+	// development
 	if config.IsEnvDeveloping() {
 		logger, err := zap.NewDevelopment()
 		if err != nil {
 			panic(err)
 		}
 		context.WithValue(ctx, loggerKey{}, logger)
-		// production環境
+		// production
 	} else {
 		logger, err := zap.NewProduction()
 		if err != nil {
@@ -31,7 +31,7 @@ func NewLogger(ctx context.Context) context.Context {
 	return ctx
 }
 
-// Logger ... contextからloggerを取得する
+// Logger ... get context from context
 func Logger(ctx context.Context) *zap.Logger {
 	logger, _ := ctx.Value(loggerKey{}).(*zap.Logger)
 
@@ -45,22 +45,22 @@ func Logger(ctx context.Context) *zap.Logger {
 
 // TODO: change appropriate using
 
-// Debugf ... Debugログを出力する
+// Debugf ... output debug log
 func Debugf(ctx context.Context, msg string, fields ...interface{}) {
 	Logger(ctx).Debug(fmt.Sprintf(msg, fields...))
 }
 
-// Infof ... Infoログを出力する
+// Infof ... output info log
 func Infof(ctx context.Context, msg string, fields ...interface{}) {
 	Logger(ctx).Info(fmt.Sprintf(msg, fields...))
 }
 
-// Warningf ... Warningログを出力する
+// Warningf ... output warning log
 func Warningf(ctx context.Context, msg string, fields ...interface{}) {
 	Logger(ctx).Warn(fmt.Sprintf(msg, fields...))
 }
 
-// Errorf ... Errorログを出力する
+// Errorf ... output error log
 func Errorf(ctx context.Context, msg string, fields ...interface{}) {
 	Logger(ctx).Error(fmt.Sprintf(msg, fields...))
 }
