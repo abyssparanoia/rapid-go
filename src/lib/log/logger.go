@@ -43,6 +43,8 @@ func Logger(ctx context.Context) *zap.Logger {
 	return logger
 }
 
+// TODO: change appropriate using
+
 // Debugf ... Debugログを出力する
 func Debugf(ctx context.Context, msg string, fields ...interface{}) {
 	Logger(ctx).Debug(fmt.Sprintf(msg, fields...))
