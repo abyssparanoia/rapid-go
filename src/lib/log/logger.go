@@ -19,14 +19,14 @@ func NewLogger(ctx context.Context) context.Context {
 		if err != nil {
 			panic(err)
 		}
-		context.WithValue(ctx, loggerKey{}, logger)
+		ctx = context.WithValue(ctx, loggerKey{}, logger)
 		// production
 	} else {
 		logger, err := zap.NewProduction()
 		if err != nil {
 			panic(err)
 		}
-		context.WithValue(ctx, loggerKey{}, logger)
+		ctx = context.WithValue(ctx, loggerKey{}, logger)
 	}
 	return ctx
 }
@@ -34,11 +34,6 @@ func NewLogger(ctx context.Context) context.Context {
 // Logger ... get context from context
 func Logger(ctx context.Context) *zap.Logger {
 	logger, _ := ctx.Value(loggerKey{}).(*zap.Logger)
-
-	if logger == nil {
-		logger, _ := zap.NewDevelopment()
-		return logger
-	}
 
 	return logger
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/src/config"
 	"github.com/abyssparanoia/rapid-go/src/handler"
+	"github.com/abyssparanoia/rapid-go/src/lib/log"
 	"github.com/abyssparanoia/rapid-go/src/middleware"
 	"github.com/go-chi/chi"
 )
@@ -12,7 +13,7 @@ import (
 // Routing ... ルーティング設定
 func Routing(r chi.Router, d Dependency) {
 
-	//r.Use(log.Middleware)
+	r.Use(log.Middleware)
 
 	// アクセスコントロール
 	r.Use(middleware.AccessControl)
