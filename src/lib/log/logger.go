@@ -35,7 +35,7 @@ func NewLogger(next http.Handler) http.Handler {
 }
 
 // Logger ... get context from context
-func Logger(ctx context.Context) *zap.Logger {
+func logger(ctx context.Context) *zap.Logger {
 	logger, _ := ctx.Value(loggerKey{}).(*zap.Logger)
 
 	return logger
@@ -45,20 +45,20 @@ func Logger(ctx context.Context) *zap.Logger {
 
 // Debugf ... output debug log
 func Debugf(ctx context.Context, msg string, fields ...interface{}) {
-	Logger(ctx).Debug(fmt.Sprintf(msg, fields...))
+	logger(ctx).Debug(fmt.Sprintf(msg, fields...))
 }
 
 // Infof ... output info log
 func Infof(ctx context.Context, msg string, fields ...interface{}) {
-	Logger(ctx).Info(fmt.Sprintf(msg, fields...))
+	logger(ctx).Info(fmt.Sprintf(msg, fields...))
 }
 
 // Warningf ... output warning log
 func Warningf(ctx context.Context, msg string, fields ...interface{}) {
-	Logger(ctx).Warn(fmt.Sprintf(msg, fields...))
+	logger(ctx).Warn(fmt.Sprintf(msg, fields...))
 }
 
 // Errorf ... output error log
 func Errorf(ctx context.Context, msg string, fields ...interface{}) {
-	Logger(ctx).Error(fmt.Sprintf(msg, fields...))
+	logger(ctx).Error(fmt.Sprintf(msg, fields...))
 }
