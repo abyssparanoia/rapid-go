@@ -3,52 +3,62 @@ package log
 import (
 	"context"
 	"fmt"
-	"log"
-	"runtime"
-	"strings"
+	"net/http"
+
+	"github.com/abyssparanoia/rapid-go/src/config"
+	"go.uber.org/zap"
 )
 
-// Debugf ... Debugログを出力する
-func Debugf(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	//log.Debugf(ctx, fl+format, args...)
-	log.Printf("[DEBUG]:"+format, args)
+type loggerKey struct{}
+
+// NewLogger ... create logger and set it in contenxt in first middleware
+func NewLogger(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		// development
+		if config.IsEnvDeveloping() {
+			logger, err := zap.NewDevelopment()
+			if err != nil {
+				panic(err)
+			}
+			ctx = context.WithValue(ctx, loggerKey{}, logger)
+			// production
+		} else {
+			logger, err := zap.NewProduction()
+			if err != nil {
+				panic(err)
+			}
+			ctx = context.WithValue(ctx, loggerKey{}, logger)
+		}
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
 
-// Infof ... Infoログを出力する
-func Infof(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	//log.Infof(ctx, fl+format, args...)
-	log.Printf("[INFO]:"+format, args)
+// Logger ... get context from context
+func logger(ctx context.Context) *zap.Logger {
+	logger, _ := ctx.Value(loggerKey{}).(*zap.Logger)
+
+	return logger
 }
 
-// Warningf ... Warningログを出力する
-func Warningf(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	//log.Warningf(ctx, fl+format, args...)
-	log.Printf("[WARNING]:"+format, args)
+// TODO: change appropriate using
+
+// Debugf ... output debug log
+func Debugf(ctx context.Context, msg string, fields ...interface{}) {
+	logger(ctx).Debug(fmt.Sprintf(msg, fields...))
 }
 
-// Errorf ... Errorログを出力する
-func Errorf(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	// log.Errorf(ctx, fl+format, args...)
-	log.Printf("[ERROR]:"+format, args)
+// Infof ... output info log
+func Infof(ctx context.Context, msg string, fields ...interface{}) {
+	logger(ctx).Info(fmt.Sprintf(msg, fields...))
 }
 
-// Criticalf ... Criticalログを出力する
-func Criticalf(ctx context.Context, format string, args ...interface{}) {
-	// fl := getFileLine()
-	// log.Criticalf(ctx, fl+format, args...)
-	log.Printf("[CRITICAL]:"+format, args)
+// Warningf ... output warning log
+func Warningf(ctx context.Context, msg string, fields ...interface{}) {
+	logger(ctx).Warn(fmt.Sprintf(msg, fields...))
 }
 
-func getFileLine() string {
-	var ret string
-	if _, file, line, ok := runtime.Caller(2); ok {
-		parts := strings.Split(file, "/")
-		length := len(parts)
-		ret = fmt.Sprintf("%s/%s:%d ", parts[length-2], parts[length-1], line)
-	}
-	return ret
+// Errorf ... output error log
+func Errorf(ctx context.Context, msg string, fields ...interface{}) {
+	logger(ctx).Error(fmt.Sprintf(msg, fields...))
 }

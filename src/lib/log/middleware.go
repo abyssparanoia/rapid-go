@@ -1,17 +1,17 @@
 package log
 
 import (
-	"log"
 	"net/http"
 )
 
-// Log ... リクエストログ掃き出し用のmiddleware
-func Logger(h http.Handler) http.Handler {
+// Middleware ... output request log
+func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		rAddr := r.RemoteAddr
 		method := r.Method
 		path := r.URL.Path
-		log.Printf("Remote: %s [%s] %s", rAddr, method, path)
-		h.ServeHTTP(w, r)
+		ctx := r.Context()
+		Infof(ctx, "Remote: %s [%s] %s", rAddr, method, path)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

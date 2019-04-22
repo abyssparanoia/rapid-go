@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/abyssparanoia/rapid-go/src/lib/log"
 	"github.com/go-chi/chi"
 )
 
@@ -23,10 +24,13 @@ func main() {
 	r := chi.NewRouter()
 	Routing(r, d)
 
+	// set default logger
+	handler := log.NewLogger(r)
+
 	//server
 	server := http.Server{
 		Addr:    addr,
-		Handler: r,
+		Handler: handler,
 	}
 
 	// Run
