@@ -9,7 +9,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/src/service"
 )
 
-// Dependency ... 依存性
+// Dependency ... dependency
 type Dependency struct {
 	DummyFirebaseAuth *firebaseauth.Middleware
 	FirebaseAuth      *firebaseauth.Middleware
@@ -18,7 +18,7 @@ type Dependency struct {
 	UserHandler       *api.UserHandler
 }
 
-// Inject ... 依存性を注入する
+// Inject ... indect dependency
 func (d *Dependency) Inject() {
 	// Config
 	dbCfg := mysql.GetSQLConfig()
