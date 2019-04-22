@@ -3,6 +3,7 @@ package log
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/abyssparanoia/rapid-go/src/config"
 	"go.uber.org/zap"
@@ -10,25 +11,27 @@ import (
 
 type loggerKey struct{}
 
-// NewLogger ... create logger and set it in contenxt
-func NewLogger(ctx context.Context) context.Context {
-
-	// development
-	if config.IsEnvDeveloping() {
-		logger, err := zap.NewDevelopment()
-		if err != nil {
-			panic(err)
+// NewLogger ... create logger and set it in contenxt in first middleware
+func NewLogger(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		// development
+		if config.IsEnvDeveloping() {
+			logger, err := zap.NewDevelopment()
+			if err != nil {
+				panic(err)
+			}
+			ctx = context.WithValue(ctx, loggerKey{}, logger)
+			// production
+		} else {
+			logger, err := zap.NewProduction()
+			if err != nil {
+				panic(err)
+			}
+			ctx = context.WithValue(ctx, loggerKey{}, logger)
 		}
-		ctx = context.WithValue(ctx, loggerKey{}, logger)
-		// production
-	} else {
-		logger, err := zap.NewProduction()
-		if err != nil {
-			panic(err)
-		}
-		ctx = context.WithValue(ctx, loggerKey{}, logger)
-	}
-	return ctx
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
 
 // Logger ... get context from context

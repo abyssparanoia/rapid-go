@@ -13,6 +13,7 @@ import (
 // Routing ... ルーティング設定
 func Routing(r chi.Router, d Dependency) {
 
+	// request log
 	r.Use(log.Middleware)
 
 	// アクセスコントロール

@@ -11,7 +11,6 @@ func Middleware(next http.Handler) http.Handler {
 		method := r.Method
 		path := r.URL.Path
 		ctx := r.Context()
-		ctx = NewLogger(ctx)
 		Infof(ctx, "Remote: %s [%s] %s", rAddr, method, path)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
