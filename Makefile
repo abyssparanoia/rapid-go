@@ -5,8 +5,6 @@ init:
 	@echo Initialize rapid-go now......
 	go get -u github.com/golang/mock/gomock
 	go install github.com/golang/mock/mockgen
-	go get -u github.com/golang/dep/cmd/dep
-	dep ensure
 	@echo Initialize rapid-go completed!!!!
 
 build:
