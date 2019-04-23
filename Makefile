@@ -11,7 +11,7 @@ build:
 start:
 	docker-compose up -d
 
-stop:
+down:
 	docker-compose down
 
 logs:
