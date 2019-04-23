@@ -1,10 +1,10 @@
 
 PROJECT_ID = abyssparanoia/rapid-go
 
-PROJECT_DIR = /go/src/github.com/$(PROJECT_ID)
-
 init:
 	@echo Initialize rapid-go now......
+	$(shell go get -u github.com/golang/mock/gomock)
+	$(shell go install github.com/golang/mock/mockgen)
 	$(shell go get -u github.com/golang/dep/cmd/dep)
 	$(shell dep ensure)
 	@echo Initialize rapid-go completed!!!!
@@ -22,7 +22,7 @@ logs:
 	$(shell docker-compose logs api)
 
 test:
-	$(shell docker-compose run -e COLUMNS=$(tput cols) -e LINES=$(tput lines) api go test -test.v ./src/...)
+	$(shell go test -test.v ./src/...)
 
 mockgen_task:
 	$(eval SERVICE_LIST := $(call get_service_list))	
@@ -31,17 +31,17 @@ mockgen_task:
 	$(foreach file, $(REPOSITORY_LIST), $(call mockgen_repository,$(shell basename $(file))))
 
 define get_service_list
-	$(shell	docker-compose run api find $(PROJECT_DIR)/src/service/ -maxdepth 1 -type f ! -name "*_impl*.go")
+	$(shell	find ./src/service/ -maxdepth 1 -type f ! -name "*_impl*.go")
 endef
 
 define mockgen_service
-	$(shell docker-compose run api mockgen -source $(PROJECT_DIR)/src/service/$1 -destination $(PROJECT_DIR)/src/service/mock/$1)
+	$(shell mockgen -source ./src/service/$1 -destination ./src/service/mock/$1)
 endef
 
 define get_repository_list
-	$(shell	docker-compose run api find $(PROJECT_DIR)/src/domain/repository -maxdepth 1 -type f )
+	$(shell	find ./src/domain/repository -maxdepth 1 -type f )
 endef
 
 define mockgen_repository
-	$(shell docker-compose run api mockgen -source $(PROJECT_DIR)/src/domain/repository/$1 -destination $(PROJECT_DIR)/src/domain/repository/mock/$1)
+	$(shell mockgen -source ./src/domain/repository/$1 -destination ./src/domain/repository/mock/$1)
 endef
