@@ -3,8 +3,6 @@ PROJECT_ID = abyssparanoia/rapid-go
 
 PROJECT_DIR = /go/src/github.com/${PROJECT_ID}
 
-#SERVICE_LIST = $(find ${PROJECT_DIR}/src/service/*.go -maxdepth 1 -type f ! -name "*_impl.go")
-
 init:
 	@echo Initialize rapid-go now......
 	go get -u github.com/golang/dep/cmd/dep
