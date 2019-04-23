@@ -14,6 +14,5 @@ func NewUserFromEntity(e *entity.User) *User {
 	return &User{
 		ID:   e.ID,
 		Name: e.Name,
-		Sex:  e.Sex,
 	}
 }
