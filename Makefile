@@ -1,7 +1,7 @@
 
 PROJECT_ID = abyssparanoia/rapid-go
 
-PROJECT_DIR = /go/src/github.com/${PROJECT_ID}
+PROJECT_DIR = /go/src/github.com/$(PROJECT_ID)
 
 init:
 	@echo Initialize rapid-go now......
@@ -22,7 +22,7 @@ logs:
 	$(shell docker-compose logs api)
 
 test:
-	$(shell docker-compose exec api go test -test.v $(PROJECT_DIR)/src/service/)
+	$(shell docker-compose exec -e COLUMNS=$(tput cols) -e LINES=$(tput lines) api go test -test.v ./src/...)
 
 mockgen_task:
 	$(eval SERVICE_LIST := $(call get_service_list))	

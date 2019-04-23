@@ -49,6 +49,7 @@ func Test_user_Get(t *testing.T) {
 			want: &model.User{
 				ID:   1,
 				Name: "abyssparanoia",
+				Sex:  "man",
 			},
 		},
 		{
@@ -70,6 +71,7 @@ func Test_user_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mc := gomock.NewController(t)
 			uRepo := mock_repository.NewMockUser(mc)
+			uRepo.EXPECT().Get(gomock.Any(), tt.mock.userID).Return(tt.mock.result, tt.mock.err)
 			s := NewUser(uRepo)
 			got, err := s.Get(tt.args.ctx, tt.args.userID)
 			if (err != nil) != tt.wantErr {
