@@ -38,6 +38,12 @@ func NewLogger(next http.Handler) http.Handler {
 func logger(ctx context.Context) *zap.Logger {
 	logger, _ := ctx.Value(loggerKey{}).(*zap.Logger)
 
+	// for test code
+	if logger == nil {
+		logger, _ := zap.NewDevelopment()
+		return logger
+	}
+
 	return logger
 }
 
