@@ -7,7 +7,7 @@
 - Chi (as Router)
 - squirrel (as query builder)
 - gin (for hot reload ,not framwork)
-- docker 
+- docker
 
 ## local
 
@@ -31,10 +31,16 @@
 > docker-compose up -d
 ```
 
-- test
+- generate mock from interface (service,domain/repository)
 
 ```bash
-> http://localhost:3001/ping
+> make mockgen_task
+```
+
+- run test
+
+```bash
+> make test
 ```
 
 - request
