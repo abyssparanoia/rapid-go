@@ -3,26 +3,26 @@ PROJECT_ID = abyssparanoia/rapid-go
 
 init:
 	@echo Initialize rapid-go now......
-	$(shell go get -u github.com/golang/mock/gomock)
-	$(shell go install github.com/golang/mock/mockgen)
-	$(shell go get -u github.com/golang/dep/cmd/dep)
-	$(shell dep ensure)
+	go get -u github.com/golang/mock/gomock
+	go install github.com/golang/mock/mockgen
+	go get -u github.com/golang/dep/cmd/dep
+	dep ensure
 	@echo Initialize rapid-go completed!!!!
 
 build:
-	$(shell docker-compose build)
+	docker-compose build
 
 start:
-	$(shell docker-compose up -d)
+	docker-compose up -d
 
 down:
-	$(shell docker-compose down)
+	docker-compose down
 
 logs:
-	$(shell docker-compose logs api)
+	docker-compose logs api
 
 test:
-	$(shell go test -test.v ./src/...)
+	go test -test.v ./src/...
 
 mockgen_task:
 	$(eval SERVICE_LIST := $(call get_service_list))	
