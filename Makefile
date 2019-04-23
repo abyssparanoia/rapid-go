@@ -5,21 +5,24 @@ PROJECT_DIR = /go/src/github.com/${PROJECT_ID}
 
 init:
 	@echo Initialize rapid-go now......
-	go get -u github.com/golang/dep/cmd/dep
-	dep ensure
+	$(shell go get -u github.com/golang/dep/cmd/dep)
+	$(shell dep ensure)
 	@echo Initialize rapid-go completed!!!!
 
 build:
-	docker-compose build
+	$(shell docker-compose build)
 
 start:
-	docker-compose up -d
+	$(shell docker-compose up -d)
 
 down:
-	docker-compose down
+	$(shell docker-compose down)
 
 logs:
-	docker-compose logs api
+	$(shell docker-compose logs api)
+
+test:
+	$(shell docker-compose exec api go test -test.v $(PROJECT_DIR)/src/service/)
 
 mockgen_task:
 	$(eval SERVICE_LIST := $(call get_service_list))	
