@@ -1,0 +1,36 @@
+module github.com/abyssparanoia/rapid-go
+
+require (
+	cloud.google.com/go v0.37.4
+	firebase.google.com/go v3.7.0+incompatible
+	github.com/Masterminds/squirrel v1.1.0
+	github.com/davecgh/go-spew v1.1.1
+	github.com/go-chi/chi v4.0.2+incompatible
+	github.com/go-playground/locales v0.12.1
+	github.com/go-playground/universal-translator v0.16.0
+	github.com/go-sql-driver/mysql v1.4.1
+	github.com/golang/mock v1.2.0
+	github.com/golang/protobuf v1.3.1
+	github.com/googleapis/gax-go v1.0.2
+	github.com/hashicorp/golang-lru v0.5.1
+	github.com/jmoiron/sqlx v1.2.0
+	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0
+	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0
+	github.com/leodido/go-urn v1.1.0
+	github.com/pmezard/go-difflib v1.0.0
+	github.com/stretchr/testify v1.3.0
+	github.com/unrolled/render v1.0.0
+	go.opencensus.io v0.20.2
+	go.uber.org/atomic v1.3.2
+	go.uber.org/multierr v1.1.0
+	go.uber.org/zap v1.9.1
+	golang.org/x/net v0.0.0-20190419010253-1f3472d942ba
+	golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a
+	golang.org/x/sys v0.0.0-20190418153312-f0ce4c0180be
+	golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2
+	google.golang.org/api v0.3.2
+	google.golang.org/appengine v1.5.0
+	google.golang.org/genproto v0.0.0-20190418145605-e7d98fc518a7
+	google.golang.org/grpc v1.20.1
+	gopkg.in/go-playground/validator.v9 v9.28.0
+)

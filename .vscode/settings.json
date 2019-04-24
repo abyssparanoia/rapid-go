@@ -1,0 +1,4 @@
+{
+  "go.installDependenciesWhenBuilding": false,
+  "go.formatTool": "goimports"
+}
