@@ -4,12 +4,12 @@ import (
 	"net/http"
 )
 
-// Middleware ... ベーシック認証機能を提供するミドルウェア
+// Middleware ... middleware for checking basic auth
 type Middleware struct {
 	Account *Account
 }
 
-// Handle ... ハンドラ
+// Handle ... handler
 func (m *Middleware) Handle(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user, password, ok := r.BasicAuth()
@@ -27,7 +27,7 @@ func (m *Middleware) Handle(next http.Handler) http.Handler {
 	})
 }
 
-// NewMiddleware ... Middlewareを作成する
+// NewMiddleware ... get middleware
 func NewMiddleware(account *Account) *Middleware {
 	return &Middleware{
 		Account: account,

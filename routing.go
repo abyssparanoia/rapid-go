@@ -10,16 +10,16 @@ import (
 	"github.com/go-chi/chi"
 )
 
-// Routing ... ルーティング設定
+// Routing ... define routing
 func Routing(r chi.Router, d Dependency) {
 
 	// request log
 	r.Use(log.Middleware)
 
-	// アクセスコントロール
+	// access control
 	r.Use(middleware.AccessControl)
 
-	// 認証なし(Stagingのみ)
+	// no need to authenticate for development
 	if config.IsEnvDeveloping() {
 		r.Route("/noauth/v1", func(r chi.Router) {
 			r.Use(d.DummyFirebaseAuth.Handle)
@@ -28,7 +28,7 @@ func Routing(r chi.Router, d Dependency) {
 		})
 	}
 
-	// 認証あり
+	// need to authenticate for production
 	r.Route("/v1", func(r chi.Router) {
 		r.Use(d.FirebaseAuth.Handle)
 		r.Use(d.HTTPHeader.Handle)

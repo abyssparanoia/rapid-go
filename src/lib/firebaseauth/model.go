@@ -1,14 +1,14 @@
 package firebaseauth
 
-// Claims ... JWT認証のClaims
+// Claims ... custom claims
 type Claims struct {
 }
 
-// SetMap ... mapから取得する
+// SetMap ... set claims
 func (m *Claims) SetMap(cmap map[string]interface{}) {
 }
 
-// ToMap ... mapで出力する
+// ToMap ... get claims to map
 func (m *Claims) ToMap() map[string]interface{} {
 	cmap := map[string]interface{}{}
 	return cmap

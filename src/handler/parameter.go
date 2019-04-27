@@ -10,17 +10,17 @@ import (
 	"github.com/go-chi/chi"
 )
 
-// GetURLParam ... リクエストからURLParamを取得する
+// GetURLParam ... get URL parameters from request
 func GetURLParam(r *http.Request, key string) string {
 	return chi.URLParam(r, key)
 }
 
-// GetFormValue ... リクエストからFormValueを取得する
+// GetFormValue ... get form values from request
 func GetFormValue(r *http.Request, key string) string {
 	return r.FormValue(key)
 }
 
-// GetJSON ... リクエストからJSONを取得する
+// GetJSON ... get json data from request
 func GetJSON(r *http.Request, dst interface{}) error {
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(dst)
@@ -32,7 +32,7 @@ func GetJSON(r *http.Request, dst interface{}) error {
 	return nil
 }
 
-// GetFormFile ... リクエストからファイルを取得する
+// GetFormFile ... get file data from request
 func GetFormFile(r *http.Request, key string) (multipart.File, *multipart.FileHeader, error) {
 	return r.FormFile(key)
 }

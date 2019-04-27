@@ -15,7 +15,7 @@ import (
 	"golang.org/x/text/transform"
 )
 
-// HandleError ... 一番典型的なエラーハンドリング
+// HandleError ... handle for error
 func HandleError(ctx context.Context, w http.ResponseWriter, msg string, err error) {
 	code, ok := errcode.Get(err)
 	if !ok {
@@ -42,31 +42,31 @@ func HandleError(ctx context.Context, w http.ResponseWriter, msg string, err err
 	}
 }
 
-// RenderSuccess ... 成功レスポンスをレンダリングする
+// RenderSuccess ... render for success
 func RenderSuccess(w http.ResponseWriter) {
 	r := render.New()
 	r.JSON(w, http.StatusOK, model.NewResponseOK(http.StatusOK))
 }
 
-// RenderError ... エラーレスポンスをレンダリングする
+// RenderError ... render for error
 func RenderError(w http.ResponseWriter, status int, msg string) {
 	r := render.New()
 	r.JSON(w, status, model.NewResponseError(status, msg))
 }
 
-// RenderJSON ... JSONをレンダリングする
+// RenderJSON ... render json
 func RenderJSON(w http.ResponseWriter, status int, v interface{}) {
 	r := render.New(render.Options{IndentJSON: true})
 	r.JSON(w, status, v)
 }
 
-// RenderHTML ... HTMLをレンダリングする
+// RenderHTML ... render html
 func RenderHTML(w http.ResponseWriter, status int, name string, values interface{}) {
 	r := render.New()
 	r.HTML(w, status, name, values)
 }
 
-// RenderCSV ... CSVをレンダリングする
+// RenderCSV ... render csv
 func RenderCSV(w http.ResponseWriter, name string, data [][]string) {
 	w.Header().Set("Content-Type", "text/csv")
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment;filename=%s.csv", name))

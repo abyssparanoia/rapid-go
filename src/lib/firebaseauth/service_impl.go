@@ -22,7 +22,7 @@ const (
 type service struct {
 }
 
-// SetCustomClaims ... カスタムClaimsを設定
+// SetCustomClaims ... set custom claims
 func (s *service) SetCustomClaims(ctx context.Context, userID string, claims Claims) error {
 	c, err := s.getAuthClient(ctx)
 	if err != nil {
@@ -39,7 +39,7 @@ func (s *service) SetCustomClaims(ctx context.Context, userID string, claims Cla
 	return nil
 }
 
-// Authentication ... 認証を行う
+// Authentication ... authenticate
 func (s *service) Authentication(ctx context.Context, r *http.Request) (string, Claims, error) {
 	var userID string
 	claims := Claims{}
@@ -95,7 +95,7 @@ func (s *service) getAuthorizationHeader(r *http.Request) string {
 	return ""
 }
 
-// NewService ... Serviceを作成する
+// NewService ... get service
 func NewService() Service {
 	return &service{}
 }

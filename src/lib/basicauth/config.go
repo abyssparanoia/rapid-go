@@ -10,13 +10,13 @@ const (
 	passwordKey = "BASIC_AUTH_PASSWORD"
 )
 
-// Account ... ベーシック認証のアカウント
+// Account ... account model fot basic auth
 type Account struct {
 	User     string
 	Password string
 }
 
-// GetAccount ... ベーシック認証のアカウントを取得する
+// GetAccount ... get account for basic auth
 func GetAccount() *Account {
 	u := os.Getenv(userKey)
 	if u == "" {

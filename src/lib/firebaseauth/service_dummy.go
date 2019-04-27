@@ -8,21 +8,19 @@ import (
 type dummyService struct {
 }
 
-// SetCustomClaims ... カスタムClaimsを設定
+// SetCustomClaims ... set custom claims
 func (s *dummyService) SetCustomClaims(ctx context.Context, userID string, claims Claims) error {
 	return nil
 }
 
-// Authentication ... 認証を行う
+// Authentication ... authenticate
 func (s *dummyService) Authentication(ctx context.Context, r *http.Request) (string, Claims, error) {
 	userID := "DUMMY_USER_ID"
-	claims := Claims{
-		// EDIT: 任意でClaimsにダミーデータを入れる
-	}
+	claims := Claims{}
 	return userID, claims, nil
 }
 
-// NewDummyService ... DummyServiceを作成する
+// NewDummyService ... get dummy service
 func NewDummyService() Service {
 	return &dummyService{}
 }

@@ -1,6 +1,6 @@
 package internalauth
 
-// GetHeader ... 内部認証用ヘッダー情報を取得する
+// GetHeader ... get data from auth header
 func GetHeader() (string, string) {
 	return "Authorization", GetToken()
 }

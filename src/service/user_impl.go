@@ -21,7 +21,7 @@ func (s *user) Get(ctx context.Context, userID int64) (*model.User, error) {
 	return model.NewUserFromEntity(user), nil
 }
 
-// NewUser ... ユーザーサービスを取得する
+// NewUser ... get User service
 func NewUser(uRepo repository.User) User {
 	return &user{
 		uRepo: uRepo,
