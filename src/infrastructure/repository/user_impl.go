@@ -47,7 +47,7 @@ func (r *user) Get(ctx context.Context, userID int64) (*entity.User, error) {
 	return user, nil
 }
 
-// NewUser ... ユーザーレポジトリを取得する
+// NewUser ... get user repository
 func NewUser(sql *sqlx.DB) repository.User {
 	return &user{
 		sql: sql,

@@ -1,11 +1,11 @@
 package errcode
 
-// Set ... errorにエラーコードを設定する
+// Set ... set error code
 func Set(err error, code int) error {
 	return NewModel(code, err.Error())
 }
 
-// Get ... errorからエラーコードを取得する
+// Get ... get errorcode from error
 func Get(err error) (int, bool) {
 	if m, ok := err.(*Model); ok {
 		return m.Code, true

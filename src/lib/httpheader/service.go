@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// Service ... HTTPHeaderに関する機能を提供する
+// Service ... interface for http header
 type Service interface {
 	Get(ctx context.Context, r *http.Request) (Params, error)
 }

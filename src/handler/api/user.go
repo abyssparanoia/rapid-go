@@ -10,7 +10,7 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-// UserHandler ... ユーザーハンドラー
+// UserHandler ... user handler
 type UserHandler struct {
 	Svc service.User
 }
@@ -23,7 +23,7 @@ type userHandlerGetResponse struct {
 	User *model.User `json:"user"`
 }
 
-// Get ... ユーザー情報を取得する
+// Get ... get user
 func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -49,7 +49,7 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	handler.RenderJSON(w, http.StatusOK, userHandlerGetResponse{User: user})
 }
 
-// NewUserHandler ... ユーザーハンドラーを取得する
+// NewUserHandler ... get user handler
 func NewUserHandler(Svc service.User) *UserHandler {
 	return &UserHandler{
 		Svc: Svc,

@@ -8,12 +8,12 @@ const userIDContextKey contextKey = "firebaseauth:user_id"
 
 const claimsContextKey contextKey = "firebaseauth:claims"
 
-// GetUserID ... FirebaseAuthのユーザーIDを取得
+// GetUserID ... get FirebaseAuthUID from context
 func GetUserID(ctx context.Context) string {
 	return ctx.Value(userIDContextKey).(string)
 }
 
-// GetClaims ... FirebaseAuthのJWTClaimsの値を取得
+// GetClaims ... get FirebaseAuthJWTClaims from context
 func GetClaims(ctx context.Context) Claims {
 	return ctx.Value(claimsContextKey).(Claims)
 }

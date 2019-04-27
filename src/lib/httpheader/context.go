@@ -8,7 +8,7 @@ type contextKey string
 
 const paramsContextKey contextKey = "httpheader:params"
 
-// GetParams ... HTTPHeaderの値を取得
+// GetParams ... get parameter from http header
 func GetParams(ctx context.Context) Params {
 	return ctx.Value(paramsContextKey).(Params)
 }

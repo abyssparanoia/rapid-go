@@ -9,7 +9,7 @@ const (
 	tokenKey = "INTERNAL_AUTH_TOKEN"
 )
 
-// GetToken ... 内部認証のTokenを取得する
+// GetToken ... get token from header
 func GetToken() string {
 	k := os.Getenv(tokenKey)
 	if k == "" {

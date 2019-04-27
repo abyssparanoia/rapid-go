@@ -7,11 +7,11 @@ import (
 	"github.com/abyssparanoia/rapid-go/src/lib/log"
 
 	sq "github.com/Masterminds/squirrel"
-	_ "github.com/go-sql-driver/mysql" // MySQL Driverの読み込み
+	_ "github.com/go-sql-driver/mysql" // import mysql
 	"github.com/jmoiron/sqlx"
 )
 
-// NewSQLClient ... MySQLのクライアントを取得する
+// NewSQLClient ... get mysql client
 func NewSQLClient(cfg *SQLConfig) *sqlx.DB {
 	ds := fmt.Sprintf("%s:%s@%s/%s?parseTime=true",
 		cfg.User,
@@ -27,7 +27,7 @@ func NewSQLClient(cfg *SQLConfig) *sqlx.DB {
 	return db
 }
 
-// DumpSelectQuery ... SELECTクエリを出力
+// DumpSelectQuery ... output select query
 func DumpSelectQuery(ctx context.Context, query sq.SelectBuilder) {
 	qs, args, err := query.ToSql()
 	if err != nil {
@@ -37,7 +37,7 @@ func DumpSelectQuery(ctx context.Context, query sq.SelectBuilder) {
 	dumpQuery(ctx, qs, args)
 }
 
-// DumpInsertQuery ... INSERTクエリを出力
+// DumpInsertQuery ... output insert query
 func DumpInsertQuery(ctx context.Context, query sq.InsertBuilder) {
 	qs, args, err := query.ToSql()
 	if err != nil {
@@ -47,7 +47,7 @@ func DumpInsertQuery(ctx context.Context, query sq.InsertBuilder) {
 	dumpQuery(ctx, qs, args)
 }
 
-// DumpUpdateQuery ... UPDATEクエリを出力
+// DumpUpdateQuery ... output update query
 func DumpUpdateQuery(ctx context.Context, query sq.UpdateBuilder) {
 	qs, args, err := query.ToSql()
 	if err != nil {
@@ -57,7 +57,7 @@ func DumpUpdateQuery(ctx context.Context, query sq.UpdateBuilder) {
 	dumpQuery(ctx, qs, args)
 }
 
-// DumpDeleteQuery ... DELETEクエリを出力
+// DumpDeleteQuery ... output delete query
 func DumpDeleteQuery(ctx context.Context, query sq.DeleteBuilder) {
 	qs, args, err := query.ToSql()
 	if err != nil {

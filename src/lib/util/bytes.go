@@ -2,7 +2,7 @@ package util
 
 import "unsafe"
 
-// BytesToStr ... バイト列を文字列に変換する
+// BytesToStr ... convert byte to string
 func BytesToStr(bytes []byte) string {
 	return *(*string)(unsafe.Pointer(&bytes))
 }

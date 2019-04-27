@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// SQLConfig ... MySQLの接続情報
+// SQLConfig ... config for mysql
 type SQLConfig struct {
 	ConnectionName string
 	User           string
@@ -13,7 +13,7 @@ type SQLConfig struct {
 	Database       string
 }
 
-// GetSQLConfig ... MySQLの接続情報を取得する
+// GetSQLConfig ... get config for mysql from envelopment value
 func GetSQLConfig() *SQLConfig {
 	cnKey := "DB_HOST"
 	cn := os.Getenv(cnKey)

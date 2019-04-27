@@ -2,12 +2,12 @@ package internalauth
 
 import "net/http"
 
-// Middleware ... 内部認証機能を提供するミドルウェア
+// Middleware ... middleware for internal auth
 type Middleware struct {
 	Token string
 }
 
-// Handle ... ハンドラ
+// Handle ... handler
 func (m *Middleware) Handle(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ah := r.Header.Get("Authorization")
@@ -19,7 +19,7 @@ func (m *Middleware) Handle(next http.Handler) http.Handler {
 	})
 }
 
-// NewMiddleware ... Middlewareを作成する
+// NewMiddleware ... get middleware
 func NewMiddleware(token string) *Middleware {
 	return &Middleware{
 		Token: token,

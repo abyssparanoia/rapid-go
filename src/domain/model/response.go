@@ -1,29 +1,29 @@
 package model
 
-// ResponseOK ... 成功レスポンス
+// ResponseOK ... success response
 type ResponseOK struct {
 	Status int `json:"status"`
 }
 
-// NewResponseOK ... 成功レスポンスを取得する
+// NewResponseOK ... get success response
 func NewResponseOK(status int) *ResponseOK {
 	return &ResponseOK{
 		Status: status,
 	}
 }
 
-// ResponseError ... エラーレスポンス
+// ResponseError ... error response
 type ResponseError struct {
 	Status int   `json:"status"`
 	Error  Error `json:"error"`
 }
 
-// Error ... エラー
+// Error ... error
 type Error struct {
 	Message string `json:"message"`
 }
 
-// NewResponseError ... エラーレスポンスを取得する
+// NewResponseError ... get error response
 func NewResponseError(status int, message string) *ResponseError {
 	return &ResponseError{
 		Status: status,

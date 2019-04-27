@@ -3,6 +3,6 @@ package config
 import "time"
 
 const (
-	// HTTPRequestTimeout ... デフォルトのHTTPリクエストタイムアウト
+	// HTTPRequestTimeout ... timeout for http request
 	HTTPRequestTimeout time.Duration = 20
 )

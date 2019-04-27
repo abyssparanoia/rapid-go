@@ -10,12 +10,12 @@ import (
 	"github.com/unrolled/render"
 )
 
-// Middleware ... JSONRPC2に準拠したミドルウェア
+// Middleware ... middleware
 type Middleware struct {
 	Svc Service
 }
 
-// Handle ... Firebase認証をする
+// Handle ... authenticate handler
 func (m *Middleware) Handle(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -41,7 +41,7 @@ func (m *Middleware) renderError(ctx context.Context, w http.ResponseWriter, sta
 	render.New().Text(w, status, fmt.Sprintf("%d authentication failed", status))
 }
 
-// NewMiddleware ... Middlewareを作成する
+// NewMiddleware ... get middleware
 func NewMiddleware(svc Service) *Middleware {
 	return &Middleware{
 		Svc: svc,

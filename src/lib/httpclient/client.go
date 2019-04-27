@@ -17,13 +17,13 @@ import (
 
 const defaultTimeout time.Duration = 15 * time.Second
 
-// HTTPOption ... HTTP通信モジュールの追加設定
+// HTTPOption ... add setting to http module
 type HTTPOption struct {
 	Headers map[string]string
 	Timeout time.Duration
 }
 
-// Get ... Getリクエスト(URL)
+// Get ... GET request
 func Get(ctx context.Context, u string, opt *HTTPOption) (int, []byte, error) {
 	req, err := http.NewRequest("GET", u, nil)
 	if err != nil {
@@ -40,7 +40,7 @@ func Get(ctx context.Context, u string, opt *HTTPOption) (int, []byte, error) {
 	return send(ctx, req, opt)
 }
 
-// GetForm ... Getリクエスト(URL, Params)
+// GetForm ... GET request with form values
 func GetForm(ctx context.Context, u string, params map[string]string, opt *HTTPOption) (int, []byte, error) {
 	req, err := http.NewRequest("GET", u, nil)
 	if err != nil {
@@ -63,7 +63,7 @@ func GetForm(ctx context.Context, u string, params map[string]string, opt *HTTPO
 	return send(ctx, req, opt)
 }
 
-// GetQueryString ... Getリクエスト(URL, QueryString)
+// GetQueryString ... GET request with query string
 func GetQueryString(ctx context.Context, u string, qs string, opt *HTTPOption) (int, []byte, error) {
 	req, err := http.NewRequest("GET", u+"?"+qs, nil)
 	if err != nil {
@@ -80,7 +80,7 @@ func GetQueryString(ctx context.Context, u string, qs string, opt *HTTPOption) (
 	return send(ctx, req, opt)
 }
 
-// PostForm ... Postリクエスト(URL, Params)
+// PostForm ... POST request with form values
 func PostForm(ctx context.Context, u string, params map[string]string, opt *HTTPOption) (int, []byte, error) {
 	values := url.Values{}
 	for key, value := range params {
@@ -102,7 +102,7 @@ func PostForm(ctx context.Context, u string, params map[string]string, opt *HTTP
 	return send(ctx, req, opt)
 }
 
-// PostJSON ... Postリクエスト(URL, JSON)
+// PostJSON ... POST request with JSON data
 func PostJSON(ctx context.Context, url string, json []byte, opt *HTTPOption) (int, []byte, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
 	if err != nil {
@@ -121,7 +121,7 @@ func PostJSON(ctx context.Context, url string, json []byte, opt *HTTPOption) (in
 	return send(ctx, req, opt)
 }
 
-// PostBody ... Postリクエスト(URL, Body)
+// PostBody ... POST request with body data
 func PostBody(ctx context.Context, url string, body []byte, opt *HTTPOption) (int, []byte, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
 	if err != nil {

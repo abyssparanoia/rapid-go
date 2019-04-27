@@ -10,12 +10,12 @@ import (
 	"github.com/unrolled/render"
 )
 
-// Middleware ... Headerに関する機能を提供する
+// Middleware ... middleware
 type Middleware struct {
 	Svc Service
 }
 
-// Handle ... リクエストヘッダーのパラメータを取得する
+// Handle ... get parameter from header and set to context
 func (m *Middleware) Handle(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -35,7 +35,7 @@ func (m *Middleware) renderError(ctx context.Context, w http.ResponseWriter, sta
 	render.New().Text(w, status, fmt.Sprintf("%d invalid header params", status))
 }
 
-// NewMiddleware ... Middlewareを作成する
+// NewMiddleware ... get middleware
 func NewMiddleware(svc Service) *Middleware {
 	return &Middleware{
 		Svc: svc,
