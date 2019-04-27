@@ -1,34 +1,47 @@
 # rapid-go
 
+## motivation
+
+rapid-go is a boilerplate that accelerates API development based on layered architecture and clarifying responsibilities.
+
 ## stack
 
-- golang 1.11
-- mysql (cloud sql)
+- golang 1.11 (I will actively raise go version)
+- mysql (correspondence such as firestore is easy)
 - Chi (as Router)
 - squirrel (as query builder)
+- sqlx (map the result of sql to an object)
 - gin (for hot reload ,not framwork)
 - docker
+- mockgen (generate mock codes from inteface)
+- zap (as logger)
+- firebase auth (as authenticate service)
 
-## local
+## development
 
-- package
-  - 実行するのは docker container の中なので関係ないが、vscode でローカルにパッケージがないとエラーでまくってうざいので、dep でローカルにライブラリをインストールすることをお勧めします。
+- init
 
 ```bash
-> cd api/src
-> dep ensure
+make init
 ```
 
 - build
 
 ```bash
-> docker-compose build
+> make build
 ```
 
 - start
 
 ```bash
-> docker-compose up -d
+> make start
+> curl http://localhost:3001/ping
+```
+
+- stop
+
+```bash
+> make down
 ```
 
 - generate mock from interface (service,domain/repository)
@@ -43,28 +56,36 @@
 > make test
 ```
 
-- request
-  - ローカル開発の際にはリクエストに毎度 auth のトークン入れるのはめんどくさいと思うので、ローカル環境のみ/noauth/v1 という感じで、noauth を挟むことで dummy の authID を入れてリクエストを通せる。
+## about layer
 
-## develop flow
+### infrastructure
 
-- model を書く
-  - DBschema と一致するであろう entitiy
-- repository を書く
-  - DB や外部 API に対してクエリーやリクエストを投げる処理を書く
-  - データの CRUD のみを扱う
-- service を書く
-  - ロジックをメインに書く
-  - 権限コントロールなども行う
-  - 複数の repository を利用することも多々ある
-  - ここで API を叩いたりクエリーを書いてはいけない
-- handler を書く
+- data layer
+- It is responsibility to handle the data
+- interested in database etc.
 
-  - リクエストとレスポンスの定義を行う
-  - URL パラメータや auth の uid 等もここで取得する。
-  - えた値を全て service の関数の引数に入れて、service を呼ぶ。
-  - 必ずサービスは一つ
+#### entity
 
-- dependency や routing は適宜追加してください。
-- 新しいライブラリーを使いたくなった場合は都度相談して利用すること(ほぼないはず)
-- むやみに goroutine を使わない。(特に DB 周りは気をつけないとすぐに connection が枯渇する)
+- struct for setting the result of SQL etc....
+
+#### infra/repository
+
+- write the actual data manipulation process
+
+### domain
+
+#### model
+
+- domain model
+
+#### domain/repository
+
+- write interface for infrastructure/repository and convert entity to domain
+
+### service layer
+
+- write application logic using repository
+
+### handler
+
+- write the process about request and response
