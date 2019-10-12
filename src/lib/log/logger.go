@@ -9,6 +9,16 @@ import (
 	"go.uber.org/zap"
 )
 
+// Logger ... logger model
+type Logger struct {
+	Writer            Writer
+	MinOutSeverity    Severity
+	MaxOuttedSeverity Severity
+	TraceID           string
+	ResponseStatus    int
+	ApplicationLogs   []*EntryChild
+}
+
 type loggerKey struct{}
 
 // NewLogger ... create logger and set it in contenxt in first middleware
