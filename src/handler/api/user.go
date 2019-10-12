@@ -2,10 +2,10 @@ package api
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/abyssparanoia/rapid-go/src/domain/model"
 	"github.com/abyssparanoia/rapid-go/src/handler"
+	"github.com/abyssparanoia/rapid-go/src/lib/parameter"
 	"github.com/abyssparanoia/rapid-go/src/service"
 	validator "gopkg.in/go-playground/validator.v9"
 )
@@ -28,7 +28,7 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var param userHandlerGetRequestParam
-	userID, err := strconv.ParseInt(handler.GetURLParam(r, "userID"), 10, 64)
+	userID, err := parameter.GetURLByInt64(ctx, r, "userID")
 	if err != nil {
 		handler.HandleError(ctx, w, "validation error: ", err)
 		return
