@@ -8,10 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/abyssparanoia/rapid-go/src/config"
 	"github.com/abyssparanoia/rapid-go/src/lib/errcode"
 	"github.com/abyssparanoia/rapid-go/src/lib/util"
-	"go.uber.org/zap"
 )
 
 // Logger ... logger model
@@ -67,42 +65,14 @@ func SetResponseStatus(ctx context.Context, status int) {
 	}
 }
 
-type loggerKey struct{}
-
-// NewLogger ... create logger and set it in contenxt in first middleware
-func NewLogger(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		// development
-		if config.IsEnvDeveloping() {
-			logger, err := zap.NewDevelopment()
-			if err != nil {
-				panic(err)
-			}
-			ctx = context.WithValue(ctx, loggerKey{}, logger)
-			// production
-		} else {
-			logger, err := zap.NewProduction()
-			if err != nil {
-				panic(err)
-			}
-			ctx = context.WithValue(ctx, loggerKey{}, logger)
-		}
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
-// Logger ... get context from context
-func logger(ctx context.Context) *zap.Logger {
-	logger, _ := ctx.Value(loggerKey{}).(*zap.Logger)
-
-	// for test code
-	if logger == nil {
-		logger, _ := zap.NewDevelopment()
-		return logger
+// NewLogger ... make logger
+func NewLogger(writer Writer, minSeverity Severity, traceID string) *Logger {
+	return &Logger{
+		Writer:            writer,
+		MinOutSeverity:    minSeverity,
+		MaxOuttedSeverity: SeverityDebug,
+		TraceID:           traceID,
 	}
-
-	return logger
 }
 
 // Debugf ... output debug log

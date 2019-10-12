@@ -9,28 +9,28 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/abyssparanoia/rapid-go/src/lib/log"
 	"github.com/go-chi/chi"
 )
 
-var addr = ":3001"
+var addr = ":8080"
 
 func main() {
+
+	e := &Environment{}
+	e.Get()
+
 	// Dependency
 	d := Dependency{}
-	d.Inject()
+	d.Inject(e)
 
 	// Routing
 	r := chi.NewRouter()
 	Routing(r, d)
 
-	// set default logger
-	handler := log.NewLogger(r)
-
 	//server
 	server := http.Server{
 		Addr:    addr,
-		Handler: handler,
+		Handler: r,
 	}
 
 	// Run
