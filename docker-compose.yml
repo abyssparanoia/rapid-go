@@ -11,13 +11,7 @@ services:
     volumes:
       - .:/go/src/github.com/abyssparanoia/rapid-go
     ports:
-      - "3001:3001"
-    environment:
-      - ENV=develop
-      - DB_HOST=tcp(db:3306)
-      - DB_USER=root
-      - DB_PASSWORD=password
-      - DB_DATABASE=rapid_go
+      - "8080:8080"
   db:
     build: ./mysql
     volumes:

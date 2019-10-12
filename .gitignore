@@ -65,3 +65,8 @@ Session.vim
 
 # mysql
 data
+
+# env
+.env
+
+tmp/*

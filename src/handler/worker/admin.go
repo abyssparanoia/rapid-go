@@ -3,8 +3,8 @@ package worker
 import (
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/src/handler"
 	"github.com/abyssparanoia/rapid-go/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/lib/renderer"
 )
 
 // AdminHandler ... handler for admin
@@ -17,7 +17,7 @@ func (h *AdminHandler) MigrateMasterData(w http.ResponseWriter, r *http.Request)
 
 	log.Debugf(ctx, "call migrate master data handler")
 
-	handler.RenderSuccess(w)
+	renderer.Success(ctx, w)
 }
 
 // MigrateTestData ... insert master data
@@ -26,7 +26,7 @@ func (h *AdminHandler) MigrateTestData(w http.ResponseWriter, r *http.Request) {
 
 	log.Debugf(ctx, "call migrate test data handler")
 
-	handler.RenderSuccess(w)
+	renderer.Success(ctx, w)
 }
 
 // NewAdminHandler ... insert admin handler

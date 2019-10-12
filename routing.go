@@ -5,7 +5,6 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/src/config"
 	"github.com/abyssparanoia/rapid-go/src/handler"
-	"github.com/abyssparanoia/rapid-go/src/lib/log"
 	"github.com/abyssparanoia/rapid-go/src/middleware"
 	"github.com/go-chi/chi"
 )
@@ -13,11 +12,11 @@ import (
 // Routing ... define routing
 func Routing(r chi.Router, d Dependency) {
 
-	// request log
-	r.Use(log.Middleware)
-
 	// access control
 	r.Use(middleware.AccessControl)
+
+	// request log
+	r.Use(d.Log.Handle)
 
 	// no need to authenticate for development
 	if config.IsEnvDeveloping() {
