@@ -2,6 +2,7 @@ package parameter
 
 import (
 	"context"
+	"mime/multipart"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -154,4 +155,9 @@ func GetForms(ctx context.Context, r *http.Request, dst interface{}) error {
 		}
 	}
 	return nil
+}
+
+// GetFormFile ... get form file
+func GetFormFile(r *http.Request, key string) (multipart.File, *multipart.FileHeader, error) {
+	return r.FormFile(key)
 }
