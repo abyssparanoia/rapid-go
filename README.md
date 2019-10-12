@@ -11,10 +11,10 @@ rapid-go is a boilerplate that accelerates API development based on layered arch
 - Chi (as Router)
 - squirrel (as query builder)
 - sqlx (map the result of sql to an object)
-- gin (for hot reload ,not framwork)
+- fresh (for hot reload)
 - docker
 - mockgen (generate mock codes from inteface)
-- zap (as logger)
+- ~zap (as logger)~
 - firebase auth (as authenticate service)
 
 ## development
