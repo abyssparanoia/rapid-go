@@ -31,12 +31,3 @@ func Routing(r chi.Router, d Dependency) {
 
 	http.Handle("/", r)
 }
-
-func subRouting(r chi.Router, d Dependency) {
-	// API
-	r.Route("/users", func(r chi.Router) {
-		//r.Post("/", d.UserHandler.Create)
-		r.Get("/{userID}", d.UserHandler.Get)
-	})
-
-}
