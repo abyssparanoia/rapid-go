@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/abyssparanoia/rapid-go/src/handler"
-	"github.com/abyssparanoia/rapid-go/src/middleware"
+	"github.com/abyssparanoia/rapid-go/src/lib/accesscontrol"
 	"github.com/go-chi/chi"
 )
 
@@ -12,7 +12,7 @@ import (
 func Routing(r chi.Router, d Dependency) {
 
 	// access control
-	r.Use(middleware.AccessControl)
+	r.Use(accesscontrol.Handle)
 
 	// request log
 	r.Use(d.Log.Handle)
