@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ka-nabellinc/rakutore-backend/appengine/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/lib/log"
 )
 
 type serviceDebug struct {
