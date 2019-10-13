@@ -43,7 +43,6 @@ func (d *Dependency) Inject(e *Environment) {
 	uRepo := repository.NewUser(dbConn)
 
 	// Service
-	faSvc := firebaseauth.NewService()
 	dhhSvc := httpheader.NewDummyService()
 	hhSvc := httpheader.NewService()
 	uSvc := service.NewUser(uRepo)
@@ -51,7 +50,6 @@ func (d *Dependency) Inject(e *Environment) {
 	// Middleware
 	d.Log = log.NewMiddleware(lCli, e.MinLogSeverity)
 	d.FirebaseAuth = firebaseauth.NewMiddleware(firebaseAuthService)
-	d.FirebaseAuth = firebaseauth.NewMiddleware(faSvc)
 	d.DummyHTTPHeader = httpheader.NewMiddleware(dhhSvc)
 	d.HTTPHeader = httpheader.NewMiddleware(hhSvc)
 
