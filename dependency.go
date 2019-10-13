@@ -12,22 +12,25 @@ import (
 
 // Dependency ... dependency
 type Dependency struct {
-	Log               *log.Middleware
-	DummyFirebaseAuth *firebaseauth.Middleware
-	FirebaseAuth      *firebaseauth.Middleware
-	DummyHTTPHeader   *httpheader.Middleware
-	HTTPHeader        *httpheader.Middleware
-	UserHandler       *api.UserHandler
+	Log             *log.Middleware
+	FirebaseAuth    *firebaseauth.Middleware
+	DummyHTTPHeader *httpheader.Middleware
+	HTTPHeader      *httpheader.Middleware
+	UserHandler     *api.UserHandler
 }
 
 // Inject ... indect dependency
 func (d *Dependency) Inject(e *Environment) {
 
 	var lCli log.Writer
+	var firebaseAuthService firebaseauth.Service
+
 	if e.ENV == "LOCAL" {
 		lCli = log.NewWriterStdout()
+		firebaseAuthService = firebaseauth.NewDebugService()
 	} else {
 		lCli = log.NewWriterStackdriver(e.ProjectID)
+		firebaseAuthService = firebaseauth.NewService()
 	}
 
 	// Config
@@ -40,7 +43,6 @@ func (d *Dependency) Inject(e *Environment) {
 	uRepo := repository.NewUser(dbConn)
 
 	// Service
-	dfaSvc := firebaseauth.NewDummyService()
 	faSvc := firebaseauth.NewService()
 	dhhSvc := httpheader.NewDummyService()
 	hhSvc := httpheader.NewService()
@@ -48,7 +50,7 @@ func (d *Dependency) Inject(e *Environment) {
 
 	// Middleware
 	d.Log = log.NewMiddleware(lCli, e.MinLogSeverity)
-	d.DummyFirebaseAuth = firebaseauth.NewMiddleware(dfaSvc)
+	d.FirebaseAuth = firebaseauth.NewMiddleware(firebaseAuthService)
 	d.FirebaseAuth = firebaseauth.NewMiddleware(faSvc)
 	d.DummyHTTPHeader = httpheader.NewMiddleware(dhhSvc)
 	d.HTTPHeader = httpheader.NewMiddleware(hhSvc)
