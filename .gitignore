@@ -70,3 +70,5 @@ data
 .env
 
 tmp/*
+
+serviceAccount.json

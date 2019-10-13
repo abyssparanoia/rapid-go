@@ -20,7 +20,14 @@ func (m *Middleware) Handle(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		userID, claims, err := m.Svc.Authentication(ctx, r)
+		ah := r.Header.Get("Authorization")
+		if ah == "" {
+			m.renderError(ctx, w, http.StatusForbidden, "no Authorization header")
+			return
+		}
+		ctx = setAuthHeader(ctx, ah)
+
+		userID, claims, err := m.Svc.Authentication(ctx, ah)
 		if err != nil {
 			m.renderError(ctx, w, http.StatusForbidden, err.Error())
 			return

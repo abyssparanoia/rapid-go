@@ -1,9 +1,9 @@
-package middleware
+package accesscontrol
 
 import "net/http"
 
-// AccessControl ... middleware for access control
-func AccessControl(next http.Handler) http.Handler {
+// Handle ... middleware for access control
+func Handle(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")

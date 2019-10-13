@@ -3,36 +3,24 @@ package firebaseauth
 import (
 	"context"
 	"fmt"
-	"net/http"
-	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/abyssparanoia/rapid-go/src/lib/log"
-	"google.golang.org/api/option"
-
-	"firebase.google.com/go"
-	"firebase.google.com/go/auth"
-)
-
-const (
-	headerPrefix string = "BEARER"
 )
 
 type service struct {
 }
 
 // SetCustomClaims ... set custom claims
-func (s *service) SetCustomClaims(ctx context.Context, userID string, claims Claims) error {
-	c, err := s.getAuthClient(ctx)
+func (s *service) SetCustomClaims(ctx context.Context, userID string, claims *Claims) error {
+	c, err := getAuthClient(ctx)
 	if err != nil {
-		log.Errorf(ctx, "faild to get auth client")
+		log.Errorm(ctx, "getAuthClient", err)
 		return err
 	}
 
 	err = c.SetCustomUserClaims(ctx, userID, claims.ToMap())
 	if err != nil {
-		log.Errorf(ctx, err.Error())
+		log.Errorm(ctx, "c.SetCustomUserClaims", err)
 		return err
 	}
 
@@ -40,25 +28,26 @@ func (s *service) SetCustomClaims(ctx context.Context, userID string, claims Cla
 }
 
 // Authentication ... authenticate
-func (s *service) Authentication(ctx context.Context, r *http.Request) (string, Claims, error) {
+func (s *service) Authentication(ctx context.Context, ah string) (string, *Claims, error) {
 	var userID string
-	claims := Claims{}
+	claims := &Claims{}
 
-	c, err := s.getAuthClient(ctx)
+	c, err := getAuthClient(ctx)
 	if err != nil {
-		log.Warningf(ctx, "faild to get auth client")
+		log.Warningm(ctx, "getAuthClient", err)
 		return userID, claims, err
 	}
 
-	idToken := s.getAuthorizationHeader(r)
-	if idToken == "" {
-		err = fmt.Errorf("no auth token error")
+	token := getTokenByAuthHeader(ah)
+	if token == "" {
+		err := log.Warninge(ctx, "token empty error")
 		return userID, claims, err
 	}
 
-	t, err := c.VerifyIDToken(ctx, idToken)
+	t, err := c.VerifyIDToken(ctx, token)
 	if err != nil {
-		log.Warningf(ctx, "c.VerifyIDToken: %s", err.Error())
+		msg := fmt.Sprintf("c.VerifyIDToken: %s", token)
+		log.Warningm(ctx, msg, err)
 		return userID, claims, err
 	}
 
@@ -66,33 +55,6 @@ func (s *service) Authentication(ctx context.Context, r *http.Request) (string, 
 	claims.SetMap(t.Claims)
 
 	return userID, claims, nil
-}
-
-func (s *service) getAuthClient(ctx context.Context) (*auth.Client, error) {
-	exe, err := os.Executable()
-	dirPath := filepath.Dir(exe)
-	opt := option.WithCredentialsFile(dirPath + "/unbuilt-rental-firebase-adminsdk-eu8bw-b5d30bd3d0.json")
-	app, err := firebase.NewApp(ctx, nil, opt)
-	if err != nil {
-		log.Warningf(ctx, "create firebase app error: %s", err.Error())
-		return nil, err
-	}
-	c, err := app.Auth(ctx)
-	if err != nil {
-		log.Warningf(ctx, "create auth client error: %s", err.Error())
-		return nil, err
-	}
-	return c, nil
-}
-
-func (s *service) getAuthorizationHeader(r *http.Request) string {
-	if ah := r.Header.Get("Authorization"); ah != "" {
-		pLen := len(headerPrefix)
-		if len(ah) > pLen && strings.ToUpper(ah[0:pLen]) == headerPrefix {
-			return ah[pLen+1:]
-		}
-	}
-	return ""
 }
 
 // NewService ... get service

@@ -13,3 +13,7 @@ func (m *Claims) ToMap() map[string]interface{} {
 	cmap := map[string]interface{}{}
 	return cmap
 }
+
+func newDummyClaims() *Claims {
+	return &Claims{}
+}
