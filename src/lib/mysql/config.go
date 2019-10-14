@@ -3,46 +3,49 @@ package mysql
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
-// SQLConfig ... config for mysql
-type SQLConfig struct {
-	ConnectionName string
-	User           string
-	Password       string
-	Database       string
+// Config ... config for mysql
+type Config struct {
+	Host     string
+	User     string
+	Password string
+	DB       string
 }
 
-// GetSQLConfig ... get config for mysql from envelopment value
-func GetSQLConfig() *SQLConfig {
-	cnKey := "DB_HOST"
-	cn := os.Getenv(cnKey)
-	if cn == "" {
-		panic(fmt.Errorf("no config key %s", cnKey))
+// NewConfig ... get config for mysql from envelopment value
+func NewConfig(db string) *Config {
+	db = strings.ToUpper(db)
+
+	hKey := fmt.Sprintf("MYSQL_%s_HOST", db)
+	h := os.Getenv(hKey)
+	if h == "" {
+		panic(fmt.Errorf("no config key %s", hKey))
 	}
 
-	uKey := "DB_USER"
+	uKey := fmt.Sprintf("MYSQL_%s_USER", db)
 	u := os.Getenv(uKey)
 	if u == "" {
 		panic(fmt.Errorf("no config key %s", uKey))
 	}
 
-	pKey := "DB_PASSWORD"
+	pKey := fmt.Sprintf("MYSQL_%s_PASSWORD", db)
 	p := os.Getenv(pKey)
 	if p == "" {
 		panic(fmt.Errorf("no config key %s", pKey))
 	}
 
-	dKey := "DB_DATABASE"
+	dKey := fmt.Sprintf("MYSQL_%s_DATABASE", db)
 	d := os.Getenv(dKey)
 	if d == "" {
 		panic(fmt.Errorf("no config key %s", dKey))
 	}
 
-	return &SQLConfig{
-		ConnectionName: cn,
-		User:           u,
-		Password:       p,
-		Database:       d,
+	return &Config{
+		Host:     h,
+		User:     u,
+		Password: p,
+		DB:       d,
 	}
 }
