@@ -34,10 +34,10 @@ func (d *Dependency) Inject(e *Environment) {
 	}
 
 	// Config
-	dbCfg := mysql.GetSQLConfig()
+	dbCfg := mysql.NewConfig()
 
 	// Lib
-	dbConn := mysql.NewSQLClient(dbCfg)
+	dbConn := mysql.NewClient(dbCfg)
 
 	// Repository
 	uRepo := repository.NewUser(dbConn)

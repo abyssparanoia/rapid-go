@@ -6,7 +6,7 @@ import (
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
-	"github.com/ka-nabellinc/rakutore-backend/appengine/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/lib/log"
 )
 
 const (

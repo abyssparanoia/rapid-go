@@ -9,8 +9,9 @@ rapid-go is a boilerplate that accelerates API development based on layered arch
 - golang 1.11 (I will actively raise go version)
 - mysql (correspondence such as firestore is easy)
 - Chi (as Router)
-- squirrel (as query builder)
-- sqlx (map the result of sql to an object)
+- ~squirrel (as query builder)~
+- ~sqlx (map the result of sql to an object)~
+- gorm (map the result of sql to an object)
 - fresh (for hot reload)
 - docker
 - mockgen (generate mock codes from inteface)

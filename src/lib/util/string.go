@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 	"unsafe"
+
+	"github.com/rs/xid"
 )
 
 // StrToMD5 ... generate hash string by MD5
@@ -25,4 +27,10 @@ func StrToSHA256(str string) string {
 // StrToBytes ... convert string to bytes
 func StrToBytes(str string) []byte {
 	return *(*[]byte)(unsafe.Pointer(&str))
+}
+
+// StrUniqueID ... get unique id
+func StrUniqueID() string {
+	guid := xid.New()
+	return guid.String()
 }

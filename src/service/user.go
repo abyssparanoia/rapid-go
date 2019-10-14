@@ -8,5 +8,5 @@ import (
 
 // User ... inteface of User service
 type User interface {
-	Get(ctx context.Context, userID int64) (*model.User, error)
+	Get(ctx context.Context, userID string) (*model.User, error)
 }

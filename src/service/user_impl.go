@@ -9,21 +9,24 @@ import (
 )
 
 type user struct {
-	uRepo repository.User
+	userRepo repository.User
 }
 
-func (s *user) Get(ctx context.Context, userID int64) (*model.User, error) {
-	user, err := s.uRepo.Get(ctx, userID)
+func (s *user) Get(ctx context.Context, userID string) (*model.User, error) {
+	user, err := s.userRepo.Get(ctx, userID)
 	if err != nil {
-		log.Errorf(ctx, "s.uRepo.Get: %s", err.Error())
+		log.Errorm(ctx, "s.userRepo.Get", err)
 		return nil, err
 	}
-	return model.NewUserFromEntity(user), nil
+
+	if !user.IsExist() {
+		return nil, newUserNotExistError(ctx, userID)
+	}
+
+	return user, nil
 }
 
 // NewUser ... get User service
-func NewUser(uRepo repository.User) User {
-	return &user{
-		uRepo: uRepo,
-	}
+func NewUser(userRepo repository.User) User {
+	return &user{userRepo}
 }
