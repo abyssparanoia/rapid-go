@@ -8,7 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// Client ... クライアント
+// Client ... client
 type Client struct {
 	db *gorm.DB
 }
@@ -22,7 +22,7 @@ func (c *Client) GetDB(ctx context.Context) *gorm.DB {
 	return db
 }
 
-// NewClient ... クライアントを作成する
+// NewClient ... get gorm client
 func NewClient(cfg *Config) *Client {
 	dbs := fmt.Sprintf("%s:%s@%s/%s?parseTime=true%%2FTokyo&charset=utf8mb4",
 		cfg.User,
