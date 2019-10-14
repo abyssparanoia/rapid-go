@@ -5,9 +5,8 @@ CREATE TABLE `users` (
   `display_name` varchar(36) NOT NULL COMMENT 'display name',
   `icon_image_path` varchar(3000) NOT NULL COMMENT 'profile icon image path',
   `background_image_path` varchar(3000) NOT NULL COMMENT 'background image path',
-  `profile` varchar(1024) NOT NULL COMMENT 'profile text',
+  `profile` varchar(1024) NULL COMMENT 'profile text',
   `email` varchar(1024) NULL COMMENT 'email address',
-  `is_anonymous` boolean NOT NULL DEFAULT TRUE COMMENT 'anonymous or not',
   `created_at` bigint(20) NOT NULL COMMENT 'creation date',
   `updated_at` bigint(20) NOT NULL COMMENT 'updation date',
   `deleted_at` boolean NOT NULL DEFAULT TRUE COMMENT 'delete date'

@@ -2,8 +2,16 @@ package entity
 
 // User ... user entity
 type User struct {
-	ID   int64  `db:"id"`
-	Name string `db:"name"`
-	Sex  string `db:"sex"`
+	ID                  string
+	DisplayName         string
+	IconImagePath       string
+	BackgroundImagePath string
+	Profile             *string
+	Email               *string
 	BaseEntity
+}
+
+// UserTableName ... get user table name
+func UserTableName() string {
+	return "users"
 }
