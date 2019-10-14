@@ -9,7 +9,7 @@ CREATE TABLE `users` (
   `email` varchar(1024) NULL COMMENT 'email address',
   `created_at` bigint(20) NOT NULL COMMENT 'creation date',
   `updated_at` bigint(20) NOT NULL COMMENT 'updation date',
-  `deleted_at` boolean NOT NULL DEFAULT TRUE COMMENT 'delete date'
+  `deleted_at` bigint(20) NULL  COMMENT 'delete date',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 COMMENT "users table";
