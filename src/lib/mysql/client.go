@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	_ "github.com/go-sql-driver/mysql" // MySQL Driverの読み込み
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
 
@@ -24,7 +24,7 @@ func (c *Client) GetDB(ctx context.Context) *gorm.DB {
 
 // NewClient ... get gorm client
 func NewClient(cfg *Config) *Client {
-	dbs := fmt.Sprintf("%s:%s@%s/%s?parseTime=true%%2FTokyo&charset=utf8mb4",
+	dbs := fmt.Sprintf("%s:%s@%s/%s?parseTime=true&charset=utf8mb4",
 		cfg.User,
 		cfg.Password,
 		cfg.Host,

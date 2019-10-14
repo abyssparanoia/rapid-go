@@ -3,7 +3,6 @@ package mysql
 import (
 	"fmt"
 	"os"
-	"strings"
 )
 
 // Config ... config for mysql
@@ -15,28 +14,27 @@ type Config struct {
 }
 
 // NewConfig ... get config for mysql from envelopment value
-func NewConfig(db string) *Config {
-	db = strings.ToUpper(db)
+func NewConfig() *Config {
 
-	hKey := fmt.Sprintf("MYSQL_%s_HOST", db)
+	hKey := fmt.Sprintf("DB_HOST")
 	h := os.Getenv(hKey)
 	if h == "" {
 		panic(fmt.Errorf("no config key %s", hKey))
 	}
 
-	uKey := fmt.Sprintf("MYSQL_%s_USER", db)
+	uKey := fmt.Sprintf("DB_USER")
 	u := os.Getenv(uKey)
 	if u == "" {
 		panic(fmt.Errorf("no config key %s", uKey))
 	}
 
-	pKey := fmt.Sprintf("MYSQL_%s_PASSWORD", db)
+	pKey := fmt.Sprintf("DB_PASSWORD")
 	p := os.Getenv(pKey)
 	if p == "" {
 		panic(fmt.Errorf("no config key %s", pKey))
 	}
 
-	dKey := fmt.Sprintf("MYSQL_%s_DATABASE", db)
+	dKey := fmt.Sprintf("DB_DATABASE")
 	d := os.Getenv(dKey)
 	if d == "" {
 		panic(fmt.Errorf("no config key %s", dKey))

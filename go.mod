@@ -15,6 +15,7 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/googleapis/gax-go v1.0.2
 	github.com/hashicorp/golang-lru v0.5.1
+	github.com/jinzhu/gorm v1.9.10
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/joho/godotenv v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -24,6 +25,7 @@ require (
 	github.com/openzipkin/zipkin-go v0.1.6 // indirect
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/prometheus/client_golang v0.9.3-0.20190127221311-3c4408c8b829 // indirect
+	github.com/rs/xid v1.2.1
 	github.com/stretchr/testify v1.3.0
 	github.com/unrolled/render v1.0.0
 	go.opencensus.io v0.22.0

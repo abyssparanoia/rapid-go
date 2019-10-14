@@ -34,7 +34,7 @@ func (d *Dependency) Inject(e *Environment) {
 	}
 
 	// Config
-	dbCfg := mysql.NewConfig("rapid_go")
+	dbCfg := mysql.NewConfig()
 
 	// Lib
 	dbConn := mysql.NewClient(dbCfg)
