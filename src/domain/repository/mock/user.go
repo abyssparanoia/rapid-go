@@ -6,7 +6,7 @@ package mock_repository
 
 import (
 	context "context"
-	entity "github.com/abyssparanoia/rapid-go/src/infrastructure/entity"
+	model "github.com/abyssparanoia/rapid-go/src/domain/model"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,10 +35,10 @@ func (m *MockUser) EXPECT() *MockUserMockRecorder {
 }
 
 // Get mocks base method
-func (m *MockUser) Get(ctx context.Context, userID int64) (*entity.User, error) {
+func (m *MockUser) Get(ctx context.Context, userID string) (*model.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", ctx, userID)
-	ret0, _ := ret[0].(*entity.User)
+	ret0, _ := ret[0].(*model.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

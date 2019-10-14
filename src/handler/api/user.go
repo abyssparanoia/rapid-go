@@ -16,7 +16,7 @@ type UserHandler struct {
 }
 
 type userHandlerGetRequestParam struct {
-	UserID int64 `validate:"required"`
+	UserID string `validate:"required"`
 }
 
 type userHandlerGetResponse struct {
@@ -28,15 +28,10 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var param userHandlerGetRequestParam
-	userID, err := parameter.GetURLByInt64(ctx, r, "userID")
-	if err != nil {
-		renderer.HandleError(ctx, w, "validation error: ", err)
-		return
-	}
-	param.UserID = userID
+	param.UserID = parameter.GetURL(r, "userID")
 
 	v := validator.New()
-	if err = v.Struct(param); err != nil {
+	if err := v.Struct(param); err != nil {
 		renderer.HandleError(ctx, w, "validation error: ", err)
 		return
 	}
