@@ -24,7 +24,7 @@ func (c *Client) GetDB(ctx context.Context) *gorm.DB {
 
 // NewClient ... クライアントを作成する
 func NewClient(cfg *Config) *Client {
-	dbs := fmt.Sprintf("%s:%s@%s/%s?parseTime=true&loc=Asia%%2FTokyo&charset=utf8mb4",
+	dbs := fmt.Sprintf("%s:%s@%s/%s?parseTime=true%%2FTokyo&charset=utf8mb4",
 		cfg.User,
 		cfg.Password,
 		cfg.Host,
