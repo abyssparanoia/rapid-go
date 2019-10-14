@@ -31,3 +31,8 @@ func NewUsers(users []*entity.User) []*User {
 	}
 	return dsts
 }
+
+// IsExist ... check exist or not
+func (user *User) IsExist() bool {
+	return user != nil
+}

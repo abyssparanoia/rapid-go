@@ -18,6 +18,11 @@ func (s *user) Get(ctx context.Context, userID string) (*model.User, error) {
 		log.Errorm(ctx, "s.userRepo.Get", err)
 		return nil, err
 	}
+
+	if !user.IsExist() {
+		return nil, newUserNotExistError(ctx, userID)
+	}
+
 	return user, nil
 }
 

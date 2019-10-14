@@ -38,7 +38,8 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.Svc.Get(ctx, param.UserID)
 	if err != nil {
-		renderer.HandleError(ctx, w, "h.Svc.Get: ", err)
+		renderer.HandleError(ctx, w, "h.Svc.Get", err)
+		return
 	}
 
 	renderer.JSON(ctx, w, http.StatusOK, userHandlerGetResponse{User: user})

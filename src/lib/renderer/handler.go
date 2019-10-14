@@ -21,8 +21,6 @@ func HandleError(ctx context.Context, w http.ResponseWriter, msg string, err err
 		return
 	}
 
-	Error(ctx, w, code, msg)
-
 	switch code {
 	case http.StatusBadRequest:
 		msg := fmt.Sprintf("%d StatusBadRequest: %s, %s", code, msg, err.Error())
@@ -40,6 +38,8 @@ func HandleError(ctx context.Context, w http.ResponseWriter, msg string, err err
 		msg := fmt.Sprintf("%d: %s, %s", code, msg, err.Error())
 		log.Errorf(ctx, msg)
 	}
+
+	Error(ctx, w, code, err.Error())
 }
 
 // Success ... render success response
