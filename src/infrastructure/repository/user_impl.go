@@ -28,6 +28,10 @@ func (r *user) Get(ctx context.Context, userID string) (*model.User, error) {
 		return nil, err
 	}
 
+	if len(dsts) == 0 {
+		return nil, nil
+	}
+
 	return model.NewUsers(dsts)[0], nil
 }
 
