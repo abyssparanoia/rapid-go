@@ -5,7 +5,7 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/src/domain/model"
 	"github.com/abyssparanoia/rapid-go/src/domain/repository"
-	"github.com/abyssparanoia/rapid-go/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/pkg/log"
 )
 
 type user struct {

@@ -3,7 +3,7 @@ package log
 import (
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/src/lib/util"
+	"github.com/abyssparanoia/rapid-go/src/pkg/util"
 )
 
 // Middleware ... middleware logger

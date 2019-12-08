@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/abyssparanoia/rapid-go-worker/src/lib/log"
+	"github.com/abyssparanoia/rapid-go-worker/src/pkg/log"
 	"github.com/go-chi/chi"
 )
 

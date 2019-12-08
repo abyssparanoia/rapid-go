@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abyssparanoia/rapid-go/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/pkg/log"
 )
 
 type serviceDebug struct {

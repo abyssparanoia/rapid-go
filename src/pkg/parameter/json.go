@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go-worker/src/lib/log"
+	"github.com/abyssparanoia/rapid-go-worker/src/pkg/log"
 )
 
 // GetJSON ... get json data

@@ -6,8 +6,8 @@ import (
 	"github.com/abyssparanoia/rapid-go/src/domain/model"
 	"github.com/abyssparanoia/rapid-go/src/domain/repository"
 	"github.com/abyssparanoia/rapid-go/src/infrastructure/entity"
-	"github.com/abyssparanoia/rapid-go/src/lib/log"
-	"github.com/abyssparanoia/rapid-go/src/lib/mysql"
+	"github.com/abyssparanoia/rapid-go/src/pkg/log"
+	"github.com/abyssparanoia/rapid-go/src/pkg/mysql"
 )
 
 type user struct {

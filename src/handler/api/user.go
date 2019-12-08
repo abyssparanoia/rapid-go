@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/abyssparanoia/rapid-go/src/domain/model"
-	"github.com/abyssparanoia/rapid-go/src/lib/parameter"
-	"github.com/abyssparanoia/rapid-go/src/lib/renderer"
+	"github.com/abyssparanoia/rapid-go/src/pkg/parameter"
+	"github.com/abyssparanoia/rapid-go/src/pkg/renderer"
 	"github.com/abyssparanoia/rapid-go/src/service"
 	validator "gopkg.in/go-playground/validator.v9"
 )

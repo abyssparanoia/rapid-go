@@ -3,8 +3,8 @@ package worker
 import (
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/src/lib/log"
-	"github.com/abyssparanoia/rapid-go/src/lib/renderer"
+	"github.com/abyssparanoia/rapid-go/src/pkg/log"
+	"github.com/abyssparanoia/rapid-go/src/pkg/renderer"
 )
 
 // SampleHandler ... sample handler

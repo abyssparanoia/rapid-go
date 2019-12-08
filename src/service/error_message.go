@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/src/lib/log"
+	"github.com/abyssparanoia/rapid-go/src/pkg/log"
 )
 
 func newUserNotExistError(ctx context.Context, userID string) error {

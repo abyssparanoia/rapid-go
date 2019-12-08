@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/abyssparanoia/rapid-go/src/handler/api"
 	"github.com/abyssparanoia/rapid-go/src/infrastructure/repository"
-	"github.com/abyssparanoia/rapid-go/src/lib/firebaseauth"
-	"github.com/abyssparanoia/rapid-go/src/lib/httpheader"
-	"github.com/abyssparanoia/rapid-go/src/lib/log"
-	"github.com/abyssparanoia/rapid-go/src/lib/mysql"
+	"github.com/abyssparanoia/rapid-go/src/pkg/firebaseauth"
+	"github.com/abyssparanoia/rapid-go/src/pkg/httpheader"
+	"github.com/abyssparanoia/rapid-go/src/pkg/log"
+	"github.com/abyssparanoia/rapid-go/src/pkg/mysql"
 	"github.com/abyssparanoia/rapid-go/src/service"
 )
 
@@ -36,7 +36,7 @@ func (d *Dependency) Inject(e *Environment) {
 	// Config
 	dbCfg := mysql.NewConfig()
 
-	// Lib
+	// pkg
 	dbConn := mysql.NewClient(dbCfg)
 
 	// Repository

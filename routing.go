@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/abyssparanoia/rapid-go/src/handler"
-	"github.com/abyssparanoia/rapid-go/src/lib/accesscontrol"
+	"github.com/abyssparanoia/rapid-go/src/pkg/accesscontrol"
 	"github.com/go-chi/chi"
 )
 

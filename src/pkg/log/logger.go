@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/abyssparanoia/rapid-go/src/lib/errcode"
-	"github.com/abyssparanoia/rapid-go/src/lib/util"
+	"github.com/abyssparanoia/rapid-go/src/pkg/errcode"
+	"github.com/abyssparanoia/rapid-go/src/pkg/util"
 )
 
 // Logger ... logger model
