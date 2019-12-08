@@ -4,7 +4,6 @@ require (
 	cloud.google.com/go v0.43.0
 	firebase.google.com/go v3.8.1+incompatible
 	github.com/Masterminds/squirrel v1.1.0
-	github.com/abyssparanoia/rapid-go-worker v0.0.0-20190804165740-fe878927c6c0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-playground/locales v0.12.1
@@ -23,7 +22,6 @@ require (
 	github.com/leodido/go-urn v1.1.0
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/rs/xid v1.2.1
-	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/unrolled/render v1.0.0
 	go.opencensus.io v0.22.0

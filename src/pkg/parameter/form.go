@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/abyssparanoia/rapid-go-worker/src/pkg/log"
-	"github.com/abyssparanoia/rapid-go-worker/src/pkg/util"
+	"github.com/abyssparanoia/rapid-go/src/pkg/log"
+	"github.com/abyssparanoia/rapid-go/src/pkg/util"
 )
 
 // GetForm ... get form value

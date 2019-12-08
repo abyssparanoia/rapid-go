@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go-worker/src/pkg/log"
+	"github.com/abyssparanoia/rapid-go/src/pkg/log"
 	"github.com/abyssparanoia/rapid-go/src/pkg/errcode"
 	"github.com/unrolled/render"
 	"golang.org/x/text/encoding/japanese"
