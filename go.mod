@@ -23,7 +23,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/rs/xid v1.2.1
 	github.com/stretchr/testify v1.3.0
-	github.com/unrolled/render v1.0.0
+	github.com/unrolled/render v1.0.1
 	go.opencensus.io v0.22.0
 	go.uber.org/atomic v1.3.2
 	go.uber.org/multierr v1.1.0
