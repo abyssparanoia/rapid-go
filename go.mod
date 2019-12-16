@@ -26,7 +26,7 @@ require (
 	github.com/unrolled/render v1.0.0
 	go.opencensus.io v0.22.0
 	go.uber.org/atomic v1.3.2
-	go.uber.org/multierr v1.1.0
+	go.uber.org/multierr v1.4.0
 	go.uber.org/zap v1.9.1
 	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
