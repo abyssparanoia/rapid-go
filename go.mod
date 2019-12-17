@@ -33,7 +33,7 @@ require (
 	golang.org/x/sys v0.0.0-20190624142023-c5567b49c5d0
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.14.0
-	google.golang.org/appengine v1.6.1
+	google.golang.org/appengine v1.6.5
 	google.golang.org/genproto v0.0.0-20190801165951-fa694d86fc64
 	google.golang.org/grpc v1.21.1
 	gopkg.in/go-playground/validator.v9 v9.29.1
