@@ -25,7 +25,7 @@ require (
 	github.com/stretchr/testify v1.3.0
 	github.com/unrolled/render v1.0.1
 	go.opencensus.io v0.22.0
-	go.uber.org/atomic v1.3.2
+	go.uber.org/atomic v1.5.1
 	go.uber.org/multierr v1.4.0
 	go.uber.org/zap v1.9.1
 	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
