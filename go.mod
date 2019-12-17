@@ -7,7 +7,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-playground/locales v0.12.1
-	github.com/go-playground/universal-translator v0.16.0
+	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.2
