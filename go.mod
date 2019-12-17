@@ -12,18 +12,18 @@ require (
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/googleapis/gax-go v1.0.2
-	github.com/hashicorp/golang-lru v0.5.1
+	github.com/hashicorp/golang-lru v0.5.3
 	github.com/jinzhu/gorm v1.9.10
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/joho/godotenv v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0
-	github.com/leodido/go-urn v1.1.0
+	github.com/leodido/go-urn v1.2.0
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/rs/xid v1.2.1
 	github.com/stretchr/testify v1.3.0
-	github.com/unrolled/render v1.0.0
+	github.com/unrolled/render v1.0.1
 	go.opencensus.io v0.22.0
 	go.uber.org/atomic v1.3.2
 	go.uber.org/multierr v1.4.0
