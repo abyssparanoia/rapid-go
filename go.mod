@@ -2,7 +2,7 @@ module github.com/abyssparanoia/rapid-go
 
 require (
 	cloud.google.com/go v0.43.0
-	firebase.google.com/go v3.8.1+incompatible
+	firebase.google.com/go v3.10.0+incompatible
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-chi/chi v4.0.2+incompatible
@@ -35,7 +35,7 @@ require (
 	google.golang.org/api v0.14.0
 	google.golang.org/appengine v1.6.5
 	google.golang.org/genproto v0.0.0-20190801165951-fa694d86fc64
-	google.golang.org/grpc v1.21.1
+	google.golang.org/grpc v1.26.0
 	gopkg.in/go-playground/validator.v9 v9.29.1
 )
 
