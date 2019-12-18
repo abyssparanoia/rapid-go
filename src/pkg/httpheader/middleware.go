@@ -12,7 +12,7 @@ import (
 
 // Middleware ... middleware
 type Middleware struct {
-	Svc Service
+	httpheader Httpheader
 }
 
 // Handle ... get parameter from header and set to context
@@ -20,7 +20,7 @@ func (m *Middleware) Handle(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		p, err := m.Svc.Get(ctx, r)
+		p, err := m.httpheader.Get(ctx, r)
 		if err != nil {
 			m.renderError(ctx, w, http.StatusBadRequest, "httpheader.Service.Get: "+err.Error())
 			return
@@ -36,8 +36,8 @@ func (m *Middleware) renderError(ctx context.Context, w http.ResponseWriter, sta
 }
 
 // NewMiddleware ... get middleware
-func NewMiddleware(svc Service) *Middleware {
+func NewMiddleware(httpheader Httpheader) *Middleware {
 	return &Middleware{
-		Svc: svc,
+		httpheader,
 	}
 }
