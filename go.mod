@@ -36,7 +36,7 @@ require (
 	google.golang.org/appengine v1.6.5
 	google.golang.org/genproto v0.0.0-20190801165951-fa694d86fc64
 	google.golang.org/grpc v1.26.0
-	gopkg.in/go-playground/validator.v9 v9.29.1
+	gopkg.in/go-playground/validator.v9 v9.30.2
 )
 
 go 1.13
