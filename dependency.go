@@ -23,14 +23,14 @@ type Dependency struct {
 func (d *Dependency) Inject(e *Environment) {
 
 	var lCli log.Writer
-	var firebaseAuthService firebaseauth.Service
+	var firebaseAuth firebaseauth.Firebaseauth
 
 	if e.ENV == "LOCAL" {
 		lCli = log.NewWriterStdout()
-		firebaseAuthService = firebaseauth.NewDebugService()
+		firebaseAuth = firebaseauth.NewDebug()
 	} else {
 		lCli = log.NewWriterStackdriver(e.ProjectID)
-		firebaseAuthService = firebaseauth.NewService()
+		firebaseAuth = firebaseauth.New()
 	}
 
 	// Config
@@ -43,15 +43,15 @@ func (d *Dependency) Inject(e *Environment) {
 	uRepo := repository.NewUser(dbConn)
 
 	// Service
-	dhhSvc := httpheader.NewDummyService()
-	hhSvc := httpheader.NewService()
+	dhh := httpheader.NewDummy()
+	hh := httpheader.New()
 	uSvc := service.NewUser(uRepo)
 
 	// Middleware
 	d.Log = log.NewMiddleware(lCli, e.MinLogSeverity)
-	d.FirebaseAuth = firebaseauth.NewMiddleware(firebaseAuthService)
-	d.DummyHTTPHeader = httpheader.NewMiddleware(dhhSvc)
-	d.HTTPHeader = httpheader.NewMiddleware(hhSvc)
+	d.FirebaseAuth = firebaseauth.NewMiddleware(firebaseAuth)
+	d.DummyHTTPHeader = httpheader.NewMiddleware(dhh)
+	d.HTTPHeader = httpheader.NewMiddleware(hh)
 
 	// Handler
 	d.UserHandler = api.NewUserHandler(uSvc)

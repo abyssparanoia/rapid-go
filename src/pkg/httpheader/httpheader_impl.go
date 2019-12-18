@@ -13,10 +13,10 @@ const (
 	headerKeySample string = "X-Sample"
 )
 
-type service struct {
+type httpheader struct {
 }
 
-func (s *service) Get(ctx context.Context, r *http.Request) (Params, error) {
+func (s *httpheader) Get(ctx context.Context, r *http.Request) (Params, error) {
 	h := Params{
 		Sample: r.Header.Get(headerKeySample),
 	}
@@ -30,7 +30,7 @@ func (s *service) Get(ctx context.Context, r *http.Request) (Params, error) {
 	return h, nil
 }
 
-// NewService ... get service
-func NewService() Service {
-	return &service{}
+// New ... get httpheader
+func New() Httpheader {
+	return &httpheader{}
 }
