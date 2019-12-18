@@ -7,11 +7,11 @@ import (
 	"github.com/abyssparanoia/rapid-go/src/pkg/log"
 )
 
-type service struct {
+type firebaseauth struct {
 }
 
 // SetCustomClaims ... set custom claims
-func (s *service) SetCustomClaims(ctx context.Context, userID string, claims *Claims) error {
+func (s *firebaseauth) SetCustomClaims(ctx context.Context, userID string, claims *Claims) error {
 	c, err := getAuthClient(ctx)
 	if err != nil {
 		log.Errorm(ctx, "getAuthClient", err)
@@ -28,7 +28,7 @@ func (s *service) SetCustomClaims(ctx context.Context, userID string, claims *Cl
 }
 
 // Authentication ... authenticate
-func (s *service) Authentication(ctx context.Context, ah string) (string, *Claims, error) {
+func (s *firebaseauth) Authentication(ctx context.Context, ah string) (string, *Claims, error) {
 	var userID string
 	claims := &Claims{}
 
@@ -57,7 +57,7 @@ func (s *service) Authentication(ctx context.Context, ah string) (string, *Claim
 	return userID, claims, nil
 }
 
-// NewService ... get service
-func NewService() Service {
-	return &service{}
+// New ... get firebaseauth
+func New() Firebaseauth {
+	return &firebaseauth{}
 }

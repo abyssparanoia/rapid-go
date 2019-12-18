@@ -7,11 +7,11 @@ import (
 	"github.com/abyssparanoia/rapid-go/src/pkg/log"
 )
 
-type serviceDebug struct {
+type firebaseauthDebug struct {
 }
 
 // Authentication ... authenticate
-func (s *serviceDebug) Authentication(ctx context.Context, ah string) (string, *Claims, error) {
+func (s *firebaseauthDebug) Authentication(ctx context.Context, ah string) (string, *Claims, error) {
 	var userID string
 	claims := &Claims{}
 
@@ -48,7 +48,7 @@ func (s *serviceDebug) Authentication(ctx context.Context, ah string) (string, *
 }
 
 // SetCustomClaims ... set custom claim
-func (s *serviceDebug) SetCustomClaims(ctx context.Context, userID string, claims *Claims) error {
+func (s *firebaseauthDebug) SetCustomClaims(ctx context.Context, userID string, claims *Claims) error {
 	c, err := getAuthClient(ctx)
 	if err != nil {
 		log.Errorm(ctx, "getAuthClient", err)
@@ -66,7 +66,7 @@ func (s *serviceDebug) SetCustomClaims(ctx context.Context, userID string, claim
 	return nil
 }
 
-// NewDebugService ... DebugServiceを作成する
-func NewDebugService() Service {
-	return &serviceDebug{}
+// NewDebug ... DebugFirebaseauthを作成する
+func NewDebug() Firebaseauth {
+	return &firebaseauthDebug{}
 }

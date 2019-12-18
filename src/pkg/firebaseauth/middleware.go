@@ -12,7 +12,7 @@ import (
 
 // Middleware ... middleware
 type Middleware struct {
-	Svc Service
+	firebaseauth Firebaseauth
 }
 
 // Handle ... authenticate handler
@@ -27,7 +27,7 @@ func (m *Middleware) Handle(next http.Handler) http.Handler {
 		}
 		ctx = setAuthHeader(ctx, ah)
 
-		userID, claims, err := m.Svc.Authentication(ctx, ah)
+		userID, claims, err := m.firebaseauth.Authentication(ctx, ah)
 		if err != nil {
 			m.renderError(ctx, w, http.StatusForbidden, err.Error())
 			return
@@ -49,8 +49,8 @@ func (m *Middleware) renderError(ctx context.Context, w http.ResponseWriter, sta
 }
 
 // NewMiddleware ... get middleware
-func NewMiddleware(svc Service) *Middleware {
+func NewMiddleware(firebaseauth Firebaseauth) *Middleware {
 	return &Middleware{
-		Svc: svc,
+		firebaseauth,
 	}
 }
