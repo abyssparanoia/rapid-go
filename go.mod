@@ -3,7 +3,7 @@ module github.com/abyssparanoia/rapid-go
 require (
 	cloud.google.com/go v0.50.0
 	cloud.google.com/go/firestore v1.1.0 // indirect
-	firebase.google.com/go v3.10.0+incompatible
+	firebase.google.com/go v3.11.0+incompatible
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-chi/chi v4.0.2+incompatible
@@ -28,7 +28,7 @@ require (
 	go.opencensus.io v0.22.2
 	go.uber.org/atomic v1.5.1
 	go.uber.org/multierr v1.4.0
-	go.uber.org/zap v1.9.1
+	go.uber.org/zap v1.13.0
 	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	golang.org/x/sys v0.0.0-20190726091711-fc99dfbffb4e
