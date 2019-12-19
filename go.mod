@@ -25,7 +25,7 @@ require (
 	github.com/rs/xid v1.2.1
 	github.com/stretchr/testify v1.4.0
 	github.com/unrolled/render v1.0.1
-	go.opencensus.io v0.22.0
+	go.opencensus.io v0.22.2
 	go.uber.org/atomic v1.5.1
 	go.uber.org/multierr v1.4.0
 	go.uber.org/zap v1.13.0
