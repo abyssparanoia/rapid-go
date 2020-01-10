@@ -6,7 +6,7 @@ require (
 	firebase.google.com/go v3.11.1+incompatible
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/davecgh/go-spew v1.1.1
-	github.com/go-chi/chi v4.0.2+incompatible
+	github.com/go-chi/chi v4.0.3+incompatible
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-sql-driver/mysql v1.5.0
