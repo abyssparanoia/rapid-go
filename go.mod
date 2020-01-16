@@ -3,7 +3,7 @@ module github.com/abyssparanoia/rapid-go
 require (
 	cloud.google.com/go v0.51.0
 	cloud.google.com/go/firestore v1.1.0 // indirect
-	firebase.google.com/go v3.11.1+incompatible
+	firebase.google.com/go v3.12.0+incompatible
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-chi/chi v4.0.3+incompatible
