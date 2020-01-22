@@ -10,7 +10,7 @@ require (
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/golang/mock v1.3.1
+	github.com/golang/mock v1.4.0
 	github.com/golang/protobuf v1.3.2
 	github.com/googleapis/gax-go v1.0.3
 	github.com/hashicorp/golang-lru v0.5.4
