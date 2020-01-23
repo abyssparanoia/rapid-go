@@ -1,7 +1,7 @@
 module github.com/abyssparanoia/rapid-go
 
 require (
-	cloud.google.com/go v0.51.0
+	cloud.google.com/go v0.52.0
 	cloud.google.com/go/firestore v1.1.0 // indirect
 	firebase.google.com/go v3.12.0+incompatible
 	github.com/Masterminds/squirrel v1.1.0
