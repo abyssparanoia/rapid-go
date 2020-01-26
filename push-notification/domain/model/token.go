@@ -51,3 +51,7 @@ func NewPlatform(ctx context.Context, platform string) (Platform, error) {
 
 	return "", log.Errore(ctx, "no match case")
 }
+
+func (v Platform) String() string {
+	return string(v)
+}
