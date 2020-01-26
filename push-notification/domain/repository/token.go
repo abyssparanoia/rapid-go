@@ -11,6 +11,7 @@ type Token interface {
 	GetByPlatformAndDeviceID(ctx context.Context,
 		appID, userID, deviceID string,
 		platform model.Platform) (*model.Token, error)
+	List(ctx context.Context) ([]*model.Token, error)
 	ListByUserID(ctx context.Context,
 		appID, userID string) ([]*model.Token, error)
 }

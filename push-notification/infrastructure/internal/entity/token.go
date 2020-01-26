@@ -48,3 +48,8 @@ func NewTokenMultiOutputModels(dsts []*Token) (tokens []*model.Token) {
 func NewTokenCollectionRef(fCli *firestore.Client, appID, userID string) *firestore.CollectionRef {
 	return fCli.Collection("push-notification-apps").Doc(appID).Collection("users").Doc(userID).Collection("tokens")
 }
+
+// NewTokenGroupCollectionRef ... new token group collection ref
+func NewTokenGroupCollectionRef(fCli *firestore.Client) *firestore.CollectionGroupRef {
+	return fCli.CollectionGroup("tokens")
+}

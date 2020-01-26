@@ -3,7 +3,8 @@ module github.com/abyssparanoia/rapid-go
 go 1.13
 
 require (
-	cloud.google.com/go v0.38.0
+	cloud.google.com/go v0.46.3
+	cloud.google.com/go/firestore v1.1.0
 	firebase.google.com/go v3.11.1+incompatible
 	github.com/caarlos0/env/v6 v6.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
