@@ -111,6 +111,21 @@ func (r *token) Update(ctx context.Context,
 	return nil
 }
 
+func (r *token) Delete(ctx context.Context,
+	tokenID string) error {
+
+	colRef := entity.NewTokenCollectionRef(r.firestoreClient)
+	docRef := colRef.Doc(tokenID)
+
+	err := gluefirestore.Delete(ctx, docRef)
+	if err != nil {
+		log.Errorm(ctx, "gluefirestore.Delete", err)
+		return err
+	}
+
+	return nil
+}
+
 // NewToken ... new token repository
 func NewToken(firestoreClient *firestore.Client) repository.Token {
 	return &token{firestoreClient}

@@ -16,4 +16,6 @@ type Token interface {
 		appID, userID string) ([]*model.Token, error)
 	Update(ctx context.Context,
 		token *model.Token) error
+	Delete(ctx context.Context,
+		tokenID string) error
 }
