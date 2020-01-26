@@ -52,6 +52,18 @@ func NewPlatform(ctx context.Context, platform string) (Platform, error) {
 	return "", log.Errore(ctx, "no match case")
 }
 
+// MustPlatform ... must platform
+func MustPlatform(platform string) Platform {
+
+	switch Platform(platform) {
+	case PlatformIOS, PlatformAndroid, PlatformWeb:
+		return Platform(platform)
+	default:
+	}
+
+	panic("no match case")
+}
+
 func (v Platform) String() string {
 	return string(v)
 }
