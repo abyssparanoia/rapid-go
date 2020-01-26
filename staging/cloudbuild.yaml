@@ -1,0 +1,70 @@
+steps:
+  - id: Decrypt serviceAccount
+    name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "kms",
+        "decrypt",
+        "--location",
+        "asia-northeast1",
+        "--keyring",
+        "dkeyring",
+        "--key",
+        "serviceAccount_crypto_key",
+        "--ciphertext-file",
+        "serviceAccount.json.encrypted",
+        "--plaintext-file",
+        "serviceAccount.json",
+      ]
+
+  - id: Decrypt dotenv
+    name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "kms",
+        "decrypt",
+        "--location",
+        "asia-northeast1",
+        "--keyring",
+        "dkeyring",
+        "--key",
+        "dotenv_crypto_key",
+        "--ciphertext-file",
+        "dev.dotenv.encrypted",
+        "--plaintext-file",
+        ".env.default",
+      ]
+
+  - id: Build docker image
+    name: gcr.io/cloud-builders/docker
+    args:
+      [
+        "build",
+        "-t",
+        "asia.gcr.io/$PROJECT_ID/default:$SHORT_SHA",
+        "-f",
+        "./docker/production/default/Dockerfile",
+        ".",
+      ]
+
+  - id: Push docker image to GCR
+    name: gcr.io/cloud-builders/docker
+    args: ["push", "asia.gcr.io/$PROJECT_ID/default:$SHORT_SHA"]
+
+  - id: Deploy Cloud Run
+    name: gcr.io/cloud-builders/gcloud
+    args:
+      [
+        "beta",
+        "run",
+        "deploy",
+        "default",
+        "--project",
+        "${PROJECT_ID}",
+        "--image",
+        "asia.gcr.io/$PROJECT_ID/default:$SHORT_SHA",
+        "--platform",
+        "managed",
+        "--region",
+        "asia-northeast1",
+      ]

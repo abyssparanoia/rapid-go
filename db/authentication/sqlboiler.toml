@@ -1,0 +1,7 @@
+[psql]
+  dbname  = "catharsis_authentication"
+  host    = "localhost"
+  port    = 5432
+  user    = "postgres"
+  pass    = "password"
+  sslmode = "disable"

@@ -1,0 +1,25 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+  - name: default-server
+    path: .
+    commands:
+      install:
+        status: true
+        method: go build -o ./cmd/default/default-server ./cmd/default/
+      run:
+        status: true
+        method: ./cmd/default/default-server
+      fmt:
+        status: true
+    watcher:
+      extensions:
+        - go
+      paths:
+        - /
+      ignored_paths:
+        - .git
+        - .realize
+        - vendor

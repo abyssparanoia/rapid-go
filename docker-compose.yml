@@ -1,25 +1,24 @@
 version: "3"
 
-volumes:
-  vendor:
-
 services:
-  api:
-    build: .
-    depends_on:
-      - db
+  default-server:
+    build:
+      context: .
+      dockerfile: docker/development/Dockerfile
+    ports:
+      - 8080:8080
     volumes:
       - .:/go/src/github.com/abyssparanoia/rapid-go
-    ports:
-      - "8080:8080"
-  db:
-    build: ./mysql
+    command: ash -c "realize start"
+
+  default-db:
+    build: ./db/default
     volumes:
-      - ./mysql/data:/var/lib/mysql
-      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/default/data:/var/lib/mysql
+      - ./db/default/initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
     environment:
       TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: rapid_go
+      MYSQL_DATABASE: default_db

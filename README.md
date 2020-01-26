@@ -4,57 +4,77 @@
 
 rapid-go is a boilerplate that accelerates API development based on layered architecture and clarifying responsibilities.
 
-## stack
+## what is this
 
-- golang 1.11 (I will actively raise go version)
-- mysql (correspondence such as firestore is easy)
-- Chi (as Router)
-- ~squirrel (as query builder)~
-- ~sqlx (map the result of sql to an object)~
-- gorm (map the result of sql to an object)
-- fresh (for hot reload)
-- docker
-- mockgen (generate mock codes from inteface)
-- ~zap (as logger)~
-- firebase auth (as authenticate service)
+```
+the boilerplate for monorepo application (support only http protocol)
+```
+
+- Base project is https://github.com/golang-standards/project-layout
+
+## Apps
+
+| Package                             | Localhost             | Prodction  |
+| :---------------------------------- | :-------------------- | :--------- |
+| **[[REST] default](./cmd/default)** | http://localhost:8080 | default.\* |
 
 ## development
 
-- init
+### Preparation
+
+<!--
+- generate rsa pem file
 
 ```bash
-make init
+> openssl genrsa -out ./secret/catharsis-gcp.rsa 1024
+> openssl rsa -in ./secret/catharsis-gcp.rsa  -pubout > ./secret/catharsis-gcp.rsa.pub
+``` -->
+
+- environment (using dotenv)
+  - you should fix a host to default-db if you use docker-compose as server runtime
+
+```bash
+> cp .tmpl.env.default .env.default
 ```
 
-- build
+### server starting
+
+- local
 
 ```bash
-> make build
+> realize start
 ```
 
-- start
+- docker
 
 ```bash
-> make start
-> curl http://localhost:3001/ping
+# build image
+> docker-compose build
+
+# container start
+> docker-compose up -d
 ```
 
-- stop
+- example of default server
 
 ```bash
-> make down
+> curl --request GET 'http://localhost:8080/ping'
 ```
 
-- generate mock from interface (service,domain/repository)
+<!-- ### database
+
+- generate server code by sql boiler
 
 ```bash
-> make mockgen_task
-```
+> sqlboiler -c ./db/authentication/sqlboiler.toml -o ./pkg/dbmodels/authentication psql
+``` -->
 
-- run test
+## production
+
+### build
 
 ```bash
-> make test
+> docker build -f ./docker/production/default/Dockerfile .
 ```
 
 ## about layer
