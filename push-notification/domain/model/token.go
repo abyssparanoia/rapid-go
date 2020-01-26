@@ -11,6 +11,8 @@ import (
 type Token struct {
 	ID        string
 	Platform  Platform
+	AppID     string
+	UserID    string
 	DeviceID  string
 	Token     string
 	CreatedAt int64

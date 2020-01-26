@@ -10,6 +10,8 @@ import (
 type Token struct {
 	ID        string                 `firestore:"-" gluefirestore:"id"`
 	Ref       *firestore.DocumentRef `firestore:"-" gluefirestore:"ref"`
+	AppID     string                 `firestore:"app_id"`
+	UserID    string                 `firestore:"user_id"`
 	Platform  string                 `firestore:"platform"`
 	DeviceID  string                 `firestore:"device_id"`
 	Token     string                 `firestore:"token"`
@@ -19,6 +21,8 @@ type Token struct {
 // BuildFromModel ... build from model
 func (e *Token) BuildFromModel(m *model.Token) {
 	e.ID = m.ID
+	e.AppID = m.AppID
+	e.UserID = m.UserID
 	e.Platform = m.Platform.String()
 	e.DeviceID = m.DeviceID
 	e.Token = m.Token
@@ -29,6 +33,8 @@ func (e *Token) BuildFromModel(m *model.Token) {
 func (e *Token) OutputModel() *model.Token {
 	return &model.Token{
 		ID:        e.ID,
+		AppID:     e.AppID,
+		UserID:    e.UserID,
 		Platform:  model.MustPlatform(e.Platform),
 		DeviceID:  e.DeviceID,
 		Token:     e.Token,
@@ -45,11 +51,6 @@ func NewTokenMultiOutputModels(dsts []*Token) (tokens []*model.Token) {
 }
 
 // NewTokenCollectionRef ... new token collection ref
-func NewTokenCollectionRef(fCli *firestore.Client, appID, userID string) *firestore.CollectionRef {
-	return fCli.Collection("push-notification-apps").Doc(appID).Collection("users").Doc(userID).Collection("tokens")
-}
-
-// NewTokenGroupCollectionRef ... new token group collection ref
-func NewTokenGroupCollectionRef(fCli *firestore.Client) *firestore.CollectionGroupRef {
-	return fCli.CollectionGroup("tokens")
+func NewTokenCollectionRef(fCli *firestore.Client) *firestore.CollectionRef {
+	return fCli.Collection("push-notification-tokens")
 }
