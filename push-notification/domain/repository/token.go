@@ -14,6 +14,8 @@ type Token interface {
 	List(ctx context.Context) ([]*model.Token, error)
 	ListByUserID(ctx context.Context,
 		appID, userID string) ([]*model.Token, error)
+	Create(ctx context.Context,
+		token *model.Token) (*model.Token, error)
 	Update(ctx context.Context,
 		token *model.Token) error
 	Delete(ctx context.Context,

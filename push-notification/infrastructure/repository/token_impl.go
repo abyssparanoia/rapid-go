@@ -94,6 +94,23 @@ func (r *token) ListByUserID(ctx context.Context,
 	return entity.NewTokenMultiOutputModels(tokenEntityList), nil
 }
 
+func (r *token) Create(ctx context.Context,
+	token *model.Token) (*model.Token, error) {
+
+	tokenEntity := &entity.Token{}
+	tokenEntity.BuildFromModel(token)
+
+	colRef := entity.NewTokenCollectionRef(r.firestoreClient)
+
+	err := gluefirestore.Create(ctx, colRef, tokenEntity)
+	if err != nil {
+		log.Errorm(ctx, "gluefirestore.Create", err)
+		return nil, err
+	}
+
+	return tokenEntity.OutputModel(), nil
+}
+
 func (r *token) Update(ctx context.Context,
 	token *model.Token) error {
 
