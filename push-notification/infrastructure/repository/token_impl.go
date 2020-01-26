@@ -33,3 +33,17 @@ func (r *token) GetByPlatformAndDeviceID(ctx context.Context,
 
 	return tokenEntity.OutputModel(), nil
 }
+
+func (r *token) List(ctx context.Context,
+	appID, userID string) ([]*model.Token, error) {
+
+	colRef := entity.NewTokenCollectionRef(r.firestoreClient, appID, userID)
+
+	tokenEntityList := []*entity.Token{}
+	err := gluefirestore.ListByQuery(ctx, colRef.Query, tokenEntityList)
+	if err != nil {
+		log.Errorm(ctx, "gluefirestore.ListByQuery", err)
+		return nil, err
+	}
+	return entity.NewTokenMultiOutputModels(tokenEntityList), nil
+}

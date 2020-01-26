@@ -36,6 +36,14 @@ func (e *Token) OutputModel() *model.Token {
 	}
 }
 
+// NewTokenMultiOutputModels ... multi output models
+func NewTokenMultiOutputModels(dsts []*Token) (tokens []*model.Token) {
+	for _, dst := range dsts {
+		tokens = append(tokens, dst.OutputModel())
+	}
+	return tokens
+}
+
 // NewTokenCollectionRef ... new token collection ref
 func NewTokenCollectionRef(fCli *firestore.Client, appID, userID string) *firestore.CollectionRef {
 	return fCli.Collection("push-notification-apps").Doc(appID).Collection("users").Doc(userID).Collection("tokens")
