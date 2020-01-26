@@ -103,10 +103,18 @@ the boilerplate for monorepo application (support only http protocol)
 
 - write interface for infrastructure/repository and convert entity to domain
 
-### service layer
+#### domain/service
 
 - write application logic using repository
+
+### usecase layer
+
+- write usecase using repository and service
 
 ### handler
 
 - write the process about request and response
+
+### internal/pkg
+
+- shared code
