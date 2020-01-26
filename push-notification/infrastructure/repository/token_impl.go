@@ -5,6 +5,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluefirestore"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 	"github.com/abyssparanoia/rapid-go/push-notification/domain/model"
+	"github.com/abyssparanoia/rapid-go/push-notification/domain/repository"
 	"github.com/abyssparanoia/rapid-go/push-notification/infrastructure/internal/entity"
 
 	"context"
@@ -34,7 +35,7 @@ func (r *token) GetByPlatformAndDeviceID(ctx context.Context,
 	return tokenEntity.OutputModel(), nil
 }
 
-func (r *token) List(ctx context.Context,
+func (r *token) ListByUserID(ctx context.Context,
 	appID, userID string) ([]*model.Token, error) {
 
 	colRef := entity.NewTokenCollectionRef(r.firestoreClient, appID, userID)
@@ -46,4 +47,9 @@ func (r *token) List(ctx context.Context,
 		return nil, err
 	}
 	return entity.NewTokenMultiOutputModels(tokenEntityList), nil
+}
+
+// NewToken ... new token repository
+func NewToken(firestoreClient *firestore.Client) repository.Token {
+	return &token{firestoreClient}
 }
