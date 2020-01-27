@@ -14,7 +14,7 @@ type Token struct {
 	UserID    string                 `firestore:"user_id"`
 	Platform  string                 `firestore:"platform"`
 	DeviceID  string                 `firestore:"device_id"`
-	Token     string                 `firestore:"token"`
+	Value     string                 `firestore:"value"`
 	CreatedAt int64                  `firestore:"created_at"`
 }
 
@@ -25,7 +25,7 @@ func (e *Token) BuildFromModel(m *model.Token) {
 	e.UserID = m.UserID
 	e.Platform = m.Platform.String()
 	e.DeviceID = m.DeviceID
-	e.Token = m.Token
+	e.Value = m.Value
 	e.CreatedAt = m.CreatedAt
 }
 
@@ -37,7 +37,7 @@ func (e *Token) OutputModel() *model.Token {
 		UserID:    e.UserID,
 		Platform:  model.MustPlatform(e.Platform),
 		DeviceID:  e.DeviceID,
-		Token:     e.Token,
+		Value:     e.Value,
 		CreatedAt: e.CreatedAt,
 	}
 }

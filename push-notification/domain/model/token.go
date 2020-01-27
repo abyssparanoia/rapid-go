@@ -14,18 +14,18 @@ type Token struct {
 	AppID     string
 	UserID    string
 	DeviceID  string
-	Token     string
+	Value     string
 	CreatedAt int64
 }
 
 // NewToken ... new token model
 func NewToken(platform Platform,
-	deviceID, token string,
+	deviceID, value string,
 ) *Token {
 	return &Token{
 		Platform:  platform,
 		DeviceID:  deviceID,
-		Token:     token,
+		Value:     value,
 		CreatedAt: util.TimeNowUnixMill(),
 	}
 }
