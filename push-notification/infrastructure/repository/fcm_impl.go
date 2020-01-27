@@ -16,7 +16,6 @@ type fcm struct {
 
 func (r *fcm) SubscribeTopic(
 	ctx context.Context,
-	appID string,
 	topic string,
 	tokens []string) error {
 
@@ -28,6 +27,25 @@ func (r *fcm) SubscribeTopic(
 	if res.FailureCount > 0 {
 		for _, rerr := range res.Errors {
 			err = log.Warninge(ctx, "SubscribeToTopic index: %d, reason: %s", rerr.Index, rerr.Reason)
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *fcm) Unsubscribe(
+	ctx context.Context,
+	topic string,
+	tokens []string) error {
+
+	res, err := r.messagingClient.UnsubscribeFromTopic(ctx, tokens, topic)
+	if err != nil {
+		log.Errorm(ctx, "r.fCli.UnsubscribeFromTopic", err)
+		return err
+	}
+	if res.FailureCount > 0 {
+		for _, rerr := range res.Errors {
+			err = log.Warninge(ctx, "UnsubscribeFromTopic index: %d, reason: %s", rerr.Index, rerr.Reason)
 			return err
 		}
 	}

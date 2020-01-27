@@ -6,7 +6,10 @@ import "context"
 type Fcm interface {
 	SubscribeTopic(
 		ctx context.Context,
-		appID string,
+		topic string,
+		tokens []string) error
+	Unsubscribe(
+		ctx context.Context,
 		topic string,
 		tokens []string) error
 }
