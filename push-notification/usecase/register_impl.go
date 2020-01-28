@@ -7,12 +7,13 @@ import (
 	"github.com/abyssparanoia/rapid-go/push-notification/config"
 	"github.com/abyssparanoia/rapid-go/push-notification/domain/model"
 	"github.com/abyssparanoia/rapid-go/push-notification/domain/repository"
+	"github.com/abyssparanoia/rapid-go/push-notification/domain/service"
 	"github.com/abyssparanoia/rapid-go/push-notification/usecase/input"
 )
 
 type register struct {
-	tokenRepository repository.Token
-	fcmRepository   repository.Fcm
+	fcmRepository repository.Fcm
+	tokenService  service.Token
 }
 
 func (s *register) SetToken(
@@ -20,9 +21,9 @@ func (s *register) SetToken(
 	dto *input.RegisterSetToken) error {
 
 	token := model.NewToken(dto.Platform, dto.AppID, dto.DeviceID, dto.Token)
-	_, err := s.tokenRepository.Create(ctx, token)
+	err := s.tokenService.Set(ctx, token)
 	if err != nil {
-		log.Errorm(ctx, "s.tokenRepository.Create", err)
+		log.Errorm(ctx, "s.tokenService.Set", err)
 		return nil
 	}
 
@@ -37,8 +38,8 @@ func (s *register) SetToken(
 
 // NewRegister ... new register usecase
 func NewRegister(
-	tokenRepository repository.Token,
 	fcmRepository repository.Fcm,
+	tokenService service.Token,
 ) Register {
-	return &register{tokenRepository, fcmRepository}
+	return &register{fcmRepository, tokenService}
 }
