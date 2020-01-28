@@ -18,6 +18,11 @@ type Token struct {
 	CreatedAt int64
 }
 
+// Exists ... check exists or not
+func (m *Token) Exists() bool {
+	return m != nil
+}
+
 // NewToken ... new token model
 func NewToken(platform Platform,
 	appID, deviceID, value string,
