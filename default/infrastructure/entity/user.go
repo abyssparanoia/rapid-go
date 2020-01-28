@@ -37,8 +37,8 @@ func NewUserFromModel(m *model.User) *User {
 	return e
 }
 
-// NewUsers ... output multi user models from entities
-func NewUsers(dsts []*User) []*model.User {
+// OutputUsers ... output multi user models from entities
+func OutputUsers(dsts []*User) []*model.User {
 
 	users := []*model.User{}
 	for _, dst := range dsts {
