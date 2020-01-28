@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	cloud.google.com/go v0.52.0
-	firebase.google.com/go v3.11.1+incompatible
+	firebase.google.com/go v3.12.0+incompatible
 	github.com/caarlos0/env/v6 v6.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/friendsofgo/errors v0.9.2
@@ -25,9 +25,9 @@ require (
 	github.com/rs/xid v1.2.1
 	github.com/rs/zerolog v1.17.2
 	github.com/spf13/cobra v0.0.5 // indirect
-	github.com/spf13/viper v1.6.1
+	github.com/spf13/viper v1.6.2
 	github.com/stretchr/testify v1.4.0
-	github.com/unrolled/render v1.0.1
+	github.com/unrolled/render v1.0.2
 	github.com/volatiletech/inflect v0.0.0-20170731032912-e7201282ae8d // indirect
 	github.com/volatiletech/null v8.0.0+incompatible
 	github.com/volatiletech/sqlboiler v3.6.1+incompatible
