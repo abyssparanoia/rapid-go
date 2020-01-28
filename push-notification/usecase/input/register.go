@@ -40,3 +40,33 @@ func NewRegisterSetToken(
 		Token:    token,
 	}, nil
 }
+
+// RegisterDeleteToken ... register delete token input
+type RegisterDeleteToken struct {
+	AppID    string
+	UserID   string
+	Platform model.Platform
+	DeviceID string
+}
+
+// NewRegisterDeleteToken ... new register delete token input
+func NewRegisterDeleteToken(
+	ctx context.Context,
+	appID string,
+	userID string,
+	platform string,
+	deviceID string,
+) (*RegisterDeleteToken, error) {
+
+	_platform, err := model.NewPlatform(ctx, platform)
+	if err != nil {
+		return nil, log.Errorc(ctx, http.StatusBadRequest, "model.NewPlatform")
+	}
+
+	return &RegisterDeleteToken{
+		AppID:    appID,
+		UserID:   userID,
+		Platform: _platform,
+		DeviceID: deviceID,
+	}, nil
+}

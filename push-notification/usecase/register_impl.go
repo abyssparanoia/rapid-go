@@ -12,22 +12,23 @@ import (
 )
 
 type register struct {
-	fcmRepository repository.Fcm
-	tokenService  service.Token
+	fcmRepository   repository.Fcm
+	tokenRepository repository.Token
+	tokenService    service.Token
 }
 
-func (s *register) SetToken(
+func (u *register) SetToken(
 	ctx context.Context,
 	dto *input.RegisterSetToken) error {
 
 	token := model.NewToken(dto.Platform, dto.AppID, dto.DeviceID, dto.Token)
-	err := s.tokenService.Set(ctx, token)
+	err := u.tokenService.Set(ctx, token)
 	if err != nil {
 		log.Errorm(ctx, "s.tokenService.Set", err)
 		return nil
 	}
 
-	err = s.fcmRepository.SubscribeTopic(ctx, config.TopicAll, []string{token.Value})
+	err = u.fcmRepository.SubscribeTopic(ctx, config.TopicAll, []string{token.Value})
 	if err != nil {
 		log.Errorm(ctx, "s.fcmRepository.SubscribeTopic", err)
 		return nil
@@ -36,10 +37,35 @@ func (s *register) SetToken(
 	return nil
 }
 
+func (u *register) DeleteToken(
+	ctx context.Context,
+	dto *input.RegisterDeleteToken) error {
+	token, err := u.tokenRepository.GetByPlatformAndDeviceIDAndUserID(ctx, dto.AppID, dto.UserID, dto.DeviceID, dto.Platform)
+	if err != nil {
+		log.Errorm(ctx, "u.tokenRepository.GetByPlatformAndDeviceIDAndUserID", err)
+		return nil
+	}
+	if token.Exists() {
+		err = u.tokenRepository.Delete(ctx, token.ID)
+		if err != nil {
+			log.Errorm(ctx, "u.tokenRepository.Delete", err)
+			return nil
+		}
+
+		err = u.fcmRepository.Unsubscribe(ctx, config.TopicAll, []string{token.Value})
+		if err != nil {
+			log.Errorm(ctx, "u.fcmRepository.Unsubscribe", err)
+			return nil
+		}
+	}
+	return nil
+}
+
 // NewRegister ... new register usecase
 func NewRegister(
 	fcmRepository repository.Fcm,
+	tokenRepository repository.Token,
 	tokenService service.Token,
 ) Register {
-	return &register{fcmRepository, tokenService}
+	return &register{fcmRepository, tokenRepository, tokenService}
 }

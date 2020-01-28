@@ -11,4 +11,7 @@ type Register interface {
 	SetToken(
 		ctx context.Context,
 		dto *input.RegisterSetToken) error
+	DeleteToken(
+		ctx context.Context,
+		dto *input.RegisterDeleteToken) error
 }
