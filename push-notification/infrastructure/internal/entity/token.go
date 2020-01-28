@@ -18,17 +18,6 @@ type Token struct {
 	CreatedAt int64                  `firestore:"created_at"`
 }
 
-// BuildFromModel ... build from model
-func (e *Token) BuildFromModel(m *model.Token) {
-	e.ID = m.ID
-	e.AppID = m.AppID
-	e.UserID = m.UserID
-	e.Platform = m.Platform.String()
-	e.DeviceID = m.DeviceID
-	e.Value = m.Value
-	e.CreatedAt = m.CreatedAt
-}
-
 // OutputModel ... output model
 func (e *Token) OutputModel() *model.Token {
 	return &model.Token{
@@ -40,6 +29,20 @@ func (e *Token) OutputModel() *model.Token {
 		Value:     e.Value,
 		CreatedAt: e.CreatedAt,
 	}
+}
+
+// NewTokenFromModel ... new token from model
+func NewTokenFromModel(m *model.Token) *Token {
+	e := &Token{}
+	e.ID = m.ID
+	e.AppID = m.AppID
+	e.UserID = m.UserID
+	e.Platform = m.Platform.String()
+	e.DeviceID = m.DeviceID
+	e.Value = m.Value
+	e.CreatedAt = m.CreatedAt
+
+	return e
 }
 
 // NewTokenMultiOutputModels ... multi output models

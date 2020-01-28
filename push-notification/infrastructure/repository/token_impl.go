@@ -97,8 +97,7 @@ func (r *token) ListByUserID(ctx context.Context,
 func (r *token) Create(ctx context.Context,
 	token *model.Token) (*model.Token, error) {
 
-	tokenEntity := &entity.Token{}
-	tokenEntity.BuildFromModel(token)
+	tokenEntity := entity.NewTokenFromModel(token)
 
 	colRef := entity.NewTokenCollectionRef(r.firestoreClient)
 
@@ -114,8 +113,7 @@ func (r *token) Create(ctx context.Context,
 func (r *token) Update(ctx context.Context,
 	token *model.Token) error {
 
-	tokenEntity := &entity.Token{}
-	tokenEntity.BuildFromModel(token)
+	tokenEntity := entity.NewTokenFromModel(token)
 
 	colRef := entity.NewTokenCollectionRef(r.firestoreClient)
 	docRef := colRef.Doc(token.ID)
