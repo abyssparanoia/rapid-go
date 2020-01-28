@@ -15,7 +15,7 @@ type token struct {
 	firestoreClient *firestore.Client
 }
 
-func (r *token) GetByPlatformAndDeviceID(ctx context.Context,
+func (r *token) GetByPlatformAndDeviceIDAndUserID(ctx context.Context,
 	appID, userID, deviceID string,
 	platform model.Platform) (*model.Token, error) {
 

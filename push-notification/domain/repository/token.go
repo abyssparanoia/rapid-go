@@ -8,7 +8,7 @@ import (
 
 // Token ... token repository interface
 type Token interface {
-	GetByPlatformAndDeviceID(ctx context.Context,
+	GetByPlatformAndDeviceIDAndUserID(ctx context.Context,
 		appID, userID, deviceID string,
 		platform model.Platform) (*model.Token, error)
 	List(ctx context.Context) ([]*model.Token, error)
