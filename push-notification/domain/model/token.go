@@ -20,10 +20,11 @@ type Token struct {
 
 // NewToken ... new token model
 func NewToken(platform Platform,
-	deviceID, value string,
+	appID, deviceID, value string,
 ) *Token {
 	return &Token{
 		Platform:  platform,
+		AppID:     appID,
 		DeviceID:  deviceID,
 		Value:     value,
 		CreatedAt: util.TimeNowUnixMill(),
