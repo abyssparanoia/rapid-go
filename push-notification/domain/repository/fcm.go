@@ -20,5 +20,10 @@ type Fcm interface {
 		ctx context.Context,
 		appID string,
 		tokens []string,
-		src *model.Message) error
+		message *model.Message) error
+	SendMessageByTopic(
+		ctx context.Context,
+		appID string,
+		topic string,
+		message *model.Message) error
 }

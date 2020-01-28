@@ -61,8 +61,7 @@ func (r *fcm) SendMessageByTokens(
 	tokens []string,
 	message *model.Message) error {
 
-	messageEntity := &entity.Message{}
-	messageEntity.BuildFromModel(message, r.serverKey)
+	messageEntity := entity.NewMessageFromModel(message, r.serverKey)
 
 	multiMessage := &messaging.MulticastMessage{
 		Tokens:       tokens,
@@ -80,6 +79,22 @@ func (r *fcm) SendMessageByTokens(
 	}
 	return nil
 
+}
+
+func (r *fcm) SendMessageByTopic(
+	ctx context.Context,
+	appID string,
+	topic string,
+	message *model.Message) error {
+
+	messageEntity := entity.NewMessageFromModel(message, r.serverKey)
+	messageEntity.Topic = topic
+	_, err := r.messagingClient.Send(ctx, messageEntity)
+	if err != nil {
+		log.Warningm(ctx, "r.fCli.Send", err)
+		return err
+	}
+	return nil
 }
 
 // NewFcm ... new fcm repository

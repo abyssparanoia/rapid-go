@@ -7,11 +7,10 @@ import (
 	"github.com/abyssparanoia/rapid-go/push-notification/domain/model"
 )
 
-// Message ... fcm message object
-type Message messaging.Message
+// NewMessageFromModel ... new message from model
+func NewMessageFromModel(m *model.Message, serverKey string) *messaging.Message {
 
-// BuildFromModel ... build from model
-func (e *Message) BuildFromModel(m *model.Message, serverKey string) {
+	e := &messaging.Message{}
 
 	if m.IOS == nil {
 		m.IOS = &model.MessageIOS{
@@ -64,4 +63,6 @@ func (e *Message) BuildFromModel(m *model.Message, serverKey string) {
 			Icon: m.Web.Icon,
 		},
 	}
+
+	return e
 }
