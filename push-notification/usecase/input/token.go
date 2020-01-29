@@ -9,8 +9,8 @@ import (
 	"context"
 )
 
-// RegisterSetToken ... register set token input
-type RegisterSetToken struct {
+// TokenSet ... register set token input
+type TokenSet struct {
 	AppID    string
 	UserID   string
 	Platform model.Platform
@@ -18,21 +18,21 @@ type RegisterSetToken struct {
 	Token    string
 }
 
-// NewRegisterSetToken ... new register set token input
-func NewRegisterSetToken(
+// NewTokenSet ... new register set token input
+func NewTokenSet(
 	ctx context.Context,
 	appID string,
 	userID string,
 	platform string,
 	deviceID string,
-	token string) (*RegisterSetToken, error) {
+	token string) (*TokenSet, error) {
 
 	_platform, err := model.NewPlatform(ctx, platform)
 	if err != nil {
 		return nil, log.Errorc(ctx, http.StatusBadRequest, "model.NewPlatform")
 	}
 
-	return &RegisterSetToken{
+	return &TokenSet{
 		AppID:    appID,
 		UserID:   userID,
 		Platform: _platform,
@@ -41,29 +41,29 @@ func NewRegisterSetToken(
 	}, nil
 }
 
-// RegisterDeleteToken ... register delete token input
-type RegisterDeleteToken struct {
+// TokenDelete ... register delete token input
+type TokenDelete struct {
 	AppID    string
 	UserID   string
 	Platform model.Platform
 	DeviceID string
 }
 
-// NewRegisterDeleteToken ... new register delete token input
-func NewRegisterDeleteToken(
+// NewTokenDelete ... new register delete token input
+func NewTokenDelete(
 	ctx context.Context,
 	appID string,
 	userID string,
 	platform string,
 	deviceID string,
-) (*RegisterDeleteToken, error) {
+) (*TokenDelete, error) {
 
 	_platform, err := model.NewPlatform(ctx, platform)
 	if err != nil {
 		return nil, log.Errorc(ctx, http.StatusBadRequest, "model.NewPlatform")
 	}
 
-	return &RegisterDeleteToken{
+	return &TokenDelete{
 		AppID:    appID,
 		UserID:   userID,
 		Platform: _platform,

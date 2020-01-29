@@ -19,7 +19,7 @@ type register struct {
 
 func (u *register) SetToken(
 	ctx context.Context,
-	dto *input.RegisterSetToken) error {
+	dto *input.TokenSet) error {
 
 	token := model.NewToken(dto.Platform, dto.AppID, dto.DeviceID, dto.Token)
 	err := u.tokenService.Set(ctx, token)
@@ -39,7 +39,7 @@ func (u *register) SetToken(
 
 func (u *register) DeleteToken(
 	ctx context.Context,
-	dto *input.RegisterDeleteToken) error {
+	dto *input.TokenDelete) error {
 	token, err := u.tokenRepository.GetByPlatformAndDeviceIDAndUserID(ctx, dto.AppID, dto.UserID, dto.DeviceID, dto.Platform)
 	if err != nil {
 		log.Errorm(ctx, "u.tokenRepository.GetByPlatformAndDeviceIDAndUserID", err)

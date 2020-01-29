@@ -10,8 +10,8 @@ import (
 type Register interface {
 	SetToken(
 		ctx context.Context,
-		dto *input.RegisterSetToken) error
+		dto *input.TokenSet) error
 	DeleteToken(
 		ctx context.Context,
-		dto *input.RegisterDeleteToken) error
+		dto *input.TokenDelete) error
 }
