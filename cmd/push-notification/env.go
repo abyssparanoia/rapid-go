@@ -14,6 +14,7 @@ type Environment struct {
 	// ServiceID       string `envconfig:"SERVICE_ID"                     required:"true"`
 	CredentialsPath string `envconfig:"GOOGLE_APPLICATION_CREDENTIALS" required:"true"`
 	MinLogSeverity  string `envconfig:"MIN_LOG_SEVERITY"               required:"true"`
+	FcmServerKey    string `envconfig:"FCM_SERVER_KEY" required:"true"`
 }
 
 // Get ... get env
