@@ -23,3 +23,24 @@ schema:
         - .git
         - .realize
         - vendor
+
+  - name: push-notification-server
+    path: .
+    commands:
+      install:
+        status: true
+        method: go build -o ./cmd/push-notification/push-notification-server ./cmd/push-notification/
+      run:
+        status: true
+        method: ./cmd/push-notification/push-notification-server
+      fmt:
+        status: true
+    watcher:
+      extensions:
+        - go
+      paths:
+        - /
+      ignored_paths:
+        - .git
+        - .realize
+        - vendor

@@ -13,16 +13,6 @@ type User struct {
 	BaseEntity
 }
 
-// BuildFromModel ... build from model
-func (e *User) BuildFromModel(m *model.User) {
-	e.ID = m.ID
-	e.DisplayName = m.DisplayName
-	e.IconImagePath = m.IconImagePath
-	e.BackgroundImagePath = m.BackgroundImagePath
-	e.Profile = m.Profile
-	e.Email = m.Email
-}
-
 // OutputModel ... output model from entity
 func (e *User) OutputModel() *model.User {
 	return &model.User{
@@ -35,8 +25,20 @@ func (e *User) OutputModel() *model.User {
 	}
 }
 
-// NewUsers ... output multi user models from entities
-func NewUsers(dsts []*User) []*model.User {
+// NewUserFromModel ... new user from model
+func NewUserFromModel(m *model.User) *User {
+	e := &User{}
+	e.ID = m.ID
+	e.DisplayName = m.DisplayName
+	e.IconImagePath = m.IconImagePath
+	e.BackgroundImagePath = m.BackgroundImagePath
+	e.Profile = m.Profile
+	e.Email = m.Email
+	return e
+}
+
+// OutputUsers ... output multi user models from entities
+func OutputUsers(dsts []*User) []*model.User {
 
 	users := []*model.User{}
 	for _, dst := range dsts {

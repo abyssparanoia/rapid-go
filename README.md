@@ -14,9 +14,10 @@ the boilerplate for monorepo application (support only http protocol)
 
 ## Apps
 
-| Package                             | Localhost             | Prodction  |
-| :---------------------------------- | :-------------------- | :--------- |
-| **[[REST] default](./cmd/default)** | http://localhost:8080 | default.\* |
+| Package                                                 | Localhost             | Prodction            |
+| :------------------------------------------------------ | :-------------------- | :------------------- |
+| **[[REST] default](./cmd/default)**                     | http://localhost:8080 | default.\*           |
+| **[[REST] push-notification](./cmd/push-notification)** | http://localhost:8081 | push-notification.\* |
 
 ## development
 

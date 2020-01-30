@@ -32,7 +32,7 @@ func (r *user) Get(ctx context.Context, userID string) (*model.User, error) {
 		return nil, nil
 	}
 
-	return entity.NewUsers(dsts)[0], nil
+	return entity.OutputUsers(dsts)[0], nil
 }
 
 // NewUser ... get user repository
