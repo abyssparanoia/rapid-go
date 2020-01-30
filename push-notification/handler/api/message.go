@@ -51,6 +51,40 @@ func (h *MessageHandler) SendToUser(w http.ResponseWriter, r *http.Request) {
 	renderer.Success(ctx, w)
 }
 
+// SendToMultiUser ... send to multi user handler
+func (h *MessageHandler) SendToMultiUser(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+
+	var param struct {
+		AppID          string                `json:"app_id" validate:"required"`
+		UserIDList     []string              `json:"user_id_list" validate:"required"`
+		MessageRequest *input.MessageRequest `json:"message" validate:"required"`
+	}
+
+	err := parameter.GetJSON(r, &param)
+	if err != nil {
+		err = errcode.Set(err, http.StatusBadRequest)
+		renderer.HandleError(ctx, w, "paramater.GetJSON", err)
+		return
+	}
+
+	v := validator.New()
+	if err := v.Struct(param); err != nil {
+		renderer.HandleError(ctx, w, "validation error: ", err)
+		return
+	}
+
+	dto := input.NewMessageSendToMultiUser(param.AppID, param.UserIDList, param.MessageRequest)
+	err = h.messageUsecase.SendToMultiUser(ctx, dto)
+	if err != nil {
+		renderer.HandleError(ctx, w, "h.messageUsecase.SendToMultiUser", err)
+		return
+	}
+
+	renderer.Success(ctx, w)
+}
+
 // NewMessageHandler ... new message handler
 func NewMessageHandler(messageUsecase usecase.Message) *MessageHandler {
 	return &MessageHandler{messageUsecase}
