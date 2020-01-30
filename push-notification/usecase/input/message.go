@@ -64,18 +64,44 @@ type MessageSendToUser struct {
 }
 
 // NewMessageSendToUser ... new message send to user input
-func NewMessageSendToUser(appID, userID string, messsage *MessageRequest) *MessageSendToUser {
+func NewMessageSendToUser(appID, userID string,
+	message *MessageRequest) *MessageSendToUser {
 	return &MessageSendToUser{
 		AppID:  appID,
 		UserID: userID,
 		Message: &model.Message{
-			Title:   messsage.Title,
-			Body:    messsage.Body,
-			Data:    messsage.Data,
-			IOS:     messsage.IOS.OutputModel(),
-			Android: messsage.Android.OutputModel(),
-			Web:     messsage.Web.OutputModel(),
+			Title:   message.Title,
+			Body:    message.Body,
+			Data:    message.Data,
+			IOS:     message.IOS.OutputModel(),
+			Android: message.Android.OutputModel(),
+			Web:     message.Web.OutputModel(),
 		},
 	}
 
+}
+
+// MessageSendToMultiUser ...
+type MessageSendToMultiUser struct {
+	AppID      string
+	UserIDList []string
+	Message    *model.Message
+}
+
+// NewMessageSendToMultiUser ...
+func NewMessageSendToMultiUser(appID string,
+	userIDList []string,
+	message *MessageRequest) *MessageSendToMultiUser {
+	return &MessageSendToMultiUser{
+		AppID:      appID,
+		UserIDList: userIDList,
+		Message: &model.Message{
+			Title:   message.Title,
+			Body:    message.Body,
+			Data:    message.Data,
+			IOS:     message.IOS.OutputModel(),
+			Android: message.Android.OutputModel(),
+			Web:     message.Web.OutputModel(),
+		},
+	}
 }

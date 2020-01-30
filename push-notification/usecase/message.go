@@ -10,4 +10,6 @@ import (
 type Message interface {
 	SendToUser(ctx context.Context,
 		dto *input.MessageSendToUser) error
+	SendToMultiUser(ctx context.Context,
+		dto *input.MessageSendToMultiUser) error
 }

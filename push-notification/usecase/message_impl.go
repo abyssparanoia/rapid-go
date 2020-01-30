@@ -38,6 +38,33 @@ func (u *message) SendToUser(ctx context.Context,
 	return nil
 }
 
+func (u *message) SendToMultiUser(ctx context.Context,
+	dto *input.MessageSendToMultiUser) error {
+
+	tokenValues := []string{}
+
+	for _, userID := range dto.UserIDList {
+		tokens, err := u.tokenRepository.ListByUserID(ctx, dto.AppID, userID)
+		if err != nil {
+			log.Errorm(ctx, "u.tokenRepository.ListByUserID", err)
+			return nil
+		}
+		if len(tokens) == 0 {
+			log.Warningf(ctx, "no regist tokens user: %s", userID)
+			return nil
+		}
+
+		tokenValues = append(tokenValues, model.NewTokenValues(tokens)...)
+	}
+
+	err := u.fcmRepository.SendMessageByTokens(ctx, dto.AppID, tokenValues, dto.Message)
+	if err != nil {
+		log.Errorm(ctx, "u.fcmRepository.SendMessageByTokens", err)
+		return nil
+	}
+	return nil
+}
+
 // NewMessage ... new message usecase
 func NewMessage(fcmRepository repository.Fcm, tokenRepository repository.Token) Message {
 	return &message{fcmRepository, tokenRepository}
