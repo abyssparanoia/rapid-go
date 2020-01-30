@@ -11,14 +11,13 @@ import (
 	"github.com/abyssparanoia/rapid-go/push-notification/usecase/input"
 )
 
-type register struct {
+type token struct {
 	fcmRepository   repository.Fcm
 	tokenRepository repository.Token
 	tokenService    service.Token
 }
 
-func (u *register) SetToken(
-	ctx context.Context,
+func (u *token) Set(ctx context.Context,
 	dto *input.TokenSet) error {
 
 	token := model.NewToken(dto.Platform, dto.AppID, dto.DeviceID, dto.Token)
@@ -37,8 +36,7 @@ func (u *register) SetToken(
 	return nil
 }
 
-func (u *register) DeleteToken(
-	ctx context.Context,
+func (u *token) Delete(ctx context.Context,
 	dto *input.TokenDelete) error {
 	token, err := u.tokenRepository.GetByPlatformAndDeviceIDAndUserID(ctx, dto.AppID, dto.UserID, dto.DeviceID, dto.Platform)
 	if err != nil {
@@ -61,11 +59,9 @@ func (u *register) DeleteToken(
 	return nil
 }
 
-// NewRegister ... new register usecase
-func NewRegister(
-	fcmRepository repository.Fcm,
+// NewToken ... new token usecase
+func NewToken(fcmRepository repository.Fcm,
 	tokenRepository repository.Token,
-	tokenService service.Token,
-) Register {
-	return &register{fcmRepository, tokenRepository, tokenService}
+	tokenService service.Token) Token {
+	return &token{fcmRepository, tokenRepository, tokenService}
 }
