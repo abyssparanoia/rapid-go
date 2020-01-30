@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/abyssparanoia/rapid-go/push-notification/usecase/input"
+	validator "gopkg.in/go-playground/validator.v9"
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/errcode"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/parameter"
@@ -33,6 +34,12 @@ func (h *TokenHandler) Set(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		err = errcode.Set(err, http.StatusBadRequest)
 		renderer.HandleError(ctx, w, "paramater.GetJSON", err)
+		return
+	}
+
+	v := validator.New()
+	if err := v.Struct(param); err != nil {
+		renderer.HandleError(ctx, w, "validation error: ", err)
 		return
 	}
 
@@ -67,6 +74,12 @@ func (h *TokenHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		err = errcode.Set(err, http.StatusBadRequest)
 		renderer.HandleError(ctx, w, "paramater.GetJSON", err)
+		return
+	}
+
+	v := validator.New()
+	if err := v.Struct(param); err != nil {
+		renderer.HandleError(ctx, w, "validation error: ", err)
 		return
 	}
 
