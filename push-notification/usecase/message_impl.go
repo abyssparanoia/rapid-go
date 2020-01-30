@@ -39,3 +39,8 @@ func (u *message) SendToUser(ctx context.Context,
 
 	return nil
 }
+
+// NewMessage ... new message usecase
+func NewMessage(fcmRepository repository.Fcm, tokenRepository repository.Token) Message {
+	return &message{fcmRepository, tokenRepository}
+}
