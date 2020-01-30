@@ -36,6 +36,15 @@ func NewToken(platform Platform,
 	}
 }
 
+// NewTokenValues ... get token value list from token model list
+func NewTokenValues(tokens []*Token) []string {
+	tokenValues := make([]string, len(tokens))
+	for index, token := range tokens {
+		tokenValues[index] = token.Value
+	}
+	return tokenValues
+}
+
 // Platform ... platform type
 type Platform string
 

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
+	"github.com/abyssparanoia/rapid-go/push-notification/domain/model"
 	"github.com/abyssparanoia/rapid-go/push-notification/domain/repository"
 	"github.com/abyssparanoia/rapid-go/push-notification/usecase/input"
 )
@@ -26,10 +27,7 @@ func (u *message) SendToUser(ctx context.Context,
 		return nil
 	}
 
-	tokenValues := make([]string, len(tokens))
-	for index, token := range tokens {
-		tokenValues[index] = token.Value
-	}
+	tokenValues := model.NewTokenValues(tokens)
 
 	err = u.fcmRepository.SendMessageByTokens(ctx, dto.AppID, tokenValues, dto.Message)
 	if err != nil {
