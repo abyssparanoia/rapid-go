@@ -19,7 +19,7 @@ type Environment struct {
 
 // Get ... get env
 func (e *Environment) Get() {
-	err := godotenv.Load(".env.default")
+	err := godotenv.Load(".env.push-notification")
 	if err != nil {
 		panic(err)
 	}
