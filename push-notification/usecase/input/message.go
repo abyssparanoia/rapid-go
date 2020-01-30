@@ -105,3 +105,25 @@ func NewMessageSendToMultiUser(appID string,
 		},
 	}
 }
+
+// MessageSendToAllUser ...
+type MessageSendToAllUser struct {
+	AppID   string
+	Message *model.Message
+}
+
+// NewMessageSendToAllUser ...
+func NewMessageSendToAllUser(appID string,
+	message *MessageRequest) *MessageSendToAllUser {
+	return &MessageSendToAllUser{
+		AppID: appID,
+		Message: &model.Message{
+			Title:   message.Title,
+			Body:    message.Body,
+			Data:    message.Data,
+			IOS:     message.IOS.OutputModel(),
+			Android: message.Android.OutputModel(),
+			Web:     message.Web.OutputModel(),
+		},
+	}
+}

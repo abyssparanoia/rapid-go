@@ -12,4 +12,6 @@ type Message interface {
 		dto *input.MessageSendToUser) error
 	SendToMultiUser(ctx context.Context,
 		dto *input.MessageSendToMultiUser) error
+	SendToAllUser(ctx context.Context,
+		dto *input.MessageSendToAllUser) error
 }
