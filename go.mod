@@ -35,7 +35,7 @@ require (
 	go.opencensus.io v0.22.2 // indirect
 	go.uber.org/zap v1.13.0
 	golang.org/x/text v0.3.2
-	google.golang.org/api v0.16.0
+	google.golang.org/api v0.17.0
 	google.golang.org/grpc v1.27.1
 	gopkg.in/go-playground/assert.v1 v1.2.1
 	gopkg.in/go-playground/validator.v9 v9.31.0
