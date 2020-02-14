@@ -3,7 +3,7 @@ module github.com/abyssparanoia/rapid-go
 go 1.13
 
 require (
-	cloud.google.com/go v0.52.0
+	cloud.google.com/go v0.53.0
 	cloud.google.com/go/firestore v1.1.1
 	firebase.google.com/go v3.12.0+incompatible
 	github.com/caarlos0/env/v6 v6.1.0
