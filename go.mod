@@ -37,6 +37,6 @@ require (
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.17.0
 	google.golang.org/grpc v1.27.1
-	gopkg.in/go-playground/assert.v1 v1.2.1
+	gopkg.in/go-playground/assert.v2 v2.0.1
 	gopkg.in/go-playground/validator.v9 v9.31.0
 )
