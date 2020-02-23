@@ -6,9 +6,10 @@ package mock_repository
 
 import (
 	context "context"
+	reflect "reflect"
+
 	model "github.com/abyssparanoia/rapid-go/src/domain/model"
 	gomock "github.com/golang/mock/gomock"
-	reflect "reflect"
 )
 
 // MockUser is a mock of User interface
