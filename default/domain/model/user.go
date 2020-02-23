@@ -10,7 +10,7 @@ type User struct {
 	Email               *string `json:"email"`
 }
 
-// IsExist ... check exist or not
-func (user *User) IsExist() bool {
+// Exist ... check exist or not
+func (user *User) Exist() bool {
 	return user != nil
 }

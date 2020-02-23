@@ -19,7 +19,7 @@ func (s *user) Get(ctx context.Context, userID string) (*model.User, error) {
 		return nil, err
 	}
 
-	if !user.IsExist() {
+	if !user.Exist() {
 		return nil, newUserNotExistError(ctx, userID)
 	}
 
