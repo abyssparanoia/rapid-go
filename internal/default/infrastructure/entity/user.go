@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/abyssparanoia/rapid-go/default/domain/model"
+import "github.com/abyssparanoia/rapid-go/internal/default/domain/model"
 
 // User ... user entity
 type User struct {

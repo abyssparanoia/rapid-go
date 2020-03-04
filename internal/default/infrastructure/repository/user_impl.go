@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
-	"github.com/abyssparanoia/rapid-go/default/domain/model"
-	"github.com/abyssparanoia/rapid-go/default/domain/repository"
-	"github.com/abyssparanoia/rapid-go/default/infrastructure/entity"
+	"github.com/abyssparanoia/rapid-go/internal/default/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/default/domain/repository"
+	"github.com/abyssparanoia/rapid-go/internal/default/infrastructure/entity"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluemysql"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 )

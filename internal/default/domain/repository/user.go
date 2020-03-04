@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/abyssparanoia/rapid-go/default/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/default/domain/model"
 )
 
 // User ... user interface

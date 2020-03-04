@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/default/domain/model"
-	"github.com/abyssparanoia/rapid-go/default/usecase"
+	"github.com/abyssparanoia/rapid-go/internal/default/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/default/usecase"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/parameter"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/renderer"
 	validator "gopkg.in/go-playground/validator.v9"

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/abyssparanoia/rapid-go/default/handler/api"
-	"github.com/abyssparanoia/rapid-go/default/infrastructure/repository"
-	"github.com/abyssparanoia/rapid-go/default/usecase"
+	"github.com/abyssparanoia/rapid-go/internal/default/handler/api"
+	"github.com/abyssparanoia/rapid-go/internal/default/infrastructure/repository"
+	"github.com/abyssparanoia/rapid-go/internal/default/usecase"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluefirebaseauth"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluemysql"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/httpheader"
