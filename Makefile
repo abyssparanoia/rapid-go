@@ -27,31 +27,31 @@ endef
 
 
 define get_usecase_list
-	$(shell	find ./$1/usecase -mindepth 1 -maxdepth 1 -type f ! -name "*_impl*.go")
+	$(shell	find ./internal/$1/usecase -mindepth 1 -maxdepth 1 -type f ! -name "*_impl*.go")
 
 endef
 
 define mockgen_usecase
-	$(shell mockgen -source ./$1/usecase/$2 -destination ./$1/usecase/mock/$2)
+	$(shell mockgen -source ./internal/$1/usecase/$2 -destination ./internal/$1/usecase/mock/$2)
 
 endef
 
 define get_service_list
-	$(shell	find ./$1/domain/service -mindepth 1 -maxdepth 1 -type f )
+	$(shell	find ./internal/$1/domain/service -mindepth 1 -maxdepth 1 -type f )
 
 endef
 
 define mockgen_service
-	$(shell mockgen -source ./$1/domain/service/$2 -destination ./$1/domain/service/mock/$2)
+	$(shell mockgen -source ./internal/$1/domain/service/$2 -destination ./internal/$1/domain/service/mock/$2)
 
 endef
 
 define get_repository_list
-	$(shell	find ./$1/domain/repository -mindepth 1 -maxdepth 1 -type f )
+	$(shell	find ./internal/$1/domain/repository -mindepth 1 -maxdepth 1 -type f )
 	
 endef
 
 define mockgen_repository
-	$(shell mockgen -source ./$1/domain/repository/$2 -destination ./$1/domain/repository/mock/$2)
+	$(shell mockgen -source ./internal/$1/domain/repository/$2 -destination ./internal/$1/domain/repository/mock/$2)
 
 endef

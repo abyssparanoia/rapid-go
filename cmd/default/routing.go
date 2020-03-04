@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/default/handler"
+	"github.com/abyssparanoia/rapid-go/internal/default/handler"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/accesscontrol"
 	"github.com/go-chi/chi"
 )

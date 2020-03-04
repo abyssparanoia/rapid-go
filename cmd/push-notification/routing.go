@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/accesscontrol"
-	"github.com/abyssparanoia/rapid-go/push-notification/handler"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/handler"
 	"github.com/go-chi/chi"
 )
 
