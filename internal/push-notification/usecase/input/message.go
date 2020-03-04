@@ -1,7 +1,7 @@
 package input
 
 import (
-	"github.com/abyssparanoia/rapid-go/push-notification/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/model"
 )
 
 // MessageRequest ... push notification message

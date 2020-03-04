@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/abyssparanoia/rapid-go/push-notification/usecase/input"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/usecase/input"
 )
 
 // Token ... token usecase

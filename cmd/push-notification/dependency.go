@@ -5,10 +5,10 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluefirestore"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/httpheader"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
-	"github.com/abyssparanoia/rapid-go/push-notification/domain/service"
-	"github.com/abyssparanoia/rapid-go/push-notification/handler/api"
-	"github.com/abyssparanoia/rapid-go/push-notification/infrastructure/repository"
-	"github.com/abyssparanoia/rapid-go/push-notification/usecase"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/service"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/handler/api"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/infrastructure/repository"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/usecase"
 )
 
 // Dependency ... dependency

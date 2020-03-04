@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"firebase.google.com/go/messaging"
-	"github.com/abyssparanoia/rapid-go/push-notification/domain/model"
-	"github.com/abyssparanoia/rapid-go/push-notification/domain/repository"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/repository"
 
-	"github.com/abyssparanoia/rapid-go/push-notification/infrastructure/internal/entity"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/infrastructure/internal/entity"
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 )

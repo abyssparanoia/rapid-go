@@ -3,13 +3,13 @@ package api
 import (
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/push-notification/usecase/input"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/usecase/input"
 	validator "gopkg.in/go-playground/validator.v9"
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/errcode"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/parameter"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/renderer"
-	"github.com/abyssparanoia/rapid-go/push-notification/usecase"
+	"github.com/abyssparanoia/rapid-go/internal/push-notification/usecase"
 )
 
 // TokenHandler ... token handler struct
