@@ -6,7 +6,6 @@ require (
 	cloud.google.com/go v0.53.0 // indirect
 	cloud.google.com/go/firestore v1.1.1
 	firebase.google.com/go v3.12.0+incompatible
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-chi/chi v4.0.3+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
@@ -17,6 +16,7 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lib/pq v1.3.0
 	github.com/rs/xid v1.2.1
+	github.com/spf13/cobra v0.0.6
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/unrolled/render v1.0.2
 	golang.org/x/text v0.3.2
