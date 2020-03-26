@@ -1,4 +1,4 @@
-FROM golang:1.13.8-alpine3.10 AS builder
+FROM golang:1.13.9-alpine3.10 AS builder
 
 ARG SERVICE_NAME=default
 
