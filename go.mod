@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go v0.53.0 // indirect
 	cloud.google.com/go/firestore v1.1.1
 	firebase.google.com/go v3.12.0+incompatible
-	github.com/go-chi/chi v4.0.3+incompatible
+	github.com/go-chi/chi v4.0.4+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/mock v1.4.3
