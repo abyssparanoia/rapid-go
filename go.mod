@@ -16,7 +16,7 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lib/pq v1.3.0
 	github.com/rs/xid v1.2.1
-	github.com/spf13/cobra v0.0.6
+	github.com/spf13/cobra v0.0.7
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/unrolled/render v1.0.2
 	golang.org/x/text v0.3.2
