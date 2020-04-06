@@ -23,7 +23,7 @@ require (
 	github.com/unrolled/render v1.0.2
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.21.0
-	google.golang.org/grpc v1.28.0
+	google.golang.org/grpc v1.28.1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/yaml.v2 v2.2.4 // indirect
 )
