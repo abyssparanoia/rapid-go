@@ -8,6 +8,7 @@ require (
 	firebase.google.com/go v3.12.0+incompatible
 	github.com/go-chi/chi v4.1.0+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/mock v1.4.3
 	github.com/jinzhu/gorm v1.9.12
@@ -23,6 +24,5 @@ require (
 	google.golang.org/api v0.21.0
 	google.golang.org/grpc v1.28.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
-	gopkg.in/go-playground/validator.v10 v10.2.0
 	gopkg.in/yaml.v2 v2.2.4 // indirect
 )
