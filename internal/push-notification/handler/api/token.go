@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/usecase/input"
-	validator "gopkg.in/go-playground/validator.v9"
+	validator "github.com/go-playground/validator"
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/errcode"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/parameter"

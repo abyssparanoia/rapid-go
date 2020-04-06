@@ -6,7 +6,7 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 
-	validator "gopkg.in/go-playground/validator.v9"
+	validator "github.com/go-playground/validator"
 )
 
 const (
