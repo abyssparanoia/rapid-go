@@ -21,10 +21,10 @@ type Dependency struct {
 }
 
 // Inject ... inject dependency
-func (d *Dependency) Inject(e *Environment) {
+func (d *Dependency) Inject(e *environment) {
 	var lCli log.Writer
 
-	if e.ENV == "LOCAL" {
+	if e.Envrionment == "LOCAL" {
 		lCli = log.NewWriterStdout()
 	} else {
 		lCli = log.NewWriterStackdriver(e.ProjectID)

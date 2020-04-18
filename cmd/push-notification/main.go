@@ -9,13 +9,16 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/caarlos0/env"
 	"github.com/go-chi/chi"
 )
 
 func main() {
 
-	e := &Environment{}
-	e.Get()
+	e := &environment{}
+	if err := env.Parse(e); err != nil {
+		panic(err)
+	}
 
 	// Dependency
 	d := Dependency{}
