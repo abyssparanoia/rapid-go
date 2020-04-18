@@ -40,10 +40,10 @@ func (d *Dependency) Inject(e *Environment) {
 	dbCfg := gluemysql.NewConfig()
 
 	// pkg
-	dbConn := gluemysql.NewClient(dbCfg)
+	_ = gluemysql.NewClient(dbCfg)
 
 	// Repository
-	uRepo := repository.NewUser(dbConn)
+	uRepo := repository.NewUser()
 
 	// Service
 	dhh := httpheader.NewDummy()
