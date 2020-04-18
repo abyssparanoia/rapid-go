@@ -21,7 +21,7 @@ require (
 	github.com/lib/pq v1.3.0
 	github.com/rs/xid v1.2.1
 	github.com/spf13/cobra v1.0.0
-	github.com/spf13/viper v1.4.0
+	github.com/spf13/viper v1.6.3
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/unrolled/render v1.0.2
 	github.com/volatiletech/inflect v0.0.0-20170731032912-e7201282ae8d // indirect
