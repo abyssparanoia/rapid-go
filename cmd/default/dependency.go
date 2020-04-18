@@ -21,7 +21,7 @@ type Dependency struct {
 }
 
 // Inject ... indect dependency
-func (d *Dependency) Inject(e *Environment) {
+func (d *Dependency) Inject(e *environment) {
 
 	var lCli log.Writer
 	var firebaseauth gluefirebaseauth.Firebaseauth
@@ -29,13 +29,10 @@ func (d *Dependency) Inject(e *Environment) {
 	authCli := gluefirebaseauth.NewClient(e.ProjectID)
 	// fCli := gluefirestore.NewClient(e.ProjectID)
 
-	// Config
-	dbCfg := gluemysql.NewConfig()
-
 	// pkg
-	_ = gluemysql.NewClient(dbCfg)
+	_ = gluemysql.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
 
-	if e.ENV == "LOCAL" {
+	if e.Envrionment == "LOCAL" {
 		lCli = log.NewWriterStdout()
 		firebaseauth = gluefirebaseauth.NewDebug(authCli)
 		boil.DebugMode = true
