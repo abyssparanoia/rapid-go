@@ -15,12 +15,17 @@ type Client struct {
 }
 
 // NewClient ... get gorm client
-func NewClient(cfg *Config) *Client {
+func NewClient(
+	host,
+	user,
+	password,
+	database string,
+) *Client {
 	dbs := fmt.Sprintf("%s:%s@%s/%s?parseTime=true&charset=utf8mb4",
-		cfg.User,
-		cfg.Password,
-		cfg.Host,
-		cfg.DB)
+		user,
+		password,
+		host,
+		database)
 	db, err := sql.Open("mysql", dbs)
 	if err != nil {
 		panic(err)
