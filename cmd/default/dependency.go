@@ -8,6 +8,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluemysql"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/httpheader"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
+	"github.com/volatiletech/sqlboiler/boil"
 )
 
 // Dependency ... dependency
@@ -28,19 +29,20 @@ func (d *Dependency) Inject(e *Environment) {
 	authCli := gluefirebaseauth.NewClient(e.ProjectID)
 	// fCli := gluefirestore.NewClient(e.ProjectID)
 
-	if e.ENV == "LOCAL" {
-		lCli = log.NewWriterStdout()
-		firebaseauth = gluefirebaseauth.NewDebug(authCli)
-	} else {
-		lCli = log.NewWriterStackdriver(e.ProjectID)
-		firebaseauth = gluefirebaseauth.New(authCli)
-	}
-
 	// Config
 	dbCfg := gluemysql.NewConfig()
 
 	// pkg
 	_ = gluemysql.NewClient(dbCfg)
+
+	if e.ENV == "LOCAL" {
+		lCli = log.NewWriterStdout()
+		firebaseauth = gluefirebaseauth.NewDebug(authCli)
+		boil.DebugMode = true
+	} else {
+		lCli = log.NewWriterStackdriver(e.ProjectID)
+		firebaseauth = gluefirebaseauth.New(authCli)
+	}
 
 	// Repository
 	uRepo := repository.NewUser()
