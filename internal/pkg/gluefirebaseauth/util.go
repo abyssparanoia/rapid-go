@@ -6,7 +6,6 @@ import (
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 )
 
 const (
@@ -17,12 +16,10 @@ const (
 func getAuthClient(ctx context.Context) (*auth.Client, error) {
 	app, err := firebase.NewApp(ctx, nil)
 	if err != nil {
-		log.Errorm(ctx, "firebase.NewApp", err)
 		return nil, err
 	}
 	c, err := app.Auth(ctx)
 	if err != nil {
-		log.Errorm(ctx, "app.Auth", err)
 		return nil, err
 	}
 	return c, nil

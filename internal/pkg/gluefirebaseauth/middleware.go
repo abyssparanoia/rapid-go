@@ -31,11 +31,8 @@ func (m *Middleware) Handle(next http.Handler) http.Handler {
 			m.renderError(ctx, w, http.StatusForbidden, err.Error())
 			return
 		}
-
 		ctx = setUserID(ctx, userID)
-
 		ctx = setClaims(ctx, claims)
-
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

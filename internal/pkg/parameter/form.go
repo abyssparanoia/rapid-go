@@ -2,12 +2,12 @@ package parameter
 
 import (
 	"context"
+	"errors"
 	"mime/multipart"
 	"net/http"
 	"reflect"
 	"strconv"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/util"
 )
 
@@ -24,7 +24,6 @@ func GetFormByInt(ctx context.Context, r *http.Request, key string) (int, error)
 	}
 	num, err := strconv.Atoi(str)
 	if err != nil {
-		log.Warningm(ctx, "strconv.Atoi", err)
 		return num, err
 	}
 	return num, nil
@@ -38,7 +37,6 @@ func GetFormByIntOptional(ctx context.Context, r *http.Request, key string) (*in
 	}
 	num, err := strconv.Atoi(str)
 	if err != nil {
-		log.Warningm(ctx, "strconv.Atoi", err)
 		return nil, err
 	}
 	return &num, nil
@@ -52,7 +50,6 @@ func GetFormByInt64(ctx context.Context, r *http.Request, key string) (int64, er
 	}
 	num, err := strconv.ParseInt(str, 10, 64)
 	if err != nil {
-		log.Warningm(ctx, "strconv.ParseInt", err)
 		return num, err
 	}
 	return num, nil
@@ -66,7 +63,6 @@ func GetFormByInt64Optional(ctx context.Context, r *http.Request, key string) (*
 	}
 	num, err := strconv.ParseInt(str, 10, 64)
 	if err != nil {
-		log.Warningm(ctx, "strconv.ParseInt", err)
 		return nil, err
 	}
 	return &num, nil
@@ -80,7 +76,6 @@ func GetFormByFloat64(ctx context.Context, r *http.Request, key string) (float64
 	}
 	num, err := strconv.ParseFloat(str, 64)
 	if err != nil {
-		log.Warningm(ctx, "strconv.ParseFloat", err)
 		return num, err
 	}
 	return num, nil
@@ -94,7 +89,6 @@ func GetFormByBool(ctx context.Context, r *http.Request, key string) (bool, erro
 	}
 	val, err := strconv.ParseBool(str)
 	if err != nil {
-		log.Warningm(ctx, "strconv.ParseInt", err)
 		return val, err
 	}
 	return val, nil
@@ -103,8 +97,7 @@ func GetFormByBool(ctx context.Context, r *http.Request, key string) (bool, erro
 // GetForms ... get form value
 func GetForms(ctx context.Context, r *http.Request, dst interface{}) error {
 	if reflect.TypeOf(dst).Kind() != reflect.Ptr {
-		err := log.Errore(ctx, "dst isn't a pointer")
-		return err
+		return errors.New("dst isn't a pointer")
 	}
 
 	paramType := reflect.TypeOf(dst).Elem()
@@ -121,26 +114,22 @@ func GetForms(ctx context.Context, r *http.Request, dst interface{}) error {
 
 		fieldValue := paramValue.FieldByName(field.Name)
 		if !fieldValue.CanSet() {
-			err := log.Warningc(ctx, http.StatusBadRequest, "fieldValue.CanSet")
-			return err
+			return errors.New("fieldValue.CanSet")
 		}
 		switch field.Type.Kind() {
 		case reflect.Int64:
 			val, err := GetFormByInt64(ctx, r, formTag)
 			if err != nil {
-				log.Debugm(ctx, "GetFormByInt64", err)
 			}
 			fieldValue.SetInt(val)
 		case reflect.Int:
 			val, err := GetFormByInt64(ctx, r, formTag)
 			if err != nil {
-				log.Debugm(ctx, "GetFormByInt64", err)
 			}
 			fieldValue.SetInt(val)
 		case reflect.Float64:
 			val, err := GetFormByFloat64(ctx, r, formTag)
 			if err != nil {
-				log.Debugm(ctx, "GetFormByFloat64", err)
 			}
 			fieldValue.SetFloat(val)
 		case reflect.String:
@@ -149,7 +138,6 @@ func GetForms(ctx context.Context, r *http.Request, dst interface{}) error {
 		case reflect.Bool:
 			val, err := GetFormByBool(ctx, r, formTag)
 			if err != nil {
-				log.Debugm(ctx, "GetFormByBool", err)
 			}
 			fieldValue.SetBool(val)
 		}

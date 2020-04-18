@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
-
 	"github.com/unrolled/render"
 )
 
@@ -31,7 +29,6 @@ func (m *Middleware) Handle(next http.Handler) http.Handler {
 }
 
 func (m *Middleware) renderError(ctx context.Context, w http.ResponseWriter, status int, msg string) {
-	log.Warningf(ctx, msg)
 	render.New().Text(w, status, fmt.Sprintf("%d invalid header params", status))
 }
 
