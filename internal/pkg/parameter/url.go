@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 	"github.com/go-chi/chi"
 )
 
@@ -22,7 +21,6 @@ func GetURLByInt(ctx context.Context, r *http.Request, key string) (int, error) 
 	}
 	num, err := strconv.Atoi(str)
 	if err != nil {
-		log.Warningm(ctx, "strconv.Atoi", err)
 		return 0, err
 	}
 	return num, nil
@@ -36,7 +34,6 @@ func GetURLByInt64(ctx context.Context, r *http.Request, key string) (int64, err
 	}
 	num, err := strconv.ParseInt(str, 10, 64)
 	if err != nil {
-		log.Warningm(ctx, "strconv.ParseInt", err)
 		return 0, err
 	}
 	return num, nil
@@ -50,7 +47,6 @@ func GetURLByFloat64(ctx context.Context, r *http.Request, key string) (float64,
 	}
 	num, err := strconv.ParseFloat(str, 64)
 	if err != nil {
-		log.Warningm(ctx, "strconv.ParseFloat", err)
 		return 0, err
 	}
 	return num, nil

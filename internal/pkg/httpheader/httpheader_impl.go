@@ -4,8 +4,6 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
-
 	validator "github.com/go-playground/validator"
 )
 
@@ -23,7 +21,6 @@ func (s *httpheader) Get(ctx context.Context, r *http.Request) (Params, error) {
 
 	v := validator.New()
 	if err := v.Struct(h); err != nil {
-		log.Warningf(ctx, "Header param validation error: %s", err.Error())
 		return h, err
 	}
 
