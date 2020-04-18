@@ -1,0 +1,19 @@
+# shared
+export GOOGLE_APPLICATION_CREDENTIALS="./serviceAccount.json"
+export PROJECT_ID="sample"
+
+# default server
+export DEFAULT_ENV="LOCAL"
+export DEFAULT_PORT="8080"
+export DEFAULT_MIN_LOG_SEVERITY="DEBUG"
+export DEFAULT_DB_HOST="tcp(localhost:3306)"
+export DEFAULT_DB_USER="root"
+export DEFAULT_DB_PASSWORD="password"
+export DEFAULT_DB_DATABASE="defaultdb"
+
+
+# push notification server
+export PUSH_NOTIFICATION_ENV="LOCAL"
+export PUSH_NOTIFICATION_PORT="8081"
+export PUSH_NOTIFICATION_MIN_LOG_SEVERITY="DEBUG"
+export FCM_SERVER_KEY=hogehoge
