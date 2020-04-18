@@ -11,6 +11,9 @@ export DEFAULT_DB_USER="root"
 export DEFAULT_DB_PASSWORD="password"
 export DEFAULT_DB_DATABASE="defaultdb"
 
+# default gprc server
+export DEFAULT_GRPC_ENV="LOCAL"
+export DEFAULT_GRPC_PORT="50051"
 
 # push notification server
 export PUSH_NOTIFICATION_ENV="LOCAL"
