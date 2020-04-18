@@ -7,7 +7,7 @@ require (
 	cloud.google.com/go/firestore v1.1.1
 	firebase.google.com/go v3.12.0+incompatible
 	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
-	github.com/caarlos0/env v3.5.0+incompatible
+	github.com/caarlos0/env/v6 v6.2.1
 	github.com/caarlos0/env/v6 v6.2.1
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-chi/chi v4.1.1+incompatible
