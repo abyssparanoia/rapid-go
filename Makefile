@@ -14,6 +14,7 @@ test:
 
 mockgen:
 	$(call mockgen_app ,default)
+	$(call mockgen_app ,default-grpc)
 	$(call format)
 
 sqlboiler:
