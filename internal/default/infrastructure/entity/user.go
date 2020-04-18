@@ -1,16 +1,14 @@
 package entity
 
-import "github.com/abyssparanoia/rapid-go/internal/default/domain/model"
+import (
+	"github.com/abyssparanoia/rapid-go/internal/dbmodels/defaultdb"
+	"github.com/abyssparanoia/rapid-go/internal/default/domain/model"
+	"github.com/volatiletech/null"
+)
 
 // User ... user entity
 type User struct {
-	ID                  string
-	DisplayName         string
-	IconImagePath       string
-	BackgroundImagePath string
-	Profile             *string
-	Email               *string
-	BaseEntity
+	defaultdb.User
 }
 
 // OutputModel ... output model from entity
@@ -20,8 +18,8 @@ func (e *User) OutputModel() *model.User {
 		DisplayName:         e.DisplayName,
 		IconImagePath:       e.IconImagePath,
 		BackgroundImagePath: e.BackgroundImagePath,
-		Profile:             e.Profile,
-		Email:               e.Email,
+		Profile:             e.Profile.Ptr(),
+		Email:               e.Email.Ptr(),
 	}
 }
 
@@ -32,8 +30,8 @@ func NewUserFromModel(m *model.User) *User {
 	e.DisplayName = m.DisplayName
 	e.IconImagePath = m.IconImagePath
 	e.BackgroundImagePath = m.BackgroundImagePath
-	e.Profile = m.Profile
-	e.Email = m.Email
+	e.Profile = null.StringFromPtr(m.Profile)
+	e.Email = null.StringFromPtr(m.Email)
 	return e
 }
 

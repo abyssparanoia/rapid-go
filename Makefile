@@ -16,6 +16,10 @@ mockgen:
 	$(call mockgen_app ,default)
 	$(call format)
 
+sqlboiler:
+	sqlboiler mysql --config ./db/default/sqlboiler.toml --pkgname defaultdb --wipe --no-hooks --struct-tag-casing camel --output ./internal/dbmodels/defaultdb --templates ${GOPATH}/src/github.com/volatiletech/sqlboiler/templates,${GOPATH}/src/github.com/volatiletech/sqlboiler/templates_test
+	$(call format)
+
 define format
 	go fmt ./... && goimports -w ./ && go mod tidy
 

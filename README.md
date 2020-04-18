@@ -67,7 +67,7 @@ the boilerplate for monorepo application (support only http protocol)
 - generate server code by sql boiler
 
 ```bash
-> sqlboiler -c ./db/authentication/sqlboiler.toml -o ./pkg/dbmodels/authentication psql
+> make sqlboiler
 ``` -->
 
 ## production

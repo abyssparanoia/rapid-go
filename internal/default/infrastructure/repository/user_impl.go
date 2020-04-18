@@ -2,40 +2,39 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
+	"github.com/abyssparanoia/rapid-go/internal/dbmodels/defaultdb"
 	"github.com/abyssparanoia/rapid-go/internal/default/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/default/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/default/infrastructure/entity"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/gluemysql"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/gluesqlboiler"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 )
 
 type user struct {
-	cli *gluemysql.Client
 }
 
 func (r *user) Get(ctx context.Context, userID string) (*model.User, error) {
 
-	dsts := []*entity.User{}
+	dbUser, err := defaultdb.Users(
+		defaultdb.UserWhere.ID.EQ(userID),
+	).One(ctx, gluesqlboiler.GetContextExecutor(ctx))
 
-	db := r.cli.GetDB(ctx).
-		Where("id = ?", userID).
-		Limit(1).
-		Find(&dsts)
-
-	if err := gluemysql.HandleErrors(db); err != nil {
-		log.Errorm(ctx, "db.Find", err)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Errorm(ctx, "dbUser.select.not.found", err)
+			return nil, err
+		}
+		log.Errorm(ctx, "dbUser.select", err)
 		return nil, err
 	}
 
-	if len(dsts) == 0 {
-		return nil, nil
-	}
-
-	return entity.OutputUsers(dsts)[0], nil
+	user := entity.User{User: *dbUser}
+	return user.OutputModel(), nil
 }
 
 // NewUser ... get user repository
-func NewUser(cli *gluemysql.Client) repository.User {
-	return &user{cli}
+func NewUser() repository.User {
+	return &user{}
 }
