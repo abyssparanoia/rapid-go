@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/domain/repository"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 )
 
 type user struct {
@@ -15,12 +15,11 @@ type user struct {
 func (s *user) Get(ctx context.Context, userID string) (*model.User, error) {
 	user, err := s.userRepo.Get(ctx, userID)
 	if err != nil {
-		log.Errorm(ctx, "s.userRepo.Get", err)
 		return nil, err
 	}
 
 	if !user.Exist() {
-		return nil, newUserNotExistError(ctx, userID)
+		return nil, errors.New("not found user")
 	}
 
 	return user, nil
