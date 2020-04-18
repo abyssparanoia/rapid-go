@@ -1,0 +1,7 @@
+[mysql]
+  dbname  = "defaultdb"
+  host    = "localhost"
+  port    = 3306
+  user    = "root"
+  pass    = "password"
+  sslmode = "false"
