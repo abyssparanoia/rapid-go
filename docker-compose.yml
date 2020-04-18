@@ -21,4 +21,4 @@ services:
     environment:
       TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: default_db
+      MYSQL_DATABASE: defaultdb
