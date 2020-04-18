@@ -17,6 +17,7 @@ require (
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/golang/mock v1.4.3
 	github.com/golang/protobuf v1.3.3
+	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/joho/godotenv v1.3.0
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -29,6 +30,7 @@ require (
 	github.com/volatiletech/inflect v0.0.0-20170731032912-e7201282ae8d // indirect
 	github.com/volatiletech/null v8.0.0+incompatible
 	github.com/volatiletech/sqlboiler v3.7.0+incompatible
+	go.uber.org/zap v1.10.0
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.21.0
 	google.golang.org/grpc v1.28.1
