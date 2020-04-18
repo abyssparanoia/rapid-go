@@ -1,25 +1,17 @@
 package gluemysql
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
+	"github.com/volatiletech/sqlboiler/boil"
 )
 
 // Client ... client
 type Client struct {
-	db *gorm.DB
-}
-
-// GetDB ... get db with set logger
-func (c *Client) GetDB(ctx context.Context) *gorm.DB {
-	db := c.db.New()
-	db.SetLogger(gorm.Logger{
-		LogWriter: NewLogger(ctx),
-	})
-	return db
+	db *sql.DB
 }
 
 // NewClient ... get gorm client
@@ -29,11 +21,12 @@ func NewClient(cfg *Config) *Client {
 		cfg.Password,
 		cfg.Host,
 		cfg.DB)
-	db, err := gorm.Open("mysql", dbs)
+	db, err := sql.Open("mysql", dbs)
 	if err != nil {
 		panic(err)
 	}
-	db.LogMode(true)
+	boil.SetLocation(time.Local)
+	boil.SetDB(db)
 	return &Client{
 		db: db,
 	}
