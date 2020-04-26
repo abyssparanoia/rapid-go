@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package default;
+option go_package = "default";
+
+import "google/protobuf/timestamp.proto";
+
+service DefaultService { rpc GetUser(GetUserRequest) returns (User); }
+
+message User {
+  string id = 1;
+  string display_name = 2;
+  string icon_image_path = 3;
+  string background_image_path = 4;
+  string profile = 5;
+  string email = 6;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp deleted_at = 10;
+}
+
+message GetUserRequest { string user_id = 1; }

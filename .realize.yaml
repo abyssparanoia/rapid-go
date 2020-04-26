@@ -24,6 +24,27 @@ schema:
         - .realize
         - vendor
 
+  - name: default-grpc-server
+    path: .
+    commands:
+      install:
+        status: true
+        method: go build -o ./cmd/default-grpc/default-gprc-server ./cmd/default-grpc/
+      run:
+        status: true
+        method: ./cmd/default-grpc/default-gprc-server
+      fmt:
+        status: true
+    watcher:
+      extensions:
+        - go
+      paths:
+        - /
+      ignored_paths:
+        - .git
+        - .realize
+        - vendor
+
   - name: push-notification-server
     path: .
     commands:
