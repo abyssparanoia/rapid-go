@@ -17,8 +17,16 @@ func (h *DefaultHandler) GetUser(
 	ctx context.Context,
 	req *pb.GetUserRequest,
 ) (*pb.User, error) {
+	user, err := h.userUsecase.Get(ctx, req.GetUserId())
+	if err != nil {
+		return nil, err
+	}
+
 	return &pb.User{
-		Id: "user_id",
+		Id:                  user.ID,
+		DisplayName:         user.DisplayName,
+		IconImagePath:       user.IconImagePath,
+		BackgroundImagePath: user.BackgroundImagePath,
 	}, nil
 }
 
