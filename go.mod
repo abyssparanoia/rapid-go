@@ -22,7 +22,7 @@ require (
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/lib/pq v1.3.0
+	github.com/lib/pq v1.4.0
 	github.com/rs/xid v1.2.1
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.6.3
