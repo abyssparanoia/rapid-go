@@ -5,7 +5,7 @@ go 1.13
 require (
 	cloud.google.com/go v0.53.0 // indirect
 	cloud.google.com/go/firestore v1.1.1
-	firebase.google.com/go v3.12.0+incompatible
+	firebase.google.com/go v3.12.1+incompatible
 	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
 	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/caarlos0/env/v6 v6.2.1
@@ -33,6 +33,6 @@ require (
 	go.uber.org/zap v1.15.0
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.22.0
-	google.golang.org/grpc v1.28.1
+	google.golang.org/grpc v1.29.1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
