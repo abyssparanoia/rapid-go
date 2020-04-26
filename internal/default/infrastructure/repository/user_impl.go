@@ -9,7 +9,6 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/default/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/default/infrastructure/entity"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluesqlboiler"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 )
 
 type user struct {
@@ -23,10 +22,8 @@ func (r *user) Get(ctx context.Context, userID string) (*model.User, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			log.Errorm(ctx, "dbUser.select.not.found", err)
 			return nil, err
 		}
-		log.Errorm(ctx, "dbUser.select", err)
 		return nil, err
 	}
 
