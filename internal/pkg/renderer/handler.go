@@ -3,10 +3,13 @@ package renderer
 import (
 	"context"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errcode"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/httperror"
+	"go.uber.org/zap"
+
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 	"github.com/unrolled/render"
 	"golang.org/x/text/encoding/japanese"
@@ -14,32 +17,23 @@ import (
 )
 
 // HandleError ... handle http error
-func HandleError(ctx context.Context, w http.ResponseWriter, msg string, err error) {
-	code, ok := errcode.Get(err)
+func HandleError(ctx context.Context, w http.ResponseWriter, err error) {
+	var httpError *httperror.HTTPError
+	ok := errors.As(err, &httpError)
 	if !ok {
+		log.Errorf(ctx, "internal error", zap.Error(err))
 		Error(ctx, w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	switch code {
-	case http.StatusBadRequest:
-		msg := fmt.Sprintf("%d StatusBadRequest: %s, %s", code, msg, err.Error())
-		log.Warningf(ctx, msg)
-	case http.StatusUnauthorized:
-		msg := fmt.Sprintf("%d Unauthorized: %s, %s", code, msg, err.Error())
-		log.Warningf(ctx, msg)
-	case http.StatusForbidden:
-		msg := fmt.Sprintf("%d Forbidden: %s, %s", code, msg, err.Error())
-		log.Warningf(ctx, msg)
-	case http.StatusNotFound:
-		msg := fmt.Sprintf("%d NotFound: %s, %s", code, msg, err.Error())
-		log.Warningf(ctx, msg)
+	switch httpError.Code {
+	case http.StatusBadRequest, http.StatusUnauthorized, http.StatusForbidden, http.StatusNotFound:
+		log.Warningf(ctx, httpError.Error(), zap.Error(httpError))
 	default:
-		msg := fmt.Sprintf("%d: %s, %s", code, msg, err.Error())
-		log.Errorf(ctx, msg)
+		log.Errorf(ctx, httpError.Error(), zap.Error(httpError))
 	}
 
-	Error(ctx, w, code, err.Error())
+	Error(ctx, w, httpError.Code, httpError.Error())
 }
 
 // Success ... render success response

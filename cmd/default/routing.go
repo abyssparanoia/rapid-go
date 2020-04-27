@@ -15,7 +15,7 @@ func Routing(r chi.Router, d Dependency) {
 	r.Use(accesscontrol.Handle)
 
 	// request log
-	r.Use(d.Log.Handle)
+	r.Use(d.httpMiddleware.Handle)
 
 	// need to authenticate for production
 	r.Route("/v1", func(r chi.Router) {

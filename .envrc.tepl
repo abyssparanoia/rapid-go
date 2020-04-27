@@ -3,7 +3,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="./serviceAccount.json"
 export PROJECT_ID="sample"
 
 # default server
-export DEFAULT_ENV="LOCAL"
+export DEFAULT_ENV="local"
 export DEFAULT_PORT="8080"
 export DEFAULT_MIN_LOG_SEVERITY="DEBUG"
 export DEFAULT_DB_HOST="tcp(localhost:3306)"
@@ -16,7 +16,7 @@ export DEFAULT_GRPC_ENV="LOCAL"
 export DEFAULT_GRPC_PORT="50051"
 
 # push notification server
-export PUSH_NOTIFICATION_ENV="LOCAL"
+export PUSH_NOTIFICATION_ENV="local"
 export PUSH_NOTIFICATION_PORT="8081"
 export PUSH_NOTIFICATION_MIN_LOG_SEVERITY="DEBUG"
 export FCM_SERVER_KEY=hogehoge

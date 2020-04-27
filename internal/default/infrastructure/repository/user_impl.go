@@ -3,13 +3,17 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/abyssparanoia/rapid-go/internal/dbmodels/defaultdb"
 	"github.com/abyssparanoia/rapid-go/internal/default/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/default/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/default/infrastructure/entity"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluesqlboiler"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/httperror"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type user struct {
@@ -23,10 +27,11 @@ func (r *user) Get(ctx context.Context, userID string) (*model.User, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			log.Errorm(ctx, "dbUser.select.not.found", err)
-			return nil, err
+			msg := fmt.Sprintf("user %s not found", userID)
+			err = errors.Wrap(err, msg)
+			log.Errorf(ctx, msg, zap.Error(err))
+			return nil, httperror.NotFoundError(err)
 		}
-		log.Errorm(ctx, "dbUser.select", err)
 		return nil, err
 	}
 
