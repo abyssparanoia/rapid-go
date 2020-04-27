@@ -13,6 +13,7 @@ require (
 	github.com/go-chi/chi v4.1.1+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
+	github.com/go-playground/validator/v10 v10.2.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/golang/mock v1.4.3
