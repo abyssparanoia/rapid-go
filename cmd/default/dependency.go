@@ -7,13 +7,14 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluefirebaseauth"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluemysql"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/httpheader"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/httpmiddleware"
 	"github.com/volatiletech/sqlboiler/boil"
+	"go.uber.org/zap"
 )
 
 // Dependency ... dependency
 type Dependency struct {
-	Log              *log.Middleware
+	httpMiddleware   *httpmiddleware.HTTPMiddleware
 	gluefirebaseauth *gluefirebaseauth.Middleware
 	DummyHTTPHeader  *httpheader.Middleware
 	HTTPHeader       *httpheader.Middleware
@@ -21,9 +22,8 @@ type Dependency struct {
 }
 
 // Inject ... indect dependency
-func (d *Dependency) Inject(e *environment) {
+func (d *Dependency) Inject(e *environment, logger *zap.Logger) {
 
-	var lCli log.Writer
 	var firebaseauth gluefirebaseauth.Firebaseauth
 
 	authCli := gluefirebaseauth.NewClient(e.ProjectID)
@@ -32,12 +32,10 @@ func (d *Dependency) Inject(e *environment) {
 	// pkg
 	_ = gluemysql.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
 
-	if e.Envrionment == "LOCAL" {
-		lCli = log.NewWriterStdout()
+	if e.Envrionment == "local" {
 		firebaseauth = gluefirebaseauth.NewDebug(authCli)
 		boil.DebugMode = true
 	} else {
-		lCli = log.NewWriterStackdriver(e.ProjectID)
 		firebaseauth = gluefirebaseauth.New(authCli)
 	}
 
@@ -50,7 +48,8 @@ func (d *Dependency) Inject(e *environment) {
 	uSvc := usecase.NewUser(uRepo)
 
 	// Middleware
-	d.Log = log.NewMiddleware(lCli, e.MinLogSeverity)
+	d.httpMiddleware = httpmiddleware.New(logger)
+
 	d.gluefirebaseauth = gluefirebaseauth.NewMiddleware(firebaseauth)
 	d.DummyHTTPHeader = httpheader.NewMiddleware(dhh)
 	d.HTTPHeader = httpheader.NewMiddleware(hh)
