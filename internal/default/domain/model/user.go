@@ -18,3 +18,26 @@ type User struct {
 func (user *User) Exist() bool {
 	return user != nil
 }
+
+func NewUser(
+	id,
+	displayName,
+	iconImagePath,
+	backgroundImagePath,
+	profile,
+	email string,
+) *User {
+
+	now := time.Now()
+
+	return &User{
+		ID:                  id,
+		DisplayName:         displayName,
+		IconImagePath:       iconImagePath,
+		BackgroundImagePath: backgroundImagePath,
+		Profile:             &profile,
+		Email:               &email,
+		CreatedAt:           now,
+		UpdatedAt:           now,
+	}
+}
