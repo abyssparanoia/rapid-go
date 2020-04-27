@@ -11,7 +11,6 @@ require (
 	github.com/caarlos0/env/v6 v6.2.2
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-chi/chi v4.1.1+incompatible
-	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.2.0
 	github.com/go-sql-driver/mysql v1.5.0
@@ -22,7 +21,6 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lib/pq v1.4.0
 	github.com/opentracing/opentracing-go v1.1.0
 	github.com/pkg/errors v0.8.1
