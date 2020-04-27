@@ -8,7 +8,7 @@ require (
 	firebase.google.com/go v3.12.1+incompatible
 	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
 	github.com/caarlos0/env v3.5.0+incompatible
-	github.com/caarlos0/env/v6 v6.2.1
+	github.com/caarlos0/env/v6 v6.2.2
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-chi/chi v4.1.1+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
