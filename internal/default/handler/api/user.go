@@ -32,13 +32,13 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	v := validator.New()
 	if err := v.Struct(param); err != nil {
-		renderer.HandleError(ctx, w, "validation error: ", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	user, err := h.userUsecase.Get(ctx, param.UserID)
 	if err != nil {
-		renderer.HandleError(ctx, w, "h.Svc.Get", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
