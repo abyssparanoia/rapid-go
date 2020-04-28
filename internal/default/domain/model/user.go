@@ -28,8 +28,6 @@ func NewUser(
 	email string,
 ) *User {
 
-	now := time.Now()
-
 	return &User{
 		ID:                  id,
 		DisplayName:         displayName,
@@ -37,7 +35,7 @@ func NewUser(
 		BackgroundImagePath: backgroundImagePath,
 		Profile:             &profile,
 		Email:               &email,
-		CreatedAt:           now,
-		UpdatedAt:           now,
+		CreatedAt:           time.Time{},
+		UpdatedAt:           time.Time{},
 	}
 }
