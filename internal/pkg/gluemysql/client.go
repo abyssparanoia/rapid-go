@@ -11,10 +11,10 @@ import (
 
 // Client ... client
 type Client struct {
-	db *sql.DB
+	DB *sql.DB
 }
 
-// NewClient ... get gorm client
+// NewClient ... get mysql client
 func NewClient(
 	host,
 	user,
@@ -33,6 +33,6 @@ func NewClient(
 	boil.SetLocation(time.Local)
 	boil.SetDB(db)
 	return &Client{
-		db: db,
+		DB: db,
 	}
 }
