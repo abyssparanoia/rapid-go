@@ -3,7 +3,6 @@ package api
 import (
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errcode"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/parameter"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/renderer"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/usecase/input"
@@ -30,21 +29,20 @@ func (h *MessageHandler) SendToUser(w http.ResponseWriter, r *http.Request) {
 
 	err := parameter.GetJSON(r, &param)
 	if err != nil {
-		err = errcode.Set(err, http.StatusBadRequest)
-		renderer.HandleError(ctx, w, "paramater.GetJSON", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	v := validator.New()
 	if err := v.Struct(param); err != nil {
-		renderer.HandleError(ctx, w, "validation error: ", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	dto := input.NewMessageSendToUser(param.AppID, param.UserID, param.MessageRequest)
 	err = h.messageUsecase.SendToUser(ctx, dto)
 	if err != nil {
-		renderer.HandleError(ctx, w, "h.messageUsecase.SendToUser", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
@@ -64,21 +62,20 @@ func (h *MessageHandler) SendToMultiUser(w http.ResponseWriter, r *http.Request)
 
 	err := parameter.GetJSON(r, &param)
 	if err != nil {
-		err = errcode.Set(err, http.StatusBadRequest)
-		renderer.HandleError(ctx, w, "paramater.GetJSON", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	v := validator.New()
 	if err := v.Struct(param); err != nil {
-		renderer.HandleError(ctx, w, "validation error: ", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	dto := input.NewMessageSendToMultiUser(param.AppID, param.UserIDList, param.MessageRequest)
 	err = h.messageUsecase.SendToMultiUser(ctx, dto)
 	if err != nil {
-		renderer.HandleError(ctx, w, "h.messageUsecase.SendToMultiUser", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
@@ -97,21 +94,20 @@ func (h *MessageHandler) SendToAllUser(w http.ResponseWriter, r *http.Request) {
 
 	err := parameter.GetJSON(r, &param)
 	if err != nil {
-		err = errcode.Set(err, http.StatusBadRequest)
-		renderer.HandleError(ctx, w, "paramater.GetJSON", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	v := validator.New()
 	if err := v.Struct(param); err != nil {
-		renderer.HandleError(ctx, w, "validation error: ", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	dto := input.NewMessageSendToAllUser(param.AppID, param.MessageRequest)
 	err = h.messageUsecase.SendToAllUser(ctx, dto)
 	if err != nil {
-		renderer.HandleError(ctx, w, "h.messageUsecase.SendToAllUser", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 

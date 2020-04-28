@@ -10,7 +10,7 @@ build-helper:
 	go build -o helper ./cmd/helper
 
 test:
-	go test `go list ./... | grep -v pkg/dbmodels`
+	go test `go list ./... | grep -v internal/dbmodels`
 
 mockgen:
 	$(call mockgen_app ,default)

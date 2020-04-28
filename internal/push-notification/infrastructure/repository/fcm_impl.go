@@ -2,14 +2,15 @@ package repository
 
 import (
 	"context"
+	"fmt"
+
+	"github.com/pkg/errors"
 
 	"firebase.google.com/go/messaging"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/repository"
 
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/infrastructure/internal/entity"
-
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 )
 
 type fcm struct {
@@ -24,13 +25,11 @@ func (r *fcm) SubscribeTopic(
 
 	res, err := r.messagingClient.SubscribeToTopic(ctx, tokens, topic)
 	if err != nil {
-		log.Errorm(ctx, "r.fCli.SubscribeToTopic", err)
 		return err
 	}
 	if res.FailureCount > 0 {
 		for _, rerr := range res.Errors {
-			err = log.Warninge(ctx, "SubscribeToTopic index: %d, reason: %s", rerr.Index, rerr.Reason)
-			return err
+			return errors.New(fmt.Sprintf("SubscribeToTopic index: %d, reason: %s", rerr.Index, rerr.Reason))
 		}
 	}
 	return nil
@@ -43,13 +42,11 @@ func (r *fcm) Unsubscribe(
 
 	res, err := r.messagingClient.UnsubscribeFromTopic(ctx, tokens, topic)
 	if err != nil {
-		log.Errorm(ctx, "r.fCli.UnsubscribeFromTopic", err)
 		return err
 	}
 	if res.FailureCount > 0 {
 		for _, rerr := range res.Errors {
-			err = log.Warninge(ctx, "UnsubscribeFromTopic index: %d, reason: %s", rerr.Index, rerr.Reason)
-			return err
+			return errors.New(fmt.Sprintf("UnsubscribeFromTopic index: %d, reason: %s", rerr.Index, rerr.Reason))
 		}
 	}
 	return nil
@@ -74,7 +71,6 @@ func (r *fcm) SendMessageByTokens(
 
 	_, err := r.messagingClient.SendMulticast(ctx, multiMessage)
 	if err != nil {
-		log.Warningm(ctx, "r.messagingClient.SendMulticast", err)
 		return err
 	}
 	return nil
@@ -91,7 +87,6 @@ func (r *fcm) SendMessageByTopic(
 	messageEntity.Topic = topic
 	_, err := r.messagingClient.Send(ctx, messageEntity)
 	if err != nil {
-		log.Warningm(ctx, "r.fCli.Send", err)
 		return err
 	}
 	return nil

@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/config"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/repository"
@@ -20,11 +19,9 @@ func (u *message) SendToUser(ctx context.Context,
 
 	tokens, err := u.tokenRepository.ListByUserID(ctx, dto.AppID, dto.UserID)
 	if err != nil {
-		log.Errorm(ctx, "u.tokenRepository.ListByUserID", err)
 		return nil
 	}
 	if len(tokens) == 0 {
-		log.Warningf(ctx, "no regist tokens user: %s", dto.UserID)
 		return nil
 	}
 
@@ -32,7 +29,6 @@ func (u *message) SendToUser(ctx context.Context,
 
 	err = u.fcmRepository.SendMessageByTokens(ctx, dto.AppID, tokenValues, dto.Message)
 	if err != nil {
-		log.Errorm(ctx, "u.fcmRepository.SendMessageByTokens", err)
 		return nil
 	}
 
@@ -47,11 +43,9 @@ func (u *message) SendToMultiUser(ctx context.Context,
 	for _, userID := range dto.UserIDList {
 		tokens, err := u.tokenRepository.ListByUserID(ctx, dto.AppID, userID)
 		if err != nil {
-			log.Errorm(ctx, "u.tokenRepository.ListByUserID", err)
 			return nil
 		}
 		if len(tokens) == 0 {
-			log.Warningf(ctx, "no regist tokens user: %s", userID)
 			return nil
 		}
 
@@ -60,7 +54,6 @@ func (u *message) SendToMultiUser(ctx context.Context,
 
 	err := u.fcmRepository.SendMessageByTokens(ctx, dto.AppID, tokenValues, dto.Message)
 	if err != nil {
-		log.Errorm(ctx, "u.fcmRepository.SendMessageByTokens", err)
 		return nil
 	}
 	return nil
@@ -71,7 +64,6 @@ func (u *message) SendToAllUser(ctx context.Context,
 
 	err := u.fcmRepository.SendMessageByTopic(ctx, dto.AppID, config.TopicAll, dto.Message)
 	if err != nil {
-		log.Warningm(ctx, "s.fRepo.SendMessageByTopic", err)
 		return err
 	}
 	return nil

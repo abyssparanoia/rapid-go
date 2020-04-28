@@ -1,9 +1,6 @@
 package input
 
 import (
-	"net/http"
-
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/model"
 
 	"context"
@@ -29,7 +26,7 @@ func NewTokenSet(
 
 	_platform, err := model.NewPlatform(ctx, platform)
 	if err != nil {
-		return nil, log.Errorc(ctx, http.StatusBadRequest, "model.NewPlatform")
+		return nil, err
 	}
 
 	return &TokenSet{
@@ -60,7 +57,7 @@ func NewTokenDelete(
 
 	_platform, err := model.NewPlatform(ctx, platform)
 	if err != nil {
-		return nil, log.Errorc(ctx, http.StatusBadRequest, "model.NewPlatform")
+		return nil, err
 	}
 
 	return &TokenDelete{
