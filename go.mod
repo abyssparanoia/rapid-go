@@ -35,9 +35,9 @@ require (
 	github.com/uber/jaeger-client-go v2.23.0+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible // indirect
 	github.com/unrolled/render v1.0.3
-	github.com/volatiletech/inflect v0.0.0-20170731032912-e7201282ae8d // indirect
 	github.com/volatiletech/null v8.0.0+incompatible
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
+	github.com/volatiletech/sqlboiler/v4 v4.0.0
 	go.uber.org/zap v1.15.0
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.22.0
