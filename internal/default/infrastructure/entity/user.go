@@ -20,6 +20,8 @@ func (e *User) OutputModel() *model.User {
 		BackgroundImagePath: e.BackgroundImagePath,
 		Profile:             e.Profile.Ptr(),
 		Email:               e.Email.Ptr(),
+		CreatedAt:           e.CreatedAt,
+		UpdatedAt:           e.UpdatedAt,
 	}
 }
 
@@ -32,6 +34,8 @@ func NewUserFromModel(m *model.User) *User {
 	e.BackgroundImagePath = m.BackgroundImagePath
 	e.Profile = null.StringFromPtr(m.Profile)
 	e.Email = null.StringFromPtr(m.Email)
+	e.CreatedAt = m.CreatedAt
+	e.UpdatedAt = m.UpdatedAt
 	return e
 }
 
@@ -44,9 +48,4 @@ func OutputUsers(dsts []*User) []*model.User {
 	}
 
 	return users
-}
-
-// UserTableName ... get user table name
-func UserTableName() string {
-	return "users"
 }

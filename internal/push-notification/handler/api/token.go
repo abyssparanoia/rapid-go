@@ -6,7 +6,6 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/usecase/input"
 	validator "github.com/go-playground/validator"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errcode"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/parameter"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/renderer"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/usecase"
@@ -32,26 +31,25 @@ func (h *TokenHandler) Set(w http.ResponseWriter, r *http.Request) {
 
 	err := parameter.GetJSON(r, &param)
 	if err != nil {
-		err = errcode.Set(err, http.StatusBadRequest)
-		renderer.HandleError(ctx, w, "paramater.GetJSON", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	v := validator.New()
 	if err := v.Struct(param); err != nil {
-		renderer.HandleError(ctx, w, "validation error: ", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	dto, err := input.NewTokenSet(ctx, param.AppID, param.UserID, param.Platform, param.DeviceID, param.Token)
 	if err != nil {
-		renderer.HandleError(ctx, w, "input.NewTokenSet", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	err = h.tokenUsecase.Set(ctx, dto)
 	if err != nil {
-		renderer.HandleError(ctx, w, "h.tokenUsecase.Set", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
@@ -72,26 +70,25 @@ func (h *TokenHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	err := parameter.GetJSON(r, &param)
 	if err != nil {
-		err = errcode.Set(err, http.StatusBadRequest)
-		renderer.HandleError(ctx, w, "paramater.GetJSON", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	v := validator.New()
 	if err := v.Struct(param); err != nil {
-		renderer.HandleError(ctx, w, "validation error: ", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	dto, err := input.NewTokenDelete(ctx, param.AppID, param.UserID, param.Platform, param.DeviceID)
 	if err != nil {
-		renderer.HandleError(ctx, w, "input.NewTokenDelete", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 
 	err = h.tokenUsecase.Delete(ctx, dto)
 	if err != nil {
-		renderer.HandleError(ctx, w, "h.tokenUsecase.Delete", err)
+		renderer.HandleError(ctx, w, err)
 		return
 	}
 

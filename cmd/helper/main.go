@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
+
 	"github.com/abyssparanoia/rapid-go/cmd/helper/ctxhelper"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 )
 
 func main() {
@@ -16,7 +17,7 @@ func main() {
 	d := Dependency{}
 	d.Inject(e)
 	ctx := context.Background()
-	ctx = log.SetLogger(ctx, d.Logger)
+	ctx = ctxzap.ToContext(ctx, d.Logger)
 
 	setDeps(d)
 	ctxhelper.SetContext(ctx)
