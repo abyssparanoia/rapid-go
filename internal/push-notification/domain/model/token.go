@@ -3,7 +3,8 @@ package model
 import (
 	"context"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
+	"github.com/pkg/errors"
+
 	"github.com/abyssparanoia/rapid-go/internal/pkg/util"
 )
 
@@ -66,7 +67,7 @@ func NewPlatform(ctx context.Context, platform string) (Platform, error) {
 	default:
 	}
 
-	return "", log.Errore(ctx, "no match case")
+	return "", errors.New("no match case")
 }
 
 // MustPlatform ... must platform

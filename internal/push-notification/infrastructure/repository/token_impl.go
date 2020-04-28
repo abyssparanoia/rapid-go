@@ -5,7 +5,6 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluefirestore"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/push-notification/infrastructure/internal/entity"
@@ -29,7 +28,6 @@ func (r *token) GetByPlatformAndDeviceIDAndUserID(ctx context.Context,
 	tokenEntity := &entity.Token{}
 	exist, err := gluefirestore.GetByQuery(ctx, query, tokenEntity)
 	if err != nil {
-		log.Errorm(ctx, "gluefirestore.GetByQuery", err)
 		return nil, err
 	}
 	if !exist {
@@ -57,7 +55,6 @@ func (r *token) List(ctx context.Context) ([]*model.Token, error) {
 
 		err := gluefirestore.ListByQuery(ctx, query, _tokenEntityList)
 		if err != nil {
-			log.Errorm(ctx, "gluefirestore.ListByQuery", err)
 			return nil, err
 		}
 
@@ -88,7 +85,6 @@ func (r *token) ListByUserID(ctx context.Context,
 	tokenEntityList := []*entity.Token{}
 	err := gluefirestore.ListByQuery(ctx, query, tokenEntityList)
 	if err != nil {
-		log.Errorm(ctx, "gluefirestore.ListByQuery", err)
 		return nil, err
 	}
 	return entity.NewTokenMultiOutputModels(tokenEntityList), nil
@@ -103,7 +99,6 @@ func (r *token) Create(ctx context.Context,
 
 	err := gluefirestore.Create(ctx, colRef, tokenEntity)
 	if err != nil {
-		log.Errorm(ctx, "gluefirestore.Create", err)
 		return nil, err
 	}
 
@@ -119,7 +114,6 @@ func (r *token) Update(ctx context.Context,
 	docRef := colRef.Doc(token.ID)
 	err := gluefirestore.Set(ctx, docRef, tokenEntity)
 	if err != nil {
-		log.Errorm(ctx, "gluefirestore.Set", err)
 		return err
 	}
 
@@ -134,7 +128,6 @@ func (r *token) Delete(ctx context.Context,
 
 	err := gluefirestore.Delete(ctx, docRef)
 	if err != nil {
-		log.Errorm(ctx, "gluefirestore.Delete", err)
 		return err
 	}
 
