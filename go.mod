@@ -3,7 +3,6 @@ module github.com/abyssparanoia/rapid-go
 go 1.13
 
 require (
-	cloud.google.com/go v0.53.0 // indirect
 	cloud.google.com/go/firestore v1.1.1
 	firebase.google.com/go v3.12.1+incompatible
 	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
@@ -40,7 +39,7 @@ require (
 	github.com/volatiletech/sqlboiler/v4 v4.0.1
 	go.uber.org/zap v1.15.0
 	golang.org/x/text v0.3.2
-	google.golang.org/api v0.22.0
+	google.golang.org/api v0.23.0
 	google.golang.org/grpc v1.29.1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
