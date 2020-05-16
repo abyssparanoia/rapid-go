@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/abyssparanoia/rapid-go/internal/dbmodels/defaultdb"
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/domain/repository"
@@ -22,7 +25,7 @@ func (r *user) Get(ctx context.Context, userID string) (*model.User, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, err
+			return nil, status.Errorf(codes.NotFound, "not found user")
 		}
 		return nil, err
 	}

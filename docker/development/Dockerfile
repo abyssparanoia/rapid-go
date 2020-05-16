@@ -5,8 +5,8 @@ COPY . .
 
 ENV GO111MODULE=off
 
-RUN apk --no-cache --update upgrade \
-    && apk add --no-cache git alpine-sdk \
-    && go get github.com/tockins/realize
+RUN apk upgrade \
+    && apk add git alpine-sdk \
+    && go get -u github.com/tockins/realize
 
 ENV GO111MODULE=on
