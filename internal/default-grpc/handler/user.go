@@ -7,13 +7,13 @@ import (
 	pb "github.com/abyssparanoia/rapid-go/proto/default"
 )
 
-// DefaultHandler ...
-type DefaultHandler struct {
+// UserHandler ...
+type UserHandler struct {
 	userUsecase usecase.User
 }
 
 // GetUser ...
-func (h *DefaultHandler) GetUser(
+func (h *UserHandler) GetUser(
 	ctx context.Context,
 	req *pb.GetUserRequest,
 ) (*pb.User, error) {
@@ -30,9 +30,9 @@ func (h *DefaultHandler) GetUser(
 	}, nil
 }
 
-// NewDefaultHandler ...
-func NewDefaultHandler(
+// NewUserHandler ...
+func NewUserHandler(
 	userUsecase usecase.User,
-) *DefaultHandler {
-	return &DefaultHandler{userUsecase}
+) *UserHandler {
+	return &UserHandler{userUsecase}
 }

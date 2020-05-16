@@ -14,10 +14,12 @@ the boilerplate for monorepo application (support only http protocol)
 
 ## Apps
 
-| Package                                                 | Localhost             | Prodction            |
-| :------------------------------------------------------ | :-------------------- | :------------------- |
-| **[[REST] default](./cmd/default)**                     | http://localhost:8080 | default.\*           |
-| **[[REST] push-notification](./cmd/push-notification)** | http://localhost:8081 | push-notification.\* |
+| Package                                                            | Localhost              | Prodction            |
+| :----------------------------------------------------------------- | :--------------------- | :------------------- |
+| **[[REST] default](./cmd/default)**                                | http://localhost:8080  | default.\*           |
+| **[[gRPC] default-grpc](./cmd/push-notification)**                 | http://localhost:50051 | default-grpc.\*      |
+| **[[REST] default-grpc-json-transcoder](./cmd/push-notification)** | http://localhost:51051 | default-grpc-rest.\* |
+| **[[REST] push-notification](./cmd/push-notification)**            | http://localhost:8081  | push-notification.\* |
 
 ## development
 
