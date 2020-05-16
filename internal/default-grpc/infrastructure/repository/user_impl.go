@@ -25,7 +25,7 @@ func (r *user) Get(ctx context.Context, userID string) (*model.User, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, status.Errorf(codes.NotFound, "not found user")
+			return nil, status.New(codes.NotFound, "user not found").Err()
 		}
 		return nil, err
 	}
