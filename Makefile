@@ -1,5 +1,11 @@
 # note: call scripts from /scripts
 
+init:
+	go get -u google.golang.org/grpc \
+    go get -u github.com/golang/protobuf/protoc-gen-go \
+    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
+    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger 
+
 format:
 	$(call format)
 
@@ -64,5 +70,6 @@ define mockgen_repository
 endef
 
 define gen_proto_go
-	$(shell protoc -I${GOPATH}/src --proto_path=./proto --go_out=plugins=grpc:./proto/$1 $1.proto)
+	$(shell protoc -I${GOPATH}/src -I ${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --proto_path=./proto --go_out=plugins=grpc:./proto/$1 $1.proto)
+	$(shell protoc -I${GOPATH}/src -I ${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --proto_path=./proto --include_imports --include_source_info --descriptor_set_out=./proto/$1.pb $1.proto)
 endef
