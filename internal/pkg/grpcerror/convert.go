@@ -1,8 +1,6 @@
 package grpcerror
 
 import (
-	"errors"
-
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc/codes"
 )
@@ -17,16 +15,4 @@ func CodeToLevel(code codes.Code) zapcore.Level {
 	default:
 		return zapcore.InfoLevel
 	}
-}
-
-// ExtractCodeFromErr ... extract code from error
-func ExtractCodeFromErr(err error) codes.Code {
-	if err == nil {
-		return codes.OK
-	}
-	var se *Error
-	if ok := errors.Is(err, se); ok {
-		return se.Code
-	}
-	return codes.Unknown
 }
