@@ -9,7 +9,29 @@ services:
       - 8080:8080
     volumes:
       - .:/go/src/github.com/abyssparanoia/rapid-go
-    command: ash -c "realize start"
+    command: ash -c "source .envrc && realize start --name default-server"
+
+  default-grpc-server:
+    build:
+      context: .
+      dockerfile: docker/development/Dockerfile
+    expose:
+      - 50051
+    volumes:
+      - .:/go/src/github.com/abyssparanoia/rapid-go
+    command: ash -c "source .envrc && realize start --name default-grpc-server"
+
+  envoy:
+    image: envoyproxy/envoy:v1.14.1
+    volumes:
+      - "./deployment/envoy:/etc/envoy"
+      - "./proto:/etc/pb"
+    expose:
+      - 51051
+    ports:
+      - 51051:51051
+    links:
+      - default-grpc-server
 
   default-db:
     build: ./db/default
