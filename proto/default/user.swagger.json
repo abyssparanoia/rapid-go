@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "default.proto",
+    "title": "user.proto",
     "version": "version not set"
   },
   "consumes": [
@@ -13,7 +13,7 @@
   "paths": {
     "/users/{userId}": {
       "get": {
-        "operationId": "DefaultService_GetUser",
+        "operationId": "UserService_GetUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -37,7 +37,7 @@
           }
         ],
         "tags": [
-          "DefaultService"
+          "UserService"
         ]
       }
     }
