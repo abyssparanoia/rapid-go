@@ -72,11 +72,13 @@ endef
 define gen_proto_go
 	$(shell protoc -I${GOPATH}/src \
 				   -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+				   -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/ \
 				   --proto_path=./proto \
 				   --go_out=plugins=grpc:./proto/$1 \
 				   --include_imports \
 				   --include_source_info \
-				   --descriptor_set_out=./proto/default/$1.pb \
+				   --descriptor_set_out=./proto/$1/$1.pb \
+				   --swagger_out=json_names_for_fields=true:./proto/$1 \
 				   $1.proto \
 	)
 endef
