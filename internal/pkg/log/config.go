@@ -1,6 +1,7 @@
 package log
 
 import (
+	"github.com/blendle/zapdriver"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -45,6 +46,12 @@ func newProductionConfig() zap.Config {
 		OutputPaths:      []string{"stdout"},
 		ErrorOutputPaths: []string{"stderr"},
 	}
+}
+
+func newStackdriverConfig() zap.Config {
+	cfg := zapdriver.NewProductionConfig()
+	cfg.DisableStacktrace = true
+	return cfg
 }
 
 func encoderConfig() zapcore.EncoderConfig {
