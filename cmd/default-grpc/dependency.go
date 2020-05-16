@@ -38,7 +38,7 @@ func newDefaultServer(logger *zap.Logger, e *environment) *grpc.Server {
 
 	userUsecase := usecase.NewUser(userRepository)
 
-	defaultHandler := handler.NewDefaultHandler(userUsecase)
+	userHandler := handler.NewUserHandler(userUsecase)
 
 	opts := []grpc_recovery.Option{
 		grpc_recovery.WithRecoveryHandler(recoveryFuncFactory(logger)),
@@ -52,7 +52,7 @@ func newDefaultServer(logger *zap.Logger, e *environment) *grpc.Server {
 		),
 	)
 
-	pb.RegisterDefaultServiceServer(server, defaultHandler)
+	pb.RegisterUserServiceServer(server, userHandler)
 	reflection.Register(server)
 	grpc_health_v1.RegisterHealthServer(server, health.NewServer())
 

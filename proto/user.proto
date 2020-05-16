@@ -4,8 +4,15 @@ package default;
 option go_package = "default";
 
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
-service DefaultService { rpc GetUser(GetUserRequest) returns (User); }
+service UserService {
+  rpc GetUser(GetUserRequest) returns (User) {
+    option (google.api.http) = {
+      get : "/users/{user_id}"
+    };
+  };
+}
 
 message User {
   string id = 1;
