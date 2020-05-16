@@ -26,8 +26,8 @@ static_resources:
                 http_filters:
                   - name: envoy.grpc_json_transcoder
                     config:
-                      proto_descriptor: "/etc/pb/default/default.pb"
-                      services: ["default.DefaultService"]
+                      proto_descriptor: "/etc/pb/default/user.pb"
+                      services: ["default.UserService"]
                       print_options:
                         add_whitespace: true
                         always_print_primitive_fields: true
