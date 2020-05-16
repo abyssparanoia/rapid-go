@@ -8,6 +8,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/infrastructure/repository"
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/usecase"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluemysql"
+	grpc_requestlog "github.com/abyssparanoia/rapid-go/internal/pkg/interceptor/requestlog"
 	pb "github.com/abyssparanoia/rapid-go/proto/default"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -19,12 +20,13 @@ import (
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 )
 
 func recoveryFuncFactory(logger *zap.Logger) func(p interface{}) error {
 	return func(p interface{}) error {
 		logger.Error(fmt.Sprintf("p: %+v\n", p))
-		return grpc.Errorf(codes.Internal, "Unexpected error")
+		return status.Errorf(codes.Internal, "Unexpected error: %+v\n", p)
 	}
 }
 
@@ -48,6 +50,7 @@ func newDefaultServer(logger *zap.Logger, e *environment) *grpc.Server {
 		grpc_middleware.WithUnaryServerChain(
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(logger),
+			grpc_requestlog.UnaryServerInterceptor(),
 			grpc_recovery.UnaryServerInterceptor(opts...),
 		),
 	)

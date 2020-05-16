@@ -7,6 +7,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
+
 	env "github.com/caarlos0/env/v6"
 	"go.uber.org/zap"
 )
@@ -19,7 +21,7 @@ func main() {
 		panic(err)
 	}
 
-	logger, err := zap.NewDevelopment()
+	logger, err := log.New(e.Envrionment)
 	if err != nil {
 		panic(err)
 	}
