@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/grpcerror"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/error/grpcerror"
 	"github.com/blendle/zapdriver"
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"

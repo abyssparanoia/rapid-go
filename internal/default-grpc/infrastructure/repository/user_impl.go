@@ -4,12 +4,11 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/grpcerror"
-
 	"github.com/abyssparanoia/rapid-go/internal/dbmodels/defaultdb"
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/infrastructure/entity"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/error/grpcerror"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluesqlboiler"
 )
 
