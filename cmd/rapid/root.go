@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	defaultgrpc "github.com/abyssparanoia/rapid-go/cmd/rapid/default-grpc"
+
 	"github.com/spf13/cobra"
 )
 
@@ -18,6 +20,7 @@ func newCmdRoot() *cobra.Command {
 			}
 		},
 	}
+	cmd.AddCommand(defaultgrpc.NewDefaultGRPCCmd())
 	return cmd
 }
 
