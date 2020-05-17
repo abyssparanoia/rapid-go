@@ -9,9 +9,6 @@ init:
 format:
 	$(call format)
 
-build:
-	go build -o default-server ./cmd/default
-
 build-helper:
 	go build -o helper ./cmd/helper
 
