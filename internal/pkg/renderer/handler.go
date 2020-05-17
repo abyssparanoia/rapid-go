@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/httperror"
 	"go.uber.org/zap"
 
+	"github.com/abyssparanoia/rapid-go/internal/pkg/error/httperror"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 	"github.com/unrolled/render"
 	"golang.org/x/text/encoding/japanese"

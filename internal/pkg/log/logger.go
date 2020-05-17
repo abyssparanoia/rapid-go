@@ -3,41 +3,22 @@ package log
 import (
 	"context"
 
+	"go.uber.org/zap/zapcore"
+
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 // Must ... new logger
-func Must(logger *zap.Logger, err error) *zap.Logger {
-	if err != nil {
-		panic(err)
-	}
-	return logger
+func Must(ctx context.Context) *zap.Logger {
+	return logger(ctx)
 }
 
 // New ... new logger
 func New(env string) (*zap.Logger, error) {
-	if env == "test" {
-		return newTestConfig().Build(
-			zap.AddStacktrace(zapcore.WarnLevel),
-		)
-	}
-	if env == "local" {
-		return newDevelopmentConfig().Build(
-			zap.AddStacktrace(zapcore.DebugLevel),
-		)
-	}
-	if env == "development" {
-		return newDevelopmentConfig().Build(
-			zap.AddStacktrace(zapcore.WarnLevel),
-		)
-	}
-	return newProductionConfig().Build(
-		zap.AddStacktrace(zapcore.WarnLevel),
-	)
+	return newStackdriverConfig().Build(zap.AddStacktrace(zapcore.WarnLevel))
 }
 
 // Logger ... get context from context
