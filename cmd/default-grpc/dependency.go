@@ -49,8 +49,7 @@ func newDefaultServer(logger *zap.Logger, e *environment) *grpc.Server {
 	server := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-			grpc_zap.UnaryServerInterceptor(logger),
-			grpc_requestlog.UnaryServerInterceptor(),
+			grpc_requestlog.UnaryServerInterceptor(logger),
 			grpc_recovery.UnaryServerInterceptor(opts...),
 		),
 	)
