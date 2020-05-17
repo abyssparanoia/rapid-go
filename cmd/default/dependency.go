@@ -7,14 +7,14 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluefirebaseauth"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluemysql"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/httpheader"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/httpmiddleware"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/middleware/requestlog"
 	"github.com/volatiletech/sqlboiler/boil"
 	"go.uber.org/zap"
 )
 
 // Dependency ... dependency
 type Dependency struct {
-	httpMiddleware   *httpmiddleware.HTTPMiddleware
+	httpMiddleware   *requestlog.HTTPMiddleware
 	gluefirebaseauth *gluefirebaseauth.Middleware
 	DummyHTTPHeader  *httpheader.Middleware
 	HTTPHeader       *httpheader.Middleware
@@ -48,7 +48,7 @@ func (d *Dependency) Inject(e *environment, logger *zap.Logger) {
 	uSvc := usecase.NewUser(uRepo)
 
 	// Middleware
-	d.httpMiddleware = httpmiddleware.New(logger)
+	d.httpMiddleware = requestlog.New(logger)
 
 	d.gluefirebaseauth = gluefirebaseauth.NewMiddleware(firebaseauth)
 	d.DummyHTTPHeader = httpheader.NewMiddleware(dhh)
