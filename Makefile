@@ -9,11 +9,11 @@ init:
 format:
 	$(call format)
 
-build:
-	go build -o default-server ./cmd/default
-
 build-helper:
 	go build -o helper ./cmd/helper
+
+build-cli:
+	go build -o ./rapid ./cmd/rapid
 
 test:
 	go test `go list ./... | grep -v internal/dbmodels`
