@@ -4,3 +4,5 @@ secret/*
 db/*/data/*
 .env.*
 serviceAccount.json
+rapid
+helper
