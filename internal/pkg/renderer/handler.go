@@ -3,14 +3,13 @@ package renderer
 import (
 	"context"
 	"encoding/csv"
-	"errors"
 	"fmt"
 	"net/http"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"go.uber.org/zap"
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/error/httperror"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
 	"github.com/unrolled/render"
 	"golang.org/x/text/encoding/japanese"
 	"golang.org/x/text/transform"
@@ -18,22 +17,9 @@ import (
 
 // HandleError ... handle http error
 func HandleError(ctx context.Context, w http.ResponseWriter, err error) {
-	var httpError *httperror.HTTPError
-	ok := errors.As(err, &httpError)
-	if !ok {
-		log.Errorf(ctx, "internal error", zap.Error(err))
-		Error(ctx, w, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	switch httpError.Code {
-	case http.StatusBadRequest, http.StatusUnauthorized, http.StatusForbidden, http.StatusNotFound:
-		log.Warningf(ctx, httpError.Error(), zap.Error(httpError))
-	default:
-		log.Errorf(ctx, httpError.Error(), zap.Error(httpError))
-	}
-
-	Error(ctx, w, httpError.Code, httpError.Error())
+	statusCode := httperror.ErrToCode(err)
+	ctxzap.AddFields(ctx, zap.Error(err))
+	Error(ctx, w, statusCode, err.Error())
 }
 
 // Success ... render success response

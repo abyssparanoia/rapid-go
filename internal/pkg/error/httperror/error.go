@@ -1,10 +1,6 @@
 package httperror
 
-import (
-	"net/http"
+var (
+	// UserNotFoundErr ... user not found error
+	UserNotFoundErr NotFoundError = "UserNotFoundErr"
 )
-
-// NotFoundError ... not found error
-func NotFoundError(err error) *HTTPError {
-	return NewHTTPError(err, http.StatusNotFound)
-}
