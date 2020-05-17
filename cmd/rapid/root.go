@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	notification "github.com/abyssparanoia/rapid-go/cmd/rapid/push-notification"
+
 	defaulthttp "github.com/abyssparanoia/rapid-go/cmd/rapid/default-http"
 
 	defaultgrpc "github.com/abyssparanoia/rapid-go/cmd/rapid/default-grpc"
@@ -24,6 +26,7 @@ func newCmdRoot() *cobra.Command {
 	}
 	cmd.AddCommand(defaultgrpc.NewDefaultGRPCCmd())
 	cmd.AddCommand(defaulthttp.NewDefaultHTTPCmd())
+	cmd.AddCommand(notification.NewPushNotificationCmd())
 	return cmd
 }
 

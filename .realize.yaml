@@ -56,12 +56,15 @@ schema:
     commands:
       install:
         status: true
-        method: go build -o ./cmd/push-notification/push-notification-server ./cmd/push-notification/
+        method: make build-cli
       run:
         status: true
-        method: ./cmd/push-notification/push-notification-server
+        method: ./rapid
       fmt:
         status: true
+    args:
+      - push-notification
+      - run
     watcher:
       extensions:
         - go
