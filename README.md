@@ -42,12 +42,6 @@ the boilerplate for monorepo application (support only http protocol)
 
 ### server starting
 
-- local
-
-```bash
-> realize start
-```
-
 - docker
 
 ```bash
