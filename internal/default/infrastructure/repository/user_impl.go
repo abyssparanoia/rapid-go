@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/volatiletech/sqlboiler/boil"
 
@@ -13,9 +12,6 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/default/infrastructure/entity"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/error/httperror"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/gluesqlboiler"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/log"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 type user struct {
@@ -29,10 +25,7 @@ func (r *user) Get(ctx context.Context, userID string) (*model.User, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			msg := fmt.Sprintf("user %s not found", userID)
-			err = errors.Wrap(err, msg)
-			log.Errorf(ctx, msg, zap.Error(err))
-			return nil, httperror.NotFoundError(err)
+			return nil, httperror.UserNotFoundErr.New()
 		}
 		return nil, err
 	}
