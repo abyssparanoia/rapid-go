@@ -40,27 +40,25 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		)
 
 		resp, err := handler(ctx, req)
-		defer func() {
-			if err != nil {
-				st, _ := status.FromError(err)
-				zapcoreLevel := grpcerror.CodeToLevel(st.Code())
-				l.Check(zapcoreLevel, "call end").Write(
-					zapdriver.OperationEnd(operationID.String(), producerID),
-					zap.String("grpc.code", st.Code().String()),
-					zap.Error(err),
-				)
-			} else {
-				l.Info(
-					"call end",
-					zapdriver.OperationEnd(operationID.String(), producerID),
-					zap.String("grpc.code", codes.OK.String()),
-					zap.Reflect("response", resp),
-				)
-			}
-		}()
+
 		if err != nil {
+			code := grpcerror.ErrToCode(err)
+			zapcoreLevel := grpcerror.CodeToLevel(code)
+			l.Check(zapcoreLevel, "call end").Write(
+				zapdriver.OperationEnd(operationID.String(), producerID),
+				zap.String("grpc.code", code.String()),
+				zap.Error(err),
+			)
+			err = status.Errorf(code, "%s", err.Error())
 			return nil, err
 		}
+
+		l.Info(
+			"call end",
+			zapdriver.OperationEnd(operationID.String(), producerID),
+			zap.String("grpc.code", codes.OK.String()),
+			zap.Reflect("response", resp),
+		)
 
 		return resp, nil
 	}
