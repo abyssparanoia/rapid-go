@@ -15,6 +15,9 @@ build:
 build-helper:
 	go build -o helper ./cmd/helper
 
+build-cli:
+	go build -o rapid ./cmd/rapid
+
 test:
 	go test `go list ./... | grep -v internal/dbmodels`
 
