@@ -1,4 +1,4 @@
-package httpmiddleware
+package requestlog
 
 import "net/http"
 

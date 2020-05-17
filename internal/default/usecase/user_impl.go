@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 
 	"github.com/abyssparanoia/rapid-go/internal/default/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/default/domain/repository"
@@ -16,10 +15,6 @@ func (s *user) Get(ctx context.Context, userID string) (*model.User, error) {
 	user, err := s.userRepo.Get(ctx, userID)
 	if err != nil {
 		return nil, err
-	}
-
-	if !user.Exist() {
-		return nil, errors.New("not found user")
 	}
 
 	return user, nil
