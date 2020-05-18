@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/default-grpc/domain/repository"
@@ -13,13 +12,9 @@ type user struct {
 }
 
 func (s *user) Get(ctx context.Context, userID string) (*model.User, error) {
-	user, err := s.userRepo.Get(ctx, userID)
+	user, err := s.userRepo.Get(ctx, userID, true)
 	if err != nil {
 		return nil, err
-	}
-
-	if !user.Exist() {
-		return nil, errors.New("not found user")
 	}
 
 	return user, nil
