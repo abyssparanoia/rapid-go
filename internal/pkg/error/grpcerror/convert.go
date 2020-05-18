@@ -25,5 +25,13 @@ func ErrToCode(err error) codes.Code {
 	if ok := errors.As(err, &notFoundError); ok {
 		return codes.NotFound
 	}
+	var invalidArgumentError *InvalidArgumentError
+	if ok := errors.As(err, &invalidArgumentError); ok {
+		return codes.InvalidArgument
+	}
+	var internalError *InternalError
+	if ok := errors.As(err, &internalError); ok {
+		return codes.Internal
+	}
 	return codes.Unknown
 }
