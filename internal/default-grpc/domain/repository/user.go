@@ -13,4 +13,8 @@ type User interface {
 		userID string,
 		orFail bool,
 	) (*model.User, error)
+	Create(
+		ctx context.Context,
+		user *model.User,
+	) (*model.User, error)
 }
