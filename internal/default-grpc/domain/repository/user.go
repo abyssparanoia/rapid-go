@@ -8,5 +8,9 @@ import (
 
 // User ... user interface
 type User interface {
-	Get(ctx context.Context, userID string) (*model.User, error)
+	Get(
+		ctx context.Context,
+		userID string,
+		orFail bool,
+	) (*model.User, error)
 }
