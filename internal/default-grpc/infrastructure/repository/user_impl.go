@@ -15,18 +15,21 @@ import (
 type user struct {
 }
 
-func (r *user) Get(ctx context.Context, userID string) (*model.User, error) {
+func (r *user) Get(
+	ctx context.Context,
+	userID string,
+	orFail bool,
+) (*model.User, error) {
 
 	dbUser, err := defaultdb.Users(
 		defaultdb.UserWhere.ID.EQ(userID),
 	).One(ctx, gluesqlboiler.GetContextExecutor(ctx))
 
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == sql.ErrNoRows && orFail {
 			return nil, grpcerror.UserNotFoundErr.New()
-			// return nil, status.New(codes.NotFound, "user not found").Err()
 		}
-		return nil, err
+		return nil, grpcerror.DBInternalErr.Wrap(err)
 	}
 
 	user := entity.User{User: *dbUser}
