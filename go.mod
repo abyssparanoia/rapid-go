@@ -7,7 +7,7 @@ require (
 	firebase.google.com/go v3.12.1+incompatible
 	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
 	github.com/blendle/zapdriver v1.3.1
-	github.com/bxcodec/faker/v3 v3.3.1
+	github.com/bxcodec/faker v2.0.1+incompatible
 	github.com/caarlos0/env/v6 v6.2.2
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e // indirect
@@ -41,7 +41,6 @@ require (
 	github.com/volatiletech/inflect v0.0.1 // indirect
 	github.com/volatiletech/null v8.0.0+incompatible
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
-	github.com/volatiletech/sqlboiler/v4 v4.1.1
 	go.uber.org/zap v1.15.0
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.24.0
