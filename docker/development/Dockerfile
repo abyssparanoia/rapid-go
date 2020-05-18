@@ -10,3 +10,5 @@ RUN apk upgrade \
     && go get -u github.com/tockins/realize
 
 ENV GO111MODULE=on
+
+RUN go mod download 
