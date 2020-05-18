@@ -12,7 +12,7 @@ var (
 )
 
 func init() {
-	logger := log.Must(log.New("test"))
+	logger, _ := log.New("test")
 	testCtx = ctxzap.ToContext(context.Background(), logger)
 }
 

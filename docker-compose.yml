@@ -1,17 +1,17 @@
 version: "3"
 
 services:
-  default-server:
-    build:
-      context: .
-      dockerfile: docker/development/Dockerfile
-    ports:
-      - 8080:8080
-    volumes:
-      - .:/go/src/github.com/abyssparanoia/rapid-go
-    command: ash -c "source .envrc && realize start --name default-server"
+  # default-server:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/development/Dockerfile
+  #   ports:
+  #     - 8080:8080
+  #   volumes:
+  #     - .:/go/src/github.com/abyssparanoia/rapid-go
+  #   command: ash -c "source .envrc && realize start --name default-server"
 
-  default-grpc-server:
+  default-grpc-server: &server
     build:
       context: .
       dockerfile: docker/development/Dockerfile

@@ -66,6 +66,12 @@ the boilerplate for monorepo application (support only http protocol)
 > make sqlboiler
 ``` -->
 
+### testing
+
+```bash
+> docker-compose run --rm default-grpc-server ash -c "source .envrc && make test"
+```
+
 ## production
 
 ### build
