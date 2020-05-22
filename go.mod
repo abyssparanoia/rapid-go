@@ -43,7 +43,7 @@ require (
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
 	go.uber.org/zap v1.15.0
 	golang.org/x/text v0.3.2
-	google.golang.org/api v0.24.0
+	google.golang.org/api v0.25.0
 	google.golang.org/genproto v0.0.0-20200519141106-08726f379972
 	google.golang.org/grpc v1.29.1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
