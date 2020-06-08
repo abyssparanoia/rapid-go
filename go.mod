@@ -26,7 +26,7 @@ require (
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/lib/pq v1.6.0
+	github.com/lib/pq v1.7.0
 	github.com/onsi/ginkgo v1.12.3
 	github.com/onsi/gomega v1.10.1
 	github.com/opentracing/opentracing-go v1.1.0
