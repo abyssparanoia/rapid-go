@@ -46,6 +46,6 @@ require (
 	golang.org/x/text v0.3.3
 	google.golang.org/api v0.28.0
 	google.golang.org/genproto v0.0.0-20200623002339-fbb79eadd5eb
-	google.golang.org/grpc v1.29.1
+	google.golang.org/grpc v1.30.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
