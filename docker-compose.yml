@@ -22,7 +22,7 @@ services:
     command: ash -c "source .envrc && realize start --name default-grpc-server"
 
   envoy:
-    image: envoyproxy/envoy:v1.14.2
+    image: envoyproxy/envoy:v1.14.3
     volumes:
       - "./deployment/envoy:/etc/envoy"
       - "./proto:/etc/pb"
