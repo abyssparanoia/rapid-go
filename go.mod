@@ -44,7 +44,7 @@ require (
 	go.uber.org/zap v1.15.0
 	golang.org/x/text v0.3.3
 	google.golang.org/api v0.28.0
-	google.golang.org/genproto v0.0.0-20200702021140-07506425bd67
+	google.golang.org/genproto v0.0.0-20200708133552-18036109789b
 	google.golang.org/grpc v1.30.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
