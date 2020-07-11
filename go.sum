@@ -775,6 +775,8 @@ google.golang.org/genproto v0.0.0-20200708133552-18036109789b h1:gYoomKOmhJ9YGwv
 google.golang.org/genproto v0.0.0-20200708133552-18036109789b/go.mod h1:FWY/as6DDZQgahTzZj3fqbO1CbirC29ZNUFHwi0/+no=
 google.golang.org/genproto v0.0.0-20200709005830-7a2ca40e9dc3 h1:JwLN1jVnmIsfE4HkDVe2AblFAbo0Z+4cjteDSOnv6oE=
 google.golang.org/genproto v0.0.0-20200709005830-7a2ca40e9dc3/go.mod h1:FWY/as6DDZQgahTzZj3fqbO1CbirC29ZNUFHwi0/+no=
+google.golang.org/genproto v0.0.0-20200711021454-869866162049 h1:YFTFpQhgvrLrmxtiIncJxFXeCyq84ixuKWVCaCAi9Oc=
+google.golang.org/genproto v0.0.0-20200711021454-869866162049/go.mod h1:FWY/as6DDZQgahTzZj3fqbO1CbirC29ZNUFHwi0/+no=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.20.1/go.mod h1:10oTOabMzJvdu6/UiuZezV6QK5dSlG84ov/aaiqXj38=
 google.golang.org/grpc v1.21.0/go.mod h1:oYelfM1adQP15Ek0mdvEgi9Df8B9CZIaU1084ijfRaM=
