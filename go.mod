@@ -17,7 +17,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/go-testfixtures/testfixtures/v3 v3.4.0
+	github.com/go-testfixtures/testfixtures/v3 v3.4.1
 	github.com/golang/mock v1.4.4
 	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.2
