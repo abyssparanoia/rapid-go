@@ -164,6 +164,8 @@ github.com/go-testfixtures/testfixtures/v3 v3.4.0 h1:cny44xqH4ctXRld/COxFGPC7XDy
 github.com/go-testfixtures/testfixtures/v3 v3.4.0/go.mod h1:P4L3WxgOsCLbAeUC50qX5rdj1ULZfUMqgCbqah3OH5U=
 github.com/go-testfixtures/testfixtures/v3 v3.4.1 h1:Qz9y0wUOXPHzKhK6C79A/menChtEu/xd0Dn5ngVyMD0=
 github.com/go-testfixtures/testfixtures/v3 v3.4.1/go.mod h1:P4L3WxgOsCLbAeUC50qX5rdj1ULZfUMqgCbqah3OH5U=
+github.com/go-testfixtures/testfixtures/v3 v3.5.0 h1:fFJGHhFdcwy48oTLHvr0WRQ09rGiZE+as9ElvbRWS+c=
+github.com/go-testfixtures/testfixtures/v3 v3.5.0/go.mod h1:P4L3WxgOsCLbAeUC50qX5rdj1ULZfUMqgCbqah3OH5U=
 github.com/gofrs/uuid v3.2.0+incompatible h1:y12jRkkFxsd7GpqdSZ+/KCs/fJbqpEXSGd4+jfEaewE=
 github.com/gofrs/uuid v3.2.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRxnplIgP/c0N/04lM=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
