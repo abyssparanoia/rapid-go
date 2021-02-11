@@ -28,7 +28,7 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lib/pq v1.9.0
 	github.com/onsi/ginkgo v1.15.0
-	github.com/onsi/gomega v1.10.4
+	github.com/onsi/gomega v1.10.5
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.2.1
