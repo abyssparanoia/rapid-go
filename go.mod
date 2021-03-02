@@ -14,8 +14,8 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e // indirect
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-chi/chi v4.1.2+incompatible
-	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
+	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/go-testfixtures/testfixtures/v3 v3.5.0
 	github.com/golang/mock v1.5.0
@@ -25,7 +25,6 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lib/pq v1.9.0
 	github.com/onsi/ginkgo v1.15.0
 	github.com/onsi/gomega v1.10.5
