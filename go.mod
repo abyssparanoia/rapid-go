@@ -6,12 +6,10 @@ require (
 	cloud.google.com/go/firestore v1.1.1
 	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.2.0
-	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bxcodec/faker v2.0.1+incompatible
 	github.com/caarlos0/env/v6 v6.5.0
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
-	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e // indirect
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/chi/v5 v5.0.1
@@ -32,15 +30,14 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.2.1
-	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible // indirect
 	github.com/unrolled/render v1.0.3
-	github.com/volatiletech/inflect v0.0.1 // indirect
 	github.com/volatiletech/null v8.0.0+incompatible
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
+	github.com/volatiletech/sqlboiler/v4 v4.4.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/text v0.3.5
 	google.golang.org/api v0.40.0
