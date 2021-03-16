@@ -13,7 +13,7 @@ require (
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/chi/v5 v5.0.1
-	github.com/go-playground/validator/v10 v10.4.1
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/go-testfixtures/testfixtures/v3 v3.5.0
@@ -37,7 +37,7 @@ require (
 	github.com/unrolled/render v1.0.3
 	github.com/volatiletech/null v8.0.0+incompatible
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
-	github.com/volatiletech/sqlboiler/v4 v4.4.0
+	github.com/volatiletech/sqlboiler/v4 v4.5.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/text v0.3.5
 	google.golang.org/api v0.41.0
