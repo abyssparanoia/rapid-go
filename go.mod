@@ -40,8 +40,8 @@ require (
 	github.com/volatiletech/sqlboiler/v4 v4.5.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/text v0.3.6
-	google.golang.org/api v0.45.0
+	google.golang.org/api v0.47.0
 	google.golang.org/genproto v0.0.0-20210513213006-bf773b8c8384
-	google.golang.org/grpc v1.37.0
+	google.golang.org/grpc v1.37.1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
