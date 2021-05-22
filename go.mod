@@ -32,7 +32,7 @@ require (
 	github.com/rs/xid v1.3.0
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
-	github.com/uber/jaeger-client-go v2.27.0+incompatible
+	github.com/uber/jaeger-client-go v2.29.0+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible // indirect
 	github.com/unrolled/render v1.1.0
 	github.com/volatiletech/null v8.0.0+incompatible
