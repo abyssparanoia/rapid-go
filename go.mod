@@ -37,7 +37,7 @@ require (
 	github.com/unrolled/render v1.4.0
 	github.com/volatiletech/null v8.0.0+incompatible
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
-	github.com/volatiletech/sqlboiler/v4 v4.5.0
+	github.com/volatiletech/sqlboiler/v4 v4.6.0
 	go.uber.org/zap v1.17.0
 	golang.org/x/text v0.3.6
 	google.golang.org/api v0.47.0
