@@ -3,7 +3,7 @@ module github.com/abyssparanoia/rapid-go
 go 1.13
 
 require (
-	cloud.google.com/go/firestore v1.5.0
+	cloud.google.com/go/firestore v1.6.0
 	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.6.0
 	github.com/blendle/zapdriver v1.3.1
@@ -31,7 +31,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.3.0
 	github.com/spf13/cobra v1.2.1
-	github.com/spf13/viper v1.8.1
+	github.com/spf13/viper v1.9.0
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible // indirect
 	github.com/unrolled/render v1.4.0
