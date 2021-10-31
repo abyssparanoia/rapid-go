@@ -3,7 +3,7 @@ module github.com/abyssparanoia/rapid-go
 go 1.13
 
 require (
-	cloud.google.com/go/firestore v1.6.0
+	cloud.google.com/go/firestore v1.6.1
 	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.6.0
 	github.com/blendle/zapdriver v1.3.1
@@ -41,7 +41,7 @@ require (
 	go.uber.org/zap v1.19.1
 	golang.org/x/text v0.3.7
 	google.golang.org/api v0.60.0
-	google.golang.org/genproto v0.0.0-20211021150943-2b146023228c
+	google.golang.org/genproto v0.0.0-20211028162531-8db9c33dc351
 	google.golang.org/grpc v1.41.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
