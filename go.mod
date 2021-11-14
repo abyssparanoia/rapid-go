@@ -36,6 +36,7 @@ require (
 	github.com/uber/jaeger-lib v2.2.0+incompatible // indirect
 	github.com/unrolled/render v1.4.1
 	github.com/volatiletech/null v8.0.0+incompatible
+	github.com/volatiletech/null/v9 v9.0.0
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
 	github.com/volatiletech/sqlboiler/v4 v4.7.1
 	go.uber.org/zap v1.19.1
