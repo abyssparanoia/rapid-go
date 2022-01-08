@@ -39,7 +39,7 @@ require (
 	github.com/volatiletech/null/v9 v9.0.0
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
 	github.com/volatiletech/sqlboiler/v4 v4.8.3
-	go.uber.org/zap v1.19.1
+	go.uber.org/zap v1.20.0
 	golang.org/x/text v0.3.7
 	google.golang.org/api v0.63.0
 	google.golang.org/genproto v0.0.0-20220107163113-42d7afdf6368
