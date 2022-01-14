@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	cloud.google.com/go/firestore v1.6.1
+	cloud.google.com/go/iam v0.1.0 // indirect
 	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.7.0
 	github.com/blendle/zapdriver v1.3.1
@@ -41,7 +42,7 @@ require (
 	github.com/volatiletech/sqlboiler/v4 v4.8.3
 	go.uber.org/zap v1.20.0
 	golang.org/x/text v0.3.7
-	google.golang.org/api v0.64.0
+	google.golang.org/api v0.65.0
 	google.golang.org/genproto v0.0.0-20220112215332-a9c7c0acf9f2
 	google.golang.org/grpc v1.43.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
