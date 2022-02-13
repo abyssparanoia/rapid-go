@@ -8,6 +8,7 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.7.0
 	github.com/blendle/zapdriver v1.3.1
+	github.com/bxcodec/faker v2.0.1+incompatible
 	github.com/bxcodec/faker/v3 v3.7.0
 	github.com/caarlos0/env/v6 v6.7.1
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
@@ -43,7 +44,7 @@ require (
 	go.uber.org/zap v1.20.0
 	golang.org/x/text v0.3.7
 	google.golang.org/api v0.65.0
-	google.golang.org/genproto v0.0.0-20220112215332-a9c7c0acf9f2
-	google.golang.org/grpc v1.43.0
+	google.golang.org/genproto v0.0.0-20220211171837-173942840c17
+	google.golang.org/grpc v1.44.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
