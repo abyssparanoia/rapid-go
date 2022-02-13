@@ -41,7 +41,7 @@ require (
 	github.com/volatiletech/null/v9 v9.0.0
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
 	github.com/volatiletech/sqlboiler/v4 v4.8.6
-	go.uber.org/zap v1.20.0
+	go.uber.org/zap v1.21.0
 	golang.org/x/text v0.3.7
 	google.golang.org/api v0.65.0
 	google.golang.org/genproto v0.0.0-20220211171837-173942840c17
