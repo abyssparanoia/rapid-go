@@ -37,7 +37,7 @@ require (
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible // indirect
 	github.com/unrolled/render v1.4.1
-	github.com/volatiletech/null v8.0.0+incompatible
+	github.com/volatiletech/null v8.1.2+incompatible
 	github.com/volatiletech/null/v9 v9.0.0
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible
 	github.com/volatiletech/sqlboiler/v4 v4.8.3
