@@ -31,7 +31,7 @@ require (
 	github.com/onsi/gomega v1.18.1
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
-	github.com/rs/xid v1.3.0
+	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.10.1
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
