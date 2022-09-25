@@ -33,7 +33,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.4.0
-	github.com/spf13/viper v1.10.1
+	github.com/spf13/viper v1.13.0
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible // indirect
 	github.com/unrolled/render v1.4.1
@@ -43,7 +43,7 @@ require (
 	github.com/volatiletech/sqlboiler/v4 v4.11.0
 	go.uber.org/zap v1.21.0
 	golang.org/x/text v0.3.7
-	google.golang.org/api v0.68.0
+	google.golang.org/api v0.81.0
 	google.golang.org/genproto v0.0.0-20220526192754-51939a95c655
 	google.golang.org/grpc v1.46.2
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
