@@ -1,0 +1,15 @@
+add-global-variants = true
+add-panic-variants = true
+no-driver-templates = true
+no-tests = true
+output = "internal/infrastructure/database/internal/dbmodel"
+pkgname = "dbmodel"
+wipe = true
+
+[mysql]
+  dbname  = "maindb"
+  host    = "localhost"
+  port    = 3306
+  user    = "root"
+  pass    = "password"
+  sslmode = "false"

@@ -1,46 +1,13 @@
 version: "3"
 
 services:
-  # default-server:
-  #   build:
-  #     context: .
-  #     dockerfile: docker/development/Dockerfile
-  #   ports:
-  #     - 8080:8080
-  #   volumes:
-  #     - .:/go/src/github.com/abyssparanoia/rapid-go
-  #   command: ash -c "source .envrc && realize start --name default-server"
-
-  default-grpc-server: &server
-    build:
-      context: .
-      dockerfile: docker/development/Dockerfile
-    expose:
-      - 50051
+  main-db:
+    build: ./db/main
     volumes:
-      - .:/go/src/github.com/abyssparanoia/rapid-go
-    command: ash -c "source .envrc && realize start --name default-grpc-server"
-
-  envoy:
-    image: envoyproxy/envoy:v1.22.0
-    volumes:
-      - "./deployment/envoy:/etc/envoy"
-      - "./proto:/etc/pb"
-    expose:
-      - 51051
-    ports:
-      - 51051:51051
-    links:
-      - default-grpc-server
-
-  default-db:
-    build: ./db/default
-    volumes:
-      - ./db/default/data:/var/lib/mysql
-      - ./db/default/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/main/initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
     environment:
       TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: defaultdb
+      MYSQL_DATABASE: maindb

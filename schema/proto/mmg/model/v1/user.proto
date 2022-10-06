@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package mmg.model.v1;
+
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "mmg/model/v1/tenant.proto";
+
+message User {
+    string id = 1;
+    UserRole role = 2;
+    string auth_uid = 3;
+    string display_name = 4;
+    string image_url = 5;
+    string email = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
+
+    model.v1.Tenant tenant = 9;
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        required: ["id","role","auth_uid","display_name","image_url","email","created_at","updated_at","tenant"]
+      }
+    };
+}
+
+enum UserRole {
+    USER_ROLE_UNSPECIFIED = 0;
+    USER_ROLE_NORMAL = 1;
+    USER_ROLE_ADMIN = 2;
+}
