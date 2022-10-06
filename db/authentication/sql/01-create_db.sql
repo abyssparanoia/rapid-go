@@ -1,1 +1,0 @@
-CREATE DATABASE catharsis_authentication;

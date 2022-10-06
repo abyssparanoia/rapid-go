@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package rapid.admin_api.v1;
+
+
+import "rapid/model/v1/tenant.proto";
+import "rapid/model/v1/pagination.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message GetTenantRequest {
+    string tenant_id = 1;
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          required: ["tenant_id"]
+        }
+    };
+}
+
+message GetTenantResponse {
+    model.v1.Tenant tenant = 1;
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          required: ["tenant"]
+        }
+    };
+}
+
+message ListTenantsRequest {
+    uint64 page = 1;
+    uint64 limit = 2;
+}
+
+message ListTenantsResponse {
+    repeated model.v1.Tenant tenants = 1;
+    model.v1.Pagination pagination = 2;
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          required: ["tenants","pagination"]
+        }
+    };
+}
+
+message CreateTenantRequest {
+    string name = 1;
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          required: ["name"]
+        }
+    };
+}
+
+
+message CreateTenantResponse {
+    model.v1.Tenant tenant = 1;
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          required: ["tenant"]
+        }
+    };
+}
+
+message UpdateTenantRequest {
+    string tenant_id = 1;
+    string name = 2;
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          required: ["tenant_id"]
+        }
+    };
+}
+
+
+message UpdateTenantResponse {
+    model.v1.Tenant tenant = 1;
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          required: ["tenant"]
+        }
+    };
+}
+
+message DeleteTenantRequest {
+    string tenant_id = 1;
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+          required: ["tenant_id"]
+        }
+    };
+}
+
+
+message DeleteTenantResponse {
+}
