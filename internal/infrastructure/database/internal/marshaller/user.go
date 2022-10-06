@@ -1,8 +1,8 @@
 package marshaller
 
 import (
-	"github.com/playground-live/moala-meet-and-greet-back/internal/domain/model"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/database/internal/dbmodel"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/dbmodel"
 )
 
 func OutputUserToModel(e *dbmodel.User) *model.User {

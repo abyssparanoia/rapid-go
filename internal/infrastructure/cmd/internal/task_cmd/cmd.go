@@ -1,7 +1,7 @@
 package task_cmd
 
 import (
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/cmd/internal/task_cmd/create_root_user_cmd"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/task_cmd/create_root_user_cmd"
 	"github.com/spf13/cobra"
 )
 

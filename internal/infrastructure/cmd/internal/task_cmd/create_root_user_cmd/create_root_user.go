@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/playground-live/moala-meet-and-greet-back/internal/pkg/now"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/usecase"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/usecase/input"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
+	"github.com/abyssparanoia/rapid-go/internal/usecase"
+	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/spf13/cobra"
 )
 

@@ -1,7 +1,7 @@
 package marshaller
 
 import (
-	"github.com/playground-live/moala-meet-and-greet-back/internal/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 )
 
 func ClaimsToModel(authUID string, customClaim map[string]interface{}) *model.Claims {

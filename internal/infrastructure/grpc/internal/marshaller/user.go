@@ -1,8 +1,8 @@
 package marshaller
 
 import (
-	"github.com/playground-live/moala-meet-and-greet-back/internal/domain/model"
-	modelv1 "github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/grpc/pb/mmg/model/v1"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
+	modelv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/mmg/model/v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

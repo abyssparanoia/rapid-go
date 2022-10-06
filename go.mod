@@ -1,4 +1,4 @@
-module github.com/playground-live/moala-meet-and-greet-back
+module github.com/abyssparanoia/rapid-go
 
 go 1.19
 

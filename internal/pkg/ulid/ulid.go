@@ -3,8 +3,8 @@ package ulid
 import (
 	"math/rand"
 
+	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/oklog/ulid"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/pkg/now"
 )
 
 var New = func() string {

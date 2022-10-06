@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/cmd/internal/http_server_cmd"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/cmd/internal/task_cmd"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/http_server_cmd"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/task_cmd"
 	"github.com/spf13/cobra"
 )
 

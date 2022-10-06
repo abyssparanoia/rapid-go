@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/blendle/zapdriver"
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/pkg/now"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

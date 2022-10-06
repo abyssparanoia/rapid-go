@@ -3,10 +3,10 @@ package public
 import (
 	"context"
 
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/grpc/internal/interceptor/session_interceptor"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/grpc/internal/marshaller"
-	public_apiv1 "github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/grpc/pb/mmg/public_api/v1"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/usecase/input"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/session_interceptor"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/marshaller"
+	public_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/mmg/public_api/v1"
+	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
 func (h *PublicHandler) SignIn(ctx context.Context, req *public_apiv1.SignInRequest) (*public_apiv1.SignInResponse, error) {

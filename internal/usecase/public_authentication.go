@@ -3,8 +3,8 @@ package usecase
 import (
 	"context"
 
-	"github.com/playground-live/moala-meet-and-greet-back/internal/domain/model"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/usecase/input"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
 type PublicAuthenticationInteractor interface {

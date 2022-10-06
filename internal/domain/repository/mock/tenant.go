@@ -9,8 +9,8 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	model "github.com/playground-live/moala-meet-and-greet-back/internal/domain/model"
-	repository "github.com/playground-live/moala-meet-and-greet-back/internal/domain/repository"
+	model "github.com/abyssparanoia/rapid-go/internal/domain/model"
+	repository "github.com/abyssparanoia/rapid-go/internal/domain/repository"
 )
 
 // MockTenant is a mock of Tenant interface.

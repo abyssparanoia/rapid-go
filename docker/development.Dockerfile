@@ -1,6 +1,6 @@
 FROM golang:1.19-alpine AS builder
 
-WORKDIR /go/src/github.com/playground-live/moala-meet-and-greet-back/
+WORKDIR /go/src/github.com/abyssparanoia/rapid-go/
 
 ENV CGO_ENABLED=0
 

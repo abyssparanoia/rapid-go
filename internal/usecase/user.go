@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/playground-live/moala-meet-and-greet-back/internal/usecase/input"
+	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
 type UserInteractor interface {

@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"firebase.google.com/go/auth"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/database"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/database/repository"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/database/transactable"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/environment"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/firebase"
-	firebase_repository "github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/firebase/repository"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/usecase"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/repository"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/transactable"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase"
+	firebase_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/repository"
+	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
 
 type Dependency struct {

@@ -1,8 +1,8 @@
 package input
 
 import (
-	"github.com/playground-live/moala-meet-and-greet-back/internal/pkg/errors"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/pkg/validation"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/validation"
 )
 
 type PublicGetTenant struct {

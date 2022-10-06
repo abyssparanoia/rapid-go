@@ -3,7 +3,7 @@ package request_interceptor
 import (
 	"errors"
 
-	pkg_errors "github.com/playground-live/moala-meet-and-greet-back/internal/pkg/errors"
+	pkg_errors "github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

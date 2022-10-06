@@ -3,7 +3,7 @@ package transactable
 import (
 	"context"
 
-	"github.com/playground-live/moala-meet-and-greet-back/internal/domain/repository"
+	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 )
 
 type transactable struct{}

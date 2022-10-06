@@ -1,6 +1,6 @@
 package output
 
-import "github.com/playground-live/moala-meet-and-greet-back/internal/domain/model"
+import "github.com/abyssparanoia/rapid-go/internal/domain/model"
 
 type ListTenants struct {
 	Tenants    []*model.Tenant

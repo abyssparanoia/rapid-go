@@ -1,7 +1,7 @@
 package http_server_cmd
 
 import (
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/http"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/http"
 	"github.com/spf13/cobra"
 )
 

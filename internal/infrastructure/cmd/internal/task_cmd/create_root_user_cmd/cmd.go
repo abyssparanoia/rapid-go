@@ -3,11 +3,11 @@ package create_root_user_cmd
 import (
 	"context"
 
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/dependency"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
 	"github.com/caarlos0/env/v6"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/dependency"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/environment"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/pkg/logger"
 	"github.com/spf13/cobra"
 )
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/cmd"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd"
 )
 
 func main() {

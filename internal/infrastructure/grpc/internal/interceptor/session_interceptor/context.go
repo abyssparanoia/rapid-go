@@ -3,8 +3,8 @@ package session_interceptor
 import (
 	"context"
 
-	"github.com/playground-live/moala-meet-and-greet-back/internal/domain/model"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/pkg/errors"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"github.com/volatiletech/null/v8"
 )
 

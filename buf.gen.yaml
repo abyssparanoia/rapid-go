@@ -2,7 +2,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: github.com/playground-live/moala-meet-and-greet-back/internal/infrastructure/grpc/pb
+    default: github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb
     except:
       - buf.build/googleapis/googleapis
       - buf.build/grpc-ecosystem/grpc-gateway

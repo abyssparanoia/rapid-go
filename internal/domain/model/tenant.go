@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/playground-live/moala-meet-and-greet-back/internal/pkg/ulid"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/ulid"
 	"github.com/volatiletech/null/v8"
 )
 

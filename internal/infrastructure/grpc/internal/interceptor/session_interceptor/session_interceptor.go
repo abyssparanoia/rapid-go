@@ -3,9 +3,9 @@ package session_interceptor
 import (
 	"context"
 
+	"github.com/abyssparanoia/rapid-go/internal/usecase"
+	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/usecase"
-	"github.com/playground-live/moala-meet-and-greet-back/internal/usecase/input"
 )
 
 type Session struct {
