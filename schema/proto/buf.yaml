@@ -1,5 +1,5 @@
 version: v1
-name: buf.build/moala-meet-and-greet-back/mmg
+name: buf.build/moala-meet-and-greet-back/rapid
 breaking:
   use:
     - FILE

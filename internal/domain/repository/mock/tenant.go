@@ -8,9 +8,9 @@ import (
 	context "context"
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
 	model "github.com/abyssparanoia/rapid-go/internal/domain/model"
 	repository "github.com/abyssparanoia/rapid-go/internal/domain/repository"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockTenant is a mock of Tenant interface.

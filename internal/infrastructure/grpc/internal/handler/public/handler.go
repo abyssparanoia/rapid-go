@@ -1,7 +1,7 @@
 package public
 
 import (
-	public_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/mmg/public_api/v1"
+	public_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/public_api/v1"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
 

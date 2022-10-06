@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const producerID = "mmg"
+const producerID = "rapid"
 
 const MAX_RESPONSE_LOG_SIZE = 150 * 1000
 

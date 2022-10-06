@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "mmg/model/v1/tenant.proto",
+    "title": "rapid/model/v1/tenant.proto",
     "version": "version not set"
   },
   "tags": [
@@ -85,7 +85,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/mmgadmin_apiv1GetTenantResponse"
+              "$ref": "#/definitions/rapidadmin_apiv1GetTenantResponse"
             }
           }
         },
@@ -244,7 +244,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/mmgpublic_apiv1GetTenantResponse"
+              "$ref": "#/definitions/rapidpublic_apiv1GetTenantResponse"
             }
           }
         },
@@ -263,7 +263,7 @@
     }
   },
   "definitions": {
-    "mmgadmin_apiv1GetTenantResponse": {
+    "rapidadmin_apiv1GetTenantResponse": {
       "type": "object",
       "properties": {
         "tenant": {
@@ -274,7 +274,7 @@
         "tenant"
       ]
     },
-    "mmgpublic_apiv1GetTenantResponse": {
+    "rapidpublic_apiv1GetTenantResponse": {
       "type": "object",
       "properties": {
         "tenant": {
