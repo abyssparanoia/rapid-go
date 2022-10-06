@@ -2,6 +2,8 @@ package grpc
 
 import (
 	"context"
+	"fmt"
+	debug_util "runtime/debug"
 	"time"
 
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/dependency"
@@ -16,12 +18,21 @@ import (
 	public_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/public_api/v1"
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
-	grpcrecovry "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 )
+
+func recoverFuncFactory(l *zap.Logger) func(p interface{}) error {
+	return func(p interface{}) error {
+		l.Error(fmt.Sprintf("p: %+v\n : %s", p, debug_util.Stack()))
+		return status.Errorf(codes.Internal, "Unexpected error")
+	}
+}
 
 func NewServer(ctx context.Context,
 	e *environment.Environment,
@@ -51,7 +62,9 @@ func NewServer(ctx context.Context,
 		grpc.UnaryInterceptor(
 			grpcmiddleware.ChainUnaryServer(
 				requestLogInterceptor.UnaryServerInterceptor(),
-				grpcrecovry.UnaryServerInterceptor(),
+				grpc_recovery.UnaryServerInterceptor(
+					grpc_recovery.WithRecoveryHandler(recoverFuncFactory(logger)),
+				),
 				grpc_auth.UnaryServerInterceptor(authFunc.Authenticate),
 			),
 		),
