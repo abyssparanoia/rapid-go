@@ -25,7 +25,7 @@ require (
 	github.com/volatiletech/null/v8 v8.1.2
 	github.com/volatiletech/sqlboiler/v4 v4.13.0
 	github.com/volatiletech/strmangle v0.0.4
-	go.uber.org/zap v1.22.0
+	go.uber.org/zap v1.23.0
 	golang.org/x/tools v0.1.12
 	google.golang.org/api v0.84.0
 	google.golang.org/genproto v0.0.0-20220930163606-c98284e70a91
