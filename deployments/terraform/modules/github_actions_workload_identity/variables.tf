@@ -6,6 +6,6 @@ variable "project" {
   type = string
 }
 
-variable "repository" {
-  type = string
+variable "repositories" {
+  type = list(string)
 }
