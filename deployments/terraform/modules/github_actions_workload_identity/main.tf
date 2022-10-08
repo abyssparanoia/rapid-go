@@ -35,9 +35,10 @@ resource "google_iam_workload_identity_pool_provider" "github_actions" {
 }
 
 resource "google_service_account_iam_member" "repository" {
+  for_each           = var.repositories
   service_account_id = google_service_account.github_actions.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_actions.name}/attribute.repository/${var.repository}"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_actions.name}/attribute.repository/${each.value}"
 }
 
 
