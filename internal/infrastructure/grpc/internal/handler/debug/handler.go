@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"firebase.google.com/go/auth"
-	debug_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/debug_api/v1"
+	debug_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/debug_api/v1"
 )
 
 type DebugHander struct {

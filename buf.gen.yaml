@@ -2,24 +2,24 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb
+    default: github.com/abyssparanoia/rapid-go/schema/proto/pb
     except:
       - buf.build/googleapis/googleapis
       - buf.build/grpc-ecosystem/grpc-gateway
 plugins:
   - remote: buf.build/library/plugins/go:v1.27.1-1
-    out: ./internal/infrastructure/grpc/pb
+    out: ./schema/proto/pb
     opt:
       - paths=source_relative
 
   - remote: buf.build/library/plugins/go-grpc:v1.1.0-2
-    out: ./internal/infrastructure/grpc/pb
+    out: ./schema/proto/pb
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
 
   - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.7.0-1
-    out: ./internal/infrastructure/grpc/pb
+    out: ./schema/proto/pb
     opt:
       - generate_unbound_methods=true
       - logtostderr=true
