@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+  ts:
+    image: openapitools/openapi-generator-cli:v6.0.0
+    volumes:
+      - .:/work
+    command: |
+      generate -i
+      /work/openapi/apidocs.swagger.json
+      --generator-name typescript-fetch
+      --input-spec /work/openapi/apidocs.swagger.json
+      --output /work/openapi/generated
+      --additional-properties=typescriptThreePlus=true
+      --skip-validate-spec
