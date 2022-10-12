@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   ts:
-    image: openapitools/openapi-generator-cli:v6.0.0
+    image: openapitools/openapi-generator-cli:v6.2.0
     volumes:
       - .:/work
     command: |
