@@ -3,7 +3,7 @@ secret/*
 .envrc
 db/*/data/*
 .env
-serviceAccount.json
+service_account.json
 rapid-cli
 lib
 .firebase
@@ -12,6 +12,7 @@ lib
 tmp
 secret/
 schema/openapi/generated
+.terraform
 
 
 ### https://raw.github.com/github/gitignore/f9291de89f5f7dc0d3d87f9eb111b839f81d5dbc/Node.gitignore

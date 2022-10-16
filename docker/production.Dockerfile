@@ -16,4 +16,8 @@ COPY --from=builder /go/bin/app /bin/app
 
 WORKDIR /go/src/github.com/abyssparanoia/rapid-go/
 
-EXPOSE 80
+ENV PORT 8080
+
+EXPOSE 8080
+
+ENTRYPOINT [ "/bin/app" ]
