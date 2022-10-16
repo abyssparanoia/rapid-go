@@ -3,7 +3,7 @@ output "db_password" {
 }
 
 output "db_user" {
-  value = google_sql_user.app_user
+  value = google_sql_user.app_user.name
 }
 
 output "db_connection_name" {

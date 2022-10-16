@@ -7,7 +7,7 @@ resource "google_project_iam_member" "backend" {
   for_each = toset(local.backend_roles)
   project  = var.project
   role     = each.value
-  member   = "serviceAccount:${google_service_account.api.email}"
+  member   = "serviceAccount:${google_service_account.backend.email}"
 }
 
 resource "google_cloud_run_service" "services" {
@@ -23,7 +23,7 @@ resource "google_cloud_run_service" "services" {
       containers {
         image = "${var.registry_path}/backend:latest"
         ports {
-          container_port = 80
+          container_port = 8080
         }
         args = each.value.args
 
@@ -32,7 +32,7 @@ resource "google_cloud_run_service" "services" {
           value = var.enviroment
         }
         env {
-          name  = "PROJECT_ID"
+          name  = "GCP_PROJECT_ID"
           value = var.project
         }
         env {
@@ -69,11 +69,11 @@ resource "google_cloud_run_service" "services" {
 
     metadata {
       annotations = {
-        "autoscaling.knative.dev/minScale"        = each.value.min_scale
-        "autoscaling.knative.dev/maxScale"        = each.value.max_scale
-        "run.googleapis.com/cpu-throttling"       = each.value.min_scale == 0 ? "true" : "false"
-        "run.googleapis.com/cloudsql-instances"   = var.db_connection_name
-        "run.googleapis.com/client-name"          = "terraform"
+        "autoscaling.knative.dev/minScale"      = each.value.min_scale
+        "autoscaling.knative.dev/maxScale"      = each.value.max_scale
+        "run.googleapis.com/cpu-throttling"     = each.value.min_scale == 0 ? "true" : "false"
+        "run.googleapis.com/cloudsql-instances" = var.db_connection_name
+        "run.googleapis.com/client-name"        = "terraform"
       }
     }
   }
@@ -100,4 +100,7 @@ resource "google_cloud_run_service_iam_member" "run_all_users" {
   location = var.location
   role     = "roles/run.invoker"
   member   = "allUsers"
+  depends_on = [
+    google_cloud_run_service.services
+  ]
 }
