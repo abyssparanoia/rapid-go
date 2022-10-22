@@ -24,12 +24,12 @@
   "paths": {
     "/admin/v1/tenants": {
       "get": {
-        "operationId": "ListTenants",
+        "operationId": "AdminListTenants",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1ListTenantsResponse"
+              "$ref": "#/definitions/v1AdminListTenantsResponse"
             }
           }
         },
@@ -54,12 +54,12 @@
         ]
       },
       "post": {
-        "operationId": "CreateTenant",
+        "operationId": "AdminCreateTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1CreateTenantResponse"
+              "$ref": "#/definitions/v1AdminCreateTenantResponse"
             }
           }
         },
@@ -69,7 +69,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1CreateTenantRequest"
+              "$ref": "#/definitions/v1AdminCreateTenantRequest"
             }
           }
         ],
@@ -80,12 +80,12 @@
     },
     "/admin/v1/tenants/{tenant_id}": {
       "get": {
-        "operationId": "GetTenant",
+        "operationId": "AdminGetTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidadmin_apiv1GetTenantResponse"
+              "$ref": "#/definitions/v1AdminGetTenantResponse"
             }
           }
         },
@@ -102,12 +102,12 @@
         ]
       },
       "delete": {
-        "operationId": "DeleteTenant",
+        "operationId": "AdminDeleteTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1DeleteTenantResponse"
+              "$ref": "#/definitions/v1AdminDeleteTenantResponse"
             }
           }
         },
@@ -124,12 +124,12 @@
         ]
       },
       "patch": {
-        "operationId": "UpdateTenant",
+        "operationId": "AdminUpdateTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1UpdateTenantResponse"
+              "$ref": "#/definitions/v1AdminUpdateTenantResponse"
             }
           }
         },
@@ -161,12 +161,12 @@
     },
     "/admin/v1/users": {
       "post": {
-        "operationId": "CreateUser",
+        "operationId": "AdminCreateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1CreateUserResponse"
+              "$ref": "#/definitions/v1AdminCreateUserResponse"
             }
           }
         },
@@ -176,7 +176,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1CreateUserRequest"
+              "$ref": "#/definitions/v1AdminCreateUserRequest"
             }
           }
         ],
@@ -187,12 +187,12 @@
     },
     "/debug/v1/id_token": {
       "post": {
-        "operationId": "CreateIDToken",
+        "operationId": "DebugCreateIDToken",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1CreateIDTokenResponse"
+              "$ref": "#/definitions/v1DebugCreateIDTokenResponse"
             }
           }
         },
@@ -202,7 +202,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1CreateIDTokenRequest"
+              "$ref": "#/definitions/v1DebugCreateIDTokenRequest"
             }
           }
         ],
@@ -213,12 +213,12 @@
     },
     "/v1/sign_in": {
       "post": {
-        "operationId": "SignIn",
+        "operationId": "PublicSignIn",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1SignInResponse"
+              "$ref": "#/definitions/v1PublicSignInResponse"
             }
           }
         },
@@ -228,7 +228,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1SignInRequest"
+              "$ref": "#/definitions/v1PublicSignInRequest"
             }
           }
         ],
@@ -239,12 +239,12 @@
     },
     "/v1/tenants/{tenant_id}": {
       "get": {
-        "operationId": "GetTenant",
+        "operationId": "PublicGetTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidpublic_apiv1GetTenantResponse"
+              "$ref": "#/definitions/v1PublicGetTenantResponse"
             }
           }
         },
@@ -263,51 +263,7 @@
     }
   },
   "definitions": {
-    "rapidadmin_apiv1GetTenantResponse": {
-      "type": "object",
-      "properties": {
-        "tenant": {
-          "$ref": "#/definitions/v1Tenant"
-        }
-      },
-      "required": [
-        "tenant"
-      ]
-    },
-    "rapidpublic_apiv1GetTenantResponse": {
-      "type": "object",
-      "properties": {
-        "tenant": {
-          "$ref": "#/definitions/v1Tenant"
-        }
-      },
-      "required": [
-        "tenant"
-      ]
-    },
-    "v1CreateIDTokenRequest": {
-      "type": "object",
-      "properties": {
-        "auth_uid": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "auth_uid"
-      ]
-    },
-    "v1CreateIDTokenResponse": {
-      "type": "object",
-      "properties": {
-        "id_token": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "id_token"
-      ]
-    },
-    "v1CreateTenantRequest": {
+    "v1AdminCreateTenantRequest": {
       "type": "object",
       "properties": {
         "name": {
@@ -318,7 +274,7 @@
         "name"
       ]
     },
-    "v1CreateTenantResponse": {
+    "v1AdminCreateTenantResponse": {
       "type": "object",
       "properties": {
         "tenant": {
@@ -329,7 +285,7 @@
         "tenant"
       ]
     },
-    "v1CreateUserRequest": {
+    "v1AdminCreateUserRequest": {
       "type": "object",
       "properties": {
         "tenant_id": {
@@ -352,7 +308,7 @@
         "role"
       ]
     },
-    "v1CreateUserResponse": {
+    "v1AdminCreateUserResponse": {
       "type": "object",
       "properties": {
         "user": {
@@ -363,10 +319,21 @@
         "user"
       ]
     },
-    "v1DeleteTenantResponse": {
+    "v1AdminDeleteTenantResponse": {
       "type": "object"
     },
-    "v1ListTenantsResponse": {
+    "v1AdminGetTenantResponse": {
+      "type": "object",
+      "properties": {
+        "tenant": {
+          "$ref": "#/definitions/v1Tenant"
+        }
+      },
+      "required": [
+        "tenant"
+      ]
+    },
+    "v1AdminListTenantsResponse": {
       "type": "object",
       "properties": {
         "tenants": {
@@ -382,6 +349,39 @@
       "required": [
         "tenants",
         "pagination"
+      ]
+    },
+    "v1AdminUpdateTenantResponse": {
+      "type": "object",
+      "properties": {
+        "tenant": {
+          "$ref": "#/definitions/v1Tenant"
+        }
+      },
+      "required": [
+        "tenant"
+      ]
+    },
+    "v1DebugCreateIDTokenRequest": {
+      "type": "object",
+      "properties": {
+        "auth_uid": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "auth_uid"
+      ]
+    },
+    "v1DebugCreateIDTokenResponse": {
+      "type": "object",
+      "properties": {
+        "id_token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id_token"
       ]
     },
     "v1Pagination": {
@@ -418,10 +418,21 @@
         "has_next"
       ]
     },
-    "v1SignInRequest": {
+    "v1PublicGetTenantResponse": {
+      "type": "object",
+      "properties": {
+        "tenant": {
+          "$ref": "#/definitions/v1Tenant"
+        }
+      },
+      "required": [
+        "tenant"
+      ]
+    },
+    "v1PublicSignInRequest": {
       "type": "object"
     },
-    "v1SignInResponse": {
+    "v1PublicSignInResponse": {
       "type": "object",
       "properties": {
         "user": {
@@ -455,17 +466,6 @@
         "name",
         "created_at",
         "updated_at"
-      ]
-    },
-    "v1UpdateTenantResponse": {
-      "type": "object",
-      "properties": {
-        "tenant": {
-          "$ref": "#/definitions/v1Tenant"
-        }
-      },
-      "required": [
-        "tenant"
       ]
     },
     "v1User": {
