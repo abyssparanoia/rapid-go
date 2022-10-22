@@ -31,8 +31,8 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_PublicV1Service_SignIn_0(ctx context.Context, marshaler runtime.Marshaler, client PublicV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SignInRequest
+func request_PublicV1Service_PublicSignIn_0(ctx context.Context, marshaler runtime.Marshaler, client PublicV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PublicSignInRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -43,13 +43,13 @@ func request_PublicV1Service_SignIn_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.SignIn(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.PublicSignIn(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_PublicV1Service_SignIn_0(ctx context.Context, marshaler runtime.Marshaler, server PublicV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SignInRequest
+func local_request_PublicV1Service_PublicSignIn_0(ctx context.Context, marshaler runtime.Marshaler, server PublicV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PublicSignInRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -60,13 +60,13 @@ func local_request_PublicV1Service_SignIn_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.SignIn(ctx, &protoReq)
+	msg, err := server.PublicSignIn(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_PublicV1Service_GetTenant_0(ctx context.Context, marshaler runtime.Marshaler, client PublicV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetTenantRequest
+func request_PublicV1Service_PublicGetTenant_0(ctx context.Context, marshaler runtime.Marshaler, client PublicV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PublicGetTenantRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -86,13 +86,13 @@ func request_PublicV1Service_GetTenant_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
 	}
 
-	msg, err := client.GetTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.PublicGetTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_PublicV1Service_GetTenant_0(ctx context.Context, marshaler runtime.Marshaler, server PublicV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetTenantRequest
+func local_request_PublicV1Service_PublicGetTenant_0(ctx context.Context, marshaler runtime.Marshaler, server PublicV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PublicGetTenantRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -112,7 +112,7 @@ func local_request_PublicV1Service_GetTenant_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
 	}
 
-	msg, err := server.GetTenant(ctx, &protoReq)
+	msg, err := server.PublicGetTenant(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -123,18 +123,18 @@ func local_request_PublicV1Service_GetTenant_0(ctx context.Context, marshaler ru
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterPublicV1ServiceHandlerFromEndpoint instead.
 func RegisterPublicV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server PublicV1ServiceServer) error {
 
-	mux.Handle("POST", pattern_PublicV1Service_SignIn_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_PublicV1Service_PublicSignIn_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.public_api.v1.PublicV1Service/SignIn", runtime.WithHTTPPathPattern("/v1/sign_in"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.public_api.v1.PublicV1Service/PublicSignIn", runtime.WithHTTPPathPattern("/v1/sign_in"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PublicV1Service_SignIn_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PublicV1Service_PublicSignIn_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -142,22 +142,22 @@ func RegisterPublicV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 
-		forward_PublicV1Service_SignIn_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PublicV1Service_PublicSignIn_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_PublicV1Service_GetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PublicV1Service_PublicGetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.public_api.v1.PublicV1Service/GetTenant", runtime.WithHTTPPathPattern("/v1/tenants/{tenant_id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.public_api.v1.PublicV1Service/PublicGetTenant", runtime.WithHTTPPathPattern("/v1/tenants/{tenant_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_PublicV1Service_GetTenant_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_PublicV1Service_PublicGetTenant_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -165,7 +165,7 @@ func RegisterPublicV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 
-		forward_PublicV1Service_GetTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PublicV1Service_PublicGetTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -210,43 +210,43 @@ func RegisterPublicV1ServiceHandler(ctx context.Context, mux *runtime.ServeMux, 
 // "PublicV1ServiceClient" to call the correct interceptors.
 func RegisterPublicV1ServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client PublicV1ServiceClient) error {
 
-	mux.Handle("POST", pattern_PublicV1Service_SignIn_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_PublicV1Service_PublicSignIn_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.public_api.v1.PublicV1Service/SignIn", runtime.WithHTTPPathPattern("/v1/sign_in"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.public_api.v1.PublicV1Service/PublicSignIn", runtime.WithHTTPPathPattern("/v1/sign_in"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PublicV1Service_SignIn_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PublicV1Service_PublicSignIn_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PublicV1Service_SignIn_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PublicV1Service_PublicSignIn_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_PublicV1Service_GetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_PublicV1Service_PublicGetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.public_api.v1.PublicV1Service/GetTenant", runtime.WithHTTPPathPattern("/v1/tenants/{tenant_id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.public_api.v1.PublicV1Service/PublicGetTenant", runtime.WithHTTPPathPattern("/v1/tenants/{tenant_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_PublicV1Service_GetTenant_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_PublicV1Service_PublicGetTenant_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_PublicV1Service_GetTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_PublicV1Service_PublicGetTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -254,13 +254,13 @@ func RegisterPublicV1ServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_PublicV1Service_SignIn_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "sign_in"}, ""))
+	pattern_PublicV1Service_PublicSignIn_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "sign_in"}, ""))
 
-	pattern_PublicV1Service_GetTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "tenants", "tenant_id"}, ""))
+	pattern_PublicV1Service_PublicGetTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "tenants", "tenant_id"}, ""))
 )
 
 var (
-	forward_PublicV1Service_SignIn_0 = runtime.ForwardResponseMessage
+	forward_PublicV1Service_PublicSignIn_0 = runtime.ForwardResponseMessage
 
-	forward_PublicV1Service_GetTenant_0 = runtime.ForwardResponseMessage
+	forward_PublicV1Service_PublicGetTenant_0 = runtime.ForwardResponseMessage
 )
