@@ -19,8 +19,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PublicV1ServiceClient interface {
-	SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*SignInResponse, error)
-	GetTenant(ctx context.Context, in *GetTenantRequest, opts ...grpc.CallOption) (*GetTenantResponse, error)
+	PublicSignIn(ctx context.Context, in *PublicSignInRequest, opts ...grpc.CallOption) (*PublicSignInResponse, error)
+	PublicGetTenant(ctx context.Context, in *PublicGetTenantRequest, opts ...grpc.CallOption) (*PublicGetTenantResponse, error)
 }
 
 type publicV1ServiceClient struct {
@@ -31,18 +31,18 @@ func NewPublicV1ServiceClient(cc grpc.ClientConnInterface) PublicV1ServiceClient
 	return &publicV1ServiceClient{cc}
 }
 
-func (c *publicV1ServiceClient) SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*SignInResponse, error) {
-	out := new(SignInResponse)
-	err := c.cc.Invoke(ctx, "/rapid.public_api.v1.PublicV1Service/SignIn", in, out, opts...)
+func (c *publicV1ServiceClient) PublicSignIn(ctx context.Context, in *PublicSignInRequest, opts ...grpc.CallOption) (*PublicSignInResponse, error) {
+	out := new(PublicSignInResponse)
+	err := c.cc.Invoke(ctx, "/rapid.public_api.v1.PublicV1Service/PublicSignIn", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *publicV1ServiceClient) GetTenant(ctx context.Context, in *GetTenantRequest, opts ...grpc.CallOption) (*GetTenantResponse, error) {
-	out := new(GetTenantResponse)
-	err := c.cc.Invoke(ctx, "/rapid.public_api.v1.PublicV1Service/GetTenant", in, out, opts...)
+func (c *publicV1ServiceClient) PublicGetTenant(ctx context.Context, in *PublicGetTenantRequest, opts ...grpc.CallOption) (*PublicGetTenantResponse, error) {
+	out := new(PublicGetTenantResponse)
+	err := c.cc.Invoke(ctx, "/rapid.public_api.v1.PublicV1Service/PublicGetTenant", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -53,19 +53,19 @@ func (c *publicV1ServiceClient) GetTenant(ctx context.Context, in *GetTenantRequ
 // All implementations should embed UnimplementedPublicV1ServiceServer
 // for forward compatibility
 type PublicV1ServiceServer interface {
-	SignIn(context.Context, *SignInRequest) (*SignInResponse, error)
-	GetTenant(context.Context, *GetTenantRequest) (*GetTenantResponse, error)
+	PublicSignIn(context.Context, *PublicSignInRequest) (*PublicSignInResponse, error)
+	PublicGetTenant(context.Context, *PublicGetTenantRequest) (*PublicGetTenantResponse, error)
 }
 
 // UnimplementedPublicV1ServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedPublicV1ServiceServer struct {
 }
 
-func (UnimplementedPublicV1ServiceServer) SignIn(context.Context, *SignInRequest) (*SignInResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
+func (UnimplementedPublicV1ServiceServer) PublicSignIn(context.Context, *PublicSignInRequest) (*PublicSignInResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublicSignIn not implemented")
 }
-func (UnimplementedPublicV1ServiceServer) GetTenant(context.Context, *GetTenantRequest) (*GetTenantResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTenant not implemented")
+func (UnimplementedPublicV1ServiceServer) PublicGetTenant(context.Context, *PublicGetTenantRequest) (*PublicGetTenantResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublicGetTenant not implemented")
 }
 
 // UnsafePublicV1ServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -79,38 +79,38 @@ func RegisterPublicV1ServiceServer(s grpc.ServiceRegistrar, srv PublicV1ServiceS
 	s.RegisterService(&PublicV1Service_ServiceDesc, srv)
 }
 
-func _PublicV1Service_SignIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SignInRequest)
+func _PublicV1Service_PublicSignIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublicSignInRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PublicV1ServiceServer).SignIn(ctx, in)
+		return srv.(PublicV1ServiceServer).PublicSignIn(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.public_api.v1.PublicV1Service/SignIn",
+		FullMethod: "/rapid.public_api.v1.PublicV1Service/PublicSignIn",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PublicV1ServiceServer).SignIn(ctx, req.(*SignInRequest))
+		return srv.(PublicV1ServiceServer).PublicSignIn(ctx, req.(*PublicSignInRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PublicV1Service_GetTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTenantRequest)
+func _PublicV1Service_PublicGetTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublicGetTenantRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PublicV1ServiceServer).GetTenant(ctx, in)
+		return srv.(PublicV1ServiceServer).PublicGetTenant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.public_api.v1.PublicV1Service/GetTenant",
+		FullMethod: "/rapid.public_api.v1.PublicV1Service/PublicGetTenant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PublicV1ServiceServer).GetTenant(ctx, req.(*GetTenantRequest))
+		return srv.(PublicV1ServiceServer).PublicGetTenant(ctx, req.(*PublicGetTenantRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -123,12 +123,12 @@ var PublicV1Service_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*PublicV1ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SignIn",
-			Handler:    _PublicV1Service_SignIn_Handler,
+			MethodName: "PublicSignIn",
+			Handler:    _PublicV1Service_PublicSignIn_Handler,
 		},
 		{
-			MethodName: "GetTenant",
-			Handler:    _PublicV1Service_GetTenant_Handler,
+			MethodName: "PublicGetTenant",
+			Handler:    _PublicV1Service_PublicGetTenant_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
