@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DebugV1ServiceClient interface {
-	CreateIDToken(ctx context.Context, in *CreateIDTokenRequest, opts ...grpc.CallOption) (*CreateIDTokenResponse, error)
+	DebugCreateIDToken(ctx context.Context, in *DebugCreateIDTokenRequest, opts ...grpc.CallOption) (*DebugCreateIDTokenResponse, error)
 }
 
 type debugV1ServiceClient struct {
@@ -30,9 +30,9 @@ func NewDebugV1ServiceClient(cc grpc.ClientConnInterface) DebugV1ServiceClient {
 	return &debugV1ServiceClient{cc}
 }
 
-func (c *debugV1ServiceClient) CreateIDToken(ctx context.Context, in *CreateIDTokenRequest, opts ...grpc.CallOption) (*CreateIDTokenResponse, error) {
-	out := new(CreateIDTokenResponse)
-	err := c.cc.Invoke(ctx, "/rapid.debug_api.v1.DebugV1Service/CreateIDToken", in, out, opts...)
+func (c *debugV1ServiceClient) DebugCreateIDToken(ctx context.Context, in *DebugCreateIDTokenRequest, opts ...grpc.CallOption) (*DebugCreateIDTokenResponse, error) {
+	out := new(DebugCreateIDTokenResponse)
+	err := c.cc.Invoke(ctx, "/rapid.debug_api.v1.DebugV1Service/DebugCreateIDToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -43,15 +43,15 @@ func (c *debugV1ServiceClient) CreateIDToken(ctx context.Context, in *CreateIDTo
 // All implementations should embed UnimplementedDebugV1ServiceServer
 // for forward compatibility
 type DebugV1ServiceServer interface {
-	CreateIDToken(context.Context, *CreateIDTokenRequest) (*CreateIDTokenResponse, error)
+	DebugCreateIDToken(context.Context, *DebugCreateIDTokenRequest) (*DebugCreateIDTokenResponse, error)
 }
 
 // UnimplementedDebugV1ServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedDebugV1ServiceServer struct {
 }
 
-func (UnimplementedDebugV1ServiceServer) CreateIDToken(context.Context, *CreateIDTokenRequest) (*CreateIDTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateIDToken not implemented")
+func (UnimplementedDebugV1ServiceServer) DebugCreateIDToken(context.Context, *DebugCreateIDTokenRequest) (*DebugCreateIDTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DebugCreateIDToken not implemented")
 }
 
 // UnsafeDebugV1ServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -65,20 +65,20 @@ func RegisterDebugV1ServiceServer(s grpc.ServiceRegistrar, srv DebugV1ServiceSer
 	s.RegisterService(&DebugV1Service_ServiceDesc, srv)
 }
 
-func _DebugV1Service_CreateIDToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateIDTokenRequest)
+func _DebugV1Service_DebugCreateIDToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DebugCreateIDTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DebugV1ServiceServer).CreateIDToken(ctx, in)
+		return srv.(DebugV1ServiceServer).DebugCreateIDToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.debug_api.v1.DebugV1Service/CreateIDToken",
+		FullMethod: "/rapid.debug_api.v1.DebugV1Service/DebugCreateIDToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DebugV1ServiceServer).CreateIDToken(ctx, req.(*CreateIDTokenRequest))
+		return srv.(DebugV1ServiceServer).DebugCreateIDToken(ctx, req.(*DebugCreateIDTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -91,8 +91,8 @@ var DebugV1Service_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DebugV1ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateIDToken",
-			Handler:    _DebugV1Service_CreateIDToken_Handler,
+			MethodName: "DebugCreateIDToken",
+			Handler:    _DebugV1Service_DebugCreateIDToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
