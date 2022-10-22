@@ -19,12 +19,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdminV1ServiceClient interface {
-	GetTenant(ctx context.Context, in *GetTenantRequest, opts ...grpc.CallOption) (*GetTenantResponse, error)
-	ListTenants(ctx context.Context, in *ListTenantsRequest, opts ...grpc.CallOption) (*ListTenantsResponse, error)
-	CreateTenant(ctx context.Context, in *CreateTenantRequest, opts ...grpc.CallOption) (*CreateTenantResponse, error)
-	UpdateTenant(ctx context.Context, in *UpdateTenantRequest, opts ...grpc.CallOption) (*UpdateTenantResponse, error)
-	DeleteTenant(ctx context.Context, in *DeleteTenantRequest, opts ...grpc.CallOption) (*DeleteTenantResponse, error)
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	AdminGetTenant(ctx context.Context, in *AdminGetTenantRequest, opts ...grpc.CallOption) (*AdminGetTenantResponse, error)
+	AdminListTenants(ctx context.Context, in *AdminListTenantsRequest, opts ...grpc.CallOption) (*AdminListTenantsResponse, error)
+	AdminCreateTenant(ctx context.Context, in *AdminCreateTenantRequest, opts ...grpc.CallOption) (*AdminCreateTenantResponse, error)
+	AdminUpdateTenant(ctx context.Context, in *AdminUpdateTenantRequest, opts ...grpc.CallOption) (*AdminUpdateTenantResponse, error)
+	AdminDeleteTenant(ctx context.Context, in *AdminDeleteTenantRequest, opts ...grpc.CallOption) (*AdminDeleteTenantResponse, error)
+	AdminCreateUser(ctx context.Context, in *AdminCreateUserRequest, opts ...grpc.CallOption) (*AdminCreateUserResponse, error)
 }
 
 type adminV1ServiceClient struct {
@@ -35,54 +35,54 @@ func NewAdminV1ServiceClient(cc grpc.ClientConnInterface) AdminV1ServiceClient {
 	return &adminV1ServiceClient{cc}
 }
 
-func (c *adminV1ServiceClient) GetTenant(ctx context.Context, in *GetTenantRequest, opts ...grpc.CallOption) (*GetTenantResponse, error) {
-	out := new(GetTenantResponse)
-	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/GetTenant", in, out, opts...)
+func (c *adminV1ServiceClient) AdminGetTenant(ctx context.Context, in *AdminGetTenantRequest, opts ...grpc.CallOption) (*AdminGetTenantResponse, error) {
+	out := new(AdminGetTenantResponse)
+	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/AdminGetTenant", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *adminV1ServiceClient) ListTenants(ctx context.Context, in *ListTenantsRequest, opts ...grpc.CallOption) (*ListTenantsResponse, error) {
-	out := new(ListTenantsResponse)
-	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/ListTenants", in, out, opts...)
+func (c *adminV1ServiceClient) AdminListTenants(ctx context.Context, in *AdminListTenantsRequest, opts ...grpc.CallOption) (*AdminListTenantsResponse, error) {
+	out := new(AdminListTenantsResponse)
+	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/AdminListTenants", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *adminV1ServiceClient) CreateTenant(ctx context.Context, in *CreateTenantRequest, opts ...grpc.CallOption) (*CreateTenantResponse, error) {
-	out := new(CreateTenantResponse)
-	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/CreateTenant", in, out, opts...)
+func (c *adminV1ServiceClient) AdminCreateTenant(ctx context.Context, in *AdminCreateTenantRequest, opts ...grpc.CallOption) (*AdminCreateTenantResponse, error) {
+	out := new(AdminCreateTenantResponse)
+	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/AdminCreateTenant", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *adminV1ServiceClient) UpdateTenant(ctx context.Context, in *UpdateTenantRequest, opts ...grpc.CallOption) (*UpdateTenantResponse, error) {
-	out := new(UpdateTenantResponse)
-	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/UpdateTenant", in, out, opts...)
+func (c *adminV1ServiceClient) AdminUpdateTenant(ctx context.Context, in *AdminUpdateTenantRequest, opts ...grpc.CallOption) (*AdminUpdateTenantResponse, error) {
+	out := new(AdminUpdateTenantResponse)
+	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/AdminUpdateTenant", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *adminV1ServiceClient) DeleteTenant(ctx context.Context, in *DeleteTenantRequest, opts ...grpc.CallOption) (*DeleteTenantResponse, error) {
-	out := new(DeleteTenantResponse)
-	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/DeleteTenant", in, out, opts...)
+func (c *adminV1ServiceClient) AdminDeleteTenant(ctx context.Context, in *AdminDeleteTenantRequest, opts ...grpc.CallOption) (*AdminDeleteTenantResponse, error) {
+	out := new(AdminDeleteTenantResponse)
+	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/AdminDeleteTenant", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *adminV1ServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
-	out := new(CreateUserResponse)
-	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/CreateUser", in, out, opts...)
+func (c *adminV1ServiceClient) AdminCreateUser(ctx context.Context, in *AdminCreateUserRequest, opts ...grpc.CallOption) (*AdminCreateUserResponse, error) {
+	out := new(AdminCreateUserResponse)
+	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/AdminCreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -93,35 +93,35 @@ func (c *adminV1ServiceClient) CreateUser(ctx context.Context, in *CreateUserReq
 // All implementations should embed UnimplementedAdminV1ServiceServer
 // for forward compatibility
 type AdminV1ServiceServer interface {
-	GetTenant(context.Context, *GetTenantRequest) (*GetTenantResponse, error)
-	ListTenants(context.Context, *ListTenantsRequest) (*ListTenantsResponse, error)
-	CreateTenant(context.Context, *CreateTenantRequest) (*CreateTenantResponse, error)
-	UpdateTenant(context.Context, *UpdateTenantRequest) (*UpdateTenantResponse, error)
-	DeleteTenant(context.Context, *DeleteTenantRequest) (*DeleteTenantResponse, error)
-	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	AdminGetTenant(context.Context, *AdminGetTenantRequest) (*AdminGetTenantResponse, error)
+	AdminListTenants(context.Context, *AdminListTenantsRequest) (*AdminListTenantsResponse, error)
+	AdminCreateTenant(context.Context, *AdminCreateTenantRequest) (*AdminCreateTenantResponse, error)
+	AdminUpdateTenant(context.Context, *AdminUpdateTenantRequest) (*AdminUpdateTenantResponse, error)
+	AdminDeleteTenant(context.Context, *AdminDeleteTenantRequest) (*AdminDeleteTenantResponse, error)
+	AdminCreateUser(context.Context, *AdminCreateUserRequest) (*AdminCreateUserResponse, error)
 }
 
 // UnimplementedAdminV1ServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedAdminV1ServiceServer struct {
 }
 
-func (UnimplementedAdminV1ServiceServer) GetTenant(context.Context, *GetTenantRequest) (*GetTenantResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTenant not implemented")
+func (UnimplementedAdminV1ServiceServer) AdminGetTenant(context.Context, *AdminGetTenantRequest) (*AdminGetTenantResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminGetTenant not implemented")
 }
-func (UnimplementedAdminV1ServiceServer) ListTenants(context.Context, *ListTenantsRequest) (*ListTenantsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListTenants not implemented")
+func (UnimplementedAdminV1ServiceServer) AdminListTenants(context.Context, *AdminListTenantsRequest) (*AdminListTenantsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminListTenants not implemented")
 }
-func (UnimplementedAdminV1ServiceServer) CreateTenant(context.Context, *CreateTenantRequest) (*CreateTenantResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateTenant not implemented")
+func (UnimplementedAdminV1ServiceServer) AdminCreateTenant(context.Context, *AdminCreateTenantRequest) (*AdminCreateTenantResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminCreateTenant not implemented")
 }
-func (UnimplementedAdminV1ServiceServer) UpdateTenant(context.Context, *UpdateTenantRequest) (*UpdateTenantResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateTenant not implemented")
+func (UnimplementedAdminV1ServiceServer) AdminUpdateTenant(context.Context, *AdminUpdateTenantRequest) (*AdminUpdateTenantResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminUpdateTenant not implemented")
 }
-func (UnimplementedAdminV1ServiceServer) DeleteTenant(context.Context, *DeleteTenantRequest) (*DeleteTenantResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteTenant not implemented")
+func (UnimplementedAdminV1ServiceServer) AdminDeleteTenant(context.Context, *AdminDeleteTenantRequest) (*AdminDeleteTenantResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminDeleteTenant not implemented")
 }
-func (UnimplementedAdminV1ServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+func (UnimplementedAdminV1ServiceServer) AdminCreateUser(context.Context, *AdminCreateUserRequest) (*AdminCreateUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminCreateUser not implemented")
 }
 
 // UnsafeAdminV1ServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -135,110 +135,110 @@ func RegisterAdminV1ServiceServer(s grpc.ServiceRegistrar, srv AdminV1ServiceSer
 	s.RegisterService(&AdminV1Service_ServiceDesc, srv)
 }
 
-func _AdminV1Service_GetTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTenantRequest)
+func _AdminV1Service_AdminGetTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminGetTenantRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminV1ServiceServer).GetTenant(ctx, in)
+		return srv.(AdminV1ServiceServer).AdminGetTenant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.admin_api.v1.AdminV1Service/GetTenant",
+		FullMethod: "/rapid.admin_api.v1.AdminV1Service/AdminGetTenant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminV1ServiceServer).GetTenant(ctx, req.(*GetTenantRequest))
+		return srv.(AdminV1ServiceServer).AdminGetTenant(ctx, req.(*AdminGetTenantRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminV1Service_ListTenants_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListTenantsRequest)
+func _AdminV1Service_AdminListTenants_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminListTenantsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminV1ServiceServer).ListTenants(ctx, in)
+		return srv.(AdminV1ServiceServer).AdminListTenants(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.admin_api.v1.AdminV1Service/ListTenants",
+		FullMethod: "/rapid.admin_api.v1.AdminV1Service/AdminListTenants",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminV1ServiceServer).ListTenants(ctx, req.(*ListTenantsRequest))
+		return srv.(AdminV1ServiceServer).AdminListTenants(ctx, req.(*AdminListTenantsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminV1Service_CreateTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateTenantRequest)
+func _AdminV1Service_AdminCreateTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminCreateTenantRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminV1ServiceServer).CreateTenant(ctx, in)
+		return srv.(AdminV1ServiceServer).AdminCreateTenant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.admin_api.v1.AdminV1Service/CreateTenant",
+		FullMethod: "/rapid.admin_api.v1.AdminV1Service/AdminCreateTenant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminV1ServiceServer).CreateTenant(ctx, req.(*CreateTenantRequest))
+		return srv.(AdminV1ServiceServer).AdminCreateTenant(ctx, req.(*AdminCreateTenantRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminV1Service_UpdateTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateTenantRequest)
+func _AdminV1Service_AdminUpdateTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminUpdateTenantRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminV1ServiceServer).UpdateTenant(ctx, in)
+		return srv.(AdminV1ServiceServer).AdminUpdateTenant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.admin_api.v1.AdminV1Service/UpdateTenant",
+		FullMethod: "/rapid.admin_api.v1.AdminV1Service/AdminUpdateTenant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminV1ServiceServer).UpdateTenant(ctx, req.(*UpdateTenantRequest))
+		return srv.(AdminV1ServiceServer).AdminUpdateTenant(ctx, req.(*AdminUpdateTenantRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminV1Service_DeleteTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteTenantRequest)
+func _AdminV1Service_AdminDeleteTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminDeleteTenantRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminV1ServiceServer).DeleteTenant(ctx, in)
+		return srv.(AdminV1ServiceServer).AdminDeleteTenant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.admin_api.v1.AdminV1Service/DeleteTenant",
+		FullMethod: "/rapid.admin_api.v1.AdminV1Service/AdminDeleteTenant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminV1ServiceServer).DeleteTenant(ctx, req.(*DeleteTenantRequest))
+		return srv.(AdminV1ServiceServer).AdminDeleteTenant(ctx, req.(*AdminDeleteTenantRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminV1Service_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateUserRequest)
+func _AdminV1Service_AdminCreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminCreateUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminV1ServiceServer).CreateUser(ctx, in)
+		return srv.(AdminV1ServiceServer).AdminCreateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.admin_api.v1.AdminV1Service/CreateUser",
+		FullMethod: "/rapid.admin_api.v1.AdminV1Service/AdminCreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminV1ServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
+		return srv.(AdminV1ServiceServer).AdminCreateUser(ctx, req.(*AdminCreateUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -251,28 +251,28 @@ var AdminV1Service_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AdminV1ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetTenant",
-			Handler:    _AdminV1Service_GetTenant_Handler,
+			MethodName: "AdminGetTenant",
+			Handler:    _AdminV1Service_AdminGetTenant_Handler,
 		},
 		{
-			MethodName: "ListTenants",
-			Handler:    _AdminV1Service_ListTenants_Handler,
+			MethodName: "AdminListTenants",
+			Handler:    _AdminV1Service_AdminListTenants_Handler,
 		},
 		{
-			MethodName: "CreateTenant",
-			Handler:    _AdminV1Service_CreateTenant_Handler,
+			MethodName: "AdminCreateTenant",
+			Handler:    _AdminV1Service_AdminCreateTenant_Handler,
 		},
 		{
-			MethodName: "UpdateTenant",
-			Handler:    _AdminV1Service_UpdateTenant_Handler,
+			MethodName: "AdminUpdateTenant",
+			Handler:    _AdminV1Service_AdminUpdateTenant_Handler,
 		},
 		{
-			MethodName: "DeleteTenant",
-			Handler:    _AdminV1Service_DeleteTenant_Handler,
+			MethodName: "AdminDeleteTenant",
+			Handler:    _AdminV1Service_AdminDeleteTenant_Handler,
 		},
 		{
-			MethodName: "CreateUser",
-			Handler:    _AdminV1Service_CreateUser_Handler,
+			MethodName: "AdminCreateUser",
+			Handler:    _AdminV1Service_AdminCreateUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
