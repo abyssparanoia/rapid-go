@@ -9,7 +9,7 @@ import (
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/admin_api/v1"
 )
 
-func (h *AdminHandler) GetTenant(ctx context.Context, req *admin_apiv1.GetTenantRequest) (*admin_apiv1.GetTenantResponse, error) {
+func (h *AdminHandler) AdminGetTenant(ctx context.Context, req *admin_apiv1.AdminGetTenantRequest) (*admin_apiv1.AdminGetTenantResponse, error) {
 	got, err := h.tenantInteractor.Get(
 		ctx,
 		input.NewAdminGetTenant(
@@ -19,12 +19,12 @@ func (h *AdminHandler) GetTenant(ctx context.Context, req *admin_apiv1.GetTenant
 	if err != nil {
 		return nil, err
 	}
-	return &admin_apiv1.GetTenantResponse{
+	return &admin_apiv1.AdminGetTenantResponse{
 		Tenant: marshaller.TenantToPB(got),
 	}, nil
 }
 
-func (h *AdminHandler) ListTenants(ctx context.Context, req *admin_apiv1.ListTenantsRequest) (*admin_apiv1.ListTenantsResponse, error) {
+func (h *AdminHandler) AdminListTenants(ctx context.Context, req *admin_apiv1.AdminListTenantsRequest) (*admin_apiv1.AdminListTenantsResponse, error) {
 	got, err := h.tenantInteractor.List(
 		ctx,
 		input.NewAdminListTenants(
@@ -35,13 +35,13 @@ func (h *AdminHandler) ListTenants(ctx context.Context, req *admin_apiv1.ListTen
 	if err != nil {
 		return nil, err
 	}
-	return &admin_apiv1.ListTenantsResponse{
+	return &admin_apiv1.AdminListTenantsResponse{
 		Tenants:    marshaller.TenantsToPB(got.Tenants),
 		Pagination: marshaller.NewPagination(got.Pagination),
 	}, nil
 }
 
-func (h *AdminHandler) CreateTenant(ctx context.Context, req *admin_apiv1.CreateTenantRequest) (*admin_apiv1.CreateTenantResponse, error) {
+func (h *AdminHandler) AdminCreateTenant(ctx context.Context, req *admin_apiv1.AdminCreateTenantRequest) (*admin_apiv1.AdminCreateTenantResponse, error) {
 	got, err := h.tenantInteractor.Create(
 		ctx,
 		input.NewAdminCreateTenant(
@@ -52,12 +52,12 @@ func (h *AdminHandler) CreateTenant(ctx context.Context, req *admin_apiv1.Create
 	if err != nil {
 		return nil, err
 	}
-	return &admin_apiv1.CreateTenantResponse{
+	return &admin_apiv1.AdminCreateTenantResponse{
 		Tenant: marshaller.TenantToPB(got),
 	}, nil
 }
 
-func (h *AdminHandler) UpdateTenant(ctx context.Context, req *admin_apiv1.UpdateTenantRequest) (*admin_apiv1.UpdateTenantResponse, error) {
+func (h *AdminHandler) AdminUpdateTenant(ctx context.Context, req *admin_apiv1.AdminUpdateTenantRequest) (*admin_apiv1.AdminUpdateTenantResponse, error) {
 	got, err := h.tenantInteractor.Update(
 		ctx,
 		input.NewAdminUpdateTenant(
@@ -69,12 +69,12 @@ func (h *AdminHandler) UpdateTenant(ctx context.Context, req *admin_apiv1.Update
 	if err != nil {
 		return nil, err
 	}
-	return &admin_apiv1.UpdateTenantResponse{
+	return &admin_apiv1.AdminUpdateTenantResponse{
 		Tenant: marshaller.TenantToPB(got),
 	}, nil
 }
 
-func (h *AdminHandler) DeleteTenant(ctx context.Context, req *admin_apiv1.DeleteTenantRequest) (*admin_apiv1.DeleteTenantResponse, error) {
+func (h *AdminHandler) DeleteTenant(ctx context.Context, req *admin_apiv1.AdminDeleteTenantRequest) (*admin_apiv1.AdminDeleteTenantResponse, error) {
 	err := h.tenantInteractor.Delete(
 		ctx,
 		input.NewAdminDeleteTenant(
@@ -84,5 +84,5 @@ func (h *AdminHandler) DeleteTenant(ctx context.Context, req *admin_apiv1.Delete
 	if err != nil {
 		return nil, err
 	}
-	return &admin_apiv1.DeleteTenantResponse{}, nil
+	return &admin_apiv1.AdminDeleteTenantResponse{}, nil
 }

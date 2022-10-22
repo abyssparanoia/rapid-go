@@ -7,7 +7,7 @@ import "rapid/model/v1/tenant.proto";
 import "rapid/model/v1/pagination.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-message GetTenantRequest {
+message AdminGetTenantRequest {
     string tenant_id = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -17,7 +17,7 @@ message GetTenantRequest {
     };
 }
 
-message GetTenantResponse {
+message AdminGetTenantResponse {
     model.v1.Tenant tenant = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -27,12 +27,12 @@ message GetTenantResponse {
     };
 }
 
-message ListTenantsRequest {
+message AdminListTenantsRequest {
     uint64 page = 1;
     uint64 limit = 2;
 }
 
-message ListTenantsResponse {
+message AdminListTenantsResponse {
     repeated model.v1.Tenant tenants = 1;
     model.v1.Pagination pagination = 2;
 
@@ -43,7 +43,7 @@ message ListTenantsResponse {
     };
 }
 
-message CreateTenantRequest {
+message AdminCreateTenantRequest {
     string name = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -54,7 +54,7 @@ message CreateTenantRequest {
 }
 
 
-message CreateTenantResponse {
+message AdminCreateTenantResponse {
     model.v1.Tenant tenant = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -64,7 +64,7 @@ message CreateTenantResponse {
     };
 }
 
-message UpdateTenantRequest {
+message AdminUpdateTenantRequest {
     string tenant_id = 1;
     string name = 2;
 
@@ -76,7 +76,7 @@ message UpdateTenantRequest {
 }
 
 
-message UpdateTenantResponse {
+message AdminUpdateTenantResponse {
     model.v1.Tenant tenant = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -86,7 +86,7 @@ message UpdateTenantResponse {
     };
 }
 
-message DeleteTenantRequest {
+message AdminDeleteTenantRequest {
     string tenant_id = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -97,5 +97,5 @@ message DeleteTenantRequest {
 }
 
 
-message DeleteTenantResponse {
+message AdminDeleteTenantResponse {
 }

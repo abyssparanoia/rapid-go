@@ -10,7 +10,7 @@ import (
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/admin_api/v1"
 )
 
-func (h *AdminHandler) CreateUser(ctx context.Context, req *admin_apiv1.CreateUserRequest) (*admin_apiv1.CreateUserResponse, error) {
+func (h *AdminHandler) CreateUser(ctx context.Context, req *admin_apiv1.AdminCreateUserRequest) (*admin_apiv1.AdminCreateUserResponse, error) {
 	_, err := session_interceptor.RequireSessionContext(ctx)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func (h *AdminHandler) CreateUser(ctx context.Context, req *admin_apiv1.CreateUs
 		return nil, err
 	}
 
-	return &admin_apiv1.CreateUserResponse{
+	return &admin_apiv1.AdminCreateUserResponse{
 		User: marshaller.UserToPB(got),
 	}, nil
 }

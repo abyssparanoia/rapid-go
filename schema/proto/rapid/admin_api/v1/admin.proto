@@ -8,34 +8,34 @@ import "rapid/admin_api/v1/tenant.proto";
 import "rapid/admin_api/v1/user.proto";
 
 service AdminV1Service {
-    rpc GetTenant(GetTenantRequest) returns (GetTenantResponse) {
+    rpc AdminGetTenant(AdminGetTenantRequest) returns (AdminGetTenantResponse) {
         option (google.api.http) = {
             get: "/admin/v1/tenants/{tenant_id}"
         };
     }
-    rpc ListTenants(ListTenantsRequest) returns (ListTenantsResponse) {
+    rpc AdminListTenants(AdminListTenantsRequest) returns (AdminListTenantsResponse) {
         option (google.api.http) = {
             get: "/admin/v1/tenants"
         };
     }
-    rpc CreateTenant(CreateTenantRequest) returns (CreateTenantResponse) {
+    rpc AdminCreateTenant(AdminCreateTenantRequest) returns (AdminCreateTenantResponse) {
         option (google.api.http) = {
             post: "/admin/v1/tenants",
             body: "*"
         };
     }
-    rpc UpdateTenant(UpdateTenantRequest) returns (UpdateTenantResponse) {
+    rpc AdminUpdateTenant(AdminUpdateTenantRequest) returns (AdminUpdateTenantResponse) {
         option (google.api.http) = {
             patch: "/admin/v1/tenants/{tenant_id}",
             body: "*"
         };
     }
-    rpc DeleteTenant(DeleteTenantRequest) returns (DeleteTenantResponse) {
+    rpc AdminDeleteTenant(AdminDeleteTenantRequest) returns (AdminDeleteTenantResponse) {
         option (google.api.http) = {
             delete: "/admin/v1/tenants/{tenant_id}",
         };
     }
-    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+    rpc AdminCreateUser(AdminCreateUserRequest) returns (AdminCreateUserResponse) {
         option (google.api.http) = {
             post: "/admin/v1/users",
             body: "*"

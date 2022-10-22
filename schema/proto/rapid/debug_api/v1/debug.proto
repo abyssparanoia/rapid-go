@@ -6,7 +6,7 @@ import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 service DebugV1Service {
-    rpc CreateIDToken(CreateIDTokenRequest) returns (CreateIDTokenResponse) {
+    rpc DebugCreateIDToken(DebugCreateIDTokenRequest) returns (DebugCreateIDTokenResponse) {
         option (google.api.http) = {
             post: "/debug/v1/id_token",
             body: "*"
@@ -14,7 +14,7 @@ service DebugV1Service {
     }
 }
 
-message CreateIDTokenRequest {
+message DebugCreateIDTokenRequest {
     string auth_uid = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -24,7 +24,7 @@ message CreateIDTokenRequest {
     };
 }
 
-message CreateIDTokenResponse {
+message DebugCreateIDTokenResponse {
     string id_token = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {

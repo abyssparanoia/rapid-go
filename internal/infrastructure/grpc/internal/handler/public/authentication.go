@@ -9,7 +9,7 @@ import (
 	public_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/public_api/v1"
 )
 
-func (h *PublicHandler) SignIn(ctx context.Context, req *public_apiv1.SignInRequest) (*public_apiv1.SignInResponse, error) {
+func (h *PublicHandler) PublicSignIn(ctx context.Context, req *public_apiv1.PublicSignInRequest) (*public_apiv1.PublicSignInResponse, error) {
 	sctx, err := session_interceptor.RequireSessionContext(ctx)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func (h *PublicHandler) SignIn(ctx context.Context, req *public_apiv1.SignInRequ
 		return nil, err
 	}
 
-	return &public_apiv1.SignInResponse{
+	return &public_apiv1.PublicSignInResponse{
 		User: marshaller.UserToPB(got),
 	}, nil
 }

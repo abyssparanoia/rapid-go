@@ -31,8 +31,8 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_AdminV1Service_GetTenant_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetTenantRequest
+func request_AdminV1Service_AdminGetTenant_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminGetTenantRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -52,13 +52,13 @@ func request_AdminV1Service_GetTenant_0(ctx context.Context, marshaler runtime.M
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
 	}
 
-	msg, err := client.GetTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.AdminGetTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_AdminV1Service_GetTenant_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetTenantRequest
+func local_request_AdminV1Service_AdminGetTenant_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminGetTenantRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -78,49 +78,49 @@ func local_request_AdminV1Service_GetTenant_0(ctx context.Context, marshaler run
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
 	}
 
-	msg, err := server.GetTenant(ctx, &protoReq)
+	msg, err := server.AdminGetTenant(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
 var (
-	filter_AdminV1Service_ListTenants_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_AdminV1Service_AdminListTenants_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_AdminV1Service_ListTenants_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListTenantsRequest
+func request_AdminV1Service_AdminListTenants_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminListTenantsRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_AdminV1Service_ListTenants_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_AdminV1Service_AdminListTenants_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.ListTenants(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.AdminListTenants(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_AdminV1Service_ListTenants_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListTenantsRequest
+func local_request_AdminV1Service_AdminListTenants_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminListTenantsRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_AdminV1Service_ListTenants_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_AdminV1Service_AdminListTenants_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.ListTenants(ctx, &protoReq)
+	msg, err := server.AdminListTenants(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_AdminV1Service_CreateTenant_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateTenantRequest
+func request_AdminV1Service_AdminCreateTenant_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminCreateTenantRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -131,13 +131,13 @@ func request_AdminV1Service_CreateTenant_0(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CreateTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.AdminCreateTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_AdminV1Service_CreateTenant_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateTenantRequest
+func local_request_AdminV1Service_AdminCreateTenant_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminCreateTenantRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -148,47 +148,13 @@ func local_request_AdminV1Service_CreateTenant_0(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CreateTenant(ctx, &protoReq)
+	msg, err := server.AdminCreateTenant(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_AdminV1Service_UpdateTenant_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateTenantRequest
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["tenant_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant_id")
-	}
-
-	protoReq.TenantId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
-	}
-
-	msg, err := client.UpdateTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_AdminV1Service_UpdateTenant_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateTenantRequest
+func request_AdminV1Service_AdminUpdateTenant_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminUpdateTenantRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -216,13 +182,47 @@ func local_request_AdminV1Service_UpdateTenant_0(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
 	}
 
-	msg, err := server.UpdateTenant(ctx, &protoReq)
+	msg, err := client.AdminUpdateTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func request_AdminV1Service_DeleteTenant_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteTenantRequest
+func local_request_AdminV1Service_AdminUpdateTenant_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminUpdateTenantRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["tenant_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant_id")
+	}
+
+	protoReq.TenantId, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
+	}
+
+	msg, err := server.AdminUpdateTenant(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_AdminV1Service_AdminDeleteTenant_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminDeleteTenantRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -242,13 +242,13 @@ func request_AdminV1Service_DeleteTenant_0(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
 	}
 
-	msg, err := client.DeleteTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.AdminDeleteTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_AdminV1Service_DeleteTenant_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteTenantRequest
+func local_request_AdminV1Service_AdminDeleteTenant_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminDeleteTenantRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -268,13 +268,13 @@ func local_request_AdminV1Service_DeleteTenant_0(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
 	}
 
-	msg, err := server.DeleteTenant(ctx, &protoReq)
+	msg, err := server.AdminDeleteTenant(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_AdminV1Service_CreateUser_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateUserRequest
+func request_AdminV1Service_AdminCreateUser_0(ctx context.Context, marshaler runtime.Marshaler, client AdminV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminCreateUserRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -285,13 +285,13 @@ func request_AdminV1Service_CreateUser_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CreateUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.AdminCreateUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_AdminV1Service_CreateUser_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateUserRequest
+func local_request_AdminV1Service_AdminCreateUser_0(ctx context.Context, marshaler runtime.Marshaler, server AdminV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdminCreateUserRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -302,7 +302,7 @@ func local_request_AdminV1Service_CreateUser_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CreateUser(ctx, &protoReq)
+	msg, err := server.AdminCreateUser(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -313,18 +313,18 @@ func local_request_AdminV1Service_CreateUser_0(ctx context.Context, marshaler ru
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAdminV1ServiceHandlerFromEndpoint instead.
 func RegisterAdminV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AdminV1ServiceServer) error {
 
-	mux.Handle("GET", pattern_AdminV1Service_GetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_AdminV1Service_AdminGetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/GetTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminGetTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdminV1Service_GetTenant_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdminV1Service_AdminGetTenant_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -332,22 +332,22 @@ func RegisterAdminV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_AdminV1Service_GetTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminGetTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_AdminV1Service_ListTenants_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_AdminV1Service_AdminListTenants_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/ListTenants", runtime.WithHTTPPathPattern("/admin/v1/tenants"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminListTenants", runtime.WithHTTPPathPattern("/admin/v1/tenants"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdminV1Service_ListTenants_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdminV1Service_AdminListTenants_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -355,22 +355,22 @@ func RegisterAdminV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_AdminV1Service_ListTenants_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminListTenants_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_AdminV1Service_CreateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AdminV1Service_AdminCreateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/CreateTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminCreateTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdminV1Service_CreateTenant_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdminV1Service_AdminCreateTenant_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -378,22 +378,22 @@ func RegisterAdminV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_AdminV1Service_CreateTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminCreateTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_AdminV1Service_UpdateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_AdminV1Service_AdminUpdateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/UpdateTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminUpdateTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdminV1Service_UpdateTenant_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdminV1Service_AdminUpdateTenant_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -401,22 +401,22 @@ func RegisterAdminV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_AdminV1Service_UpdateTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminUpdateTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_AdminV1Service_DeleteTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_AdminV1Service_AdminDeleteTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/DeleteTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminDeleteTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdminV1Service_DeleteTenant_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdminV1Service_AdminDeleteTenant_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -424,22 +424,22 @@ func RegisterAdminV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_AdminV1Service_DeleteTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminDeleteTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_AdminV1Service_CreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AdminV1Service_AdminCreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/CreateUser", runtime.WithHTTPPathPattern("/admin/v1/users"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminCreateUser", runtime.WithHTTPPathPattern("/admin/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdminV1Service_CreateUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdminV1Service_AdminCreateUser_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -447,7 +447,7 @@ func RegisterAdminV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_AdminV1Service_CreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminCreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -492,123 +492,123 @@ func RegisterAdminV1ServiceHandler(ctx context.Context, mux *runtime.ServeMux, c
 // "AdminV1ServiceClient" to call the correct interceptors.
 func RegisterAdminV1ServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AdminV1ServiceClient) error {
 
-	mux.Handle("GET", pattern_AdminV1Service_GetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_AdminV1Service_AdminGetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/GetTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminGetTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdminV1Service_GetTenant_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdminV1Service_AdminGetTenant_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdminV1Service_GetTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminGetTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_AdminV1Service_ListTenants_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_AdminV1Service_AdminListTenants_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/ListTenants", runtime.WithHTTPPathPattern("/admin/v1/tenants"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminListTenants", runtime.WithHTTPPathPattern("/admin/v1/tenants"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdminV1Service_ListTenants_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdminV1Service_AdminListTenants_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdminV1Service_ListTenants_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminListTenants_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_AdminV1Service_CreateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AdminV1Service_AdminCreateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/CreateTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminCreateTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdminV1Service_CreateTenant_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdminV1Service_AdminCreateTenant_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdminV1Service_CreateTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminCreateTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_AdminV1Service_UpdateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_AdminV1Service_AdminUpdateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/UpdateTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminUpdateTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdminV1Service_UpdateTenant_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdminV1Service_AdminUpdateTenant_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdminV1Service_UpdateTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminUpdateTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_AdminV1Service_DeleteTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_AdminV1Service_AdminDeleteTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/DeleteTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminDeleteTenant", runtime.WithHTTPPathPattern("/admin/v1/tenants/{tenant_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdminV1Service_DeleteTenant_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdminV1Service_AdminDeleteTenant_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdminV1Service_DeleteTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminDeleteTenant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_AdminV1Service_CreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AdminV1Service_AdminCreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/CreateUser", runtime.WithHTTPPathPattern("/admin/v1/users"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.admin_api.v1.AdminV1Service/AdminCreateUser", runtime.WithHTTPPathPattern("/admin/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdminV1Service_CreateUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdminV1Service_AdminCreateUser_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdminV1Service_CreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdminV1Service_AdminCreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -616,29 +616,29 @@ func RegisterAdminV1ServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 }
 
 var (
-	pattern_AdminV1Service_GetTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"admin", "v1", "tenants", "tenant_id"}, ""))
+	pattern_AdminV1Service_AdminGetTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"admin", "v1", "tenants", "tenant_id"}, ""))
 
-	pattern_AdminV1Service_ListTenants_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"admin", "v1", "tenants"}, ""))
+	pattern_AdminV1Service_AdminListTenants_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"admin", "v1", "tenants"}, ""))
 
-	pattern_AdminV1Service_CreateTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"admin", "v1", "tenants"}, ""))
+	pattern_AdminV1Service_AdminCreateTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"admin", "v1", "tenants"}, ""))
 
-	pattern_AdminV1Service_UpdateTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"admin", "v1", "tenants", "tenant_id"}, ""))
+	pattern_AdminV1Service_AdminUpdateTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"admin", "v1", "tenants", "tenant_id"}, ""))
 
-	pattern_AdminV1Service_DeleteTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"admin", "v1", "tenants", "tenant_id"}, ""))
+	pattern_AdminV1Service_AdminDeleteTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"admin", "v1", "tenants", "tenant_id"}, ""))
 
-	pattern_AdminV1Service_CreateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"admin", "v1", "users"}, ""))
+	pattern_AdminV1Service_AdminCreateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"admin", "v1", "users"}, ""))
 )
 
 var (
-	forward_AdminV1Service_GetTenant_0 = runtime.ForwardResponseMessage
+	forward_AdminV1Service_AdminGetTenant_0 = runtime.ForwardResponseMessage
 
-	forward_AdminV1Service_ListTenants_0 = runtime.ForwardResponseMessage
+	forward_AdminV1Service_AdminListTenants_0 = runtime.ForwardResponseMessage
 
-	forward_AdminV1Service_CreateTenant_0 = runtime.ForwardResponseMessage
+	forward_AdminV1Service_AdminCreateTenant_0 = runtime.ForwardResponseMessage
 
-	forward_AdminV1Service_UpdateTenant_0 = runtime.ForwardResponseMessage
+	forward_AdminV1Service_AdminUpdateTenant_0 = runtime.ForwardResponseMessage
 
-	forward_AdminV1Service_DeleteTenant_0 = runtime.ForwardResponseMessage
+	forward_AdminV1Service_AdminDeleteTenant_0 = runtime.ForwardResponseMessage
 
-	forward_AdminV1Service_CreateUser_0 = runtime.ForwardResponseMessage
+	forward_AdminV1Service_AdminCreateUser_0 = runtime.ForwardResponseMessage
 )

@@ -8,7 +8,7 @@ import (
 	public_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/public_api/v1"
 )
 
-func (h *PublicHandler) GetTenant(ctx context.Context, req *public_apiv1.GetTenantRequest) (*public_apiv1.GetTenantResponse, error) {
+func (h *PublicHandler) PublicGetTenant(ctx context.Context, req *public_apiv1.PublicGetTenantRequest) (*public_apiv1.PublicGetTenantResponse, error) {
 	got, err := h.tenantInteractor.Get(
 		ctx,
 		input.NewPublicGetTenant(
@@ -18,7 +18,7 @@ func (h *PublicHandler) GetTenant(ctx context.Context, req *public_apiv1.GetTena
 	if err != nil {
 		return nil, err
 	}
-	return &public_apiv1.GetTenantResponse{
+	return &public_apiv1.PublicGetTenantResponse{
 		Tenant: marshaller.TenantToPB(got),
 	}, nil
 }
