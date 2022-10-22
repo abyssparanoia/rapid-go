@@ -7,13 +7,13 @@ import "rapid/public_api/v1/tenant.proto";
 import "rapid/public_api/v1/authentication.proto";
 
 service PublicV1Service {
-    rpc SignIn(SignInRequest) returns (SignInResponse) {
+    rpc PublicSignIn(PublicSignInRequest) returns (PublicSignInResponse) {
         option (google.api.http) = {
             post: "/v1/sign_in",
             body: "*"
         };
     }
-    rpc GetTenant(GetTenantRequest) returns (GetTenantResponse) {
+    rpc PublicGetTenant(PublicGetTenantRequest) returns (PublicGetTenantResponse) {
         option (google.api.http) = {
             get: "/v1/tenants/{tenant_id}"
         };
