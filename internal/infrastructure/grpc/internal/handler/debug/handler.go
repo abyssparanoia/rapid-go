@@ -32,7 +32,7 @@ type verifyCustomTokenResponse struct {
 	IDToken string `json:"idToken"`
 }
 
-func (h *DebugHander) CreateIDToken(ctx context.Context, req *debug_apiv1.CreateIDTokenRequest) (*debug_apiv1.CreateIDTokenResponse, error) {
+func (h *DebugHander) DebugCreateIDToken(ctx context.Context, req *debug_apiv1.DebugCreateIDTokenRequest) (*debug_apiv1.DebugCreateIDTokenResponse, error) {
 	customToken, err := h.firebaseAuthCli.CustomToken(ctx, req.GetAuthUid())
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (h *DebugHander) CreateIDToken(ctx context.Context, req *debug_apiv1.Create
 		return nil, err
 	}
 
-	return &debug_apiv1.CreateIDTokenResponse{
+	return &debug_apiv1.DebugCreateIDTokenResponse{
 		IdToken: res.IDToken,
 	}, nil
 }
