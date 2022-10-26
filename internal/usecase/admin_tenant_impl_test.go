@@ -182,6 +182,7 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 
 func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 	testdata := factory.NewFactory()
+	requestTime := testdata.RequestTime
 	tenant := testdata.Tenant
 	mockULID := ulid.Mock()
 	tenant.ID = mockULID
@@ -216,7 +217,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 		"success": {
 			args: args{
 				name:        tenant.Name,
-				requestTime: tenant.CreatedAt,
+				requestTime: requestTime,
 			},
 			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
@@ -259,6 +260,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 
 func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 	testdata := factory.NewFactory()
+	requestTime := testdata.RequestTime
 	tenant := testdata.Tenant
 
 	type args struct {
@@ -290,7 +292,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 			args: args{
 				tenantID:    tenant.ID,
 				name:        tenant.Name,
-				requestTime: tenant.UpdatedAt,
+				requestTime: requestTime,
 			},
 			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
