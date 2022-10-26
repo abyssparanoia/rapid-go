@@ -5,7 +5,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/dbmodel"
 )
 
-func OutputUserToModel(e *dbmodel.User) *model.User {
+func UserToModel(e *dbmodel.User) *model.User {
 	m := &model.User{
 		ID:          e.ID,
 		Role:        model.NewUserRole(e.Role),
@@ -17,20 +17,18 @@ func OutputUserToModel(e *dbmodel.User) *model.User {
 		UpdatedAt:   e.UpdatedAt,
 	}
 
-	if e.R != nil {
-		if e.R.Tenant != nil {
-			m.Tenant = OutputTenantToModel(e.R.Tenant)
-		} else {
-			m.Tenant = &model.Tenant{
-				ID: e.ID,
-			}
+	if e.R != nil && e.R.Tenant != nil {
+		m.Tenant = TenantToModel(e.R.Tenant)
+	} else {
+		m.Tenant = &model.Tenant{
+			ID: e.TenantID,
 		}
 	}
 
 	return m
 }
 
-func NewUserFromModel(m *model.User) *dbmodel.User {
+func UserToDBModel(m *model.User) *dbmodel.User {
 	e := &dbmodel.User{}
 	e.ID = m.ID
 	e.TenantID = m.Tenant.ID
