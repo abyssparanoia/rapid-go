@@ -5,7 +5,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/dbmodel"
 )
 
-func OutputTenantToModel(e *dbmodel.Tenant) *model.Tenant {
+func TenantToModel(e *dbmodel.Tenant) *model.Tenant {
 	m := &model.Tenant{
 		ID:        e.ID,
 		Name:      e.Name,
@@ -15,15 +15,15 @@ func OutputTenantToModel(e *dbmodel.Tenant) *model.Tenant {
 	return m
 }
 
-func OutputTenantsToModel(slice dbmodel.TenantSlice) []*model.Tenant {
+func TenantsToModel(slice dbmodel.TenantSlice) []*model.Tenant {
 	dsts := make([]*model.Tenant, len(slice))
 	for idx, e := range slice {
-		dsts[idx] = OutputTenantToModel(e)
+		dsts[idx] = TenantToModel(e)
 	}
 	return dsts
 }
 
-func NewTenantFromModel(m *model.Tenant) *dbmodel.Tenant {
+func TenantsToDBModel(m *model.Tenant) *dbmodel.Tenant {
 	e := &dbmodel.Tenant{}
 	e.ID = m.ID
 	e.Name = m.Name
