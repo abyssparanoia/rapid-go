@@ -49,16 +49,16 @@ func (r *user) Get(
 		}
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	return marshaller.OutputUserToModel(dbUser), nil
+	return marshaller.UserToModel(dbUser), nil
 }
 
 func (r *user) Create(
 	ctx context.Context,
 	user *model.User,
 ) (*model.User, error) {
-	dst := marshaller.NewUserFromModel(user)
+	dst := marshaller.UserToDBModel(user)
 	if err := dst.Insert(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	return marshaller.OutputUserToModel(dst), nil
+	return marshaller.UserToModel(dst), nil
 }
