@@ -36,7 +36,7 @@ func (r *tenant) Get(
 		}
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	return marshaller.OutputTenantToModel(dbTenant), nil
+	return marshaller.TenantToModel(dbTenant), nil
 }
 
 func (r *tenant) List(
@@ -56,7 +56,7 @@ func (r *tenant) List(
 	if err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	return marshaller.OutputTenantsToModel(dbTenants), nil
+	return marshaller.TenantsToModel(dbTenants), nil
 }
 
 func (r *tenant) Count(
@@ -77,22 +77,22 @@ func (r *tenant) Create(
 	ctx context.Context,
 	tenant *model.Tenant,
 ) (*model.Tenant, error) {
-	dst := marshaller.NewTenantFromModel(tenant)
+	dst := marshaller.TenantsToDBModel(tenant)
 	if err := dst.Insert(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	return marshaller.OutputTenantToModel(dst), nil
+	return marshaller.TenantToModel(dst), nil
 }
 
 func (r *tenant) Update(
 	ctx context.Context,
 	tenant *model.Tenant,
 ) (*model.Tenant, error) {
-	dst := marshaller.NewTenantFromModel(tenant)
+	dst := marshaller.TenantsToDBModel(tenant)
 	if _, err := dst.Update(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	return marshaller.OutputTenantToModel(dst), nil
+	return marshaller.TenantToModel(dst), nil
 }
 
 func (r *tenant) Delete(
