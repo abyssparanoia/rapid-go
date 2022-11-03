@@ -11,6 +11,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/admin"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/debug"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/public"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/authorization_interceptor"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/request_interceptor"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/session_interceptor"
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/admin_api/v1"
@@ -42,6 +43,7 @@ func NewServer(ctx context.Context,
 
 	requestLogInterceptor := request_interceptor.NewRequestLog(logger)
 	authFunc := session_interceptor.NewSession(dependency.AuthenticationInteractor)
+	authorizationInterceptor := authorization_interceptor.NewAuthorization()
 
 	server := grpc.NewServer(
 		grpc.KeepaliveEnforcementPolicy(
@@ -66,6 +68,7 @@ func NewServer(ctx context.Context,
 					grpc_recovery.WithRecoveryHandler(recoverFuncFactory(logger)),
 				),
 				grpc_auth.UnaryServerInterceptor(authFunc.Authenticate),
+				authorizationInterceptor.UnaryServerInterceptor(),
 			),
 		),
 	)
