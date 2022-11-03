@@ -125,7 +125,6 @@ require (
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.6.0 // indirect
-	github.com/googleapis/go-type-adapters v1.0.0 // indirect
 	github.com/gordonklaus/ineffassign v0.0.0-20210914165742-4cc7213b9bc8 // indirect
 	github.com/gostaticanalysis/analysisutil v0.7.1 // indirect
 	github.com/gostaticanalysis/comment v1.4.2 // indirect
@@ -149,8 +148,6 @@ require (
 	github.com/jackc/pgx/v4 v4.17.0 // indirect
 	github.com/jdxcode/netrc v0.0.0-20210204082910-926c7f70242a // indirect
 	github.com/jgautheron/goconst v1.5.1 // indirect
-	github.com/jhump/protocompile v0.0.0-20220812162104-d108583e055d // indirect
-	github.com/jhump/protoreflect v1.13.1-0.20220928232736-101791cb1b4c // indirect
 	github.com/jingyugao/rowserrcheck v1.1.1 // indirect
 	github.com/jirfag/go-printf-func-name v0.0.0-20200119135958-7558a9eaa5af // indirect
 	github.com/julz/importas v0.1.0 // indirect
