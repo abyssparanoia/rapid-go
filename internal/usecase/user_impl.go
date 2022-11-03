@@ -78,6 +78,14 @@ func (i *userInteractor) CreateRoot(
 			return err
 		}
 
+		claims := model.NewClaims(authUID)
+		claims.SetTenantID(tenant.ID)
+		claims.SetUserID(user.ID)
+		claims.SetUserRole(user.Role)
+		if err := i.authenticationRepository.StoreClaims(ctx, authUID, claims); err != nil {
+			return err
+		}
+
 		return nil
 	})
 }
