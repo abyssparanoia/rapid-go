@@ -45,14 +45,6 @@ func RequireSessionContext(ctx context.Context) (*SessionContext, error) {
 	return sctx, nil
 }
 
-func RequireAdminSessionContext(ctx context.Context) (*SessionContext, error) {
-	sctx, ok := GetSessionContext(ctx)
-	if !ok && sctx.UserRole.IsAdmin() {
-		return nil, errors.UnauthorizedErr.New()
-	}
-	return sctx, nil
-}
-
 func GetSessionContext(ctx context.Context) (*SessionContext, bool) {
 	sessionContext, ok := ctx.Value(sessionContextKey).(SessionContext)
 	return &sessionContext, ok
