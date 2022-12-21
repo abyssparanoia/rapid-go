@@ -5,8 +5,8 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/request_interceptor"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/marshaller"
+	admin_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
-	admin_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/admin_api/v1"
 	"github.com/volatiletech/null/v8"
 )
 
