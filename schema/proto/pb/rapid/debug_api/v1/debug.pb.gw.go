@@ -77,20 +77,22 @@ func RegisterDebugV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.debug_api.v1.DebugV1Service/DebugCreateIDToken", runtime.WithHTTPPathPattern("/debug/v1/id_token"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.debug_api.v1.DebugV1Service/DebugCreateIDToken", runtime.WithHTTPPathPattern("/debug/v1/id_token"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_DebugV1Service_DebugCreateIDToken_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_DebugV1Service_DebugCreateIDToken_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_DebugV1Service_DebugCreateIDToken_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_DebugV1Service_DebugCreateIDToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -124,7 +126,7 @@ func RegisterDebugV1ServiceHandlerFromEndpoint(ctx context.Context, mux *runtime
 
 // RegisterDebugV1ServiceHandler registers the http handlers for service DebugV1Service to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterDebugV1ServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
+func RegisterDebugV1ServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 	return RegisterDebugV1ServiceHandlerClient(ctx, mux, NewDebugV1ServiceClient(conn))
 }
 
@@ -139,19 +141,21 @@ func RegisterDebugV1ServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.debug_api.v1.DebugV1Service/DebugCreateIDToken", runtime.WithHTTPPathPattern("/debug/v1/id_token"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/rapid.debug_api.v1.DebugV1Service/DebugCreateIDToken", runtime.WithHTTPPathPattern("/debug/v1/id_token"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_DebugV1Service_DebugCreateIDToken_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
+		resp, md, err := request_DebugV1Service_DebugCreateIDToken_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_DebugV1Service_DebugCreateIDToken_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_DebugV1Service_DebugCreateIDToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 

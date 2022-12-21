@@ -66,7 +66,7 @@ message AdminCreateTenantResponse {
 
 message AdminUpdateTenantRequest {
     string tenant_id = 1;
-    string name = 2;
+    optional string name = 2;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {

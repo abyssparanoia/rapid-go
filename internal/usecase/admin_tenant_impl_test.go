@@ -265,7 +265,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 
 	type args struct {
 		tenantID    string
-		name        string
+		name        null.String
 		requestTime time.Time
 	}
 
@@ -291,7 +291,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 		"success": {
 			args: args{
 				tenantID:    tenant.ID,
-				name:        tenant.Name,
+				name:        null.StringFrom(tenant.Name),
 				requestTime: requestTime,
 			},
 			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
