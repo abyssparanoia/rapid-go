@@ -22,6 +22,32 @@
     "application/json"
   ],
   "paths": {
+    "/admin/v1/assets/-/presigned_url": {
+      "post": {
+        "operationId": "AdminCreateAssetPresignedURL",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AdminCreateAssetPresignedURLResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AdminCreateAssetPresignedURLRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      }
+    },
     "/admin/v1/tenants": {
       "get": {
         "operationId": "AdminListTenants",
@@ -263,6 +289,44 @@
     }
   },
   "definitions": {
+    "v1AdminAssetType": {
+      "type": "string",
+      "enum": [
+        "ADMIN_ASSET_TYPE_UNSPECIFIED",
+        "ADMIN_ASSET_TYPE_USER_IMAGE"
+      ],
+      "default": "ADMIN_ASSET_TYPE_UNSPECIFIED"
+    },
+    "v1AdminCreateAssetPresignedURLRequest": {
+      "type": "object",
+      "properties": {
+        "asset_type": {
+          "$ref": "#/definitions/v1AdminAssetType"
+        },
+        "content_type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "asset_type",
+        "content_type"
+      ]
+    },
+    "v1AdminCreateAssetPresignedURLResponse": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "presigned_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "presigned_url"
+      ]
+    },
     "v1AdminCreateTenantRequest": {
       "type": "object",
       "properties": {
