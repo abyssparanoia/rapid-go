@@ -1,8 +1,8 @@
 package public
 
 import (
+	public_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/public_api/v1"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
-	public_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/public_api/v1"
 )
 
 type PublicHandler struct {
