@@ -2,7 +2,7 @@ package marshaller
 
 import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
-	modelv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/model/v1"
+	modelv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/model/v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
