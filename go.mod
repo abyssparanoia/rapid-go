@@ -18,6 +18,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.14.0
 	github.com/oklog/ulid v1.3.1
+	github.com/oklog/ulid/v2 v2.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/pressly/goose/v3 v3.7.0
 	github.com/spf13/cobra v1.6.1
