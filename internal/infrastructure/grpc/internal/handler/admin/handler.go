@@ -1,8 +1,8 @@
 package admin
 
 import (
+	admin_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
-	admin_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/admin_api/v1"
 )
 
 type AdminHandler struct {
