@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdminV1ServiceClient interface {
+	AdminCreateAssetPresignedURL(ctx context.Context, in *AdminCreateAssetPresignedURLRequest, opts ...grpc.CallOption) (*AdminCreateAssetPresignedURLResponse, error)
 	AdminGetTenant(ctx context.Context, in *AdminGetTenantRequest, opts ...grpc.CallOption) (*AdminGetTenantResponse, error)
 	AdminListTenants(ctx context.Context, in *AdminListTenantsRequest, opts ...grpc.CallOption) (*AdminListTenantsResponse, error)
 	AdminCreateTenant(ctx context.Context, in *AdminCreateTenantRequest, opts ...grpc.CallOption) (*AdminCreateTenantResponse, error)
@@ -33,6 +34,15 @@ type adminV1ServiceClient struct {
 
 func NewAdminV1ServiceClient(cc grpc.ClientConnInterface) AdminV1ServiceClient {
 	return &adminV1ServiceClient{cc}
+}
+
+func (c *adminV1ServiceClient) AdminCreateAssetPresignedURL(ctx context.Context, in *AdminCreateAssetPresignedURLRequest, opts ...grpc.CallOption) (*AdminCreateAssetPresignedURLResponse, error) {
+	out := new(AdminCreateAssetPresignedURLResponse)
+	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/AdminCreateAssetPresignedURL", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *adminV1ServiceClient) AdminGetTenant(ctx context.Context, in *AdminGetTenantRequest, opts ...grpc.CallOption) (*AdminGetTenantResponse, error) {
@@ -93,6 +103,7 @@ func (c *adminV1ServiceClient) AdminCreateUser(ctx context.Context, in *AdminCre
 // All implementations should embed UnimplementedAdminV1ServiceServer
 // for forward compatibility
 type AdminV1ServiceServer interface {
+	AdminCreateAssetPresignedURL(context.Context, *AdminCreateAssetPresignedURLRequest) (*AdminCreateAssetPresignedURLResponse, error)
 	AdminGetTenant(context.Context, *AdminGetTenantRequest) (*AdminGetTenantResponse, error)
 	AdminListTenants(context.Context, *AdminListTenantsRequest) (*AdminListTenantsResponse, error)
 	AdminCreateTenant(context.Context, *AdminCreateTenantRequest) (*AdminCreateTenantResponse, error)
@@ -105,6 +116,9 @@ type AdminV1ServiceServer interface {
 type UnimplementedAdminV1ServiceServer struct {
 }
 
+func (UnimplementedAdminV1ServiceServer) AdminCreateAssetPresignedURL(context.Context, *AdminCreateAssetPresignedURLRequest) (*AdminCreateAssetPresignedURLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminCreateAssetPresignedURL not implemented")
+}
 func (UnimplementedAdminV1ServiceServer) AdminGetTenant(context.Context, *AdminGetTenantRequest) (*AdminGetTenantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminGetTenant not implemented")
 }
@@ -133,6 +147,24 @@ type UnsafeAdminV1ServiceServer interface {
 
 func RegisterAdminV1ServiceServer(s grpc.ServiceRegistrar, srv AdminV1ServiceServer) {
 	s.RegisterService(&AdminV1Service_ServiceDesc, srv)
+}
+
+func _AdminV1Service_AdminCreateAssetPresignedURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminCreateAssetPresignedURLRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminV1ServiceServer).AdminCreateAssetPresignedURL(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rapid.admin_api.v1.AdminV1Service/AdminCreateAssetPresignedURL",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminV1ServiceServer).AdminCreateAssetPresignedURL(ctx, req.(*AdminCreateAssetPresignedURLRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _AdminV1Service_AdminGetTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -250,6 +282,10 @@ var AdminV1Service_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "rapid.admin_api.v1.AdminV1Service",
 	HandlerType: (*AdminV1ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AdminCreateAssetPresignedURL",
+			Handler:    _AdminV1Service_AdminCreateAssetPresignedURL_Handler,
+		},
 		{
 			MethodName: "AdminGetTenant",
 			Handler:    _AdminV1Service_AdminGetTenant_Handler,
