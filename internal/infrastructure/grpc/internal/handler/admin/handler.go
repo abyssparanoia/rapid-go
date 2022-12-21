@@ -9,14 +9,17 @@ type AdminHandler struct {
 	admin_apiv1.UnimplementedAdminV1ServiceServer
 	tenantInteractor usecase.AdminTenantInteractor
 	userInteractor   usecase.AdminUserInteractor
+	assetInteractor  usecase.AdminAssetInteractor
 }
 
 func NewAdminHandler(
 	tenantInteractor usecase.AdminTenantInteractor,
 	userInteractor usecase.AdminUserInteractor,
+	assetInteractor usecase.AdminAssetInteractor,
 ) admin_apiv1.AdminV1ServiceServer {
 	return &AdminHandler{
 		tenantInteractor: tenantInteractor,
 		userInteractor:   userInteractor,
+		assetInteractor:  assetInteractor,
 	}
 }
