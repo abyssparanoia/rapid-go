@@ -95,7 +95,7 @@ func (i *adminTenantInteractor) Update(
 			return err
 		}
 		tenant.Update(
-			null.StringFrom(param.Name),
+			param.Name,
 			param.RequestTime,
 		)
 		tenant, err = i.tenantRepository.Update(ctx, tenant)
