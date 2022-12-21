@@ -5,6 +5,7 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/validation"
+	"github.com/volatiletech/null/v8"
 )
 
 type AdminGetTenant struct {
@@ -78,13 +79,13 @@ func (p *AdminCreateTenant) Validate() error {
 
 type AdminUpdateTenant struct {
 	TenantID    string `validate:"required"`
-	Name        string
+	Name        null.String
 	RequestTime time.Time `validate:"required"`
 }
 
 func NewAdminUpdateTenant(
 	tenantID string,
-	name string,
+	name null.String,
 	requestTime time.Time,
 ) *AdminUpdateTenant {
 	return &AdminUpdateTenant{
