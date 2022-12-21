@@ -7,6 +7,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/schema/proto/pb/rapid/admin_api/v1"
+	"github.com/volatiletech/null/v8"
 )
 
 func (h *AdminHandler) AdminGetTenant(ctx context.Context, req *admin_apiv1.AdminGetTenantRequest) (*admin_apiv1.AdminGetTenantResponse, error) {
@@ -62,7 +63,7 @@ func (h *AdminHandler) AdminUpdateTenant(ctx context.Context, req *admin_apiv1.A
 		ctx,
 		input.NewAdminUpdateTenant(
 			req.GetTenantId(),
-			req.GetName(),
+			null.StringFromPtr(req.Name),
 			request_interceptor.GetRequestTime(ctx),
 		),
 	)
