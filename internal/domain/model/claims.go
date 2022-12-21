@@ -1,12 +1,15 @@
 package model
 
-import "github.com/volatiletech/null/v8"
+import (
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
+	"github.com/volatiletech/null/v8"
+)
 
 type Claims struct {
 	AuthUID  string
 	TenantID null.String
 	UserID   null.String
-	UserRole UserRole
+	UserRole nullable.Type[UserRole]
 }
 
 func NewClaims(
@@ -26,5 +29,5 @@ func (m *Claims) SetUserID(userID string) {
 }
 
 func (m *Claims) SetUserRole(userRole UserRole) {
-	m.UserRole = userRole
+	m.UserRole = nullable.TypeFrom(userRole)
 }

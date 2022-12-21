@@ -5,6 +5,7 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 	"github.com/volatiletech/null/v8"
 )
 
@@ -12,7 +13,7 @@ type SessionContext struct {
 	AuthUID  string
 	TenantID null.String
 	UserID   null.String
-	UserRole model.UserRole
+	UserRole nullable.Type[model.UserRole]
 }
 
 type contextKey struct{}
