@@ -3,7 +3,7 @@ module github.com/abyssparanoia/rapid-go
 go 1.19
 
 require (
-	cloud.google.com/go/storage v1.27.0
+	cloud.google.com/go/storage v1.28.1
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.11.0
