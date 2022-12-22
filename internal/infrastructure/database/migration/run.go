@@ -2,6 +2,8 @@ package migration
 
 import (
 	"embed"
+	"os"
+	"path/filepath"
 
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
@@ -12,6 +14,16 @@ import (
 
 //go:embed files/*.sql
 var embedMigrations embed.FS
+
+func RunNewFile(fileName string) {
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	if err := goose.Create(nil, filepath.Join(dir, "internal/infrastructure/database/migration/files"), fileName, "sql"); err != nil {
+		panic(err)
+	}
+}
 
 func RunUp() {
 	e := &environment.Environment{}
