@@ -35,6 +35,11 @@ lint.proto:
 	@go run github.com/bufbuild/buf/cmd/buf lint
 	$(call format)
 
+.PHONY: migrate.create
+migrate.create:
+	make build
+	.bin/app-cli schema-migration database create
+
 .PHONY: migrate.up
 migrate.up:
 	make build
