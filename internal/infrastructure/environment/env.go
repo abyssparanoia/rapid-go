@@ -10,4 +10,5 @@ type Environment struct {
 
 	GCPProjectID         string `env:"GCP_PROJECT_ID,required"`
 	FirebaseClientAPIKey string `env:"FIREBASE_CLIENT_API_KEY"`
+	BucketName           string `env:"BUCKET_NAME,required"`
 }
