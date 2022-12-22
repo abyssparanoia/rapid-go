@@ -1,1 +1,0 @@
-/Users/abyssparanoia/workspace/go/github.com/abyssparanoia/rapid-go/internal/infrastructure/database/migration/files/20220930004233_initilize.sql
