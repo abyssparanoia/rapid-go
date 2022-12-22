@@ -38,6 +38,10 @@
 ## db migration
 
 ```bash
+# create new migration files in internal/infrastructure/database/migration/files
+> make migrate.create
+
+# migrate up
 > make migrate.up
 ```
 
