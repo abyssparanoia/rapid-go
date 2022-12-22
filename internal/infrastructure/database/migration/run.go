@@ -26,7 +26,7 @@ func RunNewFile(fileName string) {
 }
 
 func RunUp() {
-	e := &environment.Environment{}
+	e := &environment.DatabaseEnvironment{}
 	if err := env.Parse(e); err != nil {
 		panic(err)
 	}
