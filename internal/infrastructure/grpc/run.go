@@ -78,6 +78,7 @@ func NewServer(ctx context.Context,
 		admin.NewAdminHandler(
 			dependency.AdminTenantInteractor,
 			dependency.AdminUserInteractor,
+			dependency.AdminAssetInteractor,
 		),
 	)
 	public_apiv1.RegisterPublicV1ServiceServer(
