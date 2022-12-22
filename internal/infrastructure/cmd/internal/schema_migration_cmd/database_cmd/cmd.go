@@ -16,6 +16,21 @@ func NewDatabaseCmd() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(&cobra.Command{
+		Use:   "create",
+		Short: "create new migration file",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmd.Flags().StringP("name", "n", "", "file name")
+			name, err := cmd.Flags().GetString("name")
+			if err != nil {
+				panic(err)
+			}
+			if name == "" {
+				name = "please_rename_this_file"
+			}
+			migration.RunNewFile(name)
+		},
+	})
+	cmd.AddCommand(&cobra.Command{
 		Use:   "up",
 		Short: "migrate up",
 		Run: func(cmd *cobra.Command, args []string) {
