@@ -10,6 +10,8 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase"
 	firebase_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/repository"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs"
+	gcs_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs/repository"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
 
@@ -23,6 +25,7 @@ type Dependency struct {
 	// admin
 	AdminTenantInteractor usecase.AdminTenantInteractor
 	AdminUserInteractor   usecase.AdminUserInteractor
+	AdminAssetInteractor  usecase.AdminAssetInteractor
 
 	// Other
 	UserInteractor           usecase.UserInteractor
@@ -36,12 +39,17 @@ func (d *Dependency) Inject(
 	_ = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
 
 	d.FirebaseClient = firebase.NewClient(e.GCPProjectID)
+
+	gcsCli := gcs.NewClient(ctx)
+	gcsBucketHandle := gcs.NewBucketHandle(gcsCli, e.BucketName)
+
 	transactable := transactable.NewTransactable()
 	authenticationRepository := firebase_repository.NewAuthentication(
 		d.FirebaseClient,
 	)
 	tenantRepository := repository.NewTenant()
 	userRepository := repository.NewUser()
+	assetRepository := gcs_repository.NewAsset(gcsBucketHandle)
 
 	d.PublicTenantInteractor = usecase.NewPublicTenantInteractor(
 		transactable,
@@ -56,12 +64,14 @@ func (d *Dependency) Inject(
 		transactable,
 		tenantRepository,
 	)
-
 	d.AdminUserInteractor = usecase.NewAdminUserInteractor(
 		transactable,
 		authenticationRepository,
 		userRepository,
 		tenantRepository,
+	)
+	d.AdminAssetInteractor = usecase.NewAdminAssetInteractor(
+		assetRepository,
 	)
 
 	d.UserInteractor = usecase.NewUserInteractor(

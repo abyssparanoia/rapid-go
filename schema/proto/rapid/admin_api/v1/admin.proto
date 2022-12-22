@@ -2,12 +2,18 @@ syntax = "proto3";
 
 package rapid.admin_api.v1;
 
-
 import "google/api/annotations.proto";
 import "rapid/admin_api/v1/tenant.proto";
 import "rapid/admin_api/v1/user.proto";
+import "rapid/admin_api/v1/asset.proto";
 
 service AdminV1Service {
+    rpc AdminCreateAssetPresignedURL(AdminCreateAssetPresignedURLRequest) returns (AdminCreateAssetPresignedURLResponse) {
+        option (google.api.http) = {
+            post: "/admin/v1/assets/-/presigned_url",
+            body: "*"
+        };
+    }
     rpc AdminGetTenant(AdminGetTenantRequest) returns (AdminGetTenantResponse) {
         option (google.api.http) = {
             get: "/admin/v1/tenants/{tenant_id}"
