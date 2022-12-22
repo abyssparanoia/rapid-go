@@ -2,7 +2,6 @@
 build:
 	go build -o ./.bin/app-cli ./cmd/app
 
-
 .PHONY: test
 test:
 	@go test ./internal/...
@@ -38,7 +37,8 @@ lint.proto:
 
 .PHONY: migrate.up
 migrate.up:
-	@go run github.com/pressly/goose/v3/cmd/goose --dir db/main/migrations mysql "$(DB_USER):$(DB_PASSWORD)@$(DB_HOST)/$(DB_DATABASE)?parseTime=true" up
+	make build
+	.bin/app-cli schema-migration database up
 
 .PHONY: format
 format:
