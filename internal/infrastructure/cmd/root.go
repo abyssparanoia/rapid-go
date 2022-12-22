@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/http_server_cmd"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/schema_migration_cmd"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/task_cmd"
 	"github.com/spf13/cobra"
 )
@@ -19,5 +20,6 @@ func NewCmdRoot() *cobra.Command {
 	}
 	cmd.AddCommand(http_server_cmd.NewHTTPServerCmd())
 	cmd.AddCommand(task_cmd.NewTaskCmd())
+	cmd.AddCommand(schema_migration_cmd.NewSchemaMigrationCmd())
 	return cmd
 }
