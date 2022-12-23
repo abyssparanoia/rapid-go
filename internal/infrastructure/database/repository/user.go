@@ -23,8 +23,6 @@ func NewUser() repository.User {
 func (r *user) Get(
 	ctx context.Context,
 	query repository.GetUserQuery,
-	orFail bool,
-	preload bool,
 ) (*model.User, error) {
 	mods := []qm.QueryMod{}
 	if query.ID.Valid {
@@ -33,7 +31,7 @@ func (r *user) Get(
 	if query.AuthUID.Valid {
 		mods = append(mods, dbmodel.UserWhere.AuthUID.EQ(query.AuthUID.String))
 	}
-	if preload {
+	if query.Preload {
 		mods = append(mods,
 			qm.Load(dbmodel.UserRels.Tenant),
 		)
@@ -42,7 +40,7 @@ func (r *user) Get(
 		mods...,
 	).One(ctx, transactable.GetContextExecutor(ctx))
 	if err != nil {
-		if err == sql.ErrNoRows && !orFail {
+		if err == sql.ErrNoRows && !query.OrFail {
 			return nil, nil
 		} else if err == sql.ErrNoRows {
 			return nil, errors.NotFoundErr.Errorf("user is not found")
