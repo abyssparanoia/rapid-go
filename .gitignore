@@ -14,6 +14,7 @@ secret/
 schema/openapi/generated
 .terraform
 localstack/data
+localstack/cognito/.cognito
 
 
 ### https://raw.github.com/github/gitignore/f9291de89f5f7dc0d3d87f9eb111b839f81d5dbc/Node.gitignore
