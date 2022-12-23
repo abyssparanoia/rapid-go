@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
-	"github.com/volatiletech/null/v8"
 )
 
 //go:generate mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
@@ -20,7 +19,7 @@ type Tenant interface {
 	) ([]*model.Tenant, error)
 	Count(
 		ctx context.Context,
-		query CountTenantsQuery,
+		query ListTenantsQuery,
 	) (uint64, error)
 	Create(
 		ctx context.Context,
@@ -37,10 +36,5 @@ type Tenant interface {
 }
 
 type ListTenantsQuery struct {
-	Page  null.Uint64
-	Limit null.Uint64
-	CountTenantsQuery
-}
-
-type CountTenantsQuery struct {
+	BaseListOptions
 }
