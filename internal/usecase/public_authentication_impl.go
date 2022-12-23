@@ -32,9 +32,11 @@ func (i *publicAuthenticationInteractor) SignIn(
 		ctx,
 		repository.GetUserQuery{
 			AuthUID: null.StringFrom(param.AuthUID),
+			BaseGetOptions: repository.BaseGetOptions{
+				Preload: true,
+				OrFail:  true,
+			},
 		},
-		true,
-		true,
 	)
 	if err != nil {
 		return nil, err

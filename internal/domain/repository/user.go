@@ -11,8 +11,6 @@ type User interface {
 	Get(
 		ctx context.Context,
 		query GetUserQuery,
-		orFail bool,
-		preload bool,
 	) (*model.User, error)
 	Create(
 		ctx context.Context,
@@ -21,6 +19,7 @@ type User interface {
 }
 
 type GetUserQuery struct {
+	BaseGetOptions
 	ID      null.String
 	AuthUID null.String
 }
