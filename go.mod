@@ -5,6 +5,7 @@ go 1.19
 require (
 	cloud.google.com/go/storage v1.28.1
 	firebase.google.com/go v3.13.0+incompatible
+	github.com/aws/aws-sdk-go v1.44.166
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.11.0
 	github.com/bxcodec/faker v2.0.1+incompatible
@@ -140,6 +141,7 @@ require (
 	github.com/jgautheron/goconst v1.5.1 // indirect
 	github.com/jingyugao/rowserrcheck v1.1.1 // indirect
 	github.com/jirfag/go-printf-func-name v0.0.0-20200119135958-7558a9eaa5af // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/julz/importas v0.1.0 // indirect
 	github.com/kisielk/errcheck v1.6.2 // indirect
 	github.com/kisielk/gotool v1.0.0 // indirect
