@@ -22,7 +22,9 @@ type GCPEnviroment struct {
 }
 
 type AWSEnvironment struct {
-	AWSBucketName   string `env:"AWS_BUCKET_NAME,required"`
-	AWSRegion       string `env:"AWS_REGION,required"`
-	AWSEmulatorHost string `env:"AWS_EMULATOR_HOST"`
+	AWSRegion              string `env:"AWS_REGION,required"`
+	AWSEmulatorHost        string `env:"AWS_EMULATOR_HOST"`
+	AWSCognitoEmulatorHost string `env:"AWS_COGNITO_EMULATOR_HOST"`
+	AWSBucketName          string `env:"AWS_BUCKET_NAME,required"`
+	AWSCognitoUserPoolID   string `env:"AWS_COGNITO_USER_POOL_ID,required"`
 }
