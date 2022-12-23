@@ -28,7 +28,7 @@ func ClaimsToMap(m *model.Claims) map[string]interface{} {
 		cmap["service_user_id"] = m.UserID.String
 	}
 	if m.UserRole.Valid && m.UserRole.Value.Valid() {
-		cmap["user_role"] = m.UserID.String
+		cmap["user_role"] = m.UserRole.Value.String()
 	}
 	return cmap
 }
