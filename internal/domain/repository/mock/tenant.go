@@ -37,7 +37,7 @@ func (m *MockTenant) EXPECT() *MockTenantMockRecorder {
 }
 
 // Count mocks base method.
-func (m *MockTenant) Count(ctx context.Context, query repository.CountTenantsQuery) (uint64, error) {
+func (m *MockTenant) Count(ctx context.Context, query repository.ListTenantsQuery) (uint64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Count", ctx, query)
 	ret0, _ := ret[0].(uint64)
