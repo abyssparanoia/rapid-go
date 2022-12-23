@@ -5,6 +5,7 @@ type Environment struct {
 	Environment string `env:"ENV,required"`
 	DatabaseEnvironment
 	GCPEnviroment
+	AWSEnvironment
 }
 
 type DatabaseEnvironment struct {
@@ -17,5 +18,11 @@ type DatabaseEnvironment struct {
 type GCPEnviroment struct {
 	GCPProjectID         string `env:"GCP_PROJECT_ID,required"`
 	FirebaseClientAPIKey string `env:"FIREBASE_CLIENT_API_KEY"`
-	BucketName           string `env:"BUCKET_NAME,required"`
+	GCPBucketName        string `env:"GCP_BUCKET_NAME,required"`
+}
+
+type AWSEnvironment struct {
+	AWSBucketName   string `env:"AWS_BUCKET_NAME,required"`
+	AWSRegion       string `env:"AWS_REGION,required"`
+	AWSEmulatorHost string `env:"AWS_EMULATOR_HOST"`
 }
