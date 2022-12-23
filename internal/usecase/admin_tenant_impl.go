@@ -42,19 +42,22 @@ func (i *adminTenantInteractor) List(
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
-	tenants, err := i.tenantRepository.List(
-		ctx,
-		repository.ListTenantsQuery{
+	query := repository.ListTenantsQuery{
+		BaseListOptions: repository.BaseListOptions{
 			Page:  null.Uint64From(param.Page),
 			Limit: null.Uint64From(param.Limit),
 		},
+	}
+	tenants, err := i.tenantRepository.List(
+		ctx,
+		query,
 	)
 	if err != nil {
 		return nil, err
 	}
 	ttl, err := i.tenantRepository.Count(
 		ctx,
-		repository.CountTenantsQuery{},
+		query,
 	)
 	if err != nil {
 		return nil, err
