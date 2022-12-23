@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"firebase.google.com/go/auth"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/aws"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/transactable"
@@ -12,6 +13,8 @@ import (
 	firebase_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs"
 	gcs_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs/repository"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/s3"
+	s3_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/s3/repository"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
 
@@ -41,7 +44,10 @@ func (d *Dependency) Inject(
 	d.FirebaseClient = firebase.NewClient(e.GCPProjectID)
 
 	gcsCli := gcs.NewClient(ctx)
-	gcsBucketHandle := gcs.NewBucketHandle(gcsCli, e.BucketName)
+	gcsBucketHandle := gcs.NewBucketHandle(gcsCli, e.GCPBucketName)
+
+	awsSession := aws.NewSession(e.AWSRegion, e.AWSEmulatorHost)
+	s3Client := s3.NewClient(awsSession)
 
 	transactable := transactable.NewTransactable()
 	authenticationRepository := firebase_repository.NewAuthentication(
@@ -49,7 +55,8 @@ func (d *Dependency) Inject(
 	)
 	tenantRepository := repository.NewTenant()
 	userRepository := repository.NewUser()
-	assetRepository := gcs_repository.NewAsset(gcsBucketHandle)
+	_ = gcs_repository.NewAsset(gcsBucketHandle)
+	assetRepository := s3_repository.NewAsset(s3Client, e.AWSBucketName)
 
 	d.PublicTenantInteractor = usecase.NewPublicTenantInteractor(
 		transactable,
