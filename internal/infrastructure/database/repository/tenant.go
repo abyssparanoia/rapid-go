@@ -61,7 +61,7 @@ func (r *tenant) List(
 
 func (r *tenant) Count(
 	ctx context.Context,
-	query repository.CountTenantsQuery,
+	query repository.ListTenantsQuery,
 ) (uint64, error) {
 	mods := []qm.QueryMod{}
 	ttl, err := dbmodel.Tenants(
