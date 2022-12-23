@@ -5,6 +5,8 @@ import (
 
 	"firebase.google.com/go/auth"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/aws"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
+	cognito_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/transactable"
@@ -48,9 +50,17 @@ func (d *Dependency) Inject(
 	awsSession := aws.NewSession(e.AWSRegion, e.AWSEmulatorHost)
 	_ = s3.NewClient(awsSession)
 
+	cognitoCli := cognito.NewClient(awsSession, e.AWSCognitoEmulatorHost)
+
 	transactable := transactable.NewTransactable()
-	authenticationRepository := firebase_repository.NewAuthentication(
+	_ = firebase_repository.NewAuthentication(
 		d.FirebaseClient,
+	)
+	authenticationRepository := cognito_repository.NewAuthentication(
+		ctx,
+		cognitoCli,
+		e.AWSCognitoUserPoolID,
+		e.AWSCognitoEmulatorHost,
 	)
 	tenantRepository := repository.NewTenant()
 	userRepository := repository.NewUser()
