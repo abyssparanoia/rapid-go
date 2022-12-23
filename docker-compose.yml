@@ -5,6 +5,7 @@ services:
     build: ./db/main
     volumes:
       - ./db/main/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/main/data:/var/lib/mysql
     ports:
       - "3306:3306"
     environment:
