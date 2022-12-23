@@ -134,14 +134,26 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
-					List(gomock.Any(), repository.ListTenantsQuery{
-						Page:  null.Uint64From(2),
-						Limit: null.Uint64From(30),
-					}).
+					List(
+						gomock.Any(),
+						repository.ListTenantsQuery{
+							BaseListOptions: repository.BaseListOptions{
+								Page:  null.Uint64From(2),
+								Limit: null.Uint64From(30),
+							},
+						}).
 					Return([]*model.Tenant{tenant}, nil)
 
 				mockTenantRepo.EXPECT().
-					Count(gomock.Any(), repository.CountTenantsQuery{}).
+					Count(
+						gomock.Any(),
+						repository.ListTenantsQuery{
+							BaseListOptions: repository.BaseListOptions{
+								Page:  null.Uint64From(2),
+								Limit: null.Uint64From(30),
+							},
+						},
+					).
 					Return(uint64(60), nil)
 
 				return &adminTenantInteractor{
