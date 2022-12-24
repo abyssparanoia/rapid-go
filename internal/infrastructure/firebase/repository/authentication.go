@@ -2,23 +2,32 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
+	"io"
+	"net/http"
+	"net/url"
+	"strings"
 
 	"firebase.google.com/go/auth"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/internal/dto"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/internal/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 )
 
 type authentication struct {
-	cli *auth.Client
+	cli          *auth.Client
+	clientApiKey string
 }
 
 func NewAuthentication(
 	firebaseAuthCli *auth.Client,
+	firebaseClientApiKey string,
 ) repository.Authentication {
 	return &authentication{
-		cli: firebaseAuthCli,
+		cli:          firebaseAuthCli,
+		clientApiKey: firebaseClientApiKey,
 	}
 }
 
@@ -89,4 +98,41 @@ func (r *authentication) CreateCustomToken(
 		return "", errors.InternalErr.Wrap(err)
 	}
 	return customToken, nil
+}
+
+func (r *authentication) CreateIDToken(
+	ctx context.Context,
+	authUID string,
+) (string, error) {
+	customToken, err := r.cli.CustomToken(ctx, authUID)
+	if err != nil {
+		return "", err
+	}
+
+	values := url.Values{}
+	values.Add("token", customToken)
+	values.Add("returnSecureToken", "true")
+	values.Add("key", r.clientApiKey)
+
+	resp, err := http.Post(
+		"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken",
+		"application/x-www-form-urlencoded",
+		strings.NewReader(values.Encode()),
+	)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var res dto.VerifyCustomTokenResponse
+	if err := json.Unmarshal(b, &res); err != nil {
+		return "", err
+	}
+
+	return res.IDToken, nil
 }
