@@ -186,12 +186,13 @@ func (r *authentication) CreateCustomToken(
 func (r *authentication) CreateIDToken(
 	ctx context.Context,
 	authUID string,
+	password string,
 ) (string, error) {
 	req := &cognitoidentityprovider.AdminInitiateAuthInput{
 		AuthFlow: aws.String(cognitoidentityprovider.AuthFlowTypeAdminUserPasswordAuth),
 		AuthParameters: map[string]*string{
 			"USERNAME": aws.String(authUID),
-			"PASSWORD": aws.String("kkkkk412"),
+			"PASSWORD": aws.String(password),
 		},
 		ClientId:   aws.String(r.clientID),
 		UserPoolId: aws.String(r.userPoolID),
