@@ -11,6 +11,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/internal/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/lestrrat-go/jwx/v2/jwk"
@@ -19,6 +20,7 @@ import (
 type authentication struct {
 	cli          *cognitoidentityprovider.CognitoIdentityProvider
 	userPoolID   string
+	clientID     string
 	publicKeySet jwk.Set
 }
 
@@ -26,6 +28,7 @@ func NewAuthentication(
 	ctx context.Context,
 	cognitoCli *cognitoidentityprovider.CognitoIdentityProvider,
 	userPoolID string,
+	clientID string,
 	emulatorHost string,
 ) repository.Authentication {
 	endpoint := cognitoCli.Endpoint
@@ -40,6 +43,7 @@ func NewAuthentication(
 	return &authentication{
 		cli:          cognitoCli,
 		userPoolID:   userPoolID,
+		clientID:     clientID,
 		publicKeySet: publicKeySet,
 	}
 }
@@ -57,9 +61,6 @@ func (r *authentication) VerifyIDToken(
 		kid, ok := token.Header["kid"].(string)
 		if !ok {
 			return nil, errors.InternalErr.Errorf("kid header not found")
-		}
-		if _, ok := token.Claims.(*dto.AWSCognitoClaims); !ok {
-			return nil, errors.InternalErr.Errorf("there is problem to get claims")
 		}
 		key, ok := r.publicKeySet.LookupKeyID(kid)
 		if !ok {
@@ -81,37 +82,43 @@ func (r *authentication) VerifyIDToken(
 		return nil, errors.InternalErr.Wrap(err)
 	}
 
-	var jwtClaims *dto.AWSCognitoClaims
-
-	// 定義したStructへ変換
+	jwtClaims := &dto.AWSCognitoClaims{}
 	if err := json.Unmarshal(jsonString, jwtClaims); err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
 
-	return marshaller.ClaimsToModel(jwtClaims.Username), nil
+	return marshaller.UserAttributesToModel(dto.NewUserAttributesFromClaims(jwtClaims)), nil
 }
 
 func (r *authentication) GetUserByEmail(
 	ctx context.Context,
 	email string,
 ) (*repository.AuthenticationGetUserByEmailResult, error) {
-	req := &cognitoidentityprovider.ListUsersInput{}
-	req.SetUserPoolId(r.userPoolID).
-		SetFilter(fmt.Sprintf("email=%s", email)).
-		SetLimit(1)
+	req := &cognitoidentityprovider.ListUsersInput{
+		UserPoolId: aws.String(r.userPoolID),
+		Filter:     aws.String(fmt.Sprintf("email = \"%s\"", email)),
+		Limit:      aws.Int64(1),
+	}
 	res, err := r.cli.ListUsers(req)
 	if err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	if len(res.Users) == 0 {
+	var user *cognitoidentityprovider.UserType
+	for _, cognitoUser := range res.Users {
+		for _, attr := range cognitoUser.Attributes {
+			if attr.Name == aws.String("email") && attr.Value == aws.String(email) {
+				user = cognitoUser
+			}
+		}
+	}
+	if user == nil {
 		return &repository.AuthenticationGetUserByEmailResult{
 			Exist: false,
 		}, nil
 	}
-	user := res.Users[0]
 	return &repository.AuthenticationGetUserByEmailResult{
 		AuthUID: *user.Username,
-		Claims:  marshaller.ClaimsToModel(*user.Username),
+		Claims:  marshaller.UserAttributesToModel(dto.NewUserAttributesFromCognitoUser(user)),
 		Exist:   true,
 	}, nil
 }
@@ -126,21 +133,24 @@ func (r *authentication) CreateUser(
 		SetValue(param.Email)
 	attrs := []*cognitoidentityprovider.AttributeType{emailAttr}
 	deliveryMediumTypeEmail := cognitoidentityprovider.DeliveryMediumTypeEmail
-	req := &cognitoidentityprovider.AdminCreateUserInput{}
-	req.SetUserPoolId(r.userPoolID).
-		SetUsername(authUID).
-		SetUserAttributes(attrs).
-		SetDesiredDeliveryMediums([]*string{&deliveryMediumTypeEmail})
+	req := &cognitoidentityprovider.AdminCreateUserInput{
+		UserPoolId:             aws.String(r.userPoolID),
+		Username:               aws.String(authUID),
+		UserAttributes:         attrs,
+		DesiredDeliveryMediums: aws.StringSlice([]string{deliveryMediumTypeEmail}),
+	}
 	_, err := r.cli.AdminCreateUser(req)
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}
 
 	if param.Password.Valid {
-		req := &cognitoidentityprovider.AdminSetUserPasswordInput{}
-		req.SetUserPoolId(r.userPoolID).
-			SetUsername(authUID).
-			SetPassword(param.Password.String)
+		req := &cognitoidentityprovider.AdminSetUserPasswordInput{
+			UserPoolId: aws.String(r.userPoolID),
+			Username:   aws.String(authUID),
+			Password:   aws.String(param.Password.String),
+			Permanent:  aws.Bool(true),
+		}
 		_, err := r.cli.AdminSetUserPassword(req)
 		if err != nil {
 			return "", errors.InternalErr.Wrap(err)
@@ -157,7 +167,7 @@ func (r *authentication) StoreClaims(
 	req := &cognitoidentityprovider.AdminUpdateUserAttributesInput{}
 	req.SetUserPoolId(r.userPoolID).
 		SetUsername(authUID).
-		SetUserAttributes(marshaller.ClaimsToUserAttributes(claims).ToSlice())
+		SetUserAttributes(marshaller.ClaimsToCustomUserAttributes(claims).ToSlice())
 	_, err := r.cli.AdminUpdateUserAttributes(req)
 	if err != nil {
 		return errors.InternalErr.Wrap(err)
@@ -170,4 +180,28 @@ func (r *authentication) CreateCustomToken(
 	authUID string,
 ) (string, error) {
 	return "", errors.InternalErr.Errorf("can not create custom token in cognito")
+}
+
+func (r *authentication) CreateIDToken(
+	ctx context.Context,
+	authUID string,
+) (string, error) {
+	req := &cognitoidentityprovider.AdminInitiateAuthInput{
+		AuthFlow: aws.String(cognitoidentityprovider.AuthFlowTypeAdminUserPasswordAuth),
+		AuthParameters: map[string]*string{
+			"USERNAME": aws.String(authUID),
+			"PASSWORD": aws.String("kkkkk412"),
+		},
+		ClientId:   aws.String(r.clientID),
+		UserPoolId: aws.String(r.userPoolID),
+	}
+	res, err := r.cli.AdminInitiateAuth(req)
+	if err != nil {
+		return "", errors.InternalErr.Wrap(err)
+	}
+	if res == nil || res.AuthenticationResult == nil || res.AuthenticationResult.IdToken == nil {
+		return "", errors.InternalErr.Errorf("failed to auth")
+	}
+
+	return *res.AuthenticationResult.IdToken, nil
 }
