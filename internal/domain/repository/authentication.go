@@ -32,6 +32,7 @@ type Authentication interface {
 	CreateIDToken(
 		ctx context.Context,
 		authUID string,
+		password string,
 	) (string, error)
 }
 
