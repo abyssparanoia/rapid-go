@@ -11,9 +11,9 @@ type AWSCognitoClaims struct {
 	Username      string `json:"cognito:username"`
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`
-	TenantID      string `json:"custom:tenant_id,omitepmty"`
-	UserID        string `json:"custom:user_id,omitepmty"`
-	UserRole      string `json:"custom:user_role,omitepmty"`
+	TenantID      string `json:"custom:tenant_id,omitempty"`
+	UserID        string `json:"custom:user_id,omitempty"`
+	UserRole      string `json:"custom:user_role,omitempty"`
 	jwt.StandardClaims
 }
 
