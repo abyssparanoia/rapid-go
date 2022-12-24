@@ -3,7 +3,6 @@ package dependency
 import (
 	"context"
 
-	"firebase.google.com/go/auth"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/aws"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
 	cognito_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/repository"
@@ -20,7 +19,6 @@ import (
 )
 
 type Dependency struct {
-	FirebaseClient *auth.Client
 
 	// public
 	PublicAuthenticationInteractor usecase.PublicAuthenticationInteractor
@@ -34,6 +32,7 @@ type Dependency struct {
 	// Other
 	UserInteractor           usecase.UserInteractor
 	AuthenticationInteractor usecase.AuthenticationInteractor
+	DebugInteractor          usecase.DebugInteractor
 }
 
 func (d *Dependency) Inject(
@@ -42,7 +41,7 @@ func (d *Dependency) Inject(
 ) {
 	_ = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
 
-	d.FirebaseClient = firebase.NewClient(e.GCPProjectID)
+	firebaseCli := firebase.NewClient(e.GCPProjectID)
 
 	gcsCli := gcs.NewClient(ctx)
 	gcsBucketHandle := gcs.NewBucketHandle(gcsCli, e.GCPBucketName)
@@ -54,12 +53,14 @@ func (d *Dependency) Inject(
 
 	transactable := transactable.NewTransactable()
 	_ = firebase_repository.NewAuthentication(
-		d.FirebaseClient,
+		firebaseCli,
+		e.FirebaseClientAPIKey,
 	)
 	authenticationRepository := cognito_repository.NewAuthentication(
 		ctx,
 		cognitoCli,
 		e.AWSCognitoUserPoolID,
+		e.AWSCognitoClientID,
 		e.AWSCognitoEmulatorHost,
 	)
 	tenantRepository := repository.NewTenant()
@@ -98,6 +99,10 @@ func (d *Dependency) Inject(
 	)
 
 	d.AuthenticationInteractor = usecase.NewAuthenticationInteractor(
+		authenticationRepository,
+	)
+
+	d.DebugInteractor = usecase.NewDebugInteractor(
 		authenticationRepository,
 	)
 }
