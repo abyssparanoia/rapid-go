@@ -103,6 +103,7 @@ func (r *authentication) CreateCustomToken(
 func (r *authentication) CreateIDToken(
 	ctx context.Context,
 	authUID string,
+	password string,
 ) (string, error) {
 	customToken, err := r.cli.CustomToken(ctx, authUID)
 	if err != nil {
