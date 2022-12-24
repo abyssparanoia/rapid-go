@@ -431,10 +431,14 @@
       "properties": {
         "auth_uid": {
           "type": "string"
+        },
+        "password": {
+          "type": "string"
         }
       },
       "required": [
-        "auth_uid"
+        "auth_uid",
+        "password"
       ]
     },
     "v1DebugCreateIDTokenResponse": {
