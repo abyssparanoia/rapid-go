@@ -21,7 +21,7 @@ func NewDebugHandler(
 }
 
 func (h *DebugHander) DebugCreateIDToken(ctx context.Context, req *debug_apiv1.DebugCreateIDTokenRequest) (*debug_apiv1.DebugCreateIDTokenResponse, error) {
-	idToken, err := h.debugInteractor.CreateIDToken(ctx, req.GetAuthUid())
+	idToken, err := h.debugInteractor.CreateIDToken(ctx, req.GetAuthUid(), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
