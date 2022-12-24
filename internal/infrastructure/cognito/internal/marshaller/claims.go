@@ -6,17 +6,26 @@ import (
 	"github.com/volatiletech/null/v8"
 )
 
-func ClaimsToModel(
-	username string,
+func UserAttributesToModel(
+	userAttribute *dto.UserAttributes,
 ) *model.Claims {
-	claims := model.NewClaims(username)
+	claims := model.NewClaims(userAttribute.AuthUID)
+	if userAttribute.TenantID.Valid {
+		claims.SetTenantID(userAttribute.TenantID.String)
+	}
+	if userAttribute.UserID.Valid {
+		claims.SetUserID(userAttribute.UserID.String)
+	}
+	if userAttribute.UserRole.Valid {
+		claims.SetUserRole(model.NewUserRole(userAttribute.UserRole.String))
+	}
 	return claims
 }
 
-func ClaimsToUserAttributes(
+func ClaimsToCustomUserAttributes(
 	claims *model.Claims,
-) *dto.UserAttributes {
-	ua := &dto.UserAttributes{
+) *dto.CustomUserAttributes {
+	ua := &dto.CustomUserAttributes{
 		TenantID: claims.TenantID,
 		UserID:   claims.UserID,
 	}
