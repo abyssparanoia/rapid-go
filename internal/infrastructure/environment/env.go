@@ -27,4 +27,5 @@ type AWSEnvironment struct {
 	AWSCognitoEmulatorHost string `env:"AWS_COGNITO_EMULATOR_HOST"`
 	AWSBucketName          string `env:"AWS_BUCKET_NAME,required"`
 	AWSCognitoUserPoolID   string `env:"AWS_COGNITO_USER_POOL_ID,required"`
+	AWSCognitoClientID     string `env:"AWS_COGNITO_CLIENT_ID,required"`
 }
