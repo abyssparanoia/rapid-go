@@ -18,6 +18,10 @@ func NewDebugInteractor(
 	}
 }
 
-func (i *debugInteractor) CreateIDToken(ctx context.Context, authUID string) (string, error) {
-	return i.authenticationRepository.CreateIDToken(ctx, authUID)
+func (i *debugInteractor) CreateIDToken(
+	ctx context.Context,
+	authUID string,
+	password string,
+) (string, error) {
+	return i.authenticationRepository.CreateIDToken(ctx, authUID, password)
 }
