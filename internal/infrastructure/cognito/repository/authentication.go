@@ -128,16 +128,16 @@ func (r *authentication) CreateUser(
 	param repository.AuthenticationCreateUserParam,
 ) (string, error) {
 	authUID := uuid.UUIDBase64()
-	emailAttr := &cognitoidentityprovider.AttributeType{}
-	emailAttr.SetName(cognitoidentityprovider.UsernameAttributeTypeEmail).
-		SetValue(param.Email)
+	emailAttr := &cognitoidentityprovider.AttributeType{
+		Name:  aws.String(cognitoidentityprovider.UsernameAttributeTypeEmail),
+		Value: aws.String(param.Email),
+	}
 	attrs := []*cognitoidentityprovider.AttributeType{emailAttr}
-	deliveryMediumTypeEmail := cognitoidentityprovider.DeliveryMediumTypeEmail
 	req := &cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:             aws.String(r.userPoolID),
 		Username:               aws.String(authUID),
 		UserAttributes:         attrs,
-		DesiredDeliveryMediums: aws.StringSlice([]string{deliveryMediumTypeEmail}),
+		DesiredDeliveryMediums: aws.StringSlice([]string{cognitoidentityprovider.DeliveryMediumTypeEmail}),
 	}
 	_, err := r.cli.AdminCreateUser(req)
 	if err != nil {
@@ -164,10 +164,11 @@ func (r *authentication) StoreClaims(
 	authUID string,
 	claims *model.Claims,
 ) error {
-	req := &cognitoidentityprovider.AdminUpdateUserAttributesInput{}
-	req.SetUserPoolId(r.userPoolID).
-		SetUsername(authUID).
-		SetUserAttributes(marshaller.ClaimsToCustomUserAttributes(claims).ToSlice())
+	req := &cognitoidentityprovider.AdminUpdateUserAttributesInput{
+		UserPoolId:     aws.String(r.userPoolID),
+		Username:       aws.String(authUID),
+		UserAttributes: marshaller.ClaimsToCustomUserAttributes(claims).ToSlice(),
+	}
 	_, err := r.cli.AdminUpdateUserAttributes(req)
 	if err != nil {
 		return errors.InternalErr.Wrap(err)
