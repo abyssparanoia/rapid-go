@@ -38,10 +38,6 @@ func (i *userInteractor) CreateRoot(
 		if err := param.Validate(); err != nil {
 			return err
 		}
-		tenant := model.NewTenant("Platformer", param.RequestTime)
-		if _, err := i.tenantRepository.Create(ctx, tenant); err != nil {
-			return err
-		}
 
 		res, err := i.authenticationRepository.GetUserByEmail(ctx, param.Email)
 		if err != nil {
@@ -62,6 +58,11 @@ func (i *userInteractor) CreateRoot(
 			}
 		} else {
 			authUID = res.AuthUID
+		}
+
+		tenant := model.NewTenant("Platformer", param.RequestTime)
+		if _, err := i.tenantRepository.Create(ctx, tenant); err != nil {
+			return err
 		}
 
 		user := model.NewUser(

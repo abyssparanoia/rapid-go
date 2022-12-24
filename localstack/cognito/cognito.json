@@ -1,0 +1,28 @@
+{
+  "LambdaClient": {
+    "credentials": {
+      "accessKeyId": "test",
+      "secretAccessKey": "test"
+    },
+    "region": "test"
+  },
+  "TokenConfig": {
+    "IssuerDomain": "http://localhost:9229"
+  },
+  "TriggerFunctions": {},
+  "UserPoolDefaults": {
+    "UsernameAttributes": [
+      "email",
+      "custom:tenant_id",
+      "custom:user_id",
+      "custom:user_role"
+    ]
+  },
+  "KMSConfig": {
+    "credentials": {
+      "accessKeyId": "test",
+      "secretAccessKey": "test"
+    },
+    "region": "test"
+  }
+}

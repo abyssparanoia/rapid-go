@@ -30,3 +30,16 @@ services:
       - 4566:4566
       - 8000:8080
       - 4572:4572
+    depends_on:
+      - aws-cognito
+  
+  aws-cognito:
+    image: jagregory/cognito-local:latest
+    volumes:
+      - ./localstack/cognito/.cognito:/app/.cognito
+      - ./localstack/cognito/cognito.json:/app/.cognito/config.json
+    command: ['node', '/app/start.js']
+    ports:
+      - 9229:9229
+    environment:
+      DEBUG: 1

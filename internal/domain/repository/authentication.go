@@ -29,6 +29,11 @@ type Authentication interface {
 		ctx context.Context,
 		authUID string,
 	) (string, error)
+	CreateIDToken(
+		ctx context.Context,
+		authUID string,
+		password string,
+	) (string, error)
 }
 
 type AuthenticationCreateUserParam struct {

@@ -49,6 +49,10 @@ migrate.up:
 format:
 	$(call format)
 
+.PHONY: init.local.cognito
+init.local.cognito:
+	bash ./localstack/cognito/init.sh
+
 define format
 	@go fmt ./... 
 	@go run github.com/bufbuild/buf/cmd/buf format
