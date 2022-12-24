@@ -93,8 +93,7 @@ func NewServer(ctx context.Context,
 		debug_apiv1.RegisterDebugV1ServiceServer(
 			server,
 			debug.NewDebugHandler(
-				dependency.FirebaseClient,
-				e.FirebaseClientAPIKey,
+				dependency.DebugInteractor,
 			),
 		)
 	}
