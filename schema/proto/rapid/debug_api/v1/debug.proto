@@ -16,10 +16,11 @@ service DebugV1Service {
 
 message DebugCreateIDTokenRequest {
     string auth_uid = 1;
+    string password = 2;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
-          required: ["auth_uid"]
+          required: ["auth_uid","password"]
         }
     };
 }
