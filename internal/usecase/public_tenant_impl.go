@@ -6,6 +6,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
+	"github.com/volatiletech/null/v8"
 )
 
 type publicTenantInteractor struct {
@@ -30,5 +31,13 @@ func (i *publicTenantInteractor) Get(
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
-	return i.tenantRepository.Get(ctx, param.TenantID, true)
+	return i.tenantRepository.Get(
+		ctx,
+		repository.GetTenantQuery{
+			ID: null.StringFrom(param.TenantID),
+			BaseGetOptions: repository.BaseGetOptions{
+				OrFail: true,
+			},
+		},
+	)
 }
