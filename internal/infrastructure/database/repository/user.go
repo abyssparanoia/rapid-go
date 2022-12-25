@@ -36,6 +36,9 @@ func (r *user) Get(
 			qm.Load(dbmodel.UserRels.Tenant),
 		)
 	}
+	if query.ForUpdate {
+		mods = append(mods, qm.For("UPDATE"))
+	}
 	dbUser, err := dbmodel.Users(
 		mods...,
 	).One(ctx, transactable.GetContextExecutor(ctx))
