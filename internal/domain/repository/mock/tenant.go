@@ -81,18 +81,18 @@ func (mr *MockTenantMockRecorder) Delete(ctx, id interface{}) *gomock.Call {
 }
 
 // Get mocks base method.
-func (m *MockTenant) Get(ctx context.Context, id string, orFail bool) (*model.Tenant, error) {
+func (m *MockTenant) Get(ctx context.Context, query repository.GetTenantQuery) (*model.Tenant, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, id, orFail)
+	ret := m.ctrl.Call(m, "Get", ctx, query)
 	ret0, _ := ret[0].(*model.Tenant)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockTenantMockRecorder) Get(ctx, id, orFail interface{}) *gomock.Call {
+func (mr *MockTenantMockRecorder) Get(ctx, query interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockTenant)(nil).Get), ctx, id, orFail)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockTenant)(nil).Get), ctx, query)
 }
 
 // List mocks base method.
