@@ -32,7 +32,15 @@ func (i *adminTenantInteractor) Get(
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
-	return i.tenantRepository.Get(ctx, param.TenantID, true)
+	return i.tenantRepository.Get(
+		ctx,
+		repository.GetTenantQuery{
+			ID: null.StringFrom(param.TenantID),
+			BaseGetOptions: repository.BaseGetOptions{
+				OrFail: true,
+			},
+		},
+	)
 }
 
 func (i *adminTenantInteractor) List(
@@ -93,7 +101,16 @@ func (i *adminTenantInteractor) Update(
 	var tenant *model.Tenant
 	if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
 		var err error
-		tenant, err = i.tenantRepository.Get(ctx, param.TenantID, true)
+		tenant, err = i.tenantRepository.Get(
+			ctx,
+			repository.GetTenantQuery{
+				ID: null.StringFrom(param.TenantID),
+				BaseGetOptions: repository.BaseGetOptions{
+					OrFail:    true,
+					ForUpdate: true,
+				},
+			},
+		)
 		if err != nil {
 			return err
 		}
