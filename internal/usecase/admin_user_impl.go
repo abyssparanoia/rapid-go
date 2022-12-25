@@ -6,6 +6,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
+	"github.com/volatiletech/null/v8"
 )
 
 type adminUserInteractor struct {
@@ -38,8 +39,12 @@ func (i *adminUserInteractor) Create(
 	}
 	tenant, err := i.tenantRepository.Get(
 		ctx,
-		param.TenantID,
-		true,
+		repository.GetTenantQuery{
+			ID: null.StringFrom(param.TenantID),
+			BaseGetOptions: repository.BaseGetOptions{
+				OrFail: true,
+			},
+		},
 	)
 	if err != nil {
 		return nil, err
