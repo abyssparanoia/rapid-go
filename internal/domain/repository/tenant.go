@@ -4,14 +4,14 @@ import (
 	"context"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
+	"github.com/volatiletech/null/v8"
 )
 
 //go:generate mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
 type Tenant interface {
 	Get(
 		ctx context.Context,
-		id string,
-		orFail bool,
+		query GetTenantQuery,
 	) (*model.Tenant, error)
 	List(
 		ctx context.Context,
@@ -33,6 +33,11 @@ type Tenant interface {
 		ctx context.Context,
 		id string,
 	) error
+}
+
+type GetTenantQuery struct {
+	ID null.String
+	BaseGetOptions
 }
 
 type ListTenantsQuery struct {
