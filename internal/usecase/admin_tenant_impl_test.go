@@ -55,7 +55,14 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
-					Get(gomock.Any(), tenant.ID, true).
+					Get(
+						gomock.Any(),
+						repository.GetTenantQuery{
+							ID: null.StringFrom(tenant.ID),
+							BaseGetOptions: repository.BaseGetOptions{
+								OrFail: true,
+							},
+						}).
 					Return(nil, errors.NotFoundErr.New())
 				return &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
@@ -72,7 +79,13 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
-					Get(gomock.Any(), tenant.ID, true).
+					Get(gomock.Any(),
+						repository.GetTenantQuery{
+							ID: null.StringFrom(tenant.ID),
+							BaseGetOptions: repository.BaseGetOptions{
+								OrFail: true,
+							},
+						}).
 					Return(tenant, nil)
 
 				return &adminTenantInteractor{
@@ -309,7 +322,14 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
-					Get(gomock.Any(), tenant.ID, true).
+					Get(gomock.Any(),
+						repository.GetTenantQuery{
+							ID: null.StringFrom(tenant.ID),
+							BaseGetOptions: repository.BaseGetOptions{
+								OrFail:    true,
+								ForUpdate: true,
+							},
+						}).
 					Return(tenant, nil)
 				mockTenantRepo.EXPECT().
 					Update(gomock.Any(), tenant).
