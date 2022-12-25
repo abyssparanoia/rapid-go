@@ -22,17 +22,23 @@ func NewTenant() repository.Tenant {
 
 func (r *tenant) Get(
 	ctx context.Context,
-	id string,
-	orFail bool,
+	query repository.GetTenantQuery,
 ) (*model.Tenant, error) {
+	mods := []qm.QueryMod{}
+	if query.ID.Valid {
+		mods = append(mods, dbmodel.TenantWhere.ID.EQ(query.ID.String))
+	}
+	if query.ForUpdate {
+		mods = append(mods, qm.For("UPDATE"))
+	}
 	dbTenant, err := dbmodel.Tenants(
-		dbmodel.TenantWhere.ID.EQ(id),
+		mods...,
 	).One(ctx, transactable.GetContextExecutor(ctx))
 	if err != nil {
-		if err == sql.ErrNoRows && !orFail {
+		if err == sql.ErrNoRows && !query.OrFail {
 			return nil, nil
 		} else if err == sql.ErrNoRows {
-			return nil, errors.NotFoundErr.Errorf("tenant %s is not found", id)
+			return nil, errors.NotFoundErr.Errorf("tenant is not found")
 		}
 		return nil, errors.InternalErr.Wrap(err)
 	}
