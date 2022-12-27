@@ -22,6 +22,7 @@ import (
 	debug_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/debug_api/v1"
 	public_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/public_api/v1"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/http/internal/handler"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/http/internal/middlewares"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
 	"github.com/caarlos0/env/v6"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -86,7 +87,7 @@ func Run() {
 	//server
 	server := http.Server{
 		Addr:    addr,
-		Handler: grpcGateway,
+		Handler: middlewares.CORS(grpcGateway),
 	}
 
 	d := &dependency.Dependency{}
