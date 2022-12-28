@@ -13,6 +13,16 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: maindb
 
+  main-db-schema:
+    depends_on:
+      - main-db
+    build: ./db/main/erd
+    volumes:
+      - "./db/main/erd/src:/output"
+      - "./db/main/erd/schemaspy.properties:/app/schemaspy.properties:ro"
+    container_name: "schemaspy"
+    command: "java -jar schemaspy.jar"
+
   aws:
     image: localstack/localstack
     volumes:
