@@ -1,19 +1,16 @@
 package migration
 
 import (
-	"embed"
 	"os"
 	"path/filepath"
 
+	migration_files "github.com/abyssparanoia/rapid-go/db/main/migrations"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
 	"github.com/caarlos0/env/v6"
 	"github.com/pressly/goose/v3"
 )
-
-//go:embed files/*.sql
-var embedMigrations embed.FS
 
 func RunNewFile(fileName string) {
 	dir, err := os.Getwd()
@@ -37,13 +34,13 @@ func RunUp() {
 
 	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
 
-	goose.SetBaseFS(embedMigrations)
+	goose.SetBaseFS(migration_files.EmbedMigrations)
 
 	if err := goose.SetDialect("mysql"); err != nil {
 		panic(err)
 	}
 
-	if err := goose.Up(databaseCli.DB, "files"); err != nil {
+	if err := goose.Up(databaseCli.DB, "."); err != nil {
 		panic(err)
 	}
 
