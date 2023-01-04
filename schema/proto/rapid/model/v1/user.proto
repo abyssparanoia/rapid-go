@@ -16,11 +16,24 @@ message User {
     google.protobuf.Timestamp created_at = 7;
     google.protobuf.Timestamp updated_at = 8;
 
-    model.v1.Tenant tenant = 9;
+    oneof oneof_tenant {
+      string tenant_id = 9;
+      model.v1.Tenant tenant = 10;
+    };
+
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
       json_schema: {
-        required: ["id","role","auth_uid","display_name","image_url","email","created_at","updated_at","tenant"]
+        required: [
+          "id",
+          "role",
+          "auth_uid",
+          "display_name",
+          "image_url",
+          "email",
+          "created_at",
+          "updated_at"
+          ]
       }
     };
 }
