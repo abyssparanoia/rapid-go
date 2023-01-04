@@ -9,6 +9,12 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
+const (
+	maxOpenConns = 25
+	maxIdleConns = 25
+	maxLifeTime  = 100 * time.Second // max conection * seconds
+)
+
 // Client ... client
 type Client struct {
 	DB *sql.DB
@@ -28,6 +34,12 @@ func NewClient(
 		database)
 	db, err := sql.Open("mysql", dbs)
 	if err != nil {
+		panic(err)
+	}
+	db.SetMaxOpenConns(maxOpenConns)
+	db.SetMaxIdleConns(maxIdleConns)
+	db.SetConnMaxLifetime(maxLifeTime)
+	if err := db.Ping(); err != nil {
 		panic(err)
 	}
 	boil.SetLocation(time.Local)
