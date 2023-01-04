@@ -10,7 +10,7 @@ func UserToPB(m *model.User) *modelv1.User {
 	if m == nil {
 		return nil
 	}
-	return &modelv1.User{
+	dst := &modelv1.User{
 		Id:          m.ID,
 		Role:        UserRoleToPB(m.Role),
 		AuthUid:     m.AuthUID,
@@ -19,7 +19,15 @@ func UserToPB(m *model.User) *modelv1.User {
 		Email:       m.Email,
 		CreatedAt:   timestamppb.New(m.CreatedAt),
 		UpdatedAt:   timestamppb.New(m.UpdatedAt),
-
-		Tenant: TenantToPB(m.Tenant),
 	}
+	if m.Tenant.IsOnlyID() {
+		dst.OneofTenant = &modelv1.User_TenantId{
+			TenantId: m.Tenant.ID,
+		}
+	} else {
+		dst.OneofTenant = &modelv1.User_Tenant{
+			Tenant: TenantToPB(m.Tenant),
+		}
+	}
+	return dst
 }

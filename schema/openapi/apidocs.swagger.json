@@ -565,6 +565,9 @@
           "type": "string",
           "format": "date-time"
         },
+        "tenant_id": {
+          "type": "string"
+        },
         "tenant": {
           "$ref": "#/definitions/v1Tenant"
         }
@@ -577,8 +580,7 @@
         "image_url",
         "email",
         "created_at",
-        "updated_at",
-        "tenant"
+        "updated_at"
       ]
     },
     "v1UserRole": {
