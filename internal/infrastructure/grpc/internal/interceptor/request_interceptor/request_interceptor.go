@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"go.uber.org/zap"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -64,8 +65,19 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 				zap.Reflect("request", req),
 				zap.Error(err),
 			)
-			err = status.Errorf(code, "%s", errors.ExtractPlaneErrMessage(err))
-			return nil, err
+
+			st, err := status.
+				New(code, errors.ExtractPlaneErrMessage(err)).
+				WithDetails(
+					&errdetails.RequestInfo{
+						RequestId: operationID.String(),
+					},
+				)
+			if err != nil {
+				return nil, err
+			}
+
+			return nil, st.Err()
 		}
 
 		var logResp interface{}
