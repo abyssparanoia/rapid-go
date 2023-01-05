@@ -19,6 +19,7 @@ import (
 )
 
 type Dependency struct {
+	DatabaseCli *database.Client
 
 	// public
 	PublicAuthenticationInteractor usecase.PublicAuthenticationInteractor
@@ -39,7 +40,7 @@ func (d *Dependency) Inject(
 	ctx context.Context,
 	e *environment.Environment,
 ) {
-	_ = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
+	d.DatabaseCli = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
 
 	firebaseCli := firebase.NewClient(e.GCPProjectID)
 

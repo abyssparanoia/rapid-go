@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PublicV1ServiceClient interface {
+	PublicDeepHealthCheck(ctx context.Context, in *PublicDeepHealthCheckRequest, opts ...grpc.CallOption) (*PublicDeepHealthCheckResponse, error)
 	PublicSignIn(ctx context.Context, in *PublicSignInRequest, opts ...grpc.CallOption) (*PublicSignInResponse, error)
 	PublicGetTenant(ctx context.Context, in *PublicGetTenantRequest, opts ...grpc.CallOption) (*PublicGetTenantResponse, error)
 }
@@ -29,6 +30,15 @@ type publicV1ServiceClient struct {
 
 func NewPublicV1ServiceClient(cc grpc.ClientConnInterface) PublicV1ServiceClient {
 	return &publicV1ServiceClient{cc}
+}
+
+func (c *publicV1ServiceClient) PublicDeepHealthCheck(ctx context.Context, in *PublicDeepHealthCheckRequest, opts ...grpc.CallOption) (*PublicDeepHealthCheckResponse, error) {
+	out := new(PublicDeepHealthCheckResponse)
+	err := c.cc.Invoke(ctx, "/rapid.public_api.v1.PublicV1Service/PublicDeepHealthCheck", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *publicV1ServiceClient) PublicSignIn(ctx context.Context, in *PublicSignInRequest, opts ...grpc.CallOption) (*PublicSignInResponse, error) {
@@ -53,6 +63,7 @@ func (c *publicV1ServiceClient) PublicGetTenant(ctx context.Context, in *PublicG
 // All implementations should embed UnimplementedPublicV1ServiceServer
 // for forward compatibility
 type PublicV1ServiceServer interface {
+	PublicDeepHealthCheck(context.Context, *PublicDeepHealthCheckRequest) (*PublicDeepHealthCheckResponse, error)
 	PublicSignIn(context.Context, *PublicSignInRequest) (*PublicSignInResponse, error)
 	PublicGetTenant(context.Context, *PublicGetTenantRequest) (*PublicGetTenantResponse, error)
 }
@@ -61,6 +72,9 @@ type PublicV1ServiceServer interface {
 type UnimplementedPublicV1ServiceServer struct {
 }
 
+func (UnimplementedPublicV1ServiceServer) PublicDeepHealthCheck(context.Context, *PublicDeepHealthCheckRequest) (*PublicDeepHealthCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublicDeepHealthCheck not implemented")
+}
 func (UnimplementedPublicV1ServiceServer) PublicSignIn(context.Context, *PublicSignInRequest) (*PublicSignInResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PublicSignIn not implemented")
 }
@@ -77,6 +91,24 @@ type UnsafePublicV1ServiceServer interface {
 
 func RegisterPublicV1ServiceServer(s grpc.ServiceRegistrar, srv PublicV1ServiceServer) {
 	s.RegisterService(&PublicV1Service_ServiceDesc, srv)
+}
+
+func _PublicV1Service_PublicDeepHealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublicDeepHealthCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PublicV1ServiceServer).PublicDeepHealthCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rapid.public_api.v1.PublicV1Service/PublicDeepHealthCheck",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PublicV1ServiceServer).PublicDeepHealthCheck(ctx, req.(*PublicDeepHealthCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _PublicV1Service_PublicSignIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -122,6 +154,10 @@ var PublicV1Service_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "rapid.public_api.v1.PublicV1Service",
 	HandlerType: (*PublicV1ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "PublicDeepHealthCheck",
+			Handler:    _PublicV1Service_PublicDeepHealthCheck_Handler,
+		},
 		{
 			MethodName: "PublicSignIn",
 			Handler:    _PublicV1Service_PublicSignIn_Handler,
