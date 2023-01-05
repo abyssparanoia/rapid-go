@@ -39,3 +39,11 @@ func (e InternalError) Wrapf(err error, format string, args ...interface{}) erro
 	msg := fmt.Sprintf(format, args...)
 	return errors.Wrapf(e, "err: %s; %s", err, msg)
 }
+
+// As ... as method
+func (e InternalError) As(target interface{}) bool {
+	if _, ok := target.(**InternalError); ok {
+		return true
+	}
+	return false
+}
