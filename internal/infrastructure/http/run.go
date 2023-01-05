@@ -13,6 +13,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/keepalive"
 	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/dependency"
@@ -48,6 +49,24 @@ func Run() {
 
 	addr := fmt.Sprintf(":%s", e.Port)
 
+	d := &dependency.Dependency{}
+	d.Inject(ctx, e)
+
+	grpcServer := internal_grpc.NewServer(ctx, e, logger, d)
+	grpcLis, err := net.Listen("tcp", fmt.Sprintf(":%s", INTERNAL_GRPC_PORT))
+	if err != nil {
+		panic(err)
+	}
+
+	// Run grpc server
+	logger.Info(fmt.Sprintf("[START] server. port: %s\n", addr))
+
+	go func() {
+		if err := grpcServer.Serve(grpcLis); err != nil {
+			logger.Error("failed to start server", zap.Error(err))
+		}
+	}()
+
 	grpcGateway := runtime.NewServeMux(runtime.WithMarshalerOption("*", &runtime.HTTPBodyMarshaler{
 		Marshaler: &runtime.JSONPb{
 			MarshalOptions: protojson.MarshalOptions{
@@ -60,22 +79,34 @@ func Run() {
 		},
 	}))
 
-	opts := []grpc.DialOption{
+	conn, err := grpc.DialContext(
+		context.Background(),
+		fmt.Sprintf(":%s", INTERNAL_GRPC_PORT),
+		grpc.WithBlock(),
 		grpc.WithTransportCredentials(
 			insecure.NewCredentials(),
 		),
-	}
-
-	if err := admin_apiv1.RegisterAdminV1ServiceHandlerFromEndpoint(ctx, grpcGateway, fmt.Sprintf(":%s", INTERNAL_GRPC_PORT), opts); err != nil {
+		grpc.WithKeepaliveParams(
+			keepalive.ClientParameters{
+				Time:                30 * time.Millisecond,
+				Timeout:             20 * time.Millisecond,
+				PermitWithoutStream: true,
+			}),
+	)
+	if err != nil {
 		panic(err)
 	}
 
-	if err := public_apiv1.RegisterPublicV1ServiceHandlerFromEndpoint(ctx, grpcGateway, fmt.Sprintf(":%s", INTERNAL_GRPC_PORT), opts); err != nil {
+	if err := admin_apiv1.RegisterAdminV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
+		panic(err)
+	}
+
+	if err := public_apiv1.RegisterPublicV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
 		panic(err)
 	}
 
 	if e.Environment == "local" || e.Environment == "development" {
-		if err := debug_apiv1.RegisterDebugV1ServiceHandlerFromEndpoint(ctx, grpcGateway, fmt.Sprintf(":%s", INTERNAL_GRPC_PORT), opts); err != nil {
+		if err := debug_apiv1.RegisterDebugV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
 			panic(err)
 		}
 	}
@@ -89,24 +120,6 @@ func Run() {
 		Addr:    addr,
 		Handler: middlewares.CORS(grpcGateway),
 	}
-
-	d := &dependency.Dependency{}
-	d.Inject(ctx, e)
-
-	grpcServer := internal_grpc.NewServer(ctx, e, logger, d)
-	grpcLis, err := net.Listen("tcp", fmt.Sprintf(":%s", INTERNAL_GRPC_PORT))
-	if err != nil {
-		panic(err)
-	}
-
-	// Run
-	logger.Info(fmt.Sprintf("[START] server. port: %s\n", addr))
-
-	go func() {
-		if err := grpcServer.Serve(grpcLis); err != nil {
-			logger.Error("failed to start server", zap.Error(err))
-		}
-	}()
 
 	go func() {
 		if err := server.ListenAndServe(); err != http.ErrServerClosed {
