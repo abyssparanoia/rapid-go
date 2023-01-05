@@ -84,6 +84,7 @@ func NewServer(ctx context.Context,
 	public_apiv1.RegisterPublicV1ServiceServer(
 		server,
 		public.NewPublicHandler(
+			dependency.DatabaseCli,
 			dependency.PublicAuthenticationInteractor,
 			dependency.PublicTenantInteractor,
 		),
