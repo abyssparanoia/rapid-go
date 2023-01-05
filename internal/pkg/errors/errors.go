@@ -3,7 +3,7 @@ package errors
 import "github.com/pkg/errors"
 
 const (
-	InternalErr               InternalError     = "An internal error has occurred2"
+	InternalErr               InternalError     = "An internal error has occurred"
 	UnauthorizedErr           UnauthorizedError = "Unauthroized"
 	RequestInvalidArgumentErr BadRequestError   = "Request argument is invalid"
 	NotFoundErr               NotFoundError     = "Not found"
