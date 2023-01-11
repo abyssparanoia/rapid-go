@@ -18,6 +18,8 @@ type User struct {
 	UpdatedAt   time.Time
 }
 
+type Users []*User
+
 func NewUser(
 	tenantID string,
 	role UserRole,
