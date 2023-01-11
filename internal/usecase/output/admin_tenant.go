@@ -3,12 +3,12 @@ package output
 import "github.com/abyssparanoia/rapid-go/internal/domain/model"
 
 type ListTenants struct {
-	Tenants    []*model.Tenant
+	Tenants    model.Tenants
 	Pagination *model.Pagination
 }
 
 func NewAdminListTenants(
-	tenants []*model.Tenant,
+	tenants model.Tenants,
 	pagination *model.Pagination,
 ) *ListTenants {
 	return &ListTenants{
