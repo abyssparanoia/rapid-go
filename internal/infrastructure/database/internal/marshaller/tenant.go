@@ -15,8 +15,8 @@ func TenantToModel(e *dbmodel.Tenant) *model.Tenant {
 	return m
 }
 
-func TenantsToModel(slice dbmodel.TenantSlice) []*model.Tenant {
-	dsts := make([]*model.Tenant, len(slice))
+func TenantsToModel(slice dbmodel.TenantSlice) model.Tenants {
+	dsts := make(model.Tenants, len(slice))
 	for idx, e := range slice {
 		dsts[idx] = TenantToModel(e)
 	}

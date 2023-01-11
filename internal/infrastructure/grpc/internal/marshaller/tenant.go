@@ -18,7 +18,7 @@ func TenantToPB(m *model.Tenant) *modelv1.Tenant {
 	}
 }
 
-func TenantsToPB(slice []*model.Tenant) []*modelv1.Tenant {
+func TenantsToPB(slice model.Tenants) []*modelv1.Tenant {
 	dsts := make([]*modelv1.Tenant, len(slice))
 	for idx, m := range slice {
 		dsts[idx] = TenantToPB(m)

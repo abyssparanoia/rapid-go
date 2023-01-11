@@ -16,7 +16,7 @@ type Tenant interface {
 	List(
 		ctx context.Context,
 		query ListTenantsQuery,
-	) ([]*model.Tenant, error)
+	) (model.Tenants, error)
 	Count(
 		ctx context.Context,
 		query ListTenantsQuery,

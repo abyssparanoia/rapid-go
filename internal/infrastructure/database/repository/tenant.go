@@ -48,7 +48,7 @@ func (r *tenant) Get(
 func (r *tenant) List(
 	ctx context.Context,
 	query repository.ListTenantsQuery,
-) ([]*model.Tenant, error) {
+) (model.Tenants, error) {
 	mods := []qm.QueryMod{}
 	if query.Page.Valid && query.Limit.Valid {
 		mods = append(mods,

@@ -155,7 +155,7 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 								Limit: null.Uint64From(30),
 							},
 						}).
-					Return([]*model.Tenant{tenant}, nil)
+					Return(model.Tenants{tenant}, nil)
 
 				mockTenantRepo.EXPECT().
 					Count(
@@ -175,7 +175,7 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 			},
 			want: want{
 				output: output.NewAdminListTenants(
-					[]*model.Tenant{tenant},
+					model.Tenants{tenant},
 					model.NewPagination(2, 30, 60),
 				),
 			},

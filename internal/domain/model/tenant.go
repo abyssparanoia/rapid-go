@@ -14,6 +14,8 @@ type Tenant struct {
 	UpdatedAt time.Time
 }
 
+type Tenants []*Tenant
+
 func NewTenant(
 	name string,
 	t time.Time,
