@@ -96,10 +96,10 @@ func (mr *MockTenantMockRecorder) Get(ctx, query interface{}) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockTenant) List(ctx context.Context, query repository.ListTenantsQuery) ([]*model.Tenant, error) {
+func (m *MockTenant) List(ctx context.Context, query repository.ListTenantsQuery) (model.Tenants, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx, query)
-	ret0, _ := ret[0].([]*model.Tenant)
+	ret0, _ := ret[0].(model.Tenants)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
