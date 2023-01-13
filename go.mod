@@ -10,7 +10,7 @@ require (
 	github.com/bufbuild/buf v1.12.0
 	github.com/bxcodec/faker v2.0.1+incompatible
 	github.com/caarlos0/env/v6 v6.10.1
-	github.com/cosmtrek/air v1.40.4
+	github.com/cosmtrek/air v1.41.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-playground/validator/v10 v10.11.1
 	github.com/go-sql-driver/mysql v1.7.0
@@ -93,7 +93,7 @@ require (
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/felixge/fgprof v0.9.3 // indirect
 	github.com/firefart/nonamedreturns v1.0.4 // indirect
-	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fzipp/gocyclo v0.6.0 // indirect
 	github.com/go-chi/chi/v5 v5.0.8 // indirect
 	github.com/go-critic/go-critic v0.6.5 // indirect
