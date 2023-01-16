@@ -5,29 +5,25 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
+	"github.com/abyssparanoia/rapid-go/internal/domain/service"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
-	"github.com/volatiletech/null/v8"
 )
 
 type userInteractor struct {
-	transactable             repository.Transactable
-	userRepository           repository.User
-	tenantRepository         repository.Tenant
-	authenticationRepository repository.Authentication
+	transactable     repository.Transactable
+	tenantRepository repository.Tenant
+	userService      service.User
 }
 
 func NewUserInteractor(
 	transactable repository.Transactable,
-	userRepository repository.User,
 	tenantRepository repository.Tenant,
-	authenticationRepository repository.Authentication,
+	userService service.User,
 ) UserInteractor {
 	return &userInteractor{
 		transactable,
-		userRepository,
 		tenantRepository,
-		authenticationRepository,
+		userService,
 	}
 }
 
@@ -40,53 +36,23 @@ func (i *userInteractor) CreateRoot(
 			return err
 		}
 
-		res, err := i.authenticationRepository.GetUserByEmail(ctx, param.Email)
-		if err != nil {
-			return err
-		}
-		var authUID string
-		// 存在してない場合、新規作成する
-		if !res.Exist {
-			authUID, err = i.authenticationRepository.CreateUser(
-				ctx,
-				repository.AuthenticationCreateUserParam{
-					Email:    param.Email,
-					Password: null.StringFrom(param.Passoword),
-				},
-			)
-			if err != nil {
-				return err
-			}
-		} else {
-			authUID = res.AuthUID
-		}
-
 		tenant := model.NewTenant("Platformer", param.RequestTime)
 		if _, err := i.tenantRepository.Create(ctx, tenant); err != nil {
 			return err
 		}
 
-		user := model.NewUser(
-			tenant.ID,
-			model.UserRoleAdmin,
-			authUID,
-			"Root User",
-			"user_profile_images/default_image.jpeg",
-			param.Email,
-			param.RequestTime,
-		)
-
-		if _, err := i.userRepository.Create(ctx, user); err != nil {
-			return err
-		}
-
-		claims := model.NewClaims(
-			authUID,
-			null.StringFrom(tenant.ID),
-			null.StringFrom(user.ID),
-			nullable.TypeFrom(user.Role),
-		)
-		if err := i.authenticationRepository.StoreClaims(ctx, authUID, claims); err != nil {
+		if _, err := i.userService.Create(
+			ctx,
+			service.UserCreateParam{
+				TenantID:    tenant.ID,
+				Email:       param.Email,
+				Password:    "random1234",
+				UserRole:    model.UserRoleAdmin,
+				DisplayName: "Root User",
+				ImagePath:   "user_profile_images/default_image.jpeg",
+				RequestTime: param.RequestTime,
+			},
+		); err != nil {
 			return err
 		}
 
