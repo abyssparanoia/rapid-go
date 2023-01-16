@@ -5,6 +5,7 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/volatiletech/null/v8"
 )
@@ -79,10 +80,12 @@ func (i *userInteractor) CreateRoot(
 			return err
 		}
 
-		claims := model.NewClaims(authUID)
-		claims.SetTenantID(tenant.ID)
-		claims.SetUserID(user.ID)
-		claims.SetUserRole(user.Role)
+		claims := model.NewClaims(
+			authUID,
+			null.StringFrom(tenant.ID),
+			null.StringFrom(user.ID),
+			nullable.TypeFrom(user.Role),
+		)
 		if err := i.authenticationRepository.StoreClaims(ctx, authUID, claims); err != nil {
 			return err
 		}
