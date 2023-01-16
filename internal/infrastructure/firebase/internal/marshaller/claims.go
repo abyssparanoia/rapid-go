@@ -2,20 +2,31 @@ package marshaller
 
 import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
+	"github.com/volatiletech/null/v8"
 )
 
 func ClaimsToModel(authUID string, customClaim map[string]interface{}) *model.Claims {
-	claims := model.NewClaims(authUID)
-	if tenantID, ok := customClaim["tenant_id"]; ok {
-		claims.SetTenantID(tenantID.(string))
+
+	var tenantID null.String
+	if _tenantID, ok := customClaim["tenant_id"]; ok {
+		tenantID = null.StringFrom(_tenantID.(string))
 	}
-	if userID, ok := customClaim["service_user_id"]; ok {
-		claims.SetUserID(userID.(string))
+	var userID null.String
+	if _userID, ok := customClaim["service_user_id"]; ok {
+		userID = null.StringFrom(_userID.(string))
 	}
-	if userRole, ok := customClaim["user_role"]; ok {
-		claims.SetUserRole(model.NewUserRole(userRole.(string)))
+	var userRole nullable.Type[model.UserRole]
+	if _userRole, ok := customClaim["user_role"]; ok {
+		userRole = nullable.TypeFrom(model.NewUserRole(_userRole.(string)))
 	}
 
+	claims := model.NewClaims(
+		authUID,
+		tenantID,
+		userID,
+		userRole,
+	)
 	return claims
 }
 
