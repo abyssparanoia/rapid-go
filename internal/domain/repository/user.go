@@ -7,6 +7,7 @@ import (
 	"github.com/volatiletech/null/v8"
 )
 
+//go:generate mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
 type User interface {
 	Get(
 		ctx context.Context,

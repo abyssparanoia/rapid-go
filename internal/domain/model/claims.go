@@ -14,20 +14,14 @@ type Claims struct {
 
 func NewClaims(
 	authUID string,
+	tenantID null.String,
+	userID null.String,
+	userRole nullable.Type[UserRole],
 ) *Claims {
 	return &Claims{
-		AuthUID: authUID,
+		AuthUID:  authUID,
+		TenantID: tenantID,
+		UserID:   userID,
+		UserRole: userRole,
 	}
-}
-
-func (m *Claims) SetTenantID(tenantID string) {
-	m.TenantID = null.StringFrom(tenantID)
-}
-
-func (m *Claims) SetUserID(userID string) {
-	m.UserID = null.StringFrom(userID)
-}
-
-func (m *Claims) SetUserRole(userRole UserRole) {
-	m.UserRole = nullable.TypeFrom(userRole)
 }

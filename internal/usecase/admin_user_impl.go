@@ -5,28 +5,26 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
+	"github.com/abyssparanoia/rapid-go/internal/domain/service"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/volatiletech/null/v8"
 )
 
 type adminUserInteractor struct {
-	transactable             repository.Transactable
-	authenticationRepository repository.Authentication
-	userRepository           repository.User
-	tenantRepository         repository.Tenant
+	transactable     repository.Transactable
+	tenantRepository repository.Tenant
+	userService      service.User
 }
 
 func NewAdminUserInteractor(
 	transactable repository.Transactable,
-	authenticationRepository repository.Authentication,
-	userRepository repository.User,
 	tenantRepository repository.Tenant,
+	userService service.User,
 ) AdminUserInteractor {
 	return &adminUserInteractor{
 		transactable,
-		authenticationRepository,
-		userRepository,
 		tenantRepository,
+		userService,
 	}
 }
 
@@ -37,53 +35,44 @@ func (i *adminUserInteractor) Create(
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
-	tenant, err := i.tenantRepository.Get(
-		ctx,
-		repository.GetTenantQuery{
-			ID: null.StringFrom(param.TenantID),
-			BaseGetOptions: repository.BaseGetOptions{
-				OrFail: true,
+
+	var user *model.User
+	if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
+		tenant, err := i.tenantRepository.Get(
+			ctx,
+			repository.GetTenantQuery{
+				ID: null.StringFrom(param.TenantID),
+				BaseGetOptions: repository.BaseGetOptions{
+					OrFail: true,
+				},
 			},
-		},
-	)
-	if err != nil {
+		)
+		if err != nil {
+			return err
+		}
+
+		user, err = i.userService.Create(
+			ctx,
+			service.UserCreateParam{
+				TenantID:    tenant.ID,
+				Email:       param.Email,
+				Password:    "random1234",
+				UserRole:    param.Role,
+				DisplayName: param.DisplayName,
+				ImagePath:   "user_profile_images/default_image.jpeg",
+				RequestTime: param.RequestTime,
+			},
+		)
+		if err != nil {
+			return err
+		}
+
+		user.Tenant = tenant
+
+		return nil
+	}); err != nil {
 		return nil, err
 	}
-
-	authUID, err := i.authenticationRepository.CreateUser(
-		ctx,
-		repository.AuthenticationCreateUserParam{
-			Email: param.Email,
-		},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	user := model.NewUser(
-		param.TenantID,
-		param.Role,
-		authUID,
-		param.DisplayName,
-		"user_profile_images/default_image.jpeg",
-		param.Email,
-		param.RequestTime,
-	)
-
-	user, err = i.userRepository.Create(ctx, user)
-	if err != nil {
-		return nil, err
-	}
-
-	claims := model.NewClaims(authUID)
-	claims.SetTenantID(param.TenantID)
-	claims.SetUserID(user.ID)
-	claims.SetUserRole(user.Role)
-	if err := i.authenticationRepository.StoreClaims(ctx, authUID, claims); err != nil {
-		return nil, err
-	}
-
-	user.Tenant = tenant
 
 	return user, nil
 }

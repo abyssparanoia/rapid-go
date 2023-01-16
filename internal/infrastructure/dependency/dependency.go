@@ -3,6 +3,7 @@ package dependency
 import (
 	"context"
 
+	"github.com/abyssparanoia/rapid-go/internal/domain/service"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/aws"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
 	cognito_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/repository"
@@ -69,6 +70,11 @@ func (d *Dependency) Inject(
 	assetRepository := gcs_repository.NewAsset(gcsBucketHandle)
 	// assetRepository := s3_repository.NewAsset(s3Client, e.AWSBucketName)
 
+	userService := service.NewUser(
+		userRepository,
+		authenticationRepository,
+	)
+
 	d.PublicTenantInteractor = usecase.NewPublicTenantInteractor(
 		transactable,
 		tenantRepository,
@@ -84,9 +90,8 @@ func (d *Dependency) Inject(
 	)
 	d.AdminUserInteractor = usecase.NewAdminUserInteractor(
 		transactable,
-		authenticationRepository,
-		userRepository,
 		tenantRepository,
+		userService,
 	)
 	d.AdminAssetInteractor = usecase.NewAdminAssetInteractor(
 		assetRepository,
@@ -94,9 +99,8 @@ func (d *Dependency) Inject(
 
 	d.UserInteractor = usecase.NewUserInteractor(
 		transactable,
-		userRepository,
 		tenantRepository,
-		authenticationRepository,
+		userService,
 	)
 
 	d.AuthenticationInteractor = usecase.NewAuthenticationInteractor(
