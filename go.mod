@@ -5,7 +5,7 @@ go 1.19
 require (
 	cloud.google.com/go/storage v1.28.1
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/aws/aws-sdk-go v1.44.179
+	github.com/aws/aws-sdk-go v1.44.184
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.12.0
 	github.com/bxcodec/faker v2.0.1+incompatible
