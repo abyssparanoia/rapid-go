@@ -33,14 +33,14 @@ require (
 	golang.org/x/tools v0.5.0
 	google.golang.org/api v0.108.0
 	google.golang.org/genproto v0.0.0-20230125152338-dcaf20b6aeaa
-	google.golang.org/grpc v1.52.0
+	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.2-0.20230130093322-0430d694e04a
 )
 
 require (
 	4d63.com/gochecknoglobals v0.1.0 // indirect
 	cloud.google.com/go v0.107.0 // indirect
-	cloud.google.com/go/compute v1.14.0 // indirect
+	cloud.google.com/go/compute v1.15.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/firestore v1.9.0 // indirect
 	cloud.google.com/go/iam v0.8.0 // indirect
@@ -71,7 +71,7 @@ require (
 	github.com/bufbuild/connect-go v1.4.1 // indirect
 	github.com/bufbuild/protocompile v0.1.0 // indirect
 	github.com/butuzov/ireturn v0.1.1 // indirect
-	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/charithe/durationcheck v0.0.9 // indirect
 	github.com/chavacava/garif v0.0.0-20220630083739-93517212f375 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
@@ -254,7 +254,7 @@ require (
 	golang.org/x/exp/typeparams v0.0.0-20220827204233-334a2380cb91 // indirect
 	golang.org/x/mod v0.7.0 // indirect
 	golang.org/x/net v0.5.0 // indirect
-	golang.org/x/oauth2 v0.3.0 // indirect
+	golang.org/x/oauth2 v0.4.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/term v0.4.0 // indirect
