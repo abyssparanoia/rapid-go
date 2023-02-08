@@ -31,7 +31,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.4
 	go.uber.org/zap v1.24.0
 	golang.org/x/tools v0.5.0
-	google.golang.org/api v0.108.0
+	google.golang.org/api v0.109.0
 	google.golang.org/genproto v0.0.0-20230125152338-dcaf20b6aeaa
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.2-0.20230130093322-0430d694e04a
