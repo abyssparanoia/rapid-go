@@ -31,7 +31,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.4
 	go.uber.org/zap v1.24.0
 	golang.org/x/tools v0.6.0
-	google.golang.org/api v0.109.0
+	google.golang.org/api v0.110.0
 	google.golang.org/genproto v0.0.0-20230209215440-0dfe4f8abfcc
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.2-0.20230209092751-246af0d153ca
@@ -41,7 +41,7 @@ require (
 	4d63.com/gocheckcompilerdirectives v1.2.1 // indirect
 	4d63.com/gochecknoglobals v0.2.1 // indirect
 	cloud.google.com/go v0.107.0 // indirect
-	cloud.google.com/go/compute v1.15.1 // indirect
+	cloud.google.com/go/compute v1.18.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/firestore v1.9.0 // indirect
 	cloud.google.com/go/iam v0.8.0 // indirect
@@ -129,7 +129,7 @@ require (
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/go-containerregistry v0.13.0 // indirect
 	github.com/google/pprof v0.0.0-20230131232505-5a9e8f65f08f // indirect
-	github.com/googleapis/enterprise-certificate-proxy v0.2.1 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
 	github.com/gordonklaus/ineffassign v0.0.0-20230107090616-13ace0543b28 // indirect
 	github.com/gostaticanalysis/analysisutil v0.7.1 // indirect
@@ -261,7 +261,7 @@ require (
 	golang.org/x/exp/typeparams v0.0.0-20221208152030-732eee02a75a // indirect
 	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/net v0.6.0 // indirect
-	golang.org/x/oauth2 v0.4.0 // indirect
+	golang.org/x/oauth2 v0.5.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/term v0.5.0 // indirect
