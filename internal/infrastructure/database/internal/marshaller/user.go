@@ -8,6 +8,7 @@ import (
 func UserToModel(e *dbmodel.User) *model.User {
 	m := &model.User{
 		ID:          e.ID,
+		TenantID:    e.TenantID,
 		Role:        model.NewUserRole(e.Role),
 		AuthUID:     e.AuthUID,
 		DisplayName: e.DisplayName,
@@ -19,10 +20,6 @@ func UserToModel(e *dbmodel.User) *model.User {
 
 	if e.R != nil && e.R.Tenant != nil {
 		m.Tenant = TenantToModel(e.R.Tenant)
-	} else {
-		m.Tenant = &model.Tenant{
-			ID: e.TenantID,
-		}
 	}
 
 	return m
@@ -31,7 +28,7 @@ func UserToModel(e *dbmodel.User) *model.User {
 func UserToDBModel(m *model.User) *dbmodel.User {
 	e := &dbmodel.User{}
 	e.ID = m.ID
-	e.TenantID = m.Tenant.ID
+	e.TenantID = m.TenantID
 	e.Role = m.Role.String()
 	e.AuthUID = m.AuthUID
 	e.DisplayName = m.DisplayName
