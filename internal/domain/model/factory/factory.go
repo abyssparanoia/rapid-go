@@ -24,6 +24,7 @@ func NewFactory() struct {
 	tenant.UpdatedAt = n
 
 	user := &model.User{}
+	user.TenantID = tenant.ID
 	user.Tenant = tenant
 	user.CreatedAt = n
 	user.UpdatedAt = n
