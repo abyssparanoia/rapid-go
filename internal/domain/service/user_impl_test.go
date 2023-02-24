@@ -24,9 +24,7 @@ func TestUserService_Create(t *testing.T) {
 	mockULID := ulid.Mock()
 	user := testdata.User
 	user.ID = mockULID
-	user.Tenant = &model.Tenant{
-		ID: tenant.ID,
-	}
+	user.Tenant = nil
 
 	claims := model.NewClaims(
 		user.AuthUID,
