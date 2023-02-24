@@ -8,7 +8,7 @@ import (
 
 type User struct {
 	ID          string
-	Tenant      *Tenant
+	TenantID    string
 	Role        UserRole
 	AuthUID     string
 	DisplayName string
@@ -16,6 +16,8 @@ type User struct {
 	Email       string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+
+	Tenant *Tenant
 }
 
 type Users []*User
@@ -30,10 +32,8 @@ func NewUser(
 	t time.Time,
 ) *User {
 	return &User{
-		ID: ulid.New(),
-		Tenant: &Tenant{
-			ID: tenantID,
-		},
+		ID:          ulid.New(),
+		TenantID:    tenantID,
 		Role:        role,
 		AuthUID:     authUID,
 		DisplayName: displayName,
