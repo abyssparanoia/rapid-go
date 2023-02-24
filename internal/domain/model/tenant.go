@@ -38,8 +38,3 @@ func (m *Tenant) Update(
 
 	m.UpdatedAt = t
 }
-
-func (m Tenant) IsOnlyID() bool {
-	m.ID = ""
-	return m == Tenant{}
-}
