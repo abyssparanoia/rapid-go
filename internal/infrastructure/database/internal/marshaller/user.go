@@ -25,6 +25,14 @@ func UserToModel(e *dbmodel.User) *model.User {
 	return m
 }
 
+func UsersToModel(slice dbmodel.UserSlice) model.Users {
+	dsts := make(model.Users, len(slice))
+	for idx, e := range slice {
+		dsts[idx] = UserToModel(e)
+	}
+	return dsts
+}
+
 func UserToDBModel(m *model.User) *dbmodel.User {
 	e := &dbmodel.User{}
 	e.ID = m.ID
