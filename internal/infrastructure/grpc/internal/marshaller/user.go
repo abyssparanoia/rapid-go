@@ -20,9 +20,9 @@ func UserToPB(m *model.User) *modelv1.User {
 		CreatedAt:   timestamppb.New(m.CreatedAt),
 		UpdatedAt:   timestamppb.New(m.UpdatedAt),
 	}
-	if m.Tenant.IsOnlyID() {
+	if m.Tenant == nil {
 		dst.OneofTenant = &modelv1.User_TenantId{
-			TenantId: m.Tenant.ID,
+			TenantId: m.TenantID,
 		}
 	} else {
 		dst.OneofTenant = &modelv1.User_Tenant{
