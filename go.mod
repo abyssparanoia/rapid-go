@@ -14,7 +14,7 @@ require (
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/go-sql-driver/mysql v1.7.0
-	github.com/golang-jwt/jwt/v4 v4.4.3
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.51.1
 	github.com/google/uuid v1.3.0
