@@ -6,7 +6,7 @@ import (
 	"github.com/volatiletech/null/v8"
 )
 
-func ClaimsToModel(authUID string, customClaim map[string]interface{}) *model.Claims {
+func StaffClaimsToModel(authUID string, customClaim map[string]interface{}) *model.StaffClaims {
 
 	var tenantID null.String
 	if _tenantID, ok := customClaim["tenant_id"]; ok {
@@ -21,7 +21,7 @@ func ClaimsToModel(authUID string, customClaim map[string]interface{}) *model.Cl
 		staffRole = nullable.TypeFrom(model.NewStaffRole(_staffRole.(string)))
 	}
 
-	claims := model.NewClaims(
+	claims := model.NewStaffClaims(
 		authUID,
 		tenantID,
 		staffID,
@@ -30,7 +30,7 @@ func ClaimsToModel(authUID string, customClaim map[string]interface{}) *model.Cl
 	return claims
 }
 
-func ClaimsToMap(m *model.Claims) map[string]interface{} {
+func StaffClaimsToMap(m *model.StaffClaims) map[string]interface{} {
 	cmap := map[string]interface{}{}
 	if m.TenantID.Valid {
 		cmap["tenant_id"] = m.TenantID.String
