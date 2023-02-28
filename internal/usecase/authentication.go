@@ -8,8 +8,8 @@ import (
 )
 
 type AuthenticationInteractor interface {
-	VerifyIDToken(
+	VerifyStaffIDToken(
 		ctx context.Context,
 		param *input.VerifyIDToken,
-	) (*model.Claims, error)
+	) (*model.StaffClaims, error)
 }
