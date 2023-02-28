@@ -11,7 +11,7 @@ import (
 )
 
 func (h *AdminHandler) AdminCreateStaff(ctx context.Context, req *admin_apiv1.AdminCreateStaffRequest) (*admin_apiv1.AdminCreateStaffResponse, error) {
-	_, err := session_interceptor.RequireSessionContext(ctx)
+	_, err := session_interceptor.RequireStaffSessionContext(ctx)
 	if err != nil {
 		return nil, err
 	}

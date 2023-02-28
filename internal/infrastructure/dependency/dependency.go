@@ -53,11 +53,11 @@ func (d *Dependency) Inject(
 	cognitoCli := cognito.NewClient(awsSession, e.AWSCognitoEmulatorHost)
 
 	transactable := transactable.NewTransactable()
-	_ = firebase_repository.NewAuthentication(
+	_ = firebase_repository.NewStaffAuthentication(
 		firebaseCli,
 		e.FirebaseClientAPIKey,
 	)
-	authenticationRepository := cognito_repository.NewAuthentication(
+	staffAuthenticationRepository := cognito_repository.NewStaffAuthentication(
 		ctx,
 		cognitoCli,
 		e.AWSCognitoUserPoolID,
@@ -71,7 +71,7 @@ func (d *Dependency) Inject(
 
 	staffService := service.NewStaff(
 		staffRepository,
-		authenticationRepository,
+		staffAuthenticationRepository,
 	)
 
 	d.PublicTenantInteractor = usecase.NewPublicTenantInteractor(
@@ -99,10 +99,10 @@ func (d *Dependency) Inject(
 	)
 
 	d.AuthenticationInteractor = usecase.NewAuthenticationInteractor(
-		authenticationRepository,
+		staffAuthenticationRepository,
 	)
 
 	d.DebugInteractor = usecase.NewDebugInteractor(
-		authenticationRepository,
+		staffAuthenticationRepository,
 	)
 }

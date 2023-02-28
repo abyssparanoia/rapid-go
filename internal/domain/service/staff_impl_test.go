@@ -26,7 +26,7 @@ func TestStaffService_Create(t *testing.T) {
 	staff.ID = mockULID
 	staff.Tenant = nil
 
-	claims := model.NewClaims(
+	claims := model.NewStaffClaims(
 		staff.AuthUID,
 		null.StringFrom(tenant.ID),
 		null.StringFrom(staff.ID),
@@ -65,18 +65,18 @@ func TestStaffService_Create(t *testing.T) {
 			},
 			service: func(ctx context.Context, ctrl *gomock.Controller) Staff {
 				mockStaffRepo := mock_repository.NewMockStaff(ctrl)
-				mockAuthenticationRepo := mock_repository.NewMockAuthentication(ctrl)
+				mockStaffAuthenticationRepo := mock_repository.NewMockStaffAuthentication(ctrl)
 
-				mockAuthenticationRepo.EXPECT().
+				mockStaffAuthenticationRepo.EXPECT().
 					GetUserByEmail(
 						gomock.Any(),
 						staff.Email,
 					).
-					Return(&repository.AuthenticationGetUserByEmailResult{}, nil)
-				mockAuthenticationRepo.EXPECT().
+					Return(&repository.StaffAuthenticationGetUserByEmailResult{}, nil)
+				mockStaffAuthenticationRepo.EXPECT().
 					CreateUser(
 						gomock.Any(),
-						repository.AuthenticationCreateUserParam{
+						repository.StaffAuthenticationCreateUserParam{
 							Email:    staff.Email,
 							Password: null.StringFrom(mockPassword),
 						},
@@ -85,7 +85,7 @@ func TestStaffService_Create(t *testing.T) {
 				mockStaffRepo.EXPECT().
 					Create(gomock.Any(), staff).
 					Return(staff, nil)
-				mockAuthenticationRepo.EXPECT().
+				mockStaffAuthenticationRepo.EXPECT().
 					StoreClaims(
 						gomock.Any(),
 						staff.AuthUID,
@@ -94,8 +94,8 @@ func TestStaffService_Create(t *testing.T) {
 					Return(nil)
 
 				return &staffService{
-					staffRepository:          mockStaffRepo,
-					authenticationRepository: mockAuthenticationRepo,
+					staffRepository:               mockStaffRepo,
+					staffAuthenticationRepository: mockStaffAuthenticationRepo,
 				}
 			},
 			want: want{

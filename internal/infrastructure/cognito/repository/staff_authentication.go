@@ -17,20 +17,20 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
-type authentication struct {
+type staffAuthentication struct {
 	cli          *cognitoidentityprovider.CognitoIdentityProvider
 	userPoolID   string
 	clientID     string
 	publicKeySet jwk.Set
 }
 
-func NewAuthentication(
+func NewStaffAuthentication(
 	ctx context.Context,
 	cognitoCli *cognitoidentityprovider.CognitoIdentityProvider,
 	userPoolID string,
 	clientID string,
 	emulatorHost string,
-) repository.Authentication {
+) repository.StaffAuthentication {
 	endpoint := cognitoCli.Endpoint
 	if emulatorHost != "" {
 		endpoint = emulatorHost
@@ -40,7 +40,7 @@ func NewAuthentication(
 	if err != nil {
 		panic(err)
 	}
-	return &authentication{
+	return &staffAuthentication{
 		cli:          cognitoCli,
 		userPoolID:   userPoolID,
 		clientID:     clientID,
@@ -48,10 +48,10 @@ func NewAuthentication(
 	}
 }
 
-func (r *authentication) VerifyIDToken(
+func (r *staffAuthentication) VerifyIDToken(
 	ctx context.Context,
 	idToken string,
-) (*model.Claims, error) {
+) (*model.StaffClaims, error) {
 	CustomClaims := jwt.MapClaims{}
 
 	jwtToken, err := jwt.ParseWithClaims(idToken, CustomClaims, func(token *jwt.Token) (interface{}, error) {
@@ -90,10 +90,10 @@ func (r *authentication) VerifyIDToken(
 	return marshaller.UserAttributesToModel(dto.NewUserAttributesFromClaims(jwtClaims)), nil
 }
 
-func (r *authentication) GetUserByEmail(
+func (r *staffAuthentication) GetUserByEmail(
 	ctx context.Context,
 	email string,
-) (*repository.AuthenticationGetUserByEmailResult, error) {
+) (*repository.StaffAuthenticationGetUserByEmailResult, error) {
 	req := &cognitoidentityprovider.ListUsersInput{
 		UserPoolId: aws.String(r.userPoolID),
 		Filter:     aws.String(fmt.Sprintf("email = \"%s\"", email)),
@@ -112,20 +112,20 @@ func (r *authentication) GetUserByEmail(
 		}
 	}
 	if user == nil {
-		return &repository.AuthenticationGetUserByEmailResult{
+		return &repository.StaffAuthenticationGetUserByEmailResult{
 			Exist: false,
 		}, nil
 	}
-	return &repository.AuthenticationGetUserByEmailResult{
-		AuthUID: *user.Username,
-		Claims:  marshaller.UserAttributesToModel(dto.NewUserAttributesFromCognitoUser(user)),
-		Exist:   true,
+	return &repository.StaffAuthenticationGetUserByEmailResult{
+		AuthUID:     *user.Username,
+		StaffClaims: marshaller.UserAttributesToModel(dto.NewUserAttributesFromCognitoUser(user)),
+		Exist:       true,
 	}, nil
 }
 
-func (r *authentication) CreateUser(
+func (r *staffAuthentication) CreateUser(
 	ctx context.Context,
-	param repository.AuthenticationCreateUserParam,
+	param repository.StaffAuthenticationCreateUserParam,
 ) (string, error) {
 	authUID := uuid.UUIDBase64()
 	emailAttr := &cognitoidentityprovider.AttributeType{
@@ -159,15 +159,15 @@ func (r *authentication) CreateUser(
 	return authUID, nil
 }
 
-func (r *authentication) StoreClaims(
+func (r *staffAuthentication) StoreClaims(
 	ctx context.Context,
 	authUID string,
-	claims *model.Claims,
+	claims *model.StaffClaims,
 ) error {
 	req := &cognitoidentityprovider.AdminUpdateUserAttributesInput{
 		UserPoolId:     aws.String(r.userPoolID),
 		Username:       aws.String(authUID),
-		UserAttributes: marshaller.ClaimsToCustomUserAttributes(claims).ToSlice(),
+		UserAttributes: marshaller.StaffClaimsToCustomUserAttributes(claims).ToSlice(),
 	}
 	_, err := r.cli.AdminUpdateUserAttributes(req)
 	if err != nil {
@@ -176,14 +176,14 @@ func (r *authentication) StoreClaims(
 	return nil
 }
 
-func (r *authentication) CreateCustomToken(
+func (r *staffAuthentication) CreateCustomToken(
 	ctx context.Context,
 	authUID string,
 ) (string, error) {
 	return "", errors.InternalErr.Errorf("can not create custom token in cognito")
 }
 
-func (r *authentication) CreateIDToken(
+func (r *staffAuthentication) CreateIDToken(
 	ctx context.Context,
 	authUID string,
 	password string,

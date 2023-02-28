@@ -3,7 +3,7 @@ package usecase
 import "context"
 
 type DebugInteractor interface {
-	CreateIDToken(
+	CreateStaffIDToken(
 		ctx context.Context,
 		authUID string,
 		password string,

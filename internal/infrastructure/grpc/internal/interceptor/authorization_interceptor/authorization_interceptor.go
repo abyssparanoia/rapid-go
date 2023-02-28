@@ -25,10 +25,10 @@ func (i *Authorization) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		interface{},
 		error,
 	) {
-		sessionContext, ok := session_interceptor.GetSessionContext(ctx)
+		staffSessionContext, ok := session_interceptor.GetStaffSessionContext(ctx)
 		method := info.FullMethod
 		if strings.Contains(method, "AdminV1Service") {
-			if !ok || !sessionContext.StaffRole.Value.IsAdmin() {
+			if !ok || !staffSessionContext.StaffRole.Value.IsAdmin() {
 				return nil, errors.UnauthorizedErr.Errorf("Invalid request staff")
 			}
 		}

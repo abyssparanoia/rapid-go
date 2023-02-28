@@ -16,55 +16,55 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 )
 
-type authentication struct {
+type staffStaffAuthentication struct {
 	cli          *auth.Client
 	clientApiKey string
 }
 
-func NewAuthentication(
+func NewStaffAuthentication(
 	firebaseAuthCli *auth.Client,
 	firebaseClientApiKey string,
-) repository.Authentication {
-	return &authentication{
+) repository.StaffAuthentication {
+	return &staffStaffAuthentication{
 		cli:          firebaseAuthCli,
 		clientApiKey: firebaseClientApiKey,
 	}
 }
 
-func (r *authentication) VerifyIDToken(
+func (r *staffStaffAuthentication) VerifyIDToken(
 	ctx context.Context,
 	idToken string,
-) (*model.Claims, error) {
+) (*model.StaffClaims, error) {
 	t, err := r.cli.VerifyIDToken(ctx, idToken)
 	if err != nil {
 		return nil, errors.UnauthorizedErr.Wrap(err)
 	}
-	return marshaller.ClaimsToModel(t.UID, t.Claims), nil
+	return marshaller.StaffClaimsToModel(t.UID, t.Claims), nil
 }
 
-func (r *authentication) GetUserByEmail(
+func (r *staffStaffAuthentication) GetUserByEmail(
 	ctx context.Context,
 	email string,
-) (*repository.AuthenticationGetUserByEmailResult, error) {
+) (*repository.StaffAuthenticationGetUserByEmailResult, error) {
 	user, err := r.cli.GetUserByEmail(ctx, email)
 	if auth.IsUserNotFound(err) {
-		return &repository.AuthenticationGetUserByEmailResult{
+		return &repository.StaffAuthenticationGetUserByEmailResult{
 			Exist: false,
 		}, nil
 	}
 	if err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	return &repository.AuthenticationGetUserByEmailResult{
-		AuthUID: user.UID,
-		Claims:  marshaller.ClaimsToModel(user.UID, user.CustomClaims),
-		Exist:   true,
+	return &repository.StaffAuthenticationGetUserByEmailResult{
+		AuthUID:     user.UID,
+		StaffClaims: marshaller.StaffClaimsToModel(user.UID, user.CustomClaims),
+		Exist:       true,
 	}, nil
 }
 
-func (r *authentication) CreateUser(
+func (r *staffStaffAuthentication) CreateUser(
 	ctx context.Context,
-	param repository.AuthenticationCreateUserParam,
+	param repository.StaffAuthenticationCreateUserParam,
 ) (string, error) {
 	dto := &auth.UserToCreate{}
 	dto = dto.Email(param.Email)
@@ -78,18 +78,18 @@ func (r *authentication) CreateUser(
 	return res.UID, nil
 }
 
-func (r *authentication) StoreClaims(
+func (r *staffStaffAuthentication) StoreClaims(
 	ctx context.Context,
 	authUID string,
-	claims *model.Claims,
+	claims *model.StaffClaims,
 ) error {
-	if err := r.cli.SetCustomUserClaims(ctx, authUID, marshaller.ClaimsToMap(claims)); err != nil {
+	if err := r.cli.SetCustomUserClaims(ctx, authUID, marshaller.StaffClaimsToMap(claims)); err != nil {
 		return errors.InternalErr.Wrap(err)
 	}
 	return nil
 }
 
-func (r *authentication) CreateCustomToken(
+func (r *staffStaffAuthentication) CreateCustomToken(
 	ctx context.Context,
 	authUID string,
 ) (string, error) {
@@ -100,7 +100,7 @@ func (r *authentication) CreateCustomToken(
 	return customToken, nil
 }
 
-func (r *authentication) CreateIDToken(
+func (r *staffStaffAuthentication) CreateIDToken(
 	ctx context.Context,
 	authUID string,
 	password string,

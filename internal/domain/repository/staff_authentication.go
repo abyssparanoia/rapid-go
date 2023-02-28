@@ -8,23 +8,23 @@ import (
 )
 
 //go:generate mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
-type Authentication interface {
+type StaffAuthentication interface {
 	VerifyIDToken(
 		ctx context.Context,
 		idToken string,
-	) (*model.Claims, error)
+	) (*model.StaffClaims, error)
 	GetUserByEmail(
 		ctx context.Context,
 		email string,
-	) (*AuthenticationGetUserByEmailResult, error)
+	) (*StaffAuthenticationGetUserByEmailResult, error)
 	CreateUser(
 		ctx context.Context,
-		param AuthenticationCreateUserParam,
+		param StaffAuthenticationCreateUserParam,
 	) (string, error)
 	StoreClaims(
 		ctx context.Context,
 		authUID string,
-		claims *model.Claims,
+		staffClaims *model.StaffClaims,
 	) error
 	CreateCustomToken(
 		ctx context.Context,
@@ -37,13 +37,13 @@ type Authentication interface {
 	) (string, error)
 }
 
-type AuthenticationCreateUserParam struct {
+type StaffAuthenticationCreateUserParam struct {
 	Email    string
 	Password null.String
 }
 
-type AuthenticationGetUserByEmailResult struct {
-	AuthUID string
-	Claims  *model.Claims
-	Exist   bool
+type StaffAuthenticationGetUserByEmailResult struct {
+	AuthUID     string
+	StaffClaims *model.StaffClaims
+	Exist       bool
 }

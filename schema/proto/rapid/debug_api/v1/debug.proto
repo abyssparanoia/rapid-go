@@ -6,15 +6,15 @@ import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 service DebugV1Service {
-    rpc DebugCreateIDToken(DebugCreateIDTokenRequest) returns (DebugCreateIDTokenResponse) {
+    rpc DebugCreateStaffIDToken(DebugCreateStaffIDTokenRequest) returns (DebugCreateStaffIDTokenResponse) {
         option (google.api.http) = {
-            post: "/debug/v1/id_token",
+            post: "/debug/v1/staffs/-/id_token",
             body: "*"
         };
     }
 }
 
-message DebugCreateIDTokenRequest {
+message DebugCreateStaffIDTokenRequest {
     string auth_uid = 1;
     string password = 2;
 
@@ -25,7 +25,7 @@ message DebugCreateIDTokenRequest {
     };
 }
 
-message DebugCreateIDTokenResponse {
+message DebugCreateStaffIDTokenResponse {
     string id_token = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {

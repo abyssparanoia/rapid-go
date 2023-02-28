@@ -8,24 +8,24 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
-type authenticationInteractor struct {
-	authenticationRepository repository.Authentication
+type staffAuthenticationInteractor struct {
+	staffAuthenticationRepository repository.StaffAuthentication
 }
 
 func NewAuthenticationInteractor(
-	authenticationRepository repository.Authentication,
+	staffAuthenticationRepository repository.StaffAuthentication,
 ) AuthenticationInteractor {
-	return &authenticationInteractor{
-		authenticationRepository,
+	return &staffAuthenticationInteractor{
+		staffAuthenticationRepository,
 	}
 }
 
-func (i *authenticationInteractor) VerifyIDToken(
+func (i *staffAuthenticationInteractor) VerifyStaffIDToken(
 	ctx context.Context,
 	param *input.VerifyIDToken,
-) (*model.Claims, error) {
+) (*model.StaffClaims, error) {
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
-	return i.authenticationRepository.VerifyIDToken(ctx, param.IDToken)
+	return i.staffAuthenticationRepository.VerifyIDToken(ctx, param.IDToken)
 }

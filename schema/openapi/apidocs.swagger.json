@@ -211,14 +211,14 @@
         ]
       }
     },
-    "/debug/v1/id_token": {
+    "/debug/v1/staffs/-/id_token": {
       "post": {
-        "operationId": "DebugCreateIDToken",
+        "operationId": "DebugCreateStaffIDToken",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1DebugCreateIDTokenResponse"
+              "$ref": "#/definitions/v1DebugCreateStaffIDTokenResponse"
             }
           }
         },
@@ -228,7 +228,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1DebugCreateIDTokenRequest"
+              "$ref": "#/definitions/v1DebugCreateStaffIDTokenRequest"
             }
           }
         ],
@@ -416,7 +416,7 @@
         "tenant"
       ]
     },
-    "v1DebugCreateIDTokenRequest": {
+    "v1DebugCreateStaffIDTokenRequest": {
       "type": "object",
       "properties": {
         "auth_uid": {
@@ -431,7 +431,7 @@
         "password"
       ]
     },
-    "v1DebugCreateIDTokenResponse": {
+    "v1DebugCreateStaffIDTokenResponse": {
       "type": "object",
       "properties": {
         "id_token": {
