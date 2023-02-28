@@ -8,7 +8,6 @@ import (
 )
 
 type DebugHander struct {
-	debug_apiv1.UnimplementedDebugV1ServiceServer
 	debugInteractor usecase.DebugInteractor
 }
 
@@ -20,12 +19,12 @@ func NewDebugHandler(
 	}
 }
 
-func (h *DebugHander) DebugCreateIDToken(ctx context.Context, req *debug_apiv1.DebugCreateIDTokenRequest) (*debug_apiv1.DebugCreateIDTokenResponse, error) {
-	idToken, err := h.debugInteractor.CreateIDToken(ctx, req.GetAuthUid(), req.GetPassword())
+func (h *DebugHander) DebugCreateStaffIDToken(ctx context.Context, req *debug_apiv1.DebugCreateStaffIDTokenRequest) (*debug_apiv1.DebugCreateStaffIDTokenResponse, error) {
+	idToken, err := h.debugInteractor.CreateStaffIDToken(ctx, req.GetAuthUid(), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
-	return &debug_apiv1.DebugCreateIDTokenResponse{
+	return &debug_apiv1.DebugCreateStaffIDTokenResponse{
 		IdToken: idToken,
 	}, nil
 }
