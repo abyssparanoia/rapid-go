@@ -7,21 +7,21 @@ import (
 )
 
 type debugInteractor struct {
-	authenticationRepository repository.Authentication
+	staffAuthenticationRepository repository.StaffAuthentication
 }
 
 func NewDebugInteractor(
-	authenticationRepository repository.Authentication,
+	staffAuthenticationRepository repository.StaffAuthentication,
 ) DebugInteractor {
 	return &debugInteractor{
-		authenticationRepository,
+		staffAuthenticationRepository,
 	}
 }
 
-func (i *debugInteractor) CreateIDToken(
+func (i *debugInteractor) CreateStaffIDToken(
 	ctx context.Context,
 	authUID string,
 	password string,
 ) (string, error) {
-	return i.authenticationRepository.CreateIDToken(ctx, authUID, password)
+	return i.staffAuthenticationRepository.CreateIDToken(ctx, authUID, password)
 }
