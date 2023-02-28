@@ -1,4 +1,4 @@
-package create_root_user_cmd
+package create_root_staff_cmd
 
 import (
 	"context"
@@ -11,11 +11,11 @@ import (
 )
 
 type CMD struct {
-	ctx            context.Context
-	userInteractor usecase.UserInteractor
+	ctx             context.Context
+	staffInteractor usecase.StaffInteractor
 }
 
-func (c *CMD) CreateRootUser(cmd *cobra.Command) error {
+func (c *CMD) CreateRootStaff(cmd *cobra.Command) error {
 	email, err := cmd.Flags().GetString("email")
 	if err != nil {
 		return err
@@ -32,9 +32,9 @@ func (c *CMD) CreateRootUser(cmd *cobra.Command) error {
 		return errors.New("password is required")
 	}
 
-	if err := c.userInteractor.CreateRoot(
+	if err := c.staffInteractor.CreateRoot(
 		c.ctx,
-		input.NewCreateRootUser(
+		input.NewCreateRootStaff(
 			email,
 			password,
 			now.Now(),

@@ -7,9 +7,9 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
-type AdminUserInteractor interface {
+type AdminStaffInteractor interface {
 	Create(
 		ctx context.Context,
-		param *input.AdminCreateUser,
-	) (*model.User, error)
+		param *input.AdminCreateStaff,
+	) (*model.Staff, error)
 }

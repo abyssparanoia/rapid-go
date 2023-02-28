@@ -12,15 +12,15 @@ type AWSCognitoClaims struct {
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`
 	TenantID      string `json:"custom:tenant_id,omitempty"`
-	UserID        string `json:"custom:user_id,omitempty"`
-	UserRole      string `json:"custom:user_role,omitempty"`
+	StaffID       string `json:"custom:staff_id,omitempty"`
+	StaffRole     string `json:"custom:staff_role,omitempty"`
 	jwt.StandardClaims
 }
 
 const (
-	attributesTenantIDKey = "custom:tenant_id"
-	attributesUserIDKey   = "custom:user_id"
-	attributesUserRoleKey = "custom:user_role"
+	attributesTenantIDKey  = "custom:tenant_id"
+	attributesStaffIDKey   = "custom:staff_id"
+	attributesStaffRoleKey = "custom:staff_role"
 )
 
 type UserAttributes struct {
@@ -36,11 +36,11 @@ func NewUserAttributesFromCognitoUser(cognitoUser *cognitoidentityprovider.UserT
 		if *attribute.Name == attributesTenantIDKey {
 			userAttributes.TenantID = null.StringFrom(*attribute.Value)
 		}
-		if *attribute.Name == attributesUserIDKey {
-			userAttributes.UserID = null.StringFrom(*attribute.Value)
+		if *attribute.Name == attributesStaffIDKey {
+			userAttributes.StaffID = null.StringFrom(*attribute.Value)
 		}
-		if *attribute.Name == attributesUserRoleKey {
-			userAttributes.UserRole = null.StringFrom(*attribute.Value)
+		if *attribute.Name == attributesStaffRoleKey {
+			userAttributes.StaffRole = null.StringFrom(*attribute.Value)
 		}
 	}
 
@@ -54,19 +54,19 @@ func NewUserAttributesFromClaims(awsClaims *AWSCognitoClaims) *UserAttributes {
 	if awsClaims.TenantID != "" {
 		userAttributes.TenantID = null.StringFrom(awsClaims.TenantID)
 	}
-	if awsClaims.UserID != "" {
-		userAttributes.UserID = null.StringFrom(awsClaims.UserID)
+	if awsClaims.StaffID != "" {
+		userAttributes.StaffID = null.StringFrom(awsClaims.StaffID)
 	}
-	if awsClaims.UserRole != "" {
-		userAttributes.UserRole = null.StringFrom(awsClaims.UserRole)
+	if awsClaims.StaffRole != "" {
+		userAttributes.StaffRole = null.StringFrom(awsClaims.StaffRole)
 	}
 	return userAttributes
 }
 
 type CustomUserAttributes struct {
-	TenantID null.String
-	UserID   null.String
-	UserRole null.String
+	TenantID  null.String
+	StaffID   null.String
+	StaffRole null.String
 }
 
 func (ua *CustomUserAttributes) ToSlice() []*cognitoidentityprovider.AttributeType {
@@ -74,11 +74,11 @@ func (ua *CustomUserAttributes) ToSlice() []*cognitoidentityprovider.AttributeTy
 	if ua.TenantID.Valid {
 		attrs = append(attrs, NewUserAttribute("custom:tenant_id", ua.TenantID.String))
 	}
-	if ua.UserID.Valid {
-		attrs = append(attrs, NewUserAttribute("custom:user_id", ua.UserID.String))
+	if ua.StaffID.Valid {
+		attrs = append(attrs, NewUserAttribute("custom:staff_id", ua.StaffID.String))
 	}
-	if ua.UserRole.Valid {
-		attrs = append(attrs, NewUserAttribute("custom:user_role", ua.UserRole.String))
+	if ua.StaffRole.Valid {
+		attrs = append(attrs, NewUserAttribute("custom:staff_role", ua.StaffRole.String))
 	}
 	return attrs
 }

@@ -8,18 +8,18 @@ import (
 )
 
 //go:generate mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
-type User interface {
+type Staff interface {
 	Get(
 		ctx context.Context,
-		query GetUserQuery,
-	) (*model.User, error)
+		query GetStaffQuery,
+	) (*model.Staff, error)
 	Create(
 		ctx context.Context,
-		user *model.User,
-	) (*model.User, error)
+		staff *model.Staff,
+	) (*model.Staff, error)
 }
 
-type GetUserQuery struct {
+type GetStaffQuery struct {
 	BaseGetOptions
 	ID      null.String
 	AuthUID null.String

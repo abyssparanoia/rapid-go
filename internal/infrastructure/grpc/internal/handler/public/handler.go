@@ -7,20 +7,16 @@ import (
 )
 
 type PublicHandler struct {
-	databaseCli *database.Client
-	public_apiv1.UnimplementedPublicV1ServiceServer
-	authenticationInteractor usecase.PublicAuthenticationInteractor
-	tenantInteractor         usecase.PublicTenantInteractor
+	databaseCli      *database.Client
+	tenantInteractor usecase.PublicTenantInteractor
 }
 
 func NewPublicHandler(
 	databaseCli *database.Client,
-	authenticationInteractor usecase.PublicAuthenticationInteractor,
 	tenantInteractor usecase.PublicTenantInteractor,
 ) public_apiv1.PublicV1ServiceServer {
 	return &PublicHandler{
-		databaseCli:              databaseCli,
-		authenticationInteractor: authenticationInteractor,
-		tenantInteractor:         tenantInteractor,
+		databaseCli:      databaseCli,
+		tenantInteractor: tenantInteractor,
 	}
 }

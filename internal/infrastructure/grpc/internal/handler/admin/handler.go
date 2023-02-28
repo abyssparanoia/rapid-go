@@ -6,20 +6,19 @@ import (
 )
 
 type AdminHandler struct {
-	admin_apiv1.UnimplementedAdminV1ServiceServer
 	tenantInteractor usecase.AdminTenantInteractor
-	userInteractor   usecase.AdminUserInteractor
+	staffInteractor  usecase.AdminStaffInteractor
 	assetInteractor  usecase.AdminAssetInteractor
 }
 
 func NewAdminHandler(
 	tenantInteractor usecase.AdminTenantInteractor,
-	userInteractor usecase.AdminUserInteractor,
+	staffInteractor usecase.AdminStaffInteractor,
 	assetInteractor usecase.AdminAssetInteractor,
 ) admin_apiv1.AdminV1ServiceServer {
 	return &AdminHandler{
 		tenantInteractor: tenantInteractor,
-		userInteractor:   userInteractor,
+		staffInteractor:  staffInteractor,
 		assetInteractor:  assetInteractor,
 	}
 }

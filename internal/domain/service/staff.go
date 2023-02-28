@@ -8,18 +8,18 @@ import (
 )
 
 //go:generate mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_service
-type User interface {
+type Staff interface {
 	Create(
 		ctx context.Context,
-		param UserCreateParam,
-	) (*model.User, error)
+		param StaffCreateParam,
+	) (*model.Staff, error)
 }
 
-type UserCreateParam struct {
+type StaffCreateParam struct {
 	TenantID    string
 	Email       string
 	Password    string
-	UserRole    model.UserRole
+	StaffRole   model.StaffRole
 	DisplayName string
 	ImagePath   string
 	RequestTime time.Time

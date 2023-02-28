@@ -51,12 +51,12 @@
 > make generate.sqlboiler
 ```
 
-## create seed user
+## create seed staff
 
 - create to local database and remote firebase auth
-  - If a user has already been created in firebase, this cli create a user only in the local database.
+  - If a staff has already been created in firebase, this cli create a staff only in the local database.
 
 ```bash
 > make build
-> ./.bin/app-cli task create-root-user --email <email address> --password <passowrd>
+> ./.bin/app-cli task create-root-staff --email <email address> --password <passowrd>
 ```

@@ -6,9 +6,9 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
-type UserInteractor interface {
+type StaffInteractor interface {
 	CreateRoot(
 		ctx context.Context,
-		param *input.CreateRootUser,
+		param *input.CreateRootStaff,
 	) error
 }

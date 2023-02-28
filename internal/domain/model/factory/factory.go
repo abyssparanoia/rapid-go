@@ -12,7 +12,7 @@ import (
 func NewFactory() struct {
 	RequestTime time.Time
 	Tenant      *model.Tenant
-	User        *model.User
+	Staff       *model.Staff
 } {
 	n := now.Now()
 
@@ -23,7 +23,7 @@ func NewFactory() struct {
 	tenant.CreatedAt = n
 	tenant.UpdatedAt = n
 
-	user := &model.User{}
+	user := &model.Staff{}
 	user.TenantID = tenant.ID
 	user.Tenant = tenant
 	user.CreatedAt = n
@@ -32,11 +32,11 @@ func NewFactory() struct {
 	return struct {
 		RequestTime time.Time
 		Tenant      *model.Tenant
-		User        *model.User
+		Staff       *model.Staff
 	}{
 		RequestTime: n,
 		Tenant:      tenant,
-		User:        user,
+		Staff:       user,
 	}
 }
 

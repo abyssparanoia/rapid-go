@@ -77,7 +77,7 @@ func NewServer(ctx context.Context,
 		server,
 		admin.NewAdminHandler(
 			dependency.AdminTenantInteractor,
-			dependency.AdminUserInteractor,
+			dependency.AdminStaffInteractor,
 			dependency.AdminAssetInteractor,
 		),
 	)
@@ -85,7 +85,6 @@ func NewServer(ctx context.Context,
 		server,
 		public.NewPublicHandler(
 			dependency.DatabaseCli,
-			dependency.PublicAuthenticationInteractor,
 			dependency.PublicTenantInteractor,
 		),
 	)

@@ -10,20 +10,20 @@ import (
 )
 
 type SessionContext struct {
-	AuthUID  string
-	TenantID null.String
-	UserID   null.String
-	UserRole nullable.Type[model.UserRole]
+	AuthUID   string
+	TenantID  null.String
+	StaffID   null.String
+	StaffRole nullable.Type[model.StaffRole]
 }
 
 type contextKey struct{}
 
 func newSessionContext(claims *model.Claims) *SessionContext {
 	return &SessionContext{
-		AuthUID:  claims.AuthUID,
-		TenantID: claims.TenantID,
-		UserID:   claims.UserID,
-		UserRole: claims.UserRole,
+		AuthUID:   claims.AuthUID,
+		TenantID:  claims.TenantID,
+		StaffID:   claims.StaffID,
+		StaffRole: claims.StaffRole,
 	}
 }
 

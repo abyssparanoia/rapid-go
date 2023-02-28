@@ -5,11 +5,11 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/dbmodel"
 )
 
-func UserToModel(e *dbmodel.User) *model.User {
-	m := &model.User{
+func StaffToModel(e *dbmodel.Staff) *model.Staff {
+	m := &model.Staff{
 		ID:          e.ID,
 		TenantID:    e.TenantID,
-		Role:        model.NewUserRole(e.Role),
+		Role:        model.NewStaffRole(e.Role),
 		AuthUID:     e.AuthUID,
 		DisplayName: e.DisplayName,
 		ImagePath:   e.ImagePath,
@@ -25,16 +25,16 @@ func UserToModel(e *dbmodel.User) *model.User {
 	return m
 }
 
-func UsersToModel(slice dbmodel.UserSlice) model.Users {
-	dsts := make(model.Users, len(slice))
+func StaffsToModel(slice dbmodel.StaffSlice) model.Staffs {
+	dsts := make(model.Staffs, len(slice))
 	for idx, e := range slice {
-		dsts[idx] = UserToModel(e)
+		dsts[idx] = StaffToModel(e)
 	}
 	return dsts
 }
 
-func UserToDBModel(m *model.User) *dbmodel.User {
-	e := &dbmodel.User{}
+func StaffToDBModel(m *model.Staff) *dbmodel.Staff {
+	e := &dbmodel.Staff{}
 	e.ID = m.ID
 	e.TenantID = m.TenantID
 	e.Role = m.Role.String()

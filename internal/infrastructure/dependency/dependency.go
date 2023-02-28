@@ -23,16 +23,15 @@ type Dependency struct {
 	DatabaseCli *database.Client
 
 	// public
-	PublicAuthenticationInteractor usecase.PublicAuthenticationInteractor
-	PublicTenantInteractor         usecase.PublicTenantInteractor
+	PublicTenantInteractor usecase.PublicTenantInteractor
 
 	// admin
 	AdminTenantInteractor usecase.AdminTenantInteractor
-	AdminUserInteractor   usecase.AdminUserInteractor
+	AdminStaffInteractor  usecase.AdminStaffInteractor
 	AdminAssetInteractor  usecase.AdminAssetInteractor
 
 	// Other
-	UserInteractor           usecase.UserInteractor
+	StaffInteractor          usecase.StaffInteractor
 	AuthenticationInteractor usecase.AuthenticationInteractor
 	DebugInteractor          usecase.DebugInteractor
 }
@@ -66,12 +65,12 @@ func (d *Dependency) Inject(
 		e.AWSCognitoEmulatorHost,
 	)
 	tenantRepository := repository.NewTenant()
-	userRepository := repository.NewUser()
+	staffRepository := repository.NewStaff()
 	assetRepository := gcs_repository.NewAsset(gcsBucketHandle)
 	// assetRepository := s3_repository.NewAsset(s3Client, e.AWSBucketName)
 
-	userService := service.NewUser(
-		userRepository,
+	staffService := service.NewStaff(
+		staffRepository,
 		authenticationRepository,
 	)
 
@@ -80,27 +79,23 @@ func (d *Dependency) Inject(
 		tenantRepository,
 	)
 
-	d.PublicAuthenticationInteractor = usecase.NewPublicAuthenticationInteractor(
-		userRepository,
-	)
-
 	d.AdminTenantInteractor = usecase.NewAdminTenantInteractor(
 		transactable,
 		tenantRepository,
 	)
-	d.AdminUserInteractor = usecase.NewAdminUserInteractor(
+	d.AdminStaffInteractor = usecase.NewAdminStaffInteractor(
 		transactable,
 		tenantRepository,
-		userService,
+		staffService,
 	)
 	d.AdminAssetInteractor = usecase.NewAdminAssetInteractor(
 		assetRepository,
 	)
 
-	d.UserInteractor = usecase.NewUserInteractor(
+	d.StaffInteractor = usecase.NewStaffInteractor(
 		transactable,
 		tenantRepository,
-		userService,
+		staffService,
 	)
 
 	d.AuthenticationInteractor = usecase.NewAuthenticationInteractor(

@@ -14,52 +14,52 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-type user struct{}
+type staff struct{}
 
-func NewUser() repository.User {
-	return &user{}
+func NewStaff() repository.Staff {
+	return &staff{}
 }
 
-func (r *user) Get(
+func (r *staff) Get(
 	ctx context.Context,
-	query repository.GetUserQuery,
-) (*model.User, error) {
+	query repository.GetStaffQuery,
+) (*model.Staff, error) {
 	mods := []qm.QueryMod{}
 	if query.ID.Valid {
-		mods = append(mods, dbmodel.UserWhere.ID.EQ(query.ID.String))
+		mods = append(mods, dbmodel.StaffWhere.ID.EQ(query.ID.String))
 	}
 	if query.AuthUID.Valid {
-		mods = append(mods, dbmodel.UserWhere.AuthUID.EQ(query.AuthUID.String))
+		mods = append(mods, dbmodel.StaffWhere.AuthUID.EQ(query.AuthUID.String))
 	}
 	if query.Preload {
 		mods = append(mods,
-			qm.Load(dbmodel.UserRels.Tenant),
+			qm.Load(dbmodel.StaffRels.Tenant),
 		)
 	}
 	if query.ForUpdate {
 		mods = append(mods, qm.For("UPDATE"))
 	}
-	dbUser, err := dbmodel.Users(
+	dbStaff, err := dbmodel.Staffs(
 		mods...,
 	).One(ctx, transactable.GetContextExecutor(ctx))
 	if err != nil {
 		if err == sql.ErrNoRows && !query.OrFail {
 			return nil, nil
 		} else if err == sql.ErrNoRows {
-			return nil, errors.NotFoundErr.Errorf("user is not found")
+			return nil, errors.NotFoundErr.Errorf("staff is not found")
 		}
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	return marshaller.UserToModel(dbUser), nil
+	return marshaller.StaffToModel(dbStaff), nil
 }
 
-func (r *user) Create(
+func (r *staff) Create(
 	ctx context.Context,
-	user *model.User,
-) (*model.User, error) {
-	dst := marshaller.UserToDBModel(user)
+	staff *model.Staff,
+) (*model.Staff, error) {
+	dst := marshaller.StaffToDBModel(staff)
 	if err := dst.Insert(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	return marshaller.UserToModel(dst), nil
+	return marshaller.StaffToModel(dst), nil
 }

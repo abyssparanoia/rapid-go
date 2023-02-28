@@ -6,13 +6,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func UserToPB(m *model.User) *modelv1.User {
+func StaffToPB(m *model.Staff) *modelv1.Staff {
 	if m == nil {
 		return nil
 	}
-	dst := &modelv1.User{
+	dst := &modelv1.Staff{
 		Id:          m.ID,
-		Role:        UserRoleToPB(m.Role),
+		Role:        StaffRoleToPB(m.Role),
 		AuthUid:     m.AuthUID,
 		DisplayName: m.DisplayName,
 		ImageUrl:    m.ImagePath,
@@ -21,11 +21,11 @@ func UserToPB(m *model.User) *modelv1.User {
 		UpdatedAt:   timestamppb.New(m.UpdatedAt),
 	}
 	if m.Tenant == nil {
-		dst.OneofTenant = &modelv1.User_TenantId{
+		dst.OneofTenant = &modelv1.Staff_TenantId{
 			TenantId: m.TenantID,
 		}
 	} else {
-		dst.OneofTenant = &modelv1.User_Tenant{
+		dst.OneofTenant = &modelv1.Staff_Tenant{
 			Tenant: TenantToPB(m.Tenant),
 		}
 	}

@@ -25,7 +25,7 @@ type AdminV1ServiceClient interface {
 	AdminCreateTenant(ctx context.Context, in *AdminCreateTenantRequest, opts ...grpc.CallOption) (*AdminCreateTenantResponse, error)
 	AdminUpdateTenant(ctx context.Context, in *AdminUpdateTenantRequest, opts ...grpc.CallOption) (*AdminUpdateTenantResponse, error)
 	AdminDeleteTenant(ctx context.Context, in *AdminDeleteTenantRequest, opts ...grpc.CallOption) (*AdminDeleteTenantResponse, error)
-	AdminCreateUser(ctx context.Context, in *AdminCreateUserRequest, opts ...grpc.CallOption) (*AdminCreateUserResponse, error)
+	AdminCreateStaff(ctx context.Context, in *AdminCreateStaffRequest, opts ...grpc.CallOption) (*AdminCreateStaffResponse, error)
 }
 
 type adminV1ServiceClient struct {
@@ -90,9 +90,9 @@ func (c *adminV1ServiceClient) AdminDeleteTenant(ctx context.Context, in *AdminD
 	return out, nil
 }
 
-func (c *adminV1ServiceClient) AdminCreateUser(ctx context.Context, in *AdminCreateUserRequest, opts ...grpc.CallOption) (*AdminCreateUserResponse, error) {
-	out := new(AdminCreateUserResponse)
-	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/AdminCreateUser", in, out, opts...)
+func (c *adminV1ServiceClient) AdminCreateStaff(ctx context.Context, in *AdminCreateStaffRequest, opts ...grpc.CallOption) (*AdminCreateStaffResponse, error) {
+	out := new(AdminCreateStaffResponse)
+	err := c.cc.Invoke(ctx, "/rapid.admin_api.v1.AdminV1Service/AdminCreateStaff", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ type AdminV1ServiceServer interface {
 	AdminCreateTenant(context.Context, *AdminCreateTenantRequest) (*AdminCreateTenantResponse, error)
 	AdminUpdateTenant(context.Context, *AdminUpdateTenantRequest) (*AdminUpdateTenantResponse, error)
 	AdminDeleteTenant(context.Context, *AdminDeleteTenantRequest) (*AdminDeleteTenantResponse, error)
-	AdminCreateUser(context.Context, *AdminCreateUserRequest) (*AdminCreateUserResponse, error)
+	AdminCreateStaff(context.Context, *AdminCreateStaffRequest) (*AdminCreateStaffResponse, error)
 }
 
 // UnimplementedAdminV1ServiceServer should be embedded to have forward compatible implementations.
@@ -134,8 +134,8 @@ func (UnimplementedAdminV1ServiceServer) AdminUpdateTenant(context.Context, *Adm
 func (UnimplementedAdminV1ServiceServer) AdminDeleteTenant(context.Context, *AdminDeleteTenantRequest) (*AdminDeleteTenantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminDeleteTenant not implemented")
 }
-func (UnimplementedAdminV1ServiceServer) AdminCreateUser(context.Context, *AdminCreateUserRequest) (*AdminCreateUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AdminCreateUser not implemented")
+func (UnimplementedAdminV1ServiceServer) AdminCreateStaff(context.Context, *AdminCreateStaffRequest) (*AdminCreateStaffResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminCreateStaff not implemented")
 }
 
 // UnsafeAdminV1ServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -257,20 +257,20 @@ func _AdminV1Service_AdminDeleteTenant_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminV1Service_AdminCreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AdminCreateUserRequest)
+func _AdminV1Service_AdminCreateStaff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminCreateStaffRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminV1ServiceServer).AdminCreateUser(ctx, in)
+		return srv.(AdminV1ServiceServer).AdminCreateStaff(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rapid.admin_api.v1.AdminV1Service/AdminCreateUser",
+		FullMethod: "/rapid.admin_api.v1.AdminV1Service/AdminCreateStaff",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminV1ServiceServer).AdminCreateUser(ctx, req.(*AdminCreateUserRequest))
+		return srv.(AdminV1ServiceServer).AdminCreateStaff(ctx, req.(*AdminCreateStaffRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -307,8 +307,8 @@ var AdminV1Service_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminV1Service_AdminDeleteTenant_Handler,
 		},
 		{
-			MethodName: "AdminCreateUser",
-			Handler:    _AdminV1Service_AdminCreateUser_Handler,
+			MethodName: "AdminCreateStaff",
+			Handler:    _AdminV1Service_AdminCreateStaff_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

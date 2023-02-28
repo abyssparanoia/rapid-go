@@ -75,7 +75,7 @@ func (h *AdminHandler) AdminUpdateTenant(ctx context.Context, req *admin_apiv1.A
 	}, nil
 }
 
-func (h *AdminHandler) DeleteTenant(ctx context.Context, req *admin_apiv1.AdminDeleteTenantRequest) (*admin_apiv1.AdminDeleteTenantResponse, error) {
+func (h *AdminHandler) AdminDeleteTenant(ctx context.Context, req *admin_apiv1.AdminDeleteTenantRequest) (*admin_apiv1.AdminDeleteTenantResponse, error) {
 	err := h.tenantInteractor.Delete(
 		ctx,
 		input.NewAdminDeleteTenant(

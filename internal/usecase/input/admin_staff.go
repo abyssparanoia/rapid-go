@@ -8,22 +8,22 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/validation"
 )
 
-type AdminCreateUser struct {
-	TenantID    string         `validate:"required"`
-	Email       string         `validate:"required"`
-	DisplayName string         `validate:"required"`
-	Role        model.UserRole `validate:"required"`
-	RequestTime time.Time      `validate:"required"`
+type AdminCreateStaff struct {
+	TenantID    string          `validate:"required"`
+	Email       string          `validate:"required"`
+	DisplayName string          `validate:"required"`
+	Role        model.StaffRole `validate:"required"`
+	RequestTime time.Time       `validate:"required"`
 }
 
-func NewAdminCreateUser(
+func NewAdminCreateStaff(
 	tenantID,
 	email,
 	displayName string,
-	role model.UserRole,
+	role model.StaffRole,
 	requestTime time.Time,
-) *AdminCreateUser {
-	return &AdminCreateUser{
+) *AdminCreateStaff {
+	return &AdminCreateStaff{
 		TenantID:    tenantID,
 		Email:       email,
 		DisplayName: displayName,
@@ -32,7 +32,7 @@ func NewAdminCreateUser(
 	}
 }
 
-func (p *AdminCreateUser) Validate() error {
+func (p *AdminCreateStaff) Validate() error {
 	if err := validation.Validate(p); err != nil {
 		return errors.RequestInvalidArgumentErr.Wrap(err)
 	}
