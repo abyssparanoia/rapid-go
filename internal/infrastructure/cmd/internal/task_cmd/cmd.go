@@ -1,7 +1,7 @@
 package task_cmd
 
 import (
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/task_cmd/create_root_user_cmd"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/task_cmd/create_root_staff_cmd"
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +15,6 @@ func NewTaskCmd() *cobra.Command {
 			}
 		},
 	}
-	cmd.AddCommand(create_root_user_cmd.NewCreateRootUserCmd())
+	cmd.AddCommand(create_root_staff_cmd.NewCreateRootStaffCmd())
 	return cmd
 }

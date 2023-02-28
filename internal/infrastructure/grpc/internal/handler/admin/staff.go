@@ -10,18 +10,18 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
-func (h *AdminHandler) CreateUser(ctx context.Context, req *admin_apiv1.AdminCreateUserRequest) (*admin_apiv1.AdminCreateUserResponse, error) {
+func (h *AdminHandler) AdminCreateStaff(ctx context.Context, req *admin_apiv1.AdminCreateStaffRequest) (*admin_apiv1.AdminCreateStaffResponse, error) {
 	_, err := session_interceptor.RequireSessionContext(ctx)
 	if err != nil {
 		return nil, err
 	}
-	got, err := h.userInteractor.Create(
+	got, err := h.staffInteractor.Create(
 		ctx,
-		input.NewAdminCreateUser(
+		input.NewAdminCreateStaff(
 			req.GetTenantId(),
 			req.GetEmail(),
 			req.GetDisplayName(),
-			marshaller.UserRoleToModel(req.GetRole()),
+			marshaller.StaffRoleToModel(req.GetRole()),
 			request_interceptor.GetRequestTime(ctx),
 		),
 	)
@@ -29,7 +29,7 @@ func (h *AdminHandler) CreateUser(ctx context.Context, req *admin_apiv1.AdminCre
 		return nil, err
 	}
 
-	return &admin_apiv1.AdminCreateUserResponse{
-		User: marshaller.UserToPB(got),
+	return &admin_apiv1.AdminCreateStaffResponse{
+		Staff: marshaller.StaffToPB(got),
 	}, nil
 }

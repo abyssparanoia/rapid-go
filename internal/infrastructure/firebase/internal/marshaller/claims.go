@@ -12,20 +12,20 @@ func ClaimsToModel(authUID string, customClaim map[string]interface{}) *model.Cl
 	if _tenantID, ok := customClaim["tenant_id"]; ok {
 		tenantID = null.StringFrom(_tenantID.(string))
 	}
-	var userID null.String
-	if _userID, ok := customClaim["service_user_id"]; ok {
-		userID = null.StringFrom(_userID.(string))
+	var staffID null.String
+	if _staffID, ok := customClaim["staff_id"]; ok {
+		staffID = null.StringFrom(_staffID.(string))
 	}
-	var userRole nullable.Type[model.UserRole]
-	if _userRole, ok := customClaim["user_role"]; ok {
-		userRole = nullable.TypeFrom(model.NewUserRole(_userRole.(string)))
+	var staffRole nullable.Type[model.StaffRole]
+	if _staffRole, ok := customClaim["staff_role"]; ok {
+		staffRole = nullable.TypeFrom(model.NewStaffRole(_staffRole.(string)))
 	}
 
 	claims := model.NewClaims(
 		authUID,
 		tenantID,
-		userID,
-		userRole,
+		staffID,
+		staffRole,
 	)
 	return claims
 }
@@ -35,11 +35,11 @@ func ClaimsToMap(m *model.Claims) map[string]interface{} {
 	if m.TenantID.Valid {
 		cmap["tenant_id"] = m.TenantID.String
 	}
-	if m.UserID.Valid {
-		cmap["service_user_id"] = m.UserID.String
+	if m.StaffID.Valid {
+		cmap["staff_id"] = m.StaffID.String
 	}
-	if m.UserRole.Valid && m.UserRole.Value.Valid() {
-		cmap["user_role"] = m.UserRole.Value.String()
+	if m.StaffRole.Valid && m.StaffRole.Value.Valid() {
+		cmap["staff_role"] = m.StaffRole.Value.String()
 	}
 	return cmap
 }

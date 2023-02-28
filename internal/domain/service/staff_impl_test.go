@@ -16,90 +16,90 @@ import (
 	"github.com/volatiletech/null/v8"
 )
 
-func TestUserService_Create(t *testing.T) {
+func TestStaffService_Create(t *testing.T) {
 	mockPassword := "password"
 	testdata := factory.NewFactory()
 	requestTime := testdata.RequestTime
 	tenant := testdata.Tenant
 	mockULID := ulid.Mock()
-	user := testdata.User
-	user.ID = mockULID
-	user.Tenant = nil
+	staff := testdata.Staff
+	staff.ID = mockULID
+	staff.Tenant = nil
 
 	claims := model.NewClaims(
-		user.AuthUID,
+		staff.AuthUID,
 		null.StringFrom(tenant.ID),
-		null.StringFrom(user.ID),
-		nullable.TypeFrom(user.Role),
+		null.StringFrom(staff.ID),
+		nullable.TypeFrom(staff.Role),
 	)
 
 	type args struct {
 		tenantID    string
 		email       string
 		password    string
-		userRole    model.UserRole
+		staffRole   model.StaffRole
 		displayName string
 		imagePath   string
 		requestTime time.Time
 	}
 
 	type want struct {
-		user           *model.User
+		staff          *model.Staff
 		expectedResult error
 	}
 
 	tests := map[string]struct {
 		args    args
-		service func(ctx context.Context, ctrl *gomock.Controller) User
+		service func(ctx context.Context, ctrl *gomock.Controller) Staff
 		want    want
 	}{
 		"success": {
 			args: args{
 				tenantID:    tenant.ID,
-				email:       user.Email,
+				email:       staff.Email,
 				password:    mockPassword,
-				userRole:    user.Role,
-				displayName: user.DisplayName,
-				imagePath:   user.ImagePath,
+				staffRole:   staff.Role,
+				displayName: staff.DisplayName,
+				imagePath:   staff.ImagePath,
 				requestTime: requestTime,
 			},
-			service: func(ctx context.Context, ctrl *gomock.Controller) User {
-				mockUserRepo := mock_repository.NewMockUser(ctrl)
+			service: func(ctx context.Context, ctrl *gomock.Controller) Staff {
+				mockStaffRepo := mock_repository.NewMockStaff(ctrl)
 				mockAuthenticationRepo := mock_repository.NewMockAuthentication(ctrl)
 
 				mockAuthenticationRepo.EXPECT().
 					GetUserByEmail(
 						gomock.Any(),
-						user.Email,
+						staff.Email,
 					).
 					Return(&repository.AuthenticationGetUserByEmailResult{}, nil)
 				mockAuthenticationRepo.EXPECT().
 					CreateUser(
 						gomock.Any(),
 						repository.AuthenticationCreateUserParam{
-							Email:    user.Email,
+							Email:    staff.Email,
 							Password: null.StringFrom(mockPassword),
 						},
 					).
-					Return(user.AuthUID, nil)
-				mockUserRepo.EXPECT().
-					Create(gomock.Any(), user).
-					Return(user, nil)
+					Return(staff.AuthUID, nil)
+				mockStaffRepo.EXPECT().
+					Create(gomock.Any(), staff).
+					Return(staff, nil)
 				mockAuthenticationRepo.EXPECT().
 					StoreClaims(
 						gomock.Any(),
-						user.AuthUID,
+						staff.AuthUID,
 						claims,
 					).
 					Return(nil)
 
-				return &userService{
-					userRepository:           mockUserRepo,
+				return &staffService{
+					staffRepository:          mockStaffRepo,
 					authenticationRepository: mockAuthenticationRepo,
 				}
 			},
 			want: want{
-				user: user,
+				staff: staff,
 			},
 		},
 	}
@@ -113,18 +113,18 @@ func TestUserService_Create(t *testing.T) {
 
 			s := tc.service(ctx, ctrl)
 
-			got, err := s.Create(ctx, UserCreateParam{
+			got, err := s.Create(ctx, StaffCreateParam{
 				TenantID:    tc.args.tenantID,
 				Email:       tc.args.email,
 				Password:    tc.args.password,
-				UserRole:    tc.args.userRole,
+				StaffRole:   tc.args.staffRole,
 				DisplayName: tc.args.displayName,
 				ImagePath:   tc.args.imagePath,
 				RequestTime: tc.args.requestTime,
 			})
 			if tc.want.expectedResult == nil {
 				assert.NoError(t, err)
-				assert.Equal(t, tc.want.user, got)
+				assert.Equal(t, tc.want.staff, got)
 			} else {
 				assert.ErrorContains(t, err, tc.want.expectedResult.Error())
 			}

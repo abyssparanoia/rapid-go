@@ -4,7 +4,7 @@ package rapid.admin_api.v1;
 
 import "google/api/annotations.proto";
 import "rapid/admin_api/v1/tenant.proto";
-import "rapid/admin_api/v1/user.proto";
+import "rapid/admin_api/v1/staff.proto";
 import "rapid/admin_api/v1/asset.proto";
 
 service AdminV1Service {
@@ -41,9 +41,9 @@ service AdminV1Service {
             delete: "/admin/v1/tenants/{tenant_id}",
         };
     }
-    rpc AdminCreateUser(AdminCreateUserRequest) returns (AdminCreateUserResponse) {
+    rpc AdminCreateStaff(AdminCreateStaffRequest) returns (AdminCreateStaffResponse) {
         option (google.api.http) = {
-            post: "/admin/v1/users",
+            post: "/admin/v1/staffs",
             body: "*"
         };
     }

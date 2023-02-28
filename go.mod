@@ -196,7 +196,6 @@ require (
 	github.com/opencontainers/image-spec v1.1.0-rc2 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
-	github.com/phayes/checkstyle v0.0.0-20170904204023-bfd46e6a821d // indirect
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
 	github.com/pkg/profile v1.7.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -251,7 +250,6 @@ require (
 	gitlab.com/bosi/decorder v0.2.3 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/otel v1.12.0 // indirect
-	go.opentelemetry.io/otel/metric v0.34.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.12.0 // indirect
 	go.opentelemetry.io/otel/trace v1.12.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect

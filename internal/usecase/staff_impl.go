@@ -9,27 +9,27 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
-type userInteractor struct {
+type staffInteractor struct {
 	transactable     repository.Transactable
 	tenantRepository repository.Tenant
-	userService      service.User
+	staffService     service.Staff
 }
 
-func NewUserInteractor(
+func NewStaffInteractor(
 	transactable repository.Transactable,
 	tenantRepository repository.Tenant,
-	userService service.User,
-) UserInteractor {
-	return &userInteractor{
+	staffService service.Staff,
+) StaffInteractor {
+	return &staffInteractor{
 		transactable,
 		tenantRepository,
-		userService,
+		staffService,
 	}
 }
 
-func (i *userInteractor) CreateRoot(
+func (i *staffInteractor) CreateRoot(
 	ctx context.Context,
-	param *input.CreateRootUser,
+	param *input.CreateRootStaff,
 ) error {
 	return i.transactable.RWTx(ctx, func(ctx context.Context) error {
 		if err := param.Validate(); err != nil {
@@ -41,15 +41,15 @@ func (i *userInteractor) CreateRoot(
 			return err
 		}
 
-		if _, err := i.userService.Create(
+		if _, err := i.staffService.Create(
 			ctx,
-			service.UserCreateParam{
+			service.StaffCreateParam{
 				TenantID:    tenant.ID,
 				Email:       param.Email,
 				Password:    "random1234",
-				UserRole:    model.UserRoleAdmin,
-				DisplayName: "Root User",
-				ImagePath:   "user_profile_images/default_image.jpeg",
+				StaffRole:   model.StaffRoleAdmin,
+				DisplayName: "Root Staff",
+				ImagePath:   "staff_profile_images/default_image.jpeg",
 				RequestTime: param.RequestTime,
 			},
 		); err != nil {

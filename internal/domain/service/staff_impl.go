@@ -9,25 +9,25 @@ import (
 	"github.com/volatiletech/null/v8"
 )
 
-type userService struct {
-	userRepository           repository.User
+type staffService struct {
+	staffRepository          repository.Staff
 	authenticationRepository repository.Authentication
 }
 
-func NewUser(
-	userRepository repository.User,
+func NewStaff(
+	staffRepository repository.Staff,
 	authenticationRepository repository.Authentication,
-) User {
-	return &userService{
-		userRepository,
+) Staff {
+	return &staffService{
+		staffRepository,
 		authenticationRepository,
 	}
 }
 
-func (s *userService) Create(
+func (s *staffService) Create(
 	ctx context.Context,
-	param UserCreateParam,
-) (*model.User, error) {
+	param StaffCreateParam,
+) (*model.Staff, error) {
 	res, err := s.authenticationRepository.GetUserByEmail(ctx, param.Email)
 	if err != nil {
 		return nil, err
@@ -49,9 +49,9 @@ func (s *userService) Create(
 		authUID = res.AuthUID
 	}
 
-	user := model.NewUser(
+	staff := model.NewStaff(
 		param.TenantID,
-		param.UserRole,
+		param.StaffRole,
 		authUID,
 		param.DisplayName,
 		param.ImagePath,
@@ -59,19 +59,19 @@ func (s *userService) Create(
 		param.RequestTime,
 	)
 
-	if _, err := s.userRepository.Create(ctx, user); err != nil {
+	if _, err := s.staffRepository.Create(ctx, staff); err != nil {
 		return nil, err
 	}
 
 	claims := model.NewClaims(
 		authUID,
 		null.StringFrom(param.TenantID),
-		null.StringFrom(user.ID),
-		nullable.TypeFrom(user.Role),
+		null.StringFrom(staff.ID),
+		nullable.TypeFrom(staff.Role),
 	)
 	if err := s.authenticationRepository.StoreClaims(ctx, authUID, claims); err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	return staff, nil
 }

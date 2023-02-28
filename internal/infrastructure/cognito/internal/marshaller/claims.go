@@ -10,15 +10,15 @@ import (
 func UserAttributesToModel(
 	userAttribute *dto.UserAttributes,
 ) *model.Claims {
-	var userRole nullable.Type[model.UserRole]
-	if userAttribute.UserRole.Valid {
-		userRole = nullable.TypeFrom(model.NewUserRole(userAttribute.UserRole.String))
+	var staffRole nullable.Type[model.StaffRole]
+	if userAttribute.StaffRole.Valid {
+		staffRole = nullable.TypeFrom(model.NewStaffRole(userAttribute.StaffRole.String))
 	}
 	claims := model.NewClaims(
 		userAttribute.AuthUID,
 		userAttribute.TenantID,
-		userAttribute.UserID,
-		userRole,
+		userAttribute.StaffID,
+		staffRole,
 	)
 	return claims
 }
@@ -28,10 +28,10 @@ func ClaimsToCustomUserAttributes(
 ) *dto.CustomUserAttributes {
 	ua := &dto.CustomUserAttributes{
 		TenantID: claims.TenantID,
-		UserID:   claims.UserID,
+		StaffID:  claims.StaffID,
 	}
-	if claims.UserRole.Valid && claims.UserRole.Value.Valid() {
-		ua.UserRole = null.StringFrom(claims.UserRole.Value.String())
+	if claims.StaffRole.Valid && claims.StaffRole.Value.Valid() {
+		ua.StaffRole = null.StringFrom(claims.StaffRole.Value.String())
 	}
 	return ua
 }

@@ -1,4 +1,4 @@
-package create_root_user_cmd
+package create_root_staff_cmd
 
 import (
 	"context"
@@ -11,10 +11,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCreateRootUserCmd() *cobra.Command {
+func NewCreateRootStaffCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-root-user",
-		Short: "create root user",
+		Use:   "create-root-staff",
+		Short: "create root staff",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := context.Background()
 
@@ -31,9 +31,9 @@ func NewCreateRootUserCmd() *cobra.Command {
 
 			c := &CMD{
 				ctx,
-				d.UserInteractor,
+				d.StaffInteractor,
 			}
-			if err := c.CreateRootUser(cmd); err != nil {
+			if err := c.CreateRootStaff(cmd); err != nil {
 				panic(err)
 			}
 		},

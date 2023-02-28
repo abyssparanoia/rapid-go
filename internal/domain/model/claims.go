@@ -6,22 +6,22 @@ import (
 )
 
 type Claims struct {
-	AuthUID  string
-	TenantID null.String
-	UserID   null.String
-	UserRole nullable.Type[UserRole]
+	AuthUID   string
+	TenantID  null.String
+	StaffID   null.String
+	StaffRole nullable.Type[StaffRole]
 }
 
 func NewClaims(
 	authUID string,
 	tenantID null.String,
 	userID null.String,
-	userRole nullable.Type[UserRole],
+	userRole nullable.Type[StaffRole],
 ) *Claims {
 	return &Claims{
-		AuthUID:  authUID,
-		TenantID: tenantID,
-		UserID:   userID,
-		UserRole: userRole,
+		AuthUID:   authUID,
+		TenantID:  tenantID,
+		StaffID:   userID,
+		StaffRole: userRole,
 	}
 }

@@ -48,6 +48,32 @@
         ]
       }
     },
+    "/admin/v1/staffs": {
+      "post": {
+        "operationId": "AdminCreateStaff",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AdminCreateStaffResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AdminCreateStaffRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      }
+    },
     "/admin/v1/tenants": {
       "get": {
         "operationId": "AdminListTenants",
@@ -185,32 +211,6 @@
         ]
       }
     },
-    "/admin/v1/users": {
-      "post": {
-        "operationId": "AdminCreateUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1AdminCreateUserResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1AdminCreateUserRequest"
-            }
-          }
-        ],
-        "tags": [
-          "AdminV1Service"
-        ]
-      }
-    },
     "/debug/v1/id_token": {
       "post": {
         "operationId": "DebugCreateIDToken",
@@ -248,32 +248,6 @@
             }
           }
         },
-        "tags": [
-          "PublicV1Service"
-        ]
-      }
-    },
-    "/v1/sign_in": {
-      "post": {
-        "operationId": "PublicSignIn",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1PublicSignInResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1PublicSignInRequest"
-            }
-          }
-        ],
         "tags": [
           "PublicV1Service"
         ]
@@ -343,6 +317,40 @@
         "presigned_url"
       ]
     },
+    "v1AdminCreateStaffRequest": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/v1StaffRole"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "email",
+        "display_name",
+        "role"
+      ]
+    },
+    "v1AdminCreateStaffResponse": {
+      "type": "object",
+      "properties": {
+        "staff": {
+          "$ref": "#/definitions/v1Staff"
+        }
+      },
+      "required": [
+        "staff"
+      ]
+    },
     "v1AdminCreateTenantRequest": {
       "type": "object",
       "properties": {
@@ -363,40 +371,6 @@
       },
       "required": [
         "tenant"
-      ]
-    },
-    "v1AdminCreateUserRequest": {
-      "type": "object",
-      "properties": {
-        "tenant_id": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "display_name": {
-          "type": "string"
-        },
-        "role": {
-          "$ref": "#/definitions/v1UserRole"
-        }
-      },
-      "required": [
-        "tenant_id",
-        "email",
-        "display_name",
-        "role"
-      ]
-    },
-    "v1AdminCreateUserResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/v1User"
-        }
-      },
-      "required": [
-        "user"
       ]
     },
     "v1AdminDeleteTenantResponse": {
@@ -524,53 +498,14 @@
         "tenant"
       ]
     },
-    "v1PublicSignInRequest": {
-      "type": "object"
-    },
-    "v1PublicSignInResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/v1User"
-        }
-      },
-      "required": [
-        "user"
-      ]
-    },
-    "v1Tenant": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "created_at",
-        "updated_at"
-      ]
-    },
-    "v1User": {
+    "v1Staff": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string"
         },
         "role": {
-          "$ref": "#/definitions/v1UserRole"
+          "$ref": "#/definitions/v1StaffRole"
         },
         "auth_uid": {
           "type": "string"
@@ -610,14 +545,39 @@
         "updated_at"
       ]
     },
-    "v1UserRole": {
+    "v1StaffRole": {
       "type": "string",
       "enum": [
-        "USER_ROLE_UNSPECIFIED",
-        "USER_ROLE_NORMAL",
-        "USER_ROLE_ADMIN"
+        "STAFF_ROLE_UNSPECIFIED",
+        "STAFF_ROLE_NORMAL",
+        "STAFF_ROLE_ADMIN"
       ],
-      "default": "USER_ROLE_UNSPECIFIED"
+      "default": "STAFF_ROLE_UNSPECIFIED"
+    },
+    "v1Tenant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "created_at",
+        "updated_at"
+      ]
     }
   }
 }

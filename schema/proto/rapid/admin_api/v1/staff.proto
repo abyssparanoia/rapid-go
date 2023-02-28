@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package rapid.admin_api.v1;
 
-import "rapid/model/v1/user.proto";
+import "rapid/model/v1/staff.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-message AdminCreateUserRequest {
+message AdminCreateStaffRequest {
     string tenant_id = 1;
     string email = 2;
     string display_name = 3;
-    model.v1.UserRole role = 4;
+    model.v1.StaffRole role = 4;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
@@ -18,12 +18,12 @@ message AdminCreateUserRequest {
     };
 }
 
-message AdminCreateUserResponse {
-    model.v1.User user = 1;
+message AdminCreateStaffResponse {
+    model.v1.Staff staff = 1;
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
-          required: ["user"]
+          required: ["staff"]
         }
     };
 }

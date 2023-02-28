@@ -10,33 +10,33 @@ import (
 	"github.com/volatiletech/null/v8"
 )
 
-type adminUserInteractor struct {
+type adminStaffInteractor struct {
 	transactable     repository.Transactable
 	tenantRepository repository.Tenant
-	userService      service.User
+	staffService     service.Staff
 }
 
-func NewAdminUserInteractor(
+func NewAdminStaffInteractor(
 	transactable repository.Transactable,
 	tenantRepository repository.Tenant,
-	userService service.User,
-) AdminUserInteractor {
-	return &adminUserInteractor{
+	staffService service.Staff,
+) AdminStaffInteractor {
+	return &adminStaffInteractor{
 		transactable,
 		tenantRepository,
-		userService,
+		staffService,
 	}
 }
 
-func (i *adminUserInteractor) Create(
+func (i *adminStaffInteractor) Create(
 	ctx context.Context,
-	param *input.AdminCreateUser,
-) (*model.User, error) {
+	param *input.AdminCreateStaff,
+) (*model.Staff, error) {
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
 
-	var user *model.User
+	var staff *model.Staff
 	if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
 		tenant, err := i.tenantRepository.Get(
 			ctx,
@@ -51,15 +51,15 @@ func (i *adminUserInteractor) Create(
 			return err
 		}
 
-		user, err = i.userService.Create(
+		staff, err = i.staffService.Create(
 			ctx,
-			service.UserCreateParam{
+			service.StaffCreateParam{
 				TenantID:    tenant.ID,
 				Email:       param.Email,
 				Password:    "random1234",
-				UserRole:    param.Role,
+				StaffRole:   param.Role,
 				DisplayName: param.DisplayName,
-				ImagePath:   "user_profile_images/default_image.jpeg",
+				ImagePath:   "staff_profile_images/default_image.jpeg",
 				RequestTime: param.RequestTime,
 			},
 		)
@@ -67,12 +67,12 @@ func (i *adminUserInteractor) Create(
 			return err
 		}
 
-		user.Tenant = tenant
+		staff.Tenant = tenant
 
 		return nil
 	}); err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	return staff, nil
 }

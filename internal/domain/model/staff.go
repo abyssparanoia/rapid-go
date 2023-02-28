@@ -6,10 +6,10 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/ulid"
 )
 
-type User struct {
+type Staff struct {
 	ID          string
 	TenantID    string
-	Role        UserRole
+	Role        StaffRole
 	AuthUID     string
 	DisplayName string
 	ImagePath   string
@@ -20,18 +20,18 @@ type User struct {
 	Tenant *Tenant
 }
 
-type Users []*User
+type Staffs []*Staff
 
-func NewUser(
+func NewStaff(
 	tenantID string,
-	role UserRole,
+	role StaffRole,
 	authUID string,
 	displayName string,
 	imagePath string,
 	email string,
 	t time.Time,
-) *User {
-	return &User{
+) *Staff {
+	return &Staff{
 		ID:          ulid.New(),
 		TenantID:    tenantID,
 		Role:        role,
@@ -44,6 +44,6 @@ func NewUser(
 	}
 }
 
-func (m *User) Exist() bool {
+func (m *Staff) Exist() bool {
 	return m != nil
 }
