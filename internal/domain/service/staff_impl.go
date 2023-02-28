@@ -10,17 +10,17 @@ import (
 )
 
 type staffService struct {
-	staffRepository          repository.Staff
-	authenticationRepository repository.Authentication
+	staffRepository               repository.Staff
+	staffAuthenticationRepository repository.StaffAuthentication
 }
 
 func NewStaff(
 	staffRepository repository.Staff,
-	authenticationRepository repository.Authentication,
+	staffAuthenticationRepository repository.StaffAuthentication,
 ) Staff {
 	return &staffService{
 		staffRepository,
-		authenticationRepository,
+		staffAuthenticationRepository,
 	}
 }
 
@@ -28,16 +28,16 @@ func (s *staffService) Create(
 	ctx context.Context,
 	param StaffCreateParam,
 ) (*model.Staff, error) {
-	res, err := s.authenticationRepository.GetUserByEmail(ctx, param.Email)
+	res, err := s.staffAuthenticationRepository.GetUserByEmail(ctx, param.Email)
 	if err != nil {
 		return nil, err
 	}
 	var authUID string
 	// 存在してない場合、新規作成する
 	if !res.Exist {
-		authUID, err = s.authenticationRepository.CreateUser(
+		authUID, err = s.staffAuthenticationRepository.CreateUser(
 			ctx,
-			repository.AuthenticationCreateUserParam{
+			repository.StaffAuthenticationCreateUserParam{
 				Email:    param.Email,
 				Password: null.StringFrom(param.Password),
 			},
@@ -63,13 +63,13 @@ func (s *staffService) Create(
 		return nil, err
 	}
 
-	claims := model.NewClaims(
+	claims := model.NewStaffClaims(
 		authUID,
 		null.StringFrom(param.TenantID),
 		null.StringFrom(staff.ID),
 		nullable.TypeFrom(staff.Role),
 	)
-	if err := s.authenticationRepository.StoreClaims(ctx, authUID, claims); err != nil {
+	if err := s.staffAuthenticationRepository.StoreClaims(ctx, authUID, claims); err != nil {
 		return nil, err
 	}
 
