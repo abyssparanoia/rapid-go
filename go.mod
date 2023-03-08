@@ -34,7 +34,7 @@ require (
 	google.golang.org/api v0.111.0
 	google.golang.org/genproto v0.0.0-20230303212802-e74f57abe488
 	google.golang.org/grpc v1.53.0
-	google.golang.org/protobuf v1.28.2-0.20230306073304-fcf5f6cb7297
+	google.golang.org/protobuf v1.28.2-0.20230307092400-eba8b0975f4e
 )
 
 require (
