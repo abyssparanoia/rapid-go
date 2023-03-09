@@ -31,7 +31,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.4
 	go.uber.org/zap v1.24.0
 	golang.org/x/tools v0.7.0
-	google.golang.org/api v0.111.0
+	google.golang.org/api v0.112.0
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.29.0
@@ -260,7 +260,7 @@ require (
 	golang.org/x/exp/typeparams v0.0.0-20230203172020-98cc5a0785f9 // indirect
 	golang.org/x/mod v0.9.0 // indirect
 	golang.org/x/net v0.8.0 // indirect
-	golang.org/x/oauth2 v0.5.0 // indirect
+	golang.org/x/oauth2 v0.6.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
