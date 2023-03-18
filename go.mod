@@ -31,7 +31,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.4
 	go.uber.org/zap v1.24.0
 	golang.org/x/tools v0.7.0
-	google.golang.org/api v0.112.0
+	google.golang.org/api v0.114.0
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.29.1
@@ -131,7 +131,7 @@ require (
 	github.com/google/go-containerregistry v0.13.0 // indirect
 	github.com/google/pprof v0.0.0-20230228050547-1710fef4ab10 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
-	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
+	github.com/googleapis/gax-go/v2 v2.7.1 // indirect
 	github.com/gordonklaus/ineffassign v0.0.0-20230107090616-13ace0543b28 // indirect
 	github.com/gostaticanalysis/analysisutil v0.7.1 // indirect
 	github.com/gostaticanalysis/comment v1.4.2 // indirect
