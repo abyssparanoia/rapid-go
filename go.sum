@@ -425,6 +425,8 @@ github.com/golangci/golangci-lint v1.51.2 h1:yIcsT1X9ZYHdSpeWXRT1ORC/FPGSqDHbHsu
 github.com/golangci/golangci-lint v1.51.2/go.mod h1:KH9Q7/3glwpYSknxUgUyLlAv46A8fsSKo1hH2wDvkr8=
 github.com/golangci/golangci-lint v1.52.0 h1:T7w3tuF1goz64qGV+ML4MgysSl/yUfA3UZJK92oE48A=
 github.com/golangci/golangci-lint v1.52.0/go.mod h1:wlTh+d/oVlgZC2yCe6nlxrxNAnuhEQC0Zdygoh72Uak=
+github.com/golangci/golangci-lint v1.52.2 h1:FrPElUUI5rrHXg1mQ7KxI1MXPAw5lBVskiz7U7a8a1A=
+github.com/golangci/golangci-lint v1.52.2/go.mod h1:S5fhC5sHM5kE22/HcATKd1XLWQxX+y7mHj8B5H91Q/0=
 github.com/golangci/lint-1 v0.0.0-20191013205115-297bf364a8e0 h1:MfyDlzVjl1hoaPzPD4Gpb/QgoRfSBR0jdhwGyAWwMSA=
 github.com/golangci/lint-1 v0.0.0-20191013205115-297bf364a8e0/go.mod h1:66R6K6P6VWk9I95jvqGxkqJxVWGFy9XlDwLwVz1RCFg=
 github.com/golangci/maligned v0.0.0-20180506175553-b1d89398deca h1:kNY3/svz5T29MYHubXix4aDDuE3RWHkPvopM/EDv/MA=
@@ -740,6 +742,8 @@ github.com/moricho/tparallel v0.2.1 h1:95FytivzT6rYzdJLdtfn6m1bfFJylOJK41+lgv/EH
 github.com/moricho/tparallel v0.2.1/go.mod h1:fXEIZxG2vdfl0ZF8b42f5a78EhjjD5mX8qUplsoSU4k=
 github.com/moricho/tparallel v0.3.0 h1:8dDx3S3e+jA+xiQXC7O3dvfRTe/J+FYlTDDW01Y7z/Q=
 github.com/moricho/tparallel v0.3.0/go.mod h1:leENX2cUv7Sv2qDgdi0D0fCftN8fRC67Bcn8pqzeYNI=
+github.com/moricho/tparallel v0.3.1 h1:fQKD4U1wRMAYNngDonW5XupoB/ZGJHdpzrWqgyg9krA=
+github.com/moricho/tparallel v0.3.1/go.mod h1:leENX2cUv7Sv2qDgdi0D0fCftN8fRC67Bcn8pqzeYNI=
 github.com/morikuni/aec v1.0.0 h1:nP9CBfwrvYnBRgY6qfDQkygYDmYwOilePFkwzv4dU8A=
 github.com/morikuni/aec v1.0.0/go.mod h1:BbKIizmSmc5MMPqRYbxO4ZU0S0+P200+tUnFx7PXmsc=
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
