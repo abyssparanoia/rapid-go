@@ -4,11 +4,12 @@ import "github.com/pkg/errors"
 
 const (
 	// common error
-	InternalErr               InternalError     = "E100001"
-	UnauthorizedErr           UnauthorizedError = "E100002"
-	RequestInvalidArgumentErr BadRequestError   = "E100003"
-	NotFoundErr               NotFoundError     = "E100004"
-	ConflictErr               ConflictError     = "E100005"
+	InternalErr                InternalError     = "E100001"
+	UnauthorizedErr            UnauthorizedError = "E100002"
+	RequestInvalidArgumentErr  BadRequestError   = "E100003"
+	NotFoundErr                NotFoundError     = "E100004"
+	ConflictErr                ConflictError     = "E100005"
+	InvalidAdminRequestUserErr UnauthorizedError = "E100006"
 
 	// tenant error
 	TenantNotFoundErr NotFoundError = "E200101"
@@ -19,11 +20,12 @@ const (
 
 var errorMessageMap = map[error]string{
 	// common error
-	InternalErr:               "An internal error has occurred",
-	UnauthorizedErr:           "Unauthroized",
-	RequestInvalidArgumentErr: "Request argument is invalid",
-	NotFoundErr:               "Not found",
-	ConflictErr:               "Already Exist",
+	InternalErr:                "An internal error has occurred",
+	UnauthorizedErr:            "Unauthroized",
+	RequestInvalidArgumentErr:  "Request argument is invalid",
+	NotFoundErr:                "Not found",
+	ConflictErr:                "Already Exist",
+	InvalidAdminRequestUserErr: "Invalid admin request user",
 
 	// tenant error
 	TenantNotFoundErr: "Tenant not found",
@@ -44,6 +46,8 @@ func ExtractPlaneErrMessage(err error) (code string, message string) {
 		return StaffNotFoundErr.Error(), errorMessageMap[StaffNotFoundErr]
 
 	// common error
+	case InvalidAdminRequestUserErr:
+		return InvalidAdminRequestUserErr.Error(), errorMessageMap[InvalidAdminRequestUserErr]
 	case UnauthorizedErr:
 		return UnauthorizedErr.Error(), errorMessageMap[UnauthorizedErr]
 	case RequestInvalidArgumentErr:
