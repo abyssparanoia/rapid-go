@@ -9,11 +9,11 @@ import (
 	"strings"
 
 	"firebase.google.com/go/auth"
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/internal/dto"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/internal/marshaller"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 )
 
 type staffStaffAuthentication struct {
