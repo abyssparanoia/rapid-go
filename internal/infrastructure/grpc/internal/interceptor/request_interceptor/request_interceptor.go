@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/blendle/zapdriver"
 	"github.com/google/uuid"
