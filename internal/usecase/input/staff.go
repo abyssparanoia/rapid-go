@@ -3,7 +3,7 @@ package input
 import (
 	"time"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/validation"
 )
 
