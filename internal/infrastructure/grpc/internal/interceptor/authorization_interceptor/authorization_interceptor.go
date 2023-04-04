@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/session_interceptor"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"google.golang.org/grpc"
 )
 
