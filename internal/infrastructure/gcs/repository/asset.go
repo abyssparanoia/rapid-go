@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"cloud.google.com/go/storage"
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 )
 
