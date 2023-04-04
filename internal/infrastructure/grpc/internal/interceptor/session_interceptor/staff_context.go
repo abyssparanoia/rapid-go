@@ -41,7 +41,7 @@ func SaveStaffSessionContext(
 func RequireStaffSessionContext(ctx context.Context) (*StaffSessionContext, error) {
 	sctx, ok := GetStaffSessionContext(ctx)
 	if !ok {
-		return nil, errors.UnauthorizedErr.New()
+		return nil, errors.RequireStaffSessionErr.New()
 	}
 	return sctx, nil
 }
