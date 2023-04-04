@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/ulid"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
@@ -63,13 +63,13 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 								OrFail: true,
 							},
 						}).
-					Return(nil, errors.NotFoundErr.New())
+					Return(nil, errors.TenantNotFoundErr.New())
 				return &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
 				}
 			},
 			want: want{
-				expectedResult: errors.NotFoundErr.New(),
+				expectedResult: errors.TenantNotFoundErr.New(),
 			},
 		},
 		"success": {

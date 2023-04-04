@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/blendle/zapdriver"
 	"github.com/google/uuid"
@@ -66,9 +66,13 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 				zap.Error(err),
 			)
 
+			errCode, errMessage := errors.ExtractPlaneErrMessage(err)
 			st, err := status.
-				New(code, errors.ExtractPlaneErrMessage(err)).
+				New(code, errCode).
 				WithDetails(
+					&errdetails.DebugInfo{
+						Detail: errMessage,
+					},
 					&errdetails.RequestInfo{
 						RequestId: operationID.String(),
 					},

@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/session_interceptor"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"google.golang.org/grpc"
 )
 
@@ -29,7 +29,7 @@ func (i *Authorization) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		method := info.FullMethod
 		if strings.Contains(method, "AdminV1Service") {
 			if !ok || !staffSessionContext.StaffRole.Value.IsAdmin() {
-				return nil, errors.UnauthorizedErr.Errorf("Invalid request staff")
+				return nil, errors.InvalidAdminRequestUserErr.New()
 			}
 		}
 

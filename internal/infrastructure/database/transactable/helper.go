@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 

@@ -3,8 +3,8 @@ package session_interceptor
 import (
 	"context"
 
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 	"github.com/volatiletech/null/v8"
 )
@@ -41,7 +41,7 @@ func SaveStaffSessionContext(
 func RequireStaffSessionContext(ctx context.Context) (*StaffSessionContext, error) {
 	sctx, ok := GetStaffSessionContext(ctx)
 	if !ok {
-		return nil, errors.UnauthorizedErr.New()
+		return nil, errors.RequireStaffSessionErr.New()
 	}
 	return sctx, nil
 }

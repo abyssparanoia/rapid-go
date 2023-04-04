@@ -4,12 +4,12 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/dbmodel"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/transactable"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
@@ -38,7 +38,7 @@ func (r *tenant) Get(
 		if err == sql.ErrNoRows && !query.OrFail {
 			return nil, nil
 		} else if err == sql.ErrNoRows {
-			return nil, errors.NotFoundErr.Errorf("tenant is not found")
+			return nil, errors.TenantNotFoundErr.Errorf("tenant is not found")
 		}
 		return nil, errors.InternalErr.Wrap(err)
 	}
