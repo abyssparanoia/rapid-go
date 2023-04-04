@@ -12,6 +12,9 @@ const (
 
 	// tenant error
 	TenantNotFoundErr NotFoundError = "E200101"
+
+	// staff error
+	StaffNotFoundErr NotFoundError = "E200201"
 )
 
 var errorMessageMap = map[error]string{
@@ -24,6 +27,9 @@ var errorMessageMap = map[error]string{
 
 	// tenant error
 	TenantNotFoundErr: "Tenant not found",
+
+	// staff error
+	StaffNotFoundErr: "Staff not found",
 }
 
 func ExtractPlaneErrMessage(err error) (code string, message string) {
@@ -32,6 +38,10 @@ func ExtractPlaneErrMessage(err error) (code string, message string) {
 	// tenant error
 	case TenantNotFoundErr:
 		return TenantNotFoundErr.Error(), errorMessageMap[TenantNotFoundErr]
+
+	// staff error
+	case StaffNotFoundErr:
+		return StaffNotFoundErr.Error(), errorMessageMap[StaffNotFoundErr]
 
 	// common error
 	case UnauthorizedErr:
