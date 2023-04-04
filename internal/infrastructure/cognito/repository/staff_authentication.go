@@ -56,35 +56,35 @@ func (r *staffAuthentication) VerifyIDToken(
 
 	jwtToken, err := jwt.ParseWithClaims(idToken, CustomClaims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, errors.InternalErr.Errorf("unexpected signing method")
+			return nil, errors.InvalidIDTokenErr.Errorf("unexpected signing method")
 		}
 		kid, ok := token.Header["kid"].(string)
 		if !ok {
-			return nil, errors.InternalErr.Errorf("kid header not found")
+			return nil, errors.InvalidIDTokenErr.Errorf("kid header not found")
 		}
 		key, ok := r.publicKeySet.LookupKeyID(kid)
 		if !ok {
-			return nil, errors.InternalErr.Errorf("key %v not found", kid)
+			return nil, errors.InvalidIDTokenErr.Errorf("key %v not found", kid)
 		}
 		var tokenKey interface{}
 		if err := key.Raw(&tokenKey); err != nil {
-			return nil, errors.InternalErr.Errorf("failed to create token key")
+			return nil, errors.InvalidIDTokenErr.Errorf("failed to create token key")
 		}
 
 		return tokenKey, nil
 	})
 	if err != nil {
-		return nil, errors.InternalErr.Wrap(err)
+		return nil, errors.InvalidIDTokenErr.Wrap(err)
 	}
 
 	jsonString, err := json.Marshal(jwtToken.Claims)
 	if err != nil {
-		return nil, errors.InternalErr.Wrap(err)
+		return nil, errors.InvalidIDTokenErr.Wrap(err)
 	}
 
 	jwtClaims := &dto.AWSCognitoClaims{}
 	if err := json.Unmarshal(jsonString, jwtClaims); err != nil {
-		return nil, errors.InternalErr.Wrap(err)
+		return nil, errors.InvalidIDTokenErr.Wrap(err)
 	}
 
 	return marshaller.UserAttributesToModel(dto.NewUserAttributesFromClaims(jwtClaims)), nil
