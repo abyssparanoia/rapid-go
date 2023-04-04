@@ -9,6 +9,9 @@ const (
 	RequestInvalidArgumentErr BadRequestError   = "E100003"
 	NotFoundErr               NotFoundError     = "E100004"
 	ConflictErr               ConflictError     = "E100005"
+
+	// tenant error
+	TenantNotFoundErr NotFoundError = "E200101"
 )
 
 var errorMessageMap = map[error]string{
@@ -18,10 +21,19 @@ var errorMessageMap = map[error]string{
 	RequestInvalidArgumentErr: "Request argument is invalid",
 	NotFoundErr:               "Not found",
 	ConflictErr:               "Already Exist",
+
+	// tenant error
+	TenantNotFoundErr: "Tenant not found",
 }
 
 func ExtractPlaneErrMessage(err error) (code string, message string) {
 	switch errors.Cause(err) {
+
+	// tenant error
+	case TenantNotFoundErr:
+		return TenantNotFoundErr.Error(), errorMessageMap[TenantNotFoundErr]
+
+	// common error
 	case UnauthorizedErr:
 		return UnauthorizedErr.Error(), errorMessageMap[UnauthorizedErr]
 	case RequestInvalidArgumentErr:
