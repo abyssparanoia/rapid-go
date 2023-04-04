@@ -66,9 +66,13 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 				zap.Error(err),
 			)
 
+			errCode, errMessage := errors.ExtractPlaneErrMessage(err)
 			st, err := status.
-				New(code, errors.ExtractPlaneErrMessage(err)).
+				New(code, errCode).
 				WithDetails(
+					&errdetails.DebugInfo{
+						Detail: errMessage,
+					},
 					&errdetails.RequestInfo{
 						RequestId: operationID.String(),
 					},
