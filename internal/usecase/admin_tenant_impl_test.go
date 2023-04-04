@@ -63,13 +63,13 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 								OrFail: true,
 							},
 						}).
-					Return(nil, errors.NotFoundErr.New())
+					Return(nil, errors.TenantNotFoundErr.New())
 				return &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
 				}
 			},
 			want: want{
-				expectedResult: errors.NotFoundErr.New(),
+				expectedResult: errors.TenantNotFoundErr.New(),
 			},
 		},
 		"success": {
