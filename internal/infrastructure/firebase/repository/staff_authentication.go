@@ -37,7 +37,7 @@ func (r *staffStaffAuthentication) VerifyIDToken(
 ) (*model.StaffClaims, error) {
 	t, err := r.cli.VerifyIDToken(ctx, idToken)
 	if err != nil {
-		return nil, errors.UnauthorizedErr.Wrap(err)
+		return nil, errors.InvalidIDTokenErr.Wrap(err)
 	}
 	return marshaller.StaffClaimsToModel(t.UID, t.Claims), nil
 }
