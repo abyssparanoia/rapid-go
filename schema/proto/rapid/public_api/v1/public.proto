@@ -7,15 +7,11 @@ import "rapid/public_api/v1/health_check.proto";
 import "rapid/public_api/v1/tenant.proto";
 
 service PublicV1Service {
-    rpc PublicDeepHealthCheck(PublicDeepHealthCheckRequest) returns(PublicDeepHealthCheckResponse) {
-        option (google.api.http) = {
-            get: "/v1/deep_health_check"
-        };
-    }
+  rpc PublicDeepHealthCheck(PublicDeepHealthCheckRequest) returns (PublicDeepHealthCheckResponse) {
+    option (google.api.http) = {get: "/v1/deep_health_check"};
+  }
 
-    rpc PublicGetTenant(PublicGetTenantRequest) returns (PublicGetTenantResponse) {
-        option (google.api.http) = {
-            get: "/v1/tenants/{tenant_id}"
-        };
-    }
+  rpc PublicGetTenant(PublicGetTenantRequest) returns (PublicGetTenantResponse) {
+    option (google.api.http) = {get: "/v1/tenants/{tenant_id}"};
+  }
 }
