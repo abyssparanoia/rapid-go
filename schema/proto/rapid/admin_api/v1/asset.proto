@@ -5,34 +5,34 @@ package rapid.admin_api.v1;
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 message AdminCreateAssetPresignedURLRequest {
-    AdminAssetType asset_type = 1;
-    string content_type = 2;
+  AdminAssetType asset_type = 1;
+  string content_type = 2;
 
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-        json_schema: {
-          required: [
-            "asset_type",
-            "content_type"
-            ]
-        }
-    };
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "asset_type",
+        "content_type"
+      ]
+    }
+  };
 }
 
 message AdminCreateAssetPresignedURLResponse {
-    string path = 1;
-    string presigned_url = 2;
+  string path = 1;
+  string presigned_url = 2;
 
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-        json_schema: {
-          required: [
-            "path",
-            "presigned_url"
-            ]
-        }
-    };
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "path",
+        "presigned_url"
+      ]
+    }
+  };
 }
 
 enum AdminAssetType {
-    ADMIN_ASSET_TYPE_UNSPECIFIED = 0;
-    ADMIN_ASSET_TYPE_USER_IMAGE = 1;
+  ADMIN_ASSET_TYPE_UNSPECIFIED = 0;
+  ADMIN_ASSET_TYPE_USER_IMAGE = 1;
 }

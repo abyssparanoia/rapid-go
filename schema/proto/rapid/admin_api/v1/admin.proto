@@ -3,48 +3,42 @@ syntax = "proto3";
 package rapid.admin_api.v1;
 
 import "google/api/annotations.proto";
-import "rapid/admin_api/v1/tenant.proto";
-import "rapid/admin_api/v1/staff.proto";
 import "rapid/admin_api/v1/asset.proto";
+import "rapid/admin_api/v1/staff.proto";
+import "rapid/admin_api/v1/tenant.proto";
 
 service AdminV1Service {
-    rpc AdminCreateAssetPresignedURL(AdminCreateAssetPresignedURLRequest) returns (AdminCreateAssetPresignedURLResponse) {
-        option (google.api.http) = {
-            post: "/admin/v1/assets/-/presigned_url",
-            body: "*"
-        };
-    }
-    rpc AdminGetTenant(AdminGetTenantRequest) returns (AdminGetTenantResponse) {
-        option (google.api.http) = {
-            get: "/admin/v1/tenants/{tenant_id}"
-        };
-    }
-    rpc AdminListTenants(AdminListTenantsRequest) returns (AdminListTenantsResponse) {
-        option (google.api.http) = {
-            get: "/admin/v1/tenants"
-        };
-    }
-    rpc AdminCreateTenant(AdminCreateTenantRequest) returns (AdminCreateTenantResponse) {
-        option (google.api.http) = {
-            post: "/admin/v1/tenants",
-            body: "*"
-        };
-    }
-    rpc AdminUpdateTenant(AdminUpdateTenantRequest) returns (AdminUpdateTenantResponse) {
-        option (google.api.http) = {
-            patch: "/admin/v1/tenants/{tenant_id}",
-            body: "*"
-        };
-    }
-    rpc AdminDeleteTenant(AdminDeleteTenantRequest) returns (AdminDeleteTenantResponse) {
-        option (google.api.http) = {
-            delete: "/admin/v1/tenants/{tenant_id}",
-        };
-    }
-    rpc AdminCreateStaff(AdminCreateStaffRequest) returns (AdminCreateStaffResponse) {
-        option (google.api.http) = {
-            post: "/admin/v1/staffs",
-            body: "*"
-        };
-    }
+  rpc AdminCreateAssetPresignedURL(AdminCreateAssetPresignedURLRequest) returns (AdminCreateAssetPresignedURLResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/assets/-/presigned_url",
+      body: "*"
+    };
+  }
+  rpc AdminGetTenant(AdminGetTenantRequest) returns (AdminGetTenantResponse) {
+    option (google.api.http) = {get: "/admin/v1/tenants/{tenant_id}"};
+  }
+  rpc AdminListTenants(AdminListTenantsRequest) returns (AdminListTenantsResponse) {
+    option (google.api.http) = {get: "/admin/v1/tenants"};
+  }
+  rpc AdminCreateTenant(AdminCreateTenantRequest) returns (AdminCreateTenantResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/tenants",
+      body: "*"
+    };
+  }
+  rpc AdminUpdateTenant(AdminUpdateTenantRequest) returns (AdminUpdateTenantResponse) {
+    option (google.api.http) = {
+      patch: "/admin/v1/tenants/{tenant_id}",
+      body: "*"
+    };
+  }
+  rpc AdminDeleteTenant(AdminDeleteTenantRequest) returns (AdminDeleteTenantResponse) {
+    option (google.api.http) = {delete: "/admin/v1/tenants/{tenant_id}"};
+  }
+  rpc AdminCreateStaff(AdminCreateStaffRequest) returns (AdminCreateStaffResponse) {
+    option (google.api.http) = {
+      post: "/admin/v1/staffs",
+      body: "*"
+    };
+  }
 }
