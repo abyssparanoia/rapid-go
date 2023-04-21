@@ -10,7 +10,7 @@ require (
 	github.com/bufbuild/buf v1.17.0
 	github.com/bxcodec/faker v2.0.1+incompatible
 	github.com/caarlos0/env/v6 v6.10.1
-	github.com/cosmtrek/air v1.42.0
+	github.com/cosmtrek/air v1.43.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-playground/validator/v10 v10.12.0
 	github.com/go-sql-driver/mysql v1.7.0
@@ -64,6 +64,8 @@ require (
 	github.com/ashanbrown/forbidigo v1.5.1 // indirect
 	github.com/ashanbrown/makezero v1.1.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/bep/godartsass v0.16.0 // indirect
+	github.com/bep/golibsass v1.1.0 // indirect
 	github.com/bkielbasa/cyclop v1.2.0 // indirect
 	github.com/blizzy78/varnamelen v0.8.0 // indirect
 	github.com/bombsimon/wsl/v3 v3.4.0 // indirect
@@ -75,6 +77,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/charithe/durationcheck v0.0.10 // indirect
 	github.com/chavacava/garif v0.0.0-20230227094218-b8c73b2037b8 // indirect
+	github.com/cli/safeexec v1.0.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/creack/pty v1.1.18 // indirect
 	github.com/curioswitch/go-reassign v0.2.0 // indirect
@@ -116,6 +119,7 @@ require (
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/gofrs/uuid/v5 v5.0.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/gohugoio/hugo v0.111.3 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golangci/check v0.0.0-20180506172741-cfe4005ccda2 // indirect
@@ -197,7 +201,7 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0-rc2 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
-	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
 	github.com/pkg/profile v1.7.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -226,7 +230,7 @@ require (
 	github.com/sivchari/tenv v1.7.1 // indirect
 	github.com/sonatard/noctx v0.0.2 // indirect
 	github.com/sourcegraph/go-diff v0.7.0 // indirect
-	github.com/spf13/afero v1.9.2 // indirect
+	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
@@ -237,6 +241,7 @@ require (
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/t-yuki/gocover-cobertura v0.0.0-20180217150009-aaee18c8195c // indirect
 	github.com/tdakkota/asciicheck v0.2.0 // indirect
+	github.com/tdewolff/parse/v2 v2.6.5 // indirect
 	github.com/tetafro/godot v1.4.11 // indirect
 	github.com/tetratelabs/wazero v1.0.1 // indirect
 	github.com/timakin/bodyclose v0.0.0-20221125081123-e39cf3fc478e // indirect
