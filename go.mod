@@ -10,6 +10,7 @@ require (
 	github.com/bufbuild/buf v1.20.0
 	github.com/bxcodec/faker v2.0.1+incompatible
 	github.com/caarlos0/env/v6 v6.10.1
+	github.com/caarlos0/env/v8 v8.0.0
 	github.com/cosmtrek/air v1.44.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-playground/validator/v10 v10.14.0
