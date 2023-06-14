@@ -22,6 +22,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/lestrrat-go/jwx/v2 v2.0.9
 	github.com/oklog/ulid v1.3.1
+	github.com/oklog/ulid/v2 v2.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/pressly/goose/v3 v3.11.2
 	github.com/spf13/cobra v1.7.0
