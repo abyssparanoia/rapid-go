@@ -1,0 +1,6 @@
+[files]
+extend-exclude = [
+    "internal/infrastructure/database/internal/dbmodel/*.go",
+    "go.mod",
+    "go.sum",
+    ]
