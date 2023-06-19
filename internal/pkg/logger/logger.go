@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// New ... new logger
+// New ... new logger.
 func New() *zap.Logger {
 	l, err := zapdriver.NewProduction()
 	if err != nil {
@@ -17,7 +17,7 @@ func New() *zap.Logger {
 	return l
 }
 
-// L ... logger
+// L ... logger.
 var L = func(ctx context.Context) *zap.Logger {
 	return ctxzap.Extract(ctx)
 }
