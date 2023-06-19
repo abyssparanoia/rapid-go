@@ -12,7 +12,7 @@ import (
 const (
 	maxOpenConns = 25
 	maxIdleConns = 25
-	maxLifeTime  = 100 * time.Second // max conection * seconds
+	maxLifeTime  = 100 * time.Second // max connection * seconds
 )
 
 // Client ... client.
