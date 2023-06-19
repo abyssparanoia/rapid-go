@@ -40,7 +40,6 @@ func NewServer(ctx context.Context,
 	logger *zap.Logger,
 	dependency *dependency.Dependency,
 ) *grpc.Server {
-
 	requestLogInterceptor := request_interceptor.NewRequestLog(logger)
 	authFunc := session_interceptor.NewSession(dependency.AuthenticationInteractor)
 	authorizationInterceptor := authorization_interceptor.NewAuthorization()
