@@ -12,7 +12,7 @@ var (
 	ctxTxKey = struct{}{}
 )
 
-// GetContextExecutor :
+// GetContextExecutor :.
 func GetContextExecutor(ctx context.Context) boil.ContextExecutor {
 	if tx, ok := ctx.Value(&ctxTxKey).(*sql.Tx); ok {
 		return tx
@@ -20,7 +20,7 @@ func GetContextExecutor(ctx context.Context) boil.ContextExecutor {
 	return boil.GetContextDB()
 }
 
-// RunTx :
+// RunTx :.
 var RunTx = func(ctx context.Context, fn func(context.Context) error) error {
 	db, ok := GetContextExecutor(ctx).(boil.ContextBeginner)
 	if !ok {
@@ -29,7 +29,7 @@ var RunTx = func(ctx context.Context, fn func(context.Context) error) error {
 	return runTxWithDB(ctx, db, fn)
 }
 
-// RunTxWithDB :
+// RunTxWithDB :.
 func runTxWithDB(ctx context.Context, db boil.ContextBeginner, fn func(context.Context) error) error {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
