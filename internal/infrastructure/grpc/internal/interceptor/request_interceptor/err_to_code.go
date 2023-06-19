@@ -40,8 +40,10 @@ func codeToZapCoreLevel(code codes.Code) zapcore.Level {
 	switch code {
 	case codes.NotFound, codes.InvalidArgument, codes.AlreadyExists, codes.Unauthenticated, codes.PermissionDenied, codes.FailedPrecondition:
 		return zapcore.WarnLevel
-	case codes.Internal, codes.Unknown, codes.Aborted:
+	case codes.Internal, codes.Unknown, codes.Aborted, codes.DeadlineExceeded, codes.ResourceExhausted, codes.Unavailable, codes.Canceled, codes.OutOfRange, codes.Unimplemented, codes.DataLoss:
 		return zapcore.ErrorLevel
+	case codes.OK:
+		fallthrough
 	default:
 		return zapcore.InfoLevel
 	}
