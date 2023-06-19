@@ -1,4 +1,4 @@
-package http
+package http //nolint:cyclop // this is entry package, so it's ok to have long function
 
 import (
 	"context"
@@ -29,14 +29,13 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
-const INTERNAL_GRPC_PORT = "50051"
+const InternalGRPCPort = "50051"
 
 type Utf8JsonMarshaller struct {
 	runtime.JSONPb
 }
 
 func Run() {
-
 	e := &environment.Environment{}
 	if err := env.Parse(e); err != nil {
 		panic(err)
@@ -53,7 +52,7 @@ func Run() {
 	d.Inject(ctx, e)
 
 	grpcServer := internal_grpc.NewServer(ctx, e, logger, d)
-	grpcLis, err := net.Listen("tcp", fmt.Sprintf(":%s", INTERNAL_GRPC_PORT))
+	grpcLis, err := net.Listen("tcp", fmt.Sprintf(":%s", InternalGRPCPort))
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +80,7 @@ func Run() {
 
 	conn, err := grpc.DialContext(
 		context.Background(),
-		fmt.Sprintf(":%s", INTERNAL_GRPC_PORT),
+		fmt.Sprintf(":%s", InternalGRPCPort),
 		grpc.WithBlock(),
 		grpc.WithTransportCredentials(
 			insecure.NewCredentials(),
@@ -115,10 +114,11 @@ func Run() {
 		panic(err)
 	}
 
-	//server
+	// server
 	server := http.Server{
-		Addr:    addr,
-		Handler: middlewares.CORS(grpcGateway),
+		Addr:              addr,
+		Handler:           middlewares.CORS(grpcGateway),
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 
 	go func() {
