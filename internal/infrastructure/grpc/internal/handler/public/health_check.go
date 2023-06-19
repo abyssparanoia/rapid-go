@@ -9,7 +9,6 @@ import (
 )
 
 func (h *PublicHandler) PublicDeepHealthCheck(ctx context.Context, req *public_apiv1.PublicDeepHealthCheckRequest) (*public_apiv1.PublicDeepHealthCheckResponse, error) {
-
 	databaseStatus := "up"
 	if err := h.databaseCli.DB.Ping(); err != nil {
 		logger.L(ctx).Error("failed to  h.databaseCli.DB.Ping", zap.Error(err))
