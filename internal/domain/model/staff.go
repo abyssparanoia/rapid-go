@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/ulid"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 )
 
 type Staff struct {
@@ -32,7 +32,7 @@ func NewStaff(
 	t time.Time,
 ) *Staff {
 	return &Staff{
-		ID:          ulid.New(),
+		ID:          id.New(),
 		TenantID:    tenantID,
 		Role:        role,
 		AuthUID:     authUID,

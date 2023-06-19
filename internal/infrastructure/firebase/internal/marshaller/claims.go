@@ -7,7 +7,6 @@ import (
 )
 
 func StaffClaimsToModel(authUID string, customClaim map[string]interface{}) *model.StaffClaims {
-
 	var tenantID null.String
 	if _tenantID, ok := customClaim["tenant_id"]; ok {
 		tenantID = null.StringFrom(_tenantID.(string))

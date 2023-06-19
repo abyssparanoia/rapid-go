@@ -3,17 +3,17 @@ package errors
 import "github.com/pkg/errors"
 
 const (
-	// common error
+	// common error.
 	InternalErr                InternalError     = "E100001"
 	RequestInvalidArgumentErr  BadRequestError   = "E100002"
 	InvalidIDTokenErr          UnauthorizedError = "E100003"
 	RequireStaffSessionErr     UnauthorizedError = "E100004"
 	InvalidAdminRequestUserErr UnauthorizedError = "E100005"
 
-	// tenant error
+	// tenant error.
 	TenantNotFoundErr NotFoundError = "E200101"
 
-	// staff error
+	// staff error.
 	StaffNotFoundErr NotFoundError = "E200201"
 )
 
@@ -32,9 +32,8 @@ var errorMessageMap = map[error]string{
 	StaffNotFoundErr: "Staff not found",
 }
 
-func ExtractPlaneErrMessage(err error) (code string, message string) {
+func ExtractPlaneErrMessage(err error) (code string, message string) { //nolint: nonamedreturns
 	switch errors.Cause(err) {
-
 	// tenant error
 	case TenantNotFoundErr:
 		return TenantNotFoundErr.Error(), errorMessageMap[TenantNotFoundErr]

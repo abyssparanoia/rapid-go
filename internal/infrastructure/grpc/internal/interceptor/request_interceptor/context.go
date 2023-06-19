@@ -16,6 +16,6 @@ func SetRequestTime(ctx context.Context, t time.Time) context.Context {
 }
 
 func GetRequestTime(ctx context.Context) time.Time {
-	t := ctx.Value(requestTime).(time.Time)
+	t, _ := ctx.Value(requestTime).(time.Time)
 	return t
 }

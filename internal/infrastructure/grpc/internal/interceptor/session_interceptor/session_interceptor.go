@@ -26,7 +26,7 @@ func (i *Session) Authenticate(ctx context.Context) (context.Context, error) {
 	method, _ := grpc.Method(ctx)
 	idToken, err := grpc_auth.AuthFromMD(ctx, "Bearer")
 	if err != nil || idToken == "" {
-		return ctx, nil
+		return ctx, nil //nolint:nilerr // ignore
 	}
 	if strings.Contains(method, "AdminV1Service") {
 		claims, err := i.authenticationInteractor.VerifyStaffIDToken(ctx, input.NewVerifyIDToken(idToken))

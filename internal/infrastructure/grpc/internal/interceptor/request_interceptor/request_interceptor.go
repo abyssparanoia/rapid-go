@@ -43,7 +43,6 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		interface{},
 		error,
 	) {
-
 		operationID := uuid.New()
 		now := now.Now()
 

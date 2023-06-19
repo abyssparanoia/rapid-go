@@ -15,12 +15,12 @@ const (
 	maxLifeTime  = 100 * time.Second // max conection * seconds
 )
 
-// Client ... client
+// Client ... client.
 type Client struct {
 	DB *sql.DB
 }
 
-// NewClient ... get mysql client
+// NewClient ... get mysql client.
 func NewClient(
 	host,
 	user,
