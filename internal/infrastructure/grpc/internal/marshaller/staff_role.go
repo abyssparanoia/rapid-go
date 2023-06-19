@@ -11,6 +11,8 @@ func StaffRoleToModel(staffRole modelv1.StaffRole) model.StaffRole {
 		return model.StaffRoleNormal
 	case modelv1.StaffRole_STAFF_ROLE_ADMIN:
 		return model.StaffRoleAdmin
+	case modelv1.StaffRole_STAFF_ROLE_UNSPECIFIED:
+		fallthrough
 	default:
 		return model.StaffRoleUnknown
 	}
@@ -22,6 +24,8 @@ func StaffRoleToPB(staffRole model.StaffRole) modelv1.StaffRole {
 		return modelv1.StaffRole_STAFF_ROLE_NORMAL
 	case model.StaffRoleAdmin:
 		return modelv1.StaffRole_STAFF_ROLE_ADMIN
+	case model.StaffRoleUnknown:
+		fallthrough
 	default:
 		return modelv1.StaffRole_STAFF_ROLE_UNSPECIFIED
 	}
