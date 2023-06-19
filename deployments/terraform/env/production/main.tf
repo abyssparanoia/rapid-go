@@ -33,7 +33,7 @@ module "cloud_sql" {
 
 module "secret_manager_db_password" {
   source    = "../../modules/secret_manager"
-  secret_id = "db-passowrd"
+  secret_id = "db-password"
   value     = module.cloudsql.db_password
 
   depends_on = [
