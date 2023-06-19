@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/abyssparanoia/rapid-go/internal/pkg/ulid"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/volatiletech/null/v8"
 )
 
@@ -21,7 +21,7 @@ func NewTenant(
 	t time.Time,
 ) *Tenant {
 	return &Tenant{
-		ID:        ulid.New(),
+		ID:        id.New(),
 		Name:      name,
 		CreatedAt: t,
 		UpdatedAt: t,
