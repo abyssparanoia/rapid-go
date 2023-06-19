@@ -29,7 +29,7 @@ resource "google_cloud_run_service" "services" {
 
         env {
           name  = "ENV"
-          value = var.enviroment
+          value = var.environment
         }
         env {
           name  = "GCP_PROJECT_ID"
