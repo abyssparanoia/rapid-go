@@ -6,24 +6,24 @@ import (
 	"github.com/pkg/errors"
 )
 
-// NotFoundError ... not found error
+// NotFoundError ... not found error.
 type NotFoundError string
 
 func (e NotFoundError) Error() string {
 	return string(e)
 }
 
-// New ... new error
+// New ... new error.
 func (e NotFoundError) New() error {
 	return errors.Wrap(e, "")
 }
 
-// Errorf ... errorf
+// Errorf ... errorf.
 func (e NotFoundError) Errorf(format string, args ...interface{}) error {
 	return errors.Wrapf(e, format, args...)
 }
 
-// Wrap ... wrap error
+// Wrap ... wrap error.
 func (e NotFoundError) Wrap(err error) error {
 	if err == nil {
 		return e.New()
@@ -31,7 +31,7 @@ func (e NotFoundError) Wrap(err error) error {
 	return errors.Wrap(e, err.Error())
 }
 
-// Wrapf ... wrapf
+// Wrapf ... wrapf.
 func (e NotFoundError) Wrapf(err error, format string, args ...interface{}) error {
 	if err == nil {
 		return e.Errorf(format, args...)
@@ -40,7 +40,7 @@ func (e NotFoundError) Wrapf(err error, format string, args ...interface{}) erro
 	return errors.Wrapf(e, "err: %s; %s", err, msg)
 }
 
-// As ... as method
+// As ... as method.
 func (e NotFoundError) As(target interface{}) bool {
 	if _, ok := target.(**NotFoundError); ok {
 		return true
