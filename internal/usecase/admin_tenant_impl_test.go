@@ -10,7 +10,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/ulid"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 	"github.com/golang/mock/gomock"
@@ -19,6 +19,7 @@ import (
 )
 
 func TestAdminAdminTenantInteractor_Get(t *testing.T) {
+	t.Parallel()
 	testdata := factory.NewFactory()
 	tenant := testdata.Tenant
 
@@ -121,6 +122,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 }
 
 func TestAdminAdminTenantInteractor_List(t *testing.T) {
+	t.Parallel()
 	testdata := factory.NewFactory()
 	tenant := testdata.Tenant
 
@@ -206,11 +208,12 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 }
 
 func TestAdminAdminTenantInteractor_Create(t *testing.T) {
+	t.Parallel()
 	testdata := factory.NewFactory()
 	requestTime := testdata.RequestTime
 	tenant := testdata.Tenant
-	mockULID := ulid.Mock()
-	tenant.ID = mockULID
+	mockID := id.Mock()
+	tenant.ID = mockID
 
 	type args struct {
 		name        string
@@ -284,6 +287,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 }
 
 func TestAdminAdminTenantInteractor_Update(t *testing.T) {
+	t.Parallel()
 	testdata := factory.NewFactory()
 	requestTime := testdata.RequestTime
 	tenant := testdata.Tenant
@@ -371,6 +375,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 }
 
 func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
+	t.Parallel()
 	testdata := factory.NewFactory()
 	tenant := testdata.Tenant
 
