@@ -10,7 +10,7 @@ variable "registry_path" {
   type = string
 }
 
-variable "enviroment" {
+variable "environment" {
   type = string
 }
 

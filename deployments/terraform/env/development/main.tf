@@ -33,7 +33,7 @@ module "cloud_sql" {
 
 module "secret_manager_db_password" {
   source    = "../../modules/secret_manager"
-  secret_id = "db-passowrd"
+  secret_id = "db-password"
   value     = module.cloud_sql.db_password
 
   depends_on = [
@@ -57,7 +57,7 @@ module "cloud_run_backend" {
 
   project                    = var.project
   location                   = var.location
-  enviroment                 = local.enviroment
+  environment                 = local.environment
   registry_path              = module.artifact_registry.container_registry_path
   db_connection_name         = module.cloud_sql.db_connection_name
   db_name                    = module.cloud_sql.db_name

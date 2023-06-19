@@ -4,7 +4,7 @@ type Environment struct {
 	Port        string `env:"PORT,required"`
 	Environment string `env:"ENV,required"`
 	DatabaseEnvironment
-	GCPEnviroment
+	GCPEnvironment
 	AWSEnvironment
 }
 
@@ -15,7 +15,7 @@ type DatabaseEnvironment struct {
 	DBDatabase string `env:"DB_DATABASE,required"`
 }
 
-type GCPEnviroment struct {
+type GCPEnvironment struct {
 	GCPProjectID         string `env:"GCP_PROJECT_ID,required"`
 	FirebaseClientAPIKey string `env:"FIREBASE_CLIENT_API_KEY"`
 	GCPBucketName        string `env:"GCP_BUCKET_NAME,required"`

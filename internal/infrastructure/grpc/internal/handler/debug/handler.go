@@ -7,19 +7,19 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
 
-type DebugHander struct {
+type DebugHandler struct {
 	debugInteractor usecase.DebugInteractor
 }
 
 func NewDebugHandler(
 	debugInteractor usecase.DebugInteractor,
 ) debug_apiv1.DebugV1ServiceServer {
-	return &DebugHander{
+	return &DebugHandler{
 		debugInteractor: debugInteractor,
 	}
 }
 
-func (h *DebugHander) DebugCreateStaffIDToken(ctx context.Context, req *debug_apiv1.DebugCreateStaffIDTokenRequest) (*debug_apiv1.DebugCreateStaffIDTokenResponse, error) {
+func (h *DebugHandler) DebugCreateStaffIDToken(ctx context.Context, req *debug_apiv1.DebugCreateStaffIDTokenRequest) (*debug_apiv1.DebugCreateStaffIDTokenResponse, error) {
 	idToken, err := h.debugInteractor.CreateStaffIDToken(ctx, req.GetAuthUid(), req.GetPassword())
 	if err != nil {
 		return nil, err
