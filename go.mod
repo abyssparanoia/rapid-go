@@ -1,6 +1,6 @@
 module github.com/abyssparanoia/rapid-go
 
-go 1.19
+go 1.20
 
 require (
 	cloud.google.com/go/storage v1.30.1
@@ -21,7 +21,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/lestrrat-go/jwx/v2 v2.0.11
-	github.com/oklog/ulid v1.3.1
+	github.com/lucsky/cuid v1.2.1
 	github.com/pkg/errors v0.9.1
 	github.com/pressly/goose/v3 v3.11.2
 	github.com/spf13/cobra v1.7.0
