@@ -18,16 +18,16 @@ import (
 
 type staffStaffAuthentication struct {
 	cli          *auth.Client
-	clientApiKey string
+	clientAPIKey string
 }
 
 func NewStaffAuthentication(
 	firebaseAuthCli *auth.Client,
-	firebaseClientApiKey string,
+	firebaseClientAPIKey string,
 ) repository.StaffAuthentication {
 	return &staffStaffAuthentication{
 		cli:          firebaseAuthCli,
-		clientApiKey: firebaseClientApiKey,
+		clientAPIKey: firebaseClientAPIKey,
 	}
 }
 
@@ -113,13 +113,15 @@ func (r *staffStaffAuthentication) CreateIDToken(
 	values := url.Values{}
 	values.Add("token", customToken)
 	values.Add("returnSecureToken", "true")
-	values.Add("key", r.clientApiKey)
+	values.Add("key", r.clientAPIKey)
 
-	resp, err := http.Post(
-		"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken",
-		"application/x-www-form-urlencoded",
-		strings.NewReader(values.Encode()),
-	)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken", strings.NewReader(values.Encode()))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
