@@ -9,21 +9,22 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/ulid"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/volatiletech/null/v8"
 )
 
 func TestStaffService_Create(t *testing.T) {
+	t.Parallel()
 	mockPassword := "password"
 	testdata := factory.NewFactory()
 	requestTime := testdata.RequestTime
 	tenant := testdata.Tenant
-	mockULID := ulid.Mock()
+	mockID := id.Mock()
 	staff := testdata.Staff
-	staff.ID = mockULID
+	staff.ID = mockID
 	staff.Tenant = nil
 
 	claims := model.NewStaffClaims(
