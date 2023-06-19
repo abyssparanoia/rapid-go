@@ -58,5 +58,5 @@
 
 ```bash
 > make build
-> ./.bin/app-cli task create-root-staff --email <email address> --password <passowrd>
+> ./.bin/app-cli task create-root-staff --email <email address> --password <password>
 ```
