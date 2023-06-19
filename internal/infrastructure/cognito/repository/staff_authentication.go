@@ -52,9 +52,9 @@ func (r *staffAuthentication) VerifyIDToken(
 	ctx context.Context,
 	idToken string,
 ) (*model.StaffClaims, error) {
-	CustomClaims := jwt.MapClaims{}
+	customClaims := jwt.MapClaims{}
 
-	jwtToken, err := jwt.ParseWithClaims(idToken, CustomClaims, func(token *jwt.Token) (interface{}, error) {
+	jwtToken, err := jwt.ParseWithClaims(idToken, customClaims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, errors.InvalidIDTokenErr.Errorf("unexpected signing method")
 		}
