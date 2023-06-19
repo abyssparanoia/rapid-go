@@ -9,6 +9,8 @@ func AdminAssetTypeToModel(assetType admin_apiv1.AdminAssetType) model.AssetType
 	switch assetType {
 	case admin_apiv1.AdminAssetType_ADMIN_ASSET_TYPE_USER_IMAGE:
 		return model.AssetTypeUserImage
+	case admin_apiv1.AdminAssetType_ADMIN_ASSET_TYPE_UNSPECIFIED:
+		fallthrough
 	default:
 		return model.AssetTypeUnknown
 	}
