@@ -13,7 +13,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 

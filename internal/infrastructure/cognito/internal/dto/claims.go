@@ -3,7 +3,7 @@ package dto
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/volatiletech/null/v8"
 )
 
@@ -14,7 +14,7 @@ type AWSCognitoClaims struct {
 	TenantID      string `json:"custom:tenant_id,omitempty"`
 	StaffID       string `json:"custom:staff_id,omitempty"`
 	StaffRole     string `json:"custom:staff_role,omitempty"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 const (
