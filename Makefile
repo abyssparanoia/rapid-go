@@ -1,3 +1,6 @@
+SQLBOILER_SED_EXPRESSION := "s/{{GOPATH}}/$(subst /,\/,$(GOPATH))/g"
+
+
 .PHONY: build
 build:
 	go build -o ./.bin/app-cli ./cmd/app
@@ -25,7 +28,9 @@ generate.buf:
 
 .PHONY: generate.sqlboiler
 generate.sqlboiler:
+	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/main/sqlboiler.toml.tpl > ./db/main/sqlboiler.toml
 	@go run github.com/volatiletech/sqlboiler/v4 --config=./db/main/sqlboiler.toml mysql
+	@rm ./db/main/sqlboiler.toml
 	$(call format)
 
 .PHONY: lint.go
