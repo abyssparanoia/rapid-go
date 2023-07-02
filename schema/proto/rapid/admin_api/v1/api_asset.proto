@@ -19,13 +19,13 @@ message CreateAssetPresignedURLRequest {
 }
 
 message CreateAssetPresignedURLResponse {
-  string path = 1;
+  string asset_key = 1;
   string presigned_url = 2;
 
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: [
-        "path",
+        "asset_key",
         "presigned_url"
       ]
     }
