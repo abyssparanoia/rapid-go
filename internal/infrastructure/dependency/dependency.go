@@ -16,6 +16,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs"
 	gcs_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/redis"
+	redis_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/redis/cache"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/s3"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
@@ -39,7 +40,7 @@ func (d *Dependency) Inject(
 	e *environment.Environment,
 ) {
 	d.DatabaseCli = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
-	_ = redis.NewClient(e.RedisHost, e.RedisPort, e.RedisUsername, e.RedisPassword, e.RedisTLSEnable)
+	redisCli := redis.NewClient(e.RedisHost, e.RedisPort, e.RedisUsername, e.RedisPassword, e.RedisTLSEnable)
 
 	firebaseCli := firebase.NewClient(e.GCPProjectID)
 
@@ -68,6 +69,13 @@ func (d *Dependency) Inject(
 	assetRepository := gcs_repository.NewAsset(gcsBucketHandle)
 	// assetRepository := s3_repository.NewAsset(s3Client, e.AWSBucketName)
 
+	assetPathCache := redis_cache.NewAssetPath(redisCli)
+
+	assetService := service.NewAsset(
+		assetRepository,
+		assetPathCache,
+	)
+
 	staffService := service.NewStaff(
 		staffRepository,
 		staffAuthenticationRepository,
@@ -80,10 +88,11 @@ func (d *Dependency) Inject(
 	d.AdminStaffInteractor = usecase.NewAdminStaffInteractor(
 		transactable,
 		tenantRepository,
+		assetPathCache,
 		staffService,
 	)
 	d.AdminAssetInteractor = usecase.NewAdminAssetInteractor(
-		assetRepository,
+		assetService,
 	)
 
 	d.StaffInteractor = usecase.NewStaffInteractor(

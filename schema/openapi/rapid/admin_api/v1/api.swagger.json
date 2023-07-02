@@ -233,7 +233,7 @@
     "v1CreateAssetPresignedURLResponse": {
       "type": "object",
       "properties": {
-        "path": {
+        "asset_key": {
           "type": "string"
         },
         "presigned_url": {
@@ -241,7 +241,7 @@
         }
       },
       "required": [
-        "path",
+        "asset_key",
         "presigned_url"
       ]
     },
@@ -259,13 +259,17 @@
         },
         "role": {
           "$ref": "#/definitions/v1StaffRole"
+        },
+        "asset_key": {
+          "type": "string"
         }
       },
       "required": [
         "tenant_id",
         "email",
         "display_name",
-        "role"
+        "role",
+        "asset_key"
       ]
     },
     "v1CreateStaffResponse": {

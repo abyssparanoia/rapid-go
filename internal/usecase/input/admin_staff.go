@@ -13,6 +13,7 @@ type AdminCreateStaff struct {
 	Email       string          `validate:"required"`
 	DisplayName string          `validate:"required"`
 	Role        model.StaffRole `validate:"required"`
+	AssetKey    string          `validate:"required"`
 	RequestTime time.Time       `validate:"required"`
 }
 
@@ -21,6 +22,7 @@ func NewAdminCreateStaff(
 	email,
 	displayName string,
 	role model.StaffRole,
+	assetKey string,
 	requestTime time.Time,
 ) *AdminCreateStaff {
 	return &AdminCreateStaff{
@@ -28,6 +30,7 @@ func NewAdminCreateStaff(
 		Email:       email,
 		DisplayName: displayName,
 		Role:        role,
+		AssetKey:    assetKey,
 		RequestTime: requestTime,
 	}
 }

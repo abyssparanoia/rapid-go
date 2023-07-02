@@ -1,16 +1,16 @@
 package output
 
 type AdminCreateAssetPresignedURL struct {
-	Path         string
+	AssetKey     string
 	PresignedURL string
 }
 
 func NewAdminCreateAssetPresignedURL(
-	path string,
+	assetKey string,
 	presignedURL string,
 ) *AdminCreateAssetPresignedURL {
 	return &AdminCreateAssetPresignedURL{
-		Path:         path,
+		AssetKey:     assetKey,
 		PresignedURL: presignedURL,
 	}
 }
