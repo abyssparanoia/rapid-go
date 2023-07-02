@@ -4,6 +4,7 @@ type Environment struct {
 	Port        string `env:"PORT,required"`
 	Environment string `env:"ENV,required"`
 	DatabaseEnvironment
+	RedisEnvironment
 	GCPEnvironment
 	AWSEnvironment
 }
@@ -13,6 +14,14 @@ type DatabaseEnvironment struct {
 	DBUser     string `env:"DB_USER,required"`
 	DBPassword string `env:"DB_PASSWORD,required"`
 	DBDatabase string `env:"DB_DATABASE,required"`
+}
+
+type RedisEnvironment struct {
+	RedisHost      string `env:"REDIS_HOST,required"`
+	RedisPort      string `env:"REDIS_PORT,required"`
+	RedisUsername  string `env:"REDIS_USERNAME"`
+	RedisPassword  string `env:"REDIS_PASSWORD,required"`
+	RedisTLSEnable bool   `env:"REDIS_TLS_ENABLE" envDefault:"true"`
 }
 
 type GCPEnvironment struct {
