@@ -15,6 +15,7 @@ import (
 	firebase_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs"
 	gcs_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs/repository"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/redis"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/s3"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
@@ -41,6 +42,7 @@ func (d *Dependency) Inject(
 	e *environment.Environment,
 ) {
 	d.DatabaseCli = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
+	_ = redis.NewClient(e.RedisHost, e.RedisPort, e.RedisUsername, e.RedisPassword, e.RedisTLSEnable)
 
 	firebaseCli := firebase.NewClient(e.GCPProjectID)
 
