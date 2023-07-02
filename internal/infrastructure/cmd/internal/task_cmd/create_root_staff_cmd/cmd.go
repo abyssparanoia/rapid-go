@@ -6,7 +6,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/dependency"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
-	"github.com/caarlos0/env/v6"
+	"github.com/caarlos0/env/v9"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/spf13/cobra"
 )
