@@ -37,12 +37,11 @@ func (m *MockStaff) EXPECT() *MockStaffMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockStaff) Create(ctx context.Context, staff *model.Staff) (*model.Staff, error) {
+func (m *MockStaff) Create(ctx context.Context, staff *model.Staff) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, staff)
-	ret0, _ := ret[0].(*model.Staff)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Create indicates an expected call of Create.
