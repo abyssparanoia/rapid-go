@@ -23,9 +23,6 @@ import (
 type Dependency struct {
 	DatabaseCli *database.Client
 
-	// public
-	PublicTenantInteractor usecase.PublicTenantInteractor
-
 	// admin
 	AdminTenantInteractor usecase.AdminTenantInteractor
 	AdminStaffInteractor  usecase.AdminStaffInteractor
@@ -74,11 +71,6 @@ func (d *Dependency) Inject(
 	staffService := service.NewStaff(
 		staffRepository,
 		staffAuthenticationRepository,
-	)
-
-	d.PublicTenantInteractor = usecase.NewPublicTenantInteractor(
-		transactable,
-		tenantRepository,
 	)
 
 	d.AdminTenantInteractor = usecase.NewAdminTenantInteractor(
