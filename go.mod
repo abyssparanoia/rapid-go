@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.294
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.21.0
-	github.com/caarlos0/env/v6 v6.10.1
+	github.com/caarlos0/env/v9 v9.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cosmtrek/air v1.44.0
 	github.com/friendsofgo/errors v0.9.2
