@@ -37,7 +37,7 @@ func (i *staffInteractor) CreateRoot(
 		}
 
 		tenant := model.NewTenant("Platformer", param.RequestTime)
-		if _, err := i.tenantRepository.Create(ctx, tenant); err != nil {
+		if err := i.tenantRepository.Create(ctx, tenant); err != nil {
 			return err
 		}
 
