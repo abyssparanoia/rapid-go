@@ -59,7 +59,7 @@ func (s *staffService) Create(
 		param.RequestTime,
 	)
 
-	if _, err := s.staffRepository.Create(ctx, staff); err != nil {
+	if err := s.staffRepository.Create(ctx, staff); err != nil {
 		return nil, err
 	}
 
