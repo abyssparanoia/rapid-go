@@ -210,10 +210,10 @@
     "v1AssetType": {
       "type": "string",
       "enum": [
-        "ADMIN_ASSET_TYPE_UNSPECIFIED",
-        "ADMIN_ASSET_TYPE_USER_IMAGE"
+        "ASSET_TYPE_UNSPECIFIED",
+        "ASSET_TYPE_USER_IMAGE"
       ],
-      "default": "ADMIN_ASSET_TYPE_UNSPECIFIED"
+      "default": "ASSET_TYPE_UNSPECIFIED"
     },
     "v1CreateAssetPresignedURLRequest": {
       "type": "object",

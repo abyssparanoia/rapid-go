@@ -33,6 +33,6 @@ message CreateAssetPresignedURLResponse {
 }
 
 enum AssetType {
-  ADMIN_ASSET_TYPE_UNSPECIFIED = 0;
-  ADMIN_ASSET_TYPE_USER_IMAGE = 1;
+  ASSET_TYPE_UNSPECIFIED = 0;
+  ASSET_TYPE_USER_IMAGE = 1;
 }

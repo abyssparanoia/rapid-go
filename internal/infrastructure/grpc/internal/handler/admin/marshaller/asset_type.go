@@ -7,9 +7,9 @@ import (
 
 func AdminAssetTypeToModel(assetType admin_apiv1.AssetType) model.AssetType {
 	switch assetType {
-	case admin_apiv1.AssetType_ADMIN_ASSET_TYPE_USER_IMAGE:
+	case admin_apiv1.AssetType_ASSET_TYPE_USER_IMAGE:
 		return model.AssetTypeUserImage
-	case admin_apiv1.AssetType_ADMIN_ASSET_TYPE_UNSPECIFIED:
+	case admin_apiv1.AssetType_ASSET_TYPE_UNSPECIFIED:
 		fallthrough
 	default:
 		return model.AssetTypeUnknown
