@@ -2,26 +2,21 @@ package usecase
 
 import (
 	"context"
-	"fmt"
-	"mime"
-	"time"
 
-	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
-	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
+	"github.com/abyssparanoia/rapid-go/internal/domain/service"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 )
 
 type adminAssetInteractor struct {
-	assetRepository repository.Asset
+	assetService service.Asset
 }
 
 func NewAdminAssetInteractor(
-	assetRepository repository.Asset,
+	assetService service.Asset,
 ) AdminAssetInteractor {
 	return &adminAssetInteractor{
-		assetRepository,
+		assetService: assetService,
 	}
 }
 
@@ -29,23 +24,19 @@ func (i *adminAssetInteractor) CreatePresignedURL(
 	ctx context.Context,
 	param *input.AdminCreateAssetPresignedURL,
 ) (*output.AdminCreateAssetPresignedURL, error) {
-	ext, err := mime.ExtensionsByType(param.ContentType)
-	if err != nil {
-		return nil, errors.InternalErr.Wrap(err)
+	if err := param.Validate(); err != nil {
+		return nil, err
 	}
-	path := fmt.Sprintf("%s/%s%s", param.AssetType.String(), uuid.UUIDBase64(), ext[0])
-	presignedURL, err := i.assetRepository.GenerateWritePresignedURL(
+	got, err := i.assetService.CreatePresignedURL(
 		ctx,
+		param.AssetType,
 		param.ContentType,
-		path,
-		// 有効期限は15分とする
-		15*time.Minute,
 	)
 	if err != nil {
 		return nil, err
 	}
 	return output.NewAdminCreateAssetPresignedURL(
-		path,
-		presignedURL,
+		got.AssetKey,
+		got.PresignedURL,
 	), nil
 }
