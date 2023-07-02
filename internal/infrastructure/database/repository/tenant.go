@@ -82,23 +82,23 @@ func (r *tenant) Count(
 func (r *tenant) Create(
 	ctx context.Context,
 	tenant *model.Tenant,
-) (*model.Tenant, error) {
+) error {
 	dst := marshaller.TenantsToDBModel(tenant)
 	if err := dst.Insert(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
-		return nil, errors.InternalErr.Wrap(err)
+		return errors.InternalErr.Wrap(err)
 	}
-	return marshaller.TenantToModel(dst), nil
+	return nil
 }
 
 func (r *tenant) Update(
 	ctx context.Context,
 	tenant *model.Tenant,
-) (*model.Tenant, error) {
+) error {
 	dst := marshaller.TenantsToDBModel(tenant)
 	if _, err := dst.Update(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
-		return nil, errors.InternalErr.Wrap(err)
+		return errors.InternalErr.Wrap(err)
 	}
-	return marshaller.TenantToModel(dst), nil
+	return nil
 }
 
 func (r *tenant) Delete(
