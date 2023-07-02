@@ -9,6 +9,8 @@ const (
 	InvalidIDTokenErr          UnauthorizedError = "E100003"
 	RequireStaffSessionErr     UnauthorizedError = "E100004"
 	InvalidAdminRequestUserErr UnauthorizedError = "E100005"
+	AssetInvalidErr            BadRequestError   = "E100006"
+	AssetNotFoundErr           NotFoundError     = "E100007"
 
 	// tenant error.
 	TenantNotFoundErr NotFoundError = "E200101"
@@ -23,6 +25,7 @@ var errorMessageMap = map[error]string{
 	RequestInvalidArgumentErr:  "Request argument is invalid",
 	InvalidIDTokenErr:          "Invalid ID token",
 	RequireStaffSessionErr:     "Require staff session",
+	AssetInvalidErr:            "Asset is invalid",
 	InvalidAdminRequestUserErr: "Invalid admin request user",
 
 	// tenant error
@@ -49,6 +52,8 @@ func ExtractPlaneErrMessage(err error) (code string, message string) { //nolint:
 		return RequireStaffSessionErr.Error(), errorMessageMap[RequireStaffSessionErr]
 	case InvalidAdminRequestUserErr:
 		return InvalidAdminRequestUserErr.Error(), errorMessageMap[InvalidAdminRequestUserErr]
+	case AssetInvalidErr:
+		return AssetInvalidErr.Error(), errorMessageMap[AssetInvalidErr]
 	case RequestInvalidArgumentErr:
 		return RequestInvalidArgumentErr.Error(), errorMessageMap[RequestInvalidArgumentErr]
 	}
