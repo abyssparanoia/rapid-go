@@ -24,12 +24,14 @@ plugins:
       - generate_unbound_methods=true
       - logtostderr=true
       - paths=source_relative
+      - allow_delete_body=true
 
   - plugin: buf.build/grpc-ecosystem/openapiv2
     out: ./schema/openapi
     opt:
       - logtostderr=true
-      - allow_merge=true
+      - allow_merge=false
       - simple_operation_ids=true
       - json_names_for_fields=false
       - disable_default_errors=true
+      - allow_delete_body=true
