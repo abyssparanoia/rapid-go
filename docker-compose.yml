@@ -23,6 +23,14 @@ services:
     container_name: "schemaspy"
     command: "java -jar schemaspy.jar"
 
+  redis:
+    image: "redis:latest"
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass password
+    volumes:
+      - ./db/redis:/data
+
   aws:
     image: localstack/localstack
     volumes:
