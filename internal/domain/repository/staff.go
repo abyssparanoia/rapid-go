@@ -16,7 +16,7 @@ type Staff interface {
 	Create(
 		ctx context.Context,
 		staff *model.Staff,
-	) (*model.Staff, error)
+	) error
 }
 
 type GetStaffQuery struct {

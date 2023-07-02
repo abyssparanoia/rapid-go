@@ -251,7 +251,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
 					Create(gomock.Any(), tenant).
-					Return(tenant, nil)
+					Return(nil)
 
 				return &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
@@ -337,7 +337,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 					Return(tenant, nil)
 				mockTenantRepo.EXPECT().
 					Update(gomock.Any(), tenant).
-					Return(tenant, nil)
+					Return(nil)
 
 				return &adminTenantInteractor{
 					transactable:     mock_repository.TestMockTransactable(),

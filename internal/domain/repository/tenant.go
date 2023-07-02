@@ -24,11 +24,11 @@ type Tenant interface {
 	Create(
 		ctx context.Context,
 		tenant *model.Tenant,
-	) (*model.Tenant, error)
+	) error
 	Update(
 		ctx context.Context,
 		tenant *model.Tenant,
-	) (*model.Tenant, error)
+	) error
 	Delete(
 		ctx context.Context,
 		id string,

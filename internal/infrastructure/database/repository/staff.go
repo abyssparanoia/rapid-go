@@ -56,10 +56,10 @@ func (r *staff) Get(
 func (r *staff) Create(
 	ctx context.Context,
 	staff *model.Staff,
-) (*model.Staff, error) {
+) error {
 	dst := marshaller.StaffToDBModel(staff)
 	if err := dst.Insert(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
-		return nil, errors.InternalErr.Wrap(err)
+		return errors.InternalErr.Wrap(err)
 	}
-	return marshaller.StaffToModel(dst), nil
+	return nil
 }

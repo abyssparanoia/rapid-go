@@ -52,12 +52,11 @@ func (mr *MockTenantMockRecorder) Count(ctx, query interface{}) *gomock.Call {
 }
 
 // Create mocks base method.
-func (m *MockTenant) Create(ctx context.Context, tenant *model.Tenant) (*model.Tenant, error) {
+func (m *MockTenant) Create(ctx context.Context, tenant *model.Tenant) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, tenant)
-	ret0, _ := ret[0].(*model.Tenant)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Create indicates an expected call of Create.
@@ -111,12 +110,11 @@ func (mr *MockTenantMockRecorder) List(ctx, query interface{}) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockTenant) Update(ctx context.Context, tenant *model.Tenant) (*model.Tenant, error) {
+func (m *MockTenant) Update(ctx context.Context, tenant *model.Tenant) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", ctx, tenant)
-	ret0, _ := ret[0].(*model.Tenant)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Update indicates an expected call of Update.

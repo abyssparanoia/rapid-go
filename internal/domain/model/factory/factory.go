@@ -6,7 +6,7 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
-	"github.com/bxcodec/faker"
+	"github.com/go-faker/faker/v4"
 )
 
 func NewFactory() struct {

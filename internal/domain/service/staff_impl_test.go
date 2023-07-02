@@ -85,7 +85,7 @@ func TestStaffService_Create(t *testing.T) {
 					Return(staff.AuthUID, nil)
 				mockStaffRepo.EXPECT().
 					Create(gomock.Any(), staff).
-					Return(staff, nil)
+					Return(nil)
 				mockStaffAuthenticationRepo.EXPECT().
 					StoreClaims(
 						gomock.Any(),

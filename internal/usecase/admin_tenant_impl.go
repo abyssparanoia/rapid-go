@@ -88,7 +88,10 @@ func (i *adminTenantInteractor) Create(
 		return nil, err
 	}
 	tenant := model.NewTenant(param.Name, param.RequestTime)
-	return i.tenantRepository.Create(ctx, tenant)
+	if err := i.tenantRepository.Create(ctx, tenant); err != nil {
+		return nil, err
+	}
+	return tenant, nil
 }
 
 func (i *adminTenantInteractor) Update(
@@ -118,8 +121,7 @@ func (i *adminTenantInteractor) Update(
 			param.Name,
 			param.RequestTime,
 		)
-		tenant, err = i.tenantRepository.Update(ctx, tenant)
-		if err != nil {
+		if err := i.tenantRepository.Update(ctx, tenant); err != nil {
 			return err
 		}
 		return nil
