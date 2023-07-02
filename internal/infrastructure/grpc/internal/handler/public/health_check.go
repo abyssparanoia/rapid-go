@@ -8,14 +8,14 @@ import (
 	"go.uber.org/zap"
 )
 
-func (h *PublicHandler) PublicDeepHealthCheck(ctx context.Context, req *public_apiv1.PublicDeepHealthCheckRequest) (*public_apiv1.PublicDeepHealthCheckResponse, error) {
+func (h *PublicHandler) DeepHealthCheck(ctx context.Context, req *public_apiv1.DeepHealthCheckRequest) (*public_apiv1.DeepHealthCheckResponse, error) {
 	databaseStatus := "up"
 	if err := h.databaseCli.DB.Ping(); err != nil {
 		logger.L(ctx).Error("failed to  h.databaseCli.DB.Ping", zap.Error(err))
 		databaseStatus = "down"
 	}
 
-	return &public_apiv1.PublicDeepHealthCheckResponse{
+	return &public_apiv1.DeepHealthCheckResponse{
 		DatabaseStatus: databaseStatus,
 	}, nil
 }
