@@ -4,8 +4,8 @@ package rapid.admin_api.v1;
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-message AdminCreateAssetPresignedURLRequest {
-  AdminAssetType asset_type = 1;
+message CreateAssetPresignedURLRequest {
+  AssetType asset_type = 1;
   string content_type = 2;
 
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -18,7 +18,7 @@ message AdminCreateAssetPresignedURLRequest {
   };
 }
 
-message AdminCreateAssetPresignedURLResponse {
+message CreateAssetPresignedURLResponse {
   string path = 1;
   string presigned_url = 2;
 
@@ -32,7 +32,7 @@ message AdminCreateAssetPresignedURLResponse {
   };
 }
 
-enum AdminAssetType {
+enum AssetType {
   ADMIN_ASSET_TYPE_UNSPECIFIED = 0;
   ADMIN_ASSET_TYPE_USER_IMAGE = 1;
 }

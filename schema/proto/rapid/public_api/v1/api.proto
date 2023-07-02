@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package rapid.public_api.v1;
+
+import "google/api/annotations.proto";
+import "rapid/public_api/v1/api_health_check.proto";
+
+service PublicV1Service {
+  rpc DeepHealthCheck(DeepHealthCheckRequest) returns (DeepHealthCheckResponse) {
+    option (google.api.http) = {get: "/v1/deep_health_check"};
+  }
+}

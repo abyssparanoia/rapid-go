@@ -1,30 +1,29 @@
 syntax = "proto3";
 
-package rapid.model.v1;
+package rapid.admin_api.v1;
 
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "rapid/model/v1/tenant.proto";
+import "rapid/admin_api/v1/model_tenant.proto";
 
 message Staff {
   string id = 1;
-  StaffRole role = 2;
-  string auth_uid = 3;
-  string display_name = 4;
-  string image_url = 5;
-  string email = 6;
-  google.protobuf.Timestamp created_at = 7;
-  google.protobuf.Timestamp updated_at = 8;
+  string tenant_id = 2;
+  StaffRole role = 3;
+  string auth_uid = 4;
+  string display_name = 5;
+  string image_url = 6;
+  string email = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
 
-  oneof oneof_tenant {
-    string tenant_id = 9;
-    model.v1.Tenant tenant = 10;
-  }
+  optional Tenant tenant = 101;
 
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: [
         "id",
+        "tenant_id",
         "role",
         "auth_uid",
         "display_name",

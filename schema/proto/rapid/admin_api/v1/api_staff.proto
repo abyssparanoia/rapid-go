@@ -3,13 +3,13 @@ syntax = "proto3";
 package rapid.admin_api.v1;
 
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "rapid/model/v1/staff.proto";
+import "rapid/admin_api/v1/model_staff.proto";
 
-message AdminCreateStaffRequest {
+message CreateStaffRequest {
   string tenant_id = 1;
   string email = 2;
   string display_name = 3;
-  model.v1.StaffRole role = 4;
+  StaffRole role = 4;
 
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
@@ -23,8 +23,8 @@ message AdminCreateStaffRequest {
   };
 }
 
-message AdminCreateStaffResponse {
-  model.v1.Staff staff = 1;
+message CreateStaffResponse {
+  Staff staff = 1;
 
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
