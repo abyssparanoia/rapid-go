@@ -1,0 +1,465 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "rapid/admin_api/v1/api.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "AdminV1Service"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/admin/v1/assets/-/presigned_url": {
+      "post": {
+        "operationId": "CreateAssetPresignedURL",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateAssetPresignedURLResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateAssetPresignedURLRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      }
+    },
+    "/admin/v1/staffs": {
+      "post": {
+        "operationId": "CreateStaff",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateStaffResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateStaffRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      }
+    },
+    "/admin/v1/tenants": {
+      "get": {
+        "operationId": "ListTenants",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListTenantsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      },
+      "post": {
+        "operationId": "CreateTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateTenantResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateTenantRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      }
+    },
+    "/admin/v1/tenants/{tenant_id}": {
+      "get": {
+        "operationId": "GetTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetTenantResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteTenantResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateTenantResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "v1AssetType": {
+      "type": "string",
+      "enum": [
+        "ASSET_TYPE_UNSPECIFIED",
+        "ASSET_TYPE_USER_IMAGE"
+      ],
+      "default": "ASSET_TYPE_UNSPECIFIED"
+    },
+    "v1CreateAssetPresignedURLRequest": {
+      "type": "object",
+      "properties": {
+        "asset_type": {
+          "$ref": "#/definitions/v1AssetType"
+        },
+        "content_type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "asset_type",
+        "content_type"
+      ]
+    },
+    "v1CreateAssetPresignedURLResponse": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "presigned_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "presigned_url"
+      ]
+    },
+    "v1CreateStaffRequest": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/v1StaffRole"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "email",
+        "display_name",
+        "role"
+      ]
+    },
+    "v1CreateStaffResponse": {
+      "type": "object",
+      "properties": {
+        "staff": {
+          "$ref": "#/definitions/v1Staff"
+        }
+      },
+      "required": [
+        "staff"
+      ]
+    },
+    "v1CreateTenantRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "v1CreateTenantResponse": {
+      "type": "object",
+      "properties": {
+        "tenant": {
+          "$ref": "#/definitions/v1Tenant"
+        }
+      },
+      "required": [
+        "tenant"
+      ]
+    },
+    "v1DeleteTenantResponse": {
+      "type": "object"
+    },
+    "v1GetTenantResponse": {
+      "type": "object",
+      "properties": {
+        "tenant": {
+          "$ref": "#/definitions/v1Tenant"
+        }
+      },
+      "required": [
+        "tenant"
+      ]
+    },
+    "v1ListTenantsResponse": {
+      "type": "object",
+      "properties": {
+        "tenants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Tenant"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1Pagination"
+        }
+      },
+      "required": [
+        "tenants",
+        "pagination"
+      ]
+    },
+    "v1Pagination": {
+      "type": "object",
+      "properties": {
+        "current_page": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "prev_page": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "next_page": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "total_page": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "total_count": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "has_next": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "current_page",
+        "total_page",
+        "total_count",
+        "has_next"
+      ]
+    },
+    "v1Staff": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/v1StaffRole"
+        },
+        "auth_uid": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tenant": {
+          "$ref": "#/definitions/v1Tenant"
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "role",
+        "auth_uid",
+        "display_name",
+        "image_url",
+        "email",
+        "created_at",
+        "updated_at"
+      ]
+    },
+    "v1StaffRole": {
+      "type": "string",
+      "enum": [
+        "STAFF_ROLE_UNSPECIFIED",
+        "STAFF_ROLE_NORMAL",
+        "STAFF_ROLE_ADMIN"
+      ],
+      "default": "STAFF_ROLE_UNSPECIFIED"
+    },
+    "v1Tenant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "created_at",
+        "updated_at"
+      ]
+    },
+    "v1UpdateTenantResponse": {
+      "type": "object",
+      "properties": {
+        "tenant": {
+          "$ref": "#/definitions/v1Tenant"
+        }
+      },
+      "required": [
+        "tenant"
+      ]
+    }
+  }
+}

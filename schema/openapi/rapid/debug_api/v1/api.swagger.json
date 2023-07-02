@@ -1,0 +1,74 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "rapid/debug_api/v1/api.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "DebugV1Service"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/debug/v1/staffs/-/id_token": {
+      "post": {
+        "operationId": "CreateStaffIDToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateStaffIDTokenResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateStaffIDTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DebugV1Service"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "v1CreateStaffIDTokenRequest": {
+      "type": "object",
+      "properties": {
+        "auth_uid": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "auth_uid",
+        "password"
+      ]
+    },
+    "v1CreateStaffIDTokenResponse": {
+      "type": "object",
+      "properties": {
+        "id_token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id_token"
+      ]
+    }
+  }
+}

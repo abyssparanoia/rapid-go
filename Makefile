@@ -17,7 +17,10 @@ generate.mock:
 
 .PHONY: generate.buf
 generate.buf:
+	rm -rf ./internal/infrastructure/grpc/pb
 	@go run github.com/bufbuild/buf/cmd/buf generate
+	find ./schema/openapi/rapid/admin_api/v1 -type f ! -name 'api.swagger.json' -delete
+	find ./schema/openapi/rapid/public_api/v1 -type f ! -name 'api.swagger.json' -delete
 	$(call format)
 
 .PHONY: generate.sqlboiler

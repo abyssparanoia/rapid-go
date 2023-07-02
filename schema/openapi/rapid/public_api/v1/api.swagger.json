@@ -1,0 +1,49 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "rapid/public_api/v1/api.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "PublicV1Service"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/deep_health_check": {
+      "get": {
+        "operationId": "DeepHealthCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeepHealthCheckResponse"
+            }
+          }
+        },
+        "tags": [
+          "PublicV1Service"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "v1DeepHealthCheckResponse": {
+      "type": "object",
+      "properties": {
+        "database_status": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "database_status"
+      ]
+    }
+  }
+}

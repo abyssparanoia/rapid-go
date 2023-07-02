@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package rapid.admin_api.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message Pagination {
+  uint64 current_page = 1;
+  uint64 prev_page = 2;
+  uint64 next_page = 3;
+  uint64 total_page = 4;
+  uint64 total_count = 5;
+  bool has_next = 6;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "current_page",
+        "total_page",
+        "total_count",
+        "has_next"
+      ]
+    }
+  };
+}

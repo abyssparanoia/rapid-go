@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package rapid.admin_api.v1;
+
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message Tenant {
+  string id = 1;
+  string name = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "id",
+        "name",
+        "created_at",
+        "updated_at"
+      ]
+    }
+  };
+}

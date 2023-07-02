@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package rapid.admin_api.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "rapid/admin_api/v1/model_pagination.proto";
+import "rapid/admin_api/v1/model_tenant.proto";
+
+message GetTenantRequest {
+  string tenant_id = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant_id"]
+    }
+  };
+}
+
+message GetTenantResponse {
+  Tenant tenant = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant"]
+    }
+  };
+}
+
+message ListTenantsRequest {
+  uint64 page = 1;
+  uint64 limit = 2;
+}
+
+message ListTenantsResponse {
+  repeated Tenant tenants = 1;
+  Pagination pagination = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "tenants",
+        "pagination"
+      ]
+    }
+  };
+}
+
+message CreateTenantRequest {
+  string name = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["name"]
+    }
+  };
+}
+
+message CreateTenantResponse {
+  Tenant tenant = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant"]
+    }
+  };
+}
+
+message UpdateTenantRequest {
+  string tenant_id = 1;
+  optional string name = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant_id"]
+    }
+  };
+}
+
+message UpdateTenantResponse {
+  Tenant tenant = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant"]
+    }
+  };
+}
+
+message DeleteTenantRequest {
+  string tenant_id = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant_id"]
+    }
+  };
+}
+
+message DeleteTenantResponse {}

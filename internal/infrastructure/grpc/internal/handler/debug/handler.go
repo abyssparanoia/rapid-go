@@ -19,12 +19,12 @@ func NewDebugHandler(
 	}
 }
 
-func (h *DebugHandler) DebugCreateStaffIDToken(ctx context.Context, req *debug_apiv1.DebugCreateStaffIDTokenRequest) (*debug_apiv1.DebugCreateStaffIDTokenResponse, error) {
+func (h *DebugHandler) CreateStaffIDToken(ctx context.Context, req *debug_apiv1.CreateStaffIDTokenRequest) (*debug_apiv1.CreateStaffIDTokenResponse, error) {
 	idToken, err := h.debugInteractor.CreateStaffIDToken(ctx, req.GetAuthUid(), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
-	return &debug_apiv1.DebugCreateStaffIDTokenResponse{
+	return &debug_apiv1.CreateStaffIDTokenResponse{
 		IdToken: idToken,
 	}, nil
 }

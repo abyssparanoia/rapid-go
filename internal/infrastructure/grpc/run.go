@@ -84,7 +84,6 @@ func NewServer(ctx context.Context,
 		server,
 		public.NewPublicHandler(
 			dependency.DatabaseCli,
-			dependency.PublicTenantInteractor,
 		),
 	)
 
