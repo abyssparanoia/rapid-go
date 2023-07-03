@@ -25,7 +25,7 @@ require (
 	github.com/lestrrat-go/jwx/v2 v2.0.11
 	github.com/lucsky/cuid v1.2.1
 	github.com/pkg/errors v0.9.1
-	github.com/pressly/goose/v3 v3.13.0
+	github.com/pressly/goose/v3 v3.13.1
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	github.com/volatiletech/null/v8 v8.1.2
