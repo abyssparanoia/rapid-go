@@ -5,27 +5,11 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
-	"github.com/volatiletech/null/v8"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
+	"go.uber.org/zap"
 )
 
-type StaffSessionContext struct {
-	AuthUID   string
-	TenantID  null.String
-	StaffID   null.String
-	StaffRole nullable.Type[model.StaffRole]
-}
-
 type staffContextKey struct{}
-
-func newStaffSessionContext(claims *model.StaffClaims) *StaffSessionContext {
-	return &StaffSessionContext{
-		AuthUID:   claims.AuthUID,
-		TenantID:  claims.TenantID,
-		StaffID:   claims.StaffID,
-		StaffRole: claims.StaffRole,
-	}
-}
 
 var (
 	staffSessionContextKey staffContextKey = staffContextKey{}
@@ -33,12 +17,13 @@ var (
 
 func SaveStaffSessionContext(
 	ctx context.Context,
-	sessionContext *StaffSessionContext,
+	claims *model.StaffClaims,
 ) context.Context {
-	return context.WithValue(ctx, staffSessionContextKey, *sessionContext)
+	logger.AddFields(ctx, zap.Any("staff.claims", claims))
+	return context.WithValue(ctx, staffSessionContextKey, *claims)
 }
 
-func RequireStaffSessionContext(ctx context.Context) (*StaffSessionContext, error) {
+func RequireStaffSessionContext(ctx context.Context) (*model.StaffClaims, error) {
 	sctx, ok := GetStaffSessionContext(ctx)
 	if !ok {
 		return nil, errors.RequireStaffSessionErr.New()
@@ -46,7 +31,7 @@ func RequireStaffSessionContext(ctx context.Context) (*StaffSessionContext, erro
 	return sctx, nil
 }
 
-func GetStaffSessionContext(ctx context.Context) (*StaffSessionContext, bool) {
-	sessionContext, ok := ctx.Value(staffSessionContextKey).(StaffSessionContext)
+func GetStaffSessionContext(ctx context.Context) (*model.StaffClaims, bool) {
+	sessionContext, ok := ctx.Value(staffSessionContextKey).(model.StaffClaims)
 	return &sessionContext, ok
 }

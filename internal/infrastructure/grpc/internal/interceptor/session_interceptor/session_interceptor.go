@@ -33,7 +33,7 @@ func (i *Session) Authenticate(ctx context.Context) (context.Context, error) {
 		if err != nil {
 			return ctx, err
 		}
-		ctx = SaveStaffSessionContext(ctx, newStaffSessionContext(claims))
+		ctx = SaveStaffSessionContext(ctx, claims)
 	}
 	return ctx, nil
 }

@@ -21,3 +21,11 @@ func New() *zap.Logger {
 var L = func(ctx context.Context) *zap.Logger {
 	return ctxzap.Extract(ctx)
 }
+
+func AddFields(ctx context.Context, fields ...zap.Field) {
+	ctxzap.AddFields(ctx, fields...)
+}
+
+func ToContext(ctx context.Context, logger *zap.Logger) context.Context {
+	return ctxzap.ToContext(ctx, logger)
+}
