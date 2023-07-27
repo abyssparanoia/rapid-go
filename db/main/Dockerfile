@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 mysql:8.0.33
+FROM --platform=linux/amd64 mysql:8.0.34
 
 ADD ./my.cnf /etc/mysql/conf.d/my.cnf
 
