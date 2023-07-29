@@ -9,9 +9,8 @@ import (
 
 //go:generate mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_cache
 type AssetPath interface {
-	GetWithValidate(
+	Get(
 		ctx context.Context,
-		assetType model.AssetType,
 		assetKey string,
 	) (string, error)
 	Set(
