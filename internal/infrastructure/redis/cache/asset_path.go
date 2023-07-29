@@ -29,9 +29,8 @@ func (c *assetPath) buildCacheKey(
 	return fmt.Sprintf("asset_path:%s", assetKey)
 }
 
-func (c *assetPath) GetWithValidate(
+func (c *assetPath) Get(
 	ctx context.Context,
-	assetType model.AssetType,
 	assetKey string,
 ) (string, error) {
 	cacheKey := c.buildCacheKey(assetKey)
@@ -41,9 +40,6 @@ func (c *assetPath) GetWithValidate(
 			return "", errors.AssetNotFoundErr.Wrap(err)
 		}
 		return "", errors.InternalErr.Wrap(err)
-	}
-	if err := model.ValidateAssetPath(assetType, got); err != nil {
-		return "", err
 	}
 	return got, nil
 }
