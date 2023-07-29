@@ -60,3 +60,36 @@ func (s *assetService) CreatePresignedURL(
 		PresignedURL: presignedURL,
 	}, nil
 }
+
+func (s *assetService) GetWithValidate(
+	ctx context.Context,
+	assetType model.AssetType,
+	assetKey string,
+) (string, error) {
+	got, err := s.assetPathCache.Get(ctx, assetKey)
+	if err != nil {
+		return "", err
+	}
+	if err := model.ValidateAssetPath(assetType, got); err != nil {
+		return "", err
+	}
+	return got, nil
+}
+
+func (s *assetService) BatchSetStaffURLs(
+	ctx context.Context,
+	staffs model.Staffs,
+) error {
+	for _, staff := range staffs {
+		imageURL, err := s.assetRepository.GenerateReadPresignedURL(
+			ctx,
+			staff.ImagePath,
+			15*time.Minute,
+		)
+		if err != nil {
+			return err
+		}
+		staff.SetImageURL(imageURL)
+	}
+	return nil
+}
