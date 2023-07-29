@@ -5,7 +5,7 @@ go 1.20
 require (
 	cloud.google.com/go/storage v1.31.0
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/aws/aws-sdk-go v1.44.309
+	github.com/aws/aws-sdk-go v1.44.312
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.23.1
 	github.com/caarlos0/env/v9 v9.0.0
