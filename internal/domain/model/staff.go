@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
+	"github.com/volatiletech/null/v8"
 )
 
 type Staff struct {
@@ -17,7 +18,8 @@ type Staff struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 
-	Tenant *Tenant
+	ImageURL null.String
+	Tenant   *Tenant
 }
 
 type Staffs []*Staff
@@ -46,4 +48,10 @@ func NewStaff(
 
 func (m *Staff) Exist() bool {
 	return m != nil
+}
+
+func (m *Staff) SetImageURL(
+	imageURL string,
+) {
+	m.ImageURL = null.StringFrom(imageURL)
 }
