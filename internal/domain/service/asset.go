@@ -13,6 +13,15 @@ type Asset interface {
 		assetType model.AssetType,
 		contentType string,
 	) (*AssetCreatePresignedURLResult, error)
+	GetWithValidate(
+		ctx context.Context,
+		assetType model.AssetType,
+		assetKey string,
+	) (string, error)
+	BatchSetStaffURLs(
+		ctx context.Context,
+		staffs model.Staffs,
+	) error
 }
 
 type AssetCreatePresignedURLResult struct {
