@@ -36,19 +36,19 @@ func (m *MockAssetPath) EXPECT() *MockAssetPathMockRecorder {
 	return m.recorder
 }
 
-// GetWithValidate mocks base method.
-func (m *MockAssetPath) GetWithValidate(ctx context.Context, assetType model.AssetType, assetKey string) (string, error) {
+// Get mocks base method.
+func (m *MockAssetPath) Get(ctx context.Context, assetKey string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetWithValidate", ctx, assetType, assetKey)
+	ret := m.ctrl.Call(m, "Get", ctx, assetKey)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetWithValidate indicates an expected call of GetWithValidate.
-func (mr *MockAssetPathMockRecorder) GetWithValidate(ctx, assetType, assetKey interface{}) *gomock.Call {
+// Get indicates an expected call of Get.
+func (mr *MockAssetPathMockRecorder) Get(ctx, assetKey interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithValidate", reflect.TypeOf((*MockAssetPath)(nil).GetWithValidate), ctx, assetType, assetKey)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAssetPath)(nil).Get), ctx, assetKey)
 }
 
 // Set mocks base method.

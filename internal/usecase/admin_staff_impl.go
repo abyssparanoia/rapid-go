@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/abyssparanoia/rapid-go/internal/domain/cache"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/domain/service"
@@ -14,21 +13,21 @@ import (
 type adminStaffInteractor struct {
 	transactable     repository.Transactable
 	tenantRepository repository.Tenant
-	assetPathCache   cache.AssetPath
 	staffService     service.Staff
+	assetService     service.Asset
 }
 
 func NewAdminStaffInteractor(
 	transactable repository.Transactable,
 	tenantRepository repository.Tenant,
-	assetPathCache cache.AssetPath,
 	staffService service.Staff,
+	assetService service.Asset,
 ) AdminStaffInteractor {
 	return &adminStaffInteractor{
 		transactable,
 		tenantRepository,
-		assetPathCache,
 		staffService,
+		assetService,
 	}
 }
 
@@ -55,7 +54,7 @@ func (i *adminStaffInteractor) Create(
 			return err
 		}
 
-		imagePath, err := i.assetPathCache.GetWithValidate(ctx, model.AssetTypeUserImage, param.AssetKey)
+		imagePath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.AssetKey)
 		if err != nil {
 			return err
 		}
