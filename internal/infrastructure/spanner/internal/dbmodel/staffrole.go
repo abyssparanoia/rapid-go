@@ -88,7 +88,6 @@ func newStaffRole_Decoder(cols []string) func(*spanner.Row) (*StaffRole, error) 
 }
 
 func (sr *StaffRole) Insert(ctx context.Context) error {
-	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	params[fmt.Sprintf("StaffRoleID")] = sr.StaffRoleID
 
@@ -104,7 +103,7 @@ func (sr *StaffRole) Insert(ctx context.Context) error {
         %s
     `, rowValue)
 
-	err := spannerTransaction.ExecContext(ctx, sql, params)
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
@@ -117,7 +116,6 @@ func (srSlice StaffRoleSlice) InsertAll(ctx context.Context) error {
 		return nil
 	}
 
-	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	valueStmts := make([]string, 0, len(srSlice))
 	for i, m := range srSlice {
@@ -137,7 +135,7 @@ func (srSlice StaffRoleSlice) InsertAll(ctx context.Context) error {
         %s
     `, strings.Join(valueStmts, ","))
 
-	err := spannerTransaction.ExecContext(ctx, sql, params)
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
