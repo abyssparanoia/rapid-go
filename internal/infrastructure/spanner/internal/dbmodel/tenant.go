@@ -5,6 +5,7 @@ package dbmodel
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/spanner"
@@ -18,6 +19,8 @@ type Tenant struct {
 	CreatedAt time.Time `spanner:"CreatedAt" json:"CreatedAt"` // CreatedAt
 	UpdatedAt time.Time `spanner:"UpdatedAt" json:"UpdatedAt"` // UpdatedAt
 }
+
+type TenantSlice []*Tenant
 
 func TenantPrimaryKeys() []string {
 	return []string{
@@ -112,6 +115,41 @@ func newTenant_Decoder(cols []string) func(*spanner.Row) (*Tenant, error) {
 func (t *Tenant) Insert(ctx context.Context) *spanner.Mutation {
 	values, _ := t.columnsToValues(TenantWritableColumns())
 	return spanner.Insert("Tenants", TenantWritableColumns(), values)
+}
+
+func (t *Tenant) InsertDML(ctx context.Context, rwt *spanner.ReadWriteTransaction) error {
+	params := make(map[string]interface{})
+	params[fmt.Sprintf("TenantID")] = t.TenantID
+	params[fmt.Sprintf("Name")] = t.Name
+	params[fmt.Sprintf("CreatedAt")] = t.CreatedAt
+	params[fmt.Sprintf("UpdatedAt")] = t.UpdatedAt
+
+	values := []string{
+		fmt.Sprintf("@TenantID"),
+		fmt.Sprintf("@Name"),
+		fmt.Sprintf("@CreatedAt"),
+		fmt.Sprintf("@UpdatedAt"),
+	}
+	rowValue := fmt.Sprintf("(%s)", strings.Join(values, ","))
+
+	sql := fmt.Sprintf(`
+    INSERT INTO $table
+        (TenantID, Name, CreatedAt, UpdatedAt)
+    VALUES
+        %s
+    `, rowValue)
+
+	stmt := spanner.Statement{
+		SQL:    sql,
+		Params: params,
+	}
+
+	_, err := rwt.Update(ctx, stmt)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Update returns a Mutation to update a row in a table. If the row does not
