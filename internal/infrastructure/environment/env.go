@@ -7,6 +7,7 @@ type Environment struct {
 	RedisEnvironment
 	GCPEnvironment
 	AWSEnvironment
+	SpannerEnvironment
 }
 
 type DatabaseEnvironment struct {
@@ -37,4 +38,10 @@ type AWSEnvironment struct {
 	AWSBucketName          string `env:"AWS_BUCKET_NAME,required"`
 	AWSCognitoUserPoolID   string `env:"AWS_COGNITO_USER_POOL_ID,required"`
 	AWSCognitoClientID     string `env:"AWS_COGNITO_CLIENT_ID,required"`
+}
+
+type SpannerEnvironment struct {
+	SpannerProjectID  string `env:"SPANNER_PROJECT_ID,required"`
+	SpannerInstanceID string `env:"SPANNER_INSTANCE_ID,required"`
+	SpannerDatabaseID string `env:"SPANNER_DATABASE_ID,required"`
 }
