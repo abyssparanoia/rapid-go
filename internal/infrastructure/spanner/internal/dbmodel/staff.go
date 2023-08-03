@@ -179,7 +179,7 @@ func (s *Staff) InsertDML(ctx context.Context) error {
 	rowValue := fmt.Sprintf("(%s)", strings.Join(values, ","))
 
 	sql := fmt.Sprintf(`
-    INSERT INTO $table
+    INSERT INTO Staffs
         (StaffID, TenantID, Role, AuthUID, DisplayName, ImagePath, Email, CreatedAt, UpdatedAt)
     VALUES
         %s
