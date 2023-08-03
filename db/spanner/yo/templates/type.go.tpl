@@ -127,7 +127,8 @@ func ({{ $short }} *{{ .Name }}) Insert(ctx context.Context) *spanner.Mutation {
 	return spanner.Insert("{{ $table }}", {{ .Name }}WritableColumns(), values)
 }
 
-func ({{ $short }} *{{ .Name }}) InsertDML(ctx context.Context, rwt *spanner.ReadWriteTransaction) error {
+func ({{ $short }} *{{ .Name }}) InsertDML(ctx context.Context) error {
+	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	{{- range .Fields }}
 		params[fmt.Sprintf("{{ .Name }}")] = {{ $short }}.{{ .Name }}
@@ -147,12 +148,7 @@ func ({{ $short }} *{{ .Name }}) InsertDML(ctx context.Context, rwt *spanner.Rea
         %s
     `, rowValue)
 
-	stmt := spanner.Statement{
-		SQL: sql,
-		Params: params,
-	}
-
-	_, err := rwt.Update(ctx, stmt)
+	err := spannerTransaction.ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
