@@ -50,14 +50,35 @@ services:
       - 4572:4572
     depends_on:
       - aws-cognito
-  
+
   aws-cognito:
     image: jagregory/cognito-local:latest
     volumes:
       - ./localstack/cognito/.cognito:/app/.cognito
       - ./localstack/cognito/cognito.json:/app/.cognito/config.json
-    command: ['node', '/app/start.js']
+    command: ["node", "/app/start.js"]
     ports:
       - 9229:9229
     environment:
       DEBUG: 1
+
+  spanner:
+    image: gcr.io/cloud-spanner-emulator/emulator
+    ports:
+      - "9010:9010"
+      - "9020:9020"
+
+  spanner-init:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk
+    command: >
+      bash -c 'gcloud config configurations create emulator &&
+              gcloud config set auth/disable_credentials true &&
+              gcloud config set project $${PROJECT_ID} &&
+              gcloud config set api_endpoint_overrides/spanner $${SPANNER_EMULATOR_URL} &&
+              gcloud config set auth/disable_credentials true &&
+              gcloud spanner instances create $${INSTANCE_NAME} --config=emulator-config --description=Emulator --nodes=1'
+    environment:
+      PROJECT_ID: "test-project"
+      SPANNER_EMULATOR_URL: "http://spanner:9020/"
+      INSTANCE_NAME: "test-instance"
+      DATABASE_NAME: "test-database"
