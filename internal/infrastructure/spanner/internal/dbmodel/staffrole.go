@@ -5,6 +5,7 @@ package dbmodel
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"cloud.google.com/go/spanner"
 )
@@ -13,6 +14,8 @@ import (
 type StaffRole struct {
 	StaffRoleID string `spanner:"StaffRoleID" json:"StaffRoleID"` // StaffRoleID
 }
+
+type StaffRoleSlice []*StaffRole
 
 func StaffRolePrimaryKeys() []string {
 	return []string{
@@ -89,6 +92,35 @@ func newStaffRole_Decoder(cols []string) func(*spanner.Row) (*StaffRole, error) 
 func (sr *StaffRole) Insert(ctx context.Context) *spanner.Mutation {
 	values, _ := sr.columnsToValues(StaffRoleWritableColumns())
 	return spanner.Insert("StaffRoles", StaffRoleWritableColumns(), values)
+}
+
+func (sr *StaffRole) InsertDML(ctx context.Context, rwt *spanner.ReadWriteTransaction) error {
+	params := make(map[string]interface{})
+	params[fmt.Sprintf("StaffRoleID")] = sr.StaffRoleID
+
+	values := []string{
+		fmt.Sprintf("@StaffRoleID"),
+	}
+	rowValue := fmt.Sprintf("(%s)", strings.Join(values, ","))
+
+	sql := fmt.Sprintf(`
+    INSERT INTO $table
+        (StaffRoleID)
+    VALUES
+        %s
+    `, rowValue)
+
+	stmt := spanner.Statement{
+		SQL:    sql,
+		Params: params,
+	}
+
+	_, err := rwt.Update(ctx, stmt)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Delete deletes the StaffRole from the database.
