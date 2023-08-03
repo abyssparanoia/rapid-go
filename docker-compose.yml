@@ -76,7 +76,8 @@ services:
               gcloud config set project $${PROJECT_ID} &&
               gcloud config set api_endpoint_overrides/spanner $${SPANNER_EMULATOR_URL} &&
               gcloud config set auth/disable_credentials true &&
-              gcloud spanner instances create $${INSTANCE_NAME} --config=emulator-config --description=Emulator --nodes=1'
+              gcloud spanner instances create $${INSTANCE_NAME} --config=emulator-config --description=Emulator --nodes=1 &&
+              gcloud spanner databases create $${DATABASE_NAME} --instance=$${INSTANCE_NAME}'
     environment:
       PROJECT_ID: "test-project"
       SPANNER_EMULATOR_URL: "http://spanner:9020/"
