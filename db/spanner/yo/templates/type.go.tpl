@@ -120,14 +120,7 @@ func new{{ .Name }}_Decoder(cols []string) func(*spanner.Row) (*{{ .Name }}, err
 	}
 }
 
-// Insert returns a Mutation to insert a row into a table. If the row already
-// exists, the write or transaction fails.
-func ({{ $short }} *{{ .Name }}) Insert(ctx context.Context) *spanner.Mutation {
-	values, _ := {{ $short }}.columnsToValues({{ .Name }}WritableColumns())
-	return spanner.Insert("{{ $table }}", {{ .Name }}WritableColumns(), values)
-}
-
-func ({{ $short }} *{{ .Name }}) InsertDML(ctx context.Context) error {
+func ({{ $short }} *{{ .Name }}) Insert(ctx context.Context) error {
 	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	{{- range .Fields }}
@@ -147,6 +140,44 @@ func ({{ $short }} *{{ .Name }}) InsertDML(ctx context.Context) error {
     VALUES
         %s
     `, rowValue)
+
+	err := spannerTransaction.ExecContext(ctx, sql, params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ({{ $short }}Slice {{ .Name }}Slice) InsertAll(ctx context.Context) error {
+	if len({{ $short }}Slice) == 0 {
+        return nil
+    }
+
+	spannerTransaction := GetSpannerTransaction(ctx)
+    params := make(map[string]interface{})
+    valueStmts := make([]string, 0, len({{ $short }}Slice))
+    for i, m := range {{ $short }}Slice {
+        {{- range .Fields }}
+			params[fmt.Sprintf("{{ .Name }}%d", i)] = m.{{ .Name }}
+        {{- end }}
+
+
+        values := []string{
+            {{- range .Fields }}
+            fmt.Sprintf("@{{ .Name }}%d", i),
+            {{- end }}
+        }
+        rowValue := fmt.Sprintf("(%s)", strings.Join(values, ","))
+        valueStmts = append(valueStmts, rowValue)
+    }
+
+    sql := fmt.Sprintf(`
+    INSERT INTO {{ $table }}
+        ({{ colnames .Fields }})
+    VALUES
+        %s
+    `, strings.Join(valueStmts, ","))
 
 	err := spannerTransaction.ExecContext(ctx, sql, params)
 	if err != nil {
