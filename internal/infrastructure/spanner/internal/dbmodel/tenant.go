@@ -282,7 +282,21 @@ func ReadTenant(ctx context.Context, db YORODB, keys spanner.KeySet) ([]*Tenant,
 }
 
 // Delete deletes the Tenant from the database.
-func (t *Tenant) Delete(ctx context.Context) *spanner.Mutation {
-	values, _ := t.columnsToValues(TenantPrimaryKeys())
-	return spanner.Delete("Tenants", spanner.Key(values))
+func (t *Tenant) Delete(ctx context.Context) error {
+	sql := fmt.Sprintf(`
+        	DELETE FROM Tenants
+        	WHERE
+        	    %s
+        	`,
+		fmt.Sprintf("(TenantID = @param0)"),
+	)
+
+	params := map[string]interface{}{
+		"param0": t.TenantID,
+	}
+
+	if err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params); err != nil {
+		return err
+	}
+	return nil
 }
