@@ -146,7 +146,6 @@ func newStaff_Decoder(cols []string) func(*spanner.Row) (*Staff, error) {
 }
 
 func (s *Staff) Insert(ctx context.Context) error {
-	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	params[fmt.Sprintf("StaffID")] = s.StaffID
 	params[fmt.Sprintf("TenantID")] = s.TenantID
@@ -178,7 +177,7 @@ func (s *Staff) Insert(ctx context.Context) error {
         %s
     `, rowValue)
 
-	err := spannerTransaction.ExecContext(ctx, sql, params)
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
@@ -191,7 +190,6 @@ func (sSlice StaffSlice) InsertAll(ctx context.Context) error {
 		return nil
 	}
 
-	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	valueStmts := make([]string, 0, len(sSlice))
 	for i, m := range sSlice {
@@ -227,7 +225,7 @@ func (sSlice StaffSlice) InsertAll(ctx context.Context) error {
         %s
     `, strings.Join(valueStmts, ","))
 
-	err := spannerTransaction.ExecContext(ctx, sql, params)
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
@@ -235,11 +233,56 @@ func (sSlice StaffSlice) InsertAll(ctx context.Context) error {
 	return nil
 }
 
-// Update returns a Mutation to update a row in a table. If the row does not
-// already exist, the write or transaction fails.
-func (s *Staff) Update(ctx context.Context) *spanner.Mutation {
-	values, _ := s.columnsToValues(StaffWritableColumns())
-	return spanner.Update("Staffs", StaffWritableColumns(), values)
+func (s *Staff) Update(ctx context.Context) error {
+	updateColumns := []string{}
+
+	updateColumns = append(updateColumns, "TenantID = @param_TenantID")
+	updateColumns = append(updateColumns, "Role = @param_Role")
+	updateColumns = append(updateColumns, "AuthUID = @param_AuthUID")
+	updateColumns = append(updateColumns, "DisplayName = @param_DisplayName")
+	updateColumns = append(updateColumns, "ImagePath = @param_ImagePath")
+	updateColumns = append(updateColumns, "Email = @param_Email")
+	updateColumns = append(updateColumns, "CreatedAt = @param_CreatedAt")
+	updateColumns = append(updateColumns, "UpdatedAt = @param_UpdatedAt")
+
+	sql := fmt.Sprintf(`
+	UPDATE Staffs
+	SET
+		%s
+    WHERE
+            StaffID = @update_params0
+	`, strings.Join(updateColumns, ","))
+
+	setParams := map[string]interface{}{
+
+		"param_TenantID":    s.TenantID,
+		"param_Role":        s.Role,
+		"param_AuthUID":     s.AuthUID,
+		"param_DisplayName": s.DisplayName,
+		"param_ImagePath":   s.ImagePath,
+		"param_Email":       s.Email,
+		"param_CreatedAt":   s.CreatedAt,
+		"param_UpdatedAt":   s.UpdatedAt,
+	}
+
+	whereParams := map[string]interface{}{
+		"update_params0": s.StaffID,
+	}
+
+	params := make(map[string]interface{})
+	for key, value := range setParams {
+		params[key] = value
+	}
+	for key, value := range whereParams {
+		params[key] = value
+	}
+
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // InsertOrUpdate returns a Mutation to insert a row into a table. If the row
