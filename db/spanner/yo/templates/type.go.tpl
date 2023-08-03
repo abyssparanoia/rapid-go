@@ -314,7 +314,23 @@ func Read{{ .Name }}(ctx context.Context, db YORODB, keys spanner.KeySet) ([]*{{
 {{ end }}
 
 // Delete deletes the {{ .Name }} from the database.
-func ({{ $short }} *{{ .Name }}) Delete(ctx context.Context) *spanner.Mutation {
-	values, _ := {{ $short }}.columnsToValues({{ .Name }}PrimaryKeys())
-	return spanner.Delete("{{ $table }}", spanner.Key(values))
+func ({{ $short }} *{{ .Name }}) Delete(ctx context.Context) error {
+	sql := fmt.Sprintf(`
+        	DELETE FROM {{ $table }}
+        	WHERE
+        	    %s
+        	`,
+        	fmt.Sprintf("({{ colnamesquery .PrimaryKeyFields " AND " }})"),
+		)
+	
+	params := map[string]interface{}{
+	{{- range $i, $field := .PrimaryKeyFields }}
+		"param{{$i}}": {{ $short }}.{{ $field.Name }},
+	{{- end }}
+	}
+
+	if err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params); err != nil {
+		return err
+	}
+	return nil
 }
