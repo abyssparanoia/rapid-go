@@ -53,6 +53,11 @@ migrate.up:
 	make build
 	.bin/app-cli schema-migration database up
 
+.PHONY: migrate.spanner.up
+migrate.spanner.up:
+	@go run github.com/cloudspannerecosystem/wrench migrate up --directory ./db/spanner
+	@go run github.com/cloudspannerecosystem/wrench load --directory ./db/spanner
+
 .PHONY: format
 format:
 	$(call format)
