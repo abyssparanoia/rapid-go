@@ -145,14 +145,7 @@ func newStaff_Decoder(cols []string) func(*spanner.Row) (*Staff, error) {
 	}
 }
 
-// Insert returns a Mutation to insert a row into a table. If the row already
-// exists, the write or transaction fails.
-func (s *Staff) Insert(ctx context.Context) *spanner.Mutation {
-	values, _ := s.columnsToValues(StaffWritableColumns())
-	return spanner.Insert("Staffs", StaffWritableColumns(), values)
-}
-
-func (s *Staff) InsertDML(ctx context.Context) error {
+func (s *Staff) Insert(ctx context.Context) error {
 	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	params[fmt.Sprintf("StaffID")] = s.StaffID
@@ -184,6 +177,55 @@ func (s *Staff) InsertDML(ctx context.Context) error {
     VALUES
         %s
     `, rowValue)
+
+	err := spannerTransaction.ExecContext(ctx, sql, params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sSlice StaffSlice) InsertAll(ctx context.Context) error {
+	if len(sSlice) == 0 {
+		return nil
+	}
+
+	spannerTransaction := GetSpannerTransaction(ctx)
+	params := make(map[string]interface{})
+	valueStmts := make([]string, 0, len(sSlice))
+	for i, m := range sSlice {
+		params[fmt.Sprintf("StaffID%d", i)] = m.StaffID
+		params[fmt.Sprintf("TenantID%d", i)] = m.TenantID
+		params[fmt.Sprintf("Role%d", i)] = m.Role
+		params[fmt.Sprintf("AuthUID%d", i)] = m.AuthUID
+		params[fmt.Sprintf("DisplayName%d", i)] = m.DisplayName
+		params[fmt.Sprintf("ImagePath%d", i)] = m.ImagePath
+		params[fmt.Sprintf("Email%d", i)] = m.Email
+		params[fmt.Sprintf("CreatedAt%d", i)] = m.CreatedAt
+		params[fmt.Sprintf("UpdatedAt%d", i)] = m.UpdatedAt
+
+		values := []string{
+			fmt.Sprintf("@StaffID%d", i),
+			fmt.Sprintf("@TenantID%d", i),
+			fmt.Sprintf("@Role%d", i),
+			fmt.Sprintf("@AuthUID%d", i),
+			fmt.Sprintf("@DisplayName%d", i),
+			fmt.Sprintf("@ImagePath%d", i),
+			fmt.Sprintf("@Email%d", i),
+			fmt.Sprintf("@CreatedAt%d", i),
+			fmt.Sprintf("@UpdatedAt%d", i),
+		}
+		rowValue := fmt.Sprintf("(%s)", strings.Join(values, ","))
+		valueStmts = append(valueStmts, rowValue)
+	}
+
+	sql := fmt.Sprintf(`
+    INSERT INTO Staffs
+        (StaffID, TenantID, Role, AuthUID, DisplayName, ImagePath, Email, CreatedAt, UpdatedAt)
+    VALUES
+        %s
+    `, strings.Join(valueStmts, ","))
 
 	err := spannerTransaction.ExecContext(ctx, sql, params)
 	if err != nil {
