@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"cloud.google.com/go/spanner"
-	"google.golang.org/grpc/codes"
 )
 
 // Tenant represents a row from 'Tenants'.
@@ -178,6 +177,7 @@ func (tSlice TenantSlice) InsertAll(ctx context.Context) error {
 	return nil
 }
 
+// Update the Tenant
 func (t *Tenant) Update(ctx context.Context) error {
 	updateColumns := []string{}
 
@@ -220,68 +220,7 @@ func (t *Tenant) Update(ctx context.Context) error {
 	return nil
 }
 
-// InsertOrUpdate returns a Mutation to insert a row into a table. If the row
-// already exists, it updates it instead. Any column values not explicitly
-// written are preserved.
-func (t *Tenant) InsertOrUpdate(ctx context.Context) *spanner.Mutation {
-	values, _ := t.columnsToValues(TenantWritableColumns())
-	return spanner.InsertOrUpdate("Tenants", TenantWritableColumns(), values)
-}
-
-// UpdateColumns returns a Mutation to update specified columns of a row in a table.
-func (t *Tenant) UpdateColumns(ctx context.Context, cols ...string) (*spanner.Mutation, error) {
-	// add primary keys to columns to update by primary keys
-	colsWithPKeys := append(cols, TenantPrimaryKeys()...)
-
-	values, err := t.columnsToValues(colsWithPKeys)
-	if err != nil {
-		return nil, newErrorWithCode(codes.InvalidArgument, "Tenant.UpdateColumns", "Tenants", err)
-	}
-
-	return spanner.Update("Tenants", colsWithPKeys, values), nil
-}
-
-// FindTenant gets a Tenant by primary key
-func FindTenant(ctx context.Context, db YORODB, tenantID string) (*Tenant, error) {
-	key := spanner.Key{tenantID}
-	row, err := db.ReadRow(ctx, "Tenants", key, TenantColumns())
-	if err != nil {
-		return nil, newError("FindTenant", "Tenants", err)
-	}
-
-	decoder := newTenant_Decoder(TenantColumns())
-	t, err := decoder(row)
-	if err != nil {
-		return nil, newErrorWithCode(codes.Internal, "FindTenant", "Tenants", err)
-	}
-
-	return t, nil
-}
-
-// ReadTenant retrieves multiples rows from Tenant by KeySet as a slice.
-func ReadTenant(ctx context.Context, db YORODB, keys spanner.KeySet) ([]*Tenant, error) {
-	var res []*Tenant
-
-	decoder := newTenant_Decoder(TenantColumns())
-
-	rows := db.Read(ctx, "Tenants", keys, TenantColumns())
-	err := rows.Do(func(row *spanner.Row) error {
-		t, err := decoder(row)
-		if err != nil {
-			return err
-		}
-		res = append(res, t)
-
-		return nil
-	})
-	if err != nil {
-		return nil, newErrorWithCode(codes.Internal, "ReadTenant", "Tenants", err)
-	}
-
-	return res, nil
-}
-
-// Delete deletes the Tenant from the database.
+// Delete the Tenant from the database.
 func (t *Tenant) Delete(ctx context.Context) error {
 	sql := fmt.Sprintf(`
         	DELETE FROM Tenants
