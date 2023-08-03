@@ -347,7 +347,21 @@ func ReadStaff(ctx context.Context, db YORODB, keys spanner.KeySet) ([]*Staff, e
 }
 
 // Delete deletes the Staff from the database.
-func (s *Staff) Delete(ctx context.Context) *spanner.Mutation {
-	values, _ := s.columnsToValues(StaffPrimaryKeys())
-	return spanner.Delete("Staffs", spanner.Key(values))
+func (s *Staff) Delete(ctx context.Context) error {
+	sql := fmt.Sprintf(`
+        	DELETE FROM Staffs
+        	WHERE
+        	    %s
+        	`,
+		fmt.Sprintf("(StaffID = @param0)"),
+	)
+
+	params := map[string]interface{}{
+		"param0": s.StaffID,
+	}
+
+	if err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params); err != nil {
+		return err
+	}
+	return nil
 }
