@@ -152,7 +152,8 @@ func (s *Staff) Insert(ctx context.Context) *spanner.Mutation {
 	return spanner.Insert("Staffs", StaffWritableColumns(), values)
 }
 
-func (s *Staff) InsertDML(ctx context.Context, rwt *spanner.ReadWriteTransaction) error {
+func (s *Staff) InsertDML(ctx context.Context) error {
+	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	params[fmt.Sprintf("StaffID")] = s.StaffID
 	params[fmt.Sprintf("TenantID")] = s.TenantID
@@ -184,12 +185,7 @@ func (s *Staff) InsertDML(ctx context.Context, rwt *spanner.ReadWriteTransaction
         %s
     `, rowValue)
 
-	stmt := spanner.Statement{
-		SQL:    sql,
-		Params: params,
-	}
-
-	_, err := rwt.Update(ctx, stmt)
+	err := spannerTransaction.ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
