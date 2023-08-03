@@ -121,7 +121,6 @@ func new{{ .Name }}_Decoder(cols []string) func(*spanner.Row) (*{{ .Name }}, err
 }
 
 func ({{ $short }} *{{ .Name }}) Insert(ctx context.Context) error {
-	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	{{- range .Fields }}
 		params[fmt.Sprintf("{{ .Name }}")] = {{ $short }}.{{ .Name }}
@@ -141,7 +140,7 @@ func ({{ $short }} *{{ .Name }}) Insert(ctx context.Context) error {
         %s
     `, rowValue)
 
-	err := spannerTransaction.ExecContext(ctx, sql, params)
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
@@ -154,7 +153,6 @@ func ({{ $short }}Slice {{ .Name }}Slice) InsertAll(ctx context.Context) error {
         return nil
     }
 
-	spannerTransaction := GetSpannerTransaction(ctx)
     params := make(map[string]interface{})
     valueStmts := make([]string, 0, len({{ $short }}Slice))
     for i, m := range {{ $short }}Slice {
@@ -179,7 +177,7 @@ func ({{ $short }}Slice {{ .Name }}Slice) InsertAll(ctx context.Context) error {
         %s
     `, strings.Join(valueStmts, ","))
 
-	err := spannerTransaction.ExecContext(ctx, sql, params)
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
@@ -188,11 +186,69 @@ func ({{ $short }}Slice {{ .Name }}Slice) InsertAll(ctx context.Context) error {
 }
 
 {{ if ne (fieldnames .Fields $short .PrimaryKeyFields) "" }}
-// Update returns a Mutation to update a row in a table. If the row does not
-// already exist, the write or transaction fails.
-func ({{ $short }} *{{ .Name }}) Update(ctx context.Context) *spanner.Mutation {
-	values, _ := {{ $short }}.columnsToValues({{ .Name }}WritableColumns())
-	return spanner.Update("{{ $table }}", {{ .Name }}WritableColumns(), values)
+func ({{ $short }} *{{ .Name }}) Update(ctx context.Context) error {
+	{{ $primaryKeyFields := .PrimaryKeyFields -}}
+	updateColumns := []string{}
+	{{ range $i, $field := .Fields -}}
+		{{- $include := false }}
+		{{- range $j,$p := $primaryKeyFields -}}
+			{{- if eq $field.Name $p.Name }}
+				{{ $include = true }}
+			{{- end }}
+		{{- end }}
+		{{- if eq $include false }}
+			updateColumns = append(updateColumns, "{{$field.Name}} = @param_{{$field.Name}}")
+		{{- end }}
+	{{- end }}
+
+	sql := fmt.Sprintf(`
+	UPDATE {{ $table }}
+	SET
+		%s
+    WHERE
+        {{- range $i,$v := .PrimaryKeyFields }}
+          {{- if eq $i 0 }}
+            {{ $v.Name }} = @update_params{{ $i }}
+          {{- else }}
+            AND {{ $v.Name }} = @update_params{{ $i }}
+          {{- end }}
+        {{- end }}
+	`, strings.Join(updateColumns, ","))
+
+	setParams := map[string]interface{}{
+	{{- range $i, $field := .Fields -}}
+		{{ $include := false }}
+		{{- range $j,$p := $primaryKeyFields }}
+			{{- if eq $field.Name $p.Name }}
+				{{ $include = true }}
+			{{- end }}
+		{{- end }}
+		{{- if eq $include false }}
+		"param_{{$field.Name}}": {{ $short }}.{{.Name}},
+		{{- end }}
+	{{- end }}
+	}
+
+	whereParams := map[string]interface{}{
+	{{- range $i, $field := .PrimaryKeyFields }}
+		"update_params{{$i}}": {{ $short }}.{{ $field.Name }},
+	{{- end }}
+	}
+
+	params := make(map[string]interface{})
+	for key, value := range setParams {
+	    params[key] = value
+	}
+	for key, value := range whereParams {
+        params[key] = value
+    }
+
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // InsertOrUpdate returns a Mutation to insert a row into a table. If the row
