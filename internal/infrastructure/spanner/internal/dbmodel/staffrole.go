@@ -144,7 +144,21 @@ func (srSlice StaffRoleSlice) InsertAll(ctx context.Context) error {
 }
 
 // Delete deletes the StaffRole from the database.
-func (sr *StaffRole) Delete(ctx context.Context) *spanner.Mutation {
-	values, _ := sr.columnsToValues(StaffRolePrimaryKeys())
-	return spanner.Delete("StaffRoles", spanner.Key(values))
+func (sr *StaffRole) Delete(ctx context.Context) error {
+	sql := fmt.Sprintf(`
+        	DELETE FROM StaffRoles
+        	WHERE
+        	    %s
+        	`,
+		fmt.Sprintf("(StaffRoleID = @param0)"),
+	)
+
+	params := map[string]interface{}{
+		"param0": sr.StaffRoleID,
+	}
+
+	if err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params); err != nil {
+		return err
+	}
+	return nil
 }
