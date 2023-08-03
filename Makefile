@@ -57,6 +57,11 @@ migrate.up:
 migrate.spanner.up:
 	@go run github.com/cloudspannerecosystem/wrench migrate up --directory ./db/spanner
 	@go run github.com/cloudspannerecosystem/wrench load --directory ./db/spanner
+	@go run github.com/kauche/splanter \
+		--project $(SPANNER_PROJECT_ID) \
+		--instance $(SPANNER_INSTANCE_ID) \
+		--database $(SPANNER_DATABASE_ID) \
+		--directory ./db/spanner/masterdata
 
 .PHONY: format
 format:
