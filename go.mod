@@ -3,6 +3,7 @@ module github.com/abyssparanoia/rapid-go
 go 1.20
 
 require (
+	cloud.google.com/go/spanner v1.47.0
 	cloud.google.com/go/storage v1.31.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/aws/aws-sdk-go v1.44.315
@@ -21,6 +22,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.53.3
 	github.com/google/uuid v1.3.0
+	github.com/googleapis/gax-go/v2 v2.11.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/kauche/splanter v0.1.2
@@ -33,6 +35,7 @@ require (
 	github.com/volatiletech/null/v8 v8.1.2
 	github.com/volatiletech/sqlboiler/v4 v4.14.2
 	github.com/volatiletech/strmangle v0.0.5
+	go.mercari.io/yo v0.5.4
 	go.uber.org/zap v1.25.0
 	golang.org/x/tools v0.10.0
 	google.golang.org/api v0.129.0
@@ -51,7 +54,6 @@ require (
 	cloud.google.com/go/firestore v1.11.0 // indirect
 	cloud.google.com/go/iam v1.1.1 // indirect
 	cloud.google.com/go/longrunning v0.5.1 // indirect
-	cloud.google.com/go/spanner v1.47.0 // indirect
 	github.com/4meepo/tagalign v1.2.2 // indirect
 	github.com/Abirdcfly/dupword v0.0.11 // indirect
 	github.com/Antonboom/errname v0.1.10 // indirect
@@ -89,6 +91,7 @@ require (
 	github.com/charithe/durationcheck v0.0.10 // indirect
 	github.com/chavacava/garif v0.0.0-20230227094218-b8c73b2037b8 // indirect
 	github.com/cli/safeexec v1.0.0 // indirect
+	github.com/cloudspannerecosystem/memefish v0.0.0-20230403015737-24c8a514b9e7 // indirect
 	github.com/cncf/udpa/go v0.0.0-20220112060539-c52dc94e7fbe // indirect
 	github.com/cncf/xds/go v0.0.0-20230607035331-e9ce68804cb4 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.14.3 // indirect
@@ -117,6 +120,7 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fzipp/gocyclo v0.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+	github.com/gedex/inflector v0.0.0-20170307190818-16278e9db813 // indirect
 	github.com/go-chi/chi/v5 v5.0.8 // indirect
 	github.com/go-critic/go-critic v0.8.1 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
@@ -155,7 +159,6 @@ require (
 	github.com/google/pprof v0.0.0-20230602150820-91b7bce49751 // indirect
 	github.com/google/s2a-go v0.1.4 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.5 // indirect
-	github.com/googleapis/gax-go/v2 v2.11.0 // indirect
 	github.com/gordonklaus/ineffassign v0.0.0-20230610083614-0e73809eb601 // indirect
 	github.com/gostaticanalysis/analysisutil v0.7.1 // indirect
 	github.com/gostaticanalysis/comment v1.4.2 // indirect
@@ -170,11 +173,14 @@ require (
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jdxcode/netrc v0.0.0-20221124155335-4616370d1a84 // indirect
+	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15 // indirect
 	github.com/jgautheron/goconst v1.5.1 // indirect
 	github.com/jingyugao/rowserrcheck v1.1.1 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jirfag/go-printf-func-name v0.0.0-20200119135958-7558a9eaa5af // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/julz/importas v0.1.0 // indirect
+	github.com/kenshaw/snaker v0.2.0 // indirect
 	github.com/kisielk/errcheck v1.6.3 // indirect
 	github.com/kisielk/gotool v1.0.0 // indirect
 	github.com/kkHAIKE/contextcheck v1.1.4 // indirect

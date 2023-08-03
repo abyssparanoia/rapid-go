@@ -11,5 +11,6 @@ import (
 	_ "github.com/kauche/splanter"                                   //nolint
 	_ "github.com/volatiletech/sqlboiler/v4"                         //nolint
 	_ "github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql" //nolint
+	_ "go.mercari.io/yo"                                             //nolint
 	_ "golang.org/x/tools/cmd/goimports"                             //nolint
 )

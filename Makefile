@@ -33,6 +33,19 @@ generate.sqlboiler:
 	@rm ./db/main/sqlboiler.toml
 	$(call format)
 
+.PHONY: generate.yo
+generate.yo:
+	@go run go.mercari.io/yo \
+		$(SPANNER_PROJECT_ID) \
+		$(SPANNER_INSTANCE_ID) \
+		$(SPANNER_DATABASE_ID) \
+		--out internal/infrastructure/spanner/internal/dbmodel \
+		--package dbmodel \
+		--template-path db/spanner/yo/templates \
+		--suffix .go \
+		--ignore-tables "SchemaMigrations"
+	$(call format)
+
 .PHONY: lint.go
 lint.go:
 	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run
