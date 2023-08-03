@@ -111,7 +111,6 @@ func newTenant_Decoder(cols []string) func(*spanner.Row) (*Tenant, error) {
 }
 
 func (t *Tenant) Insert(ctx context.Context) error {
-	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	params[fmt.Sprintf("TenantID")] = t.TenantID
 	params[fmt.Sprintf("Name")] = t.Name
@@ -133,7 +132,7 @@ func (t *Tenant) Insert(ctx context.Context) error {
         %s
     `, rowValue)
 
-	err := spannerTransaction.ExecContext(ctx, sql, params)
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
@@ -146,7 +145,6 @@ func (tSlice TenantSlice) InsertAll(ctx context.Context) error {
 		return nil
 	}
 
-	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	valueStmts := make([]string, 0, len(tSlice))
 	for i, m := range tSlice {
@@ -172,7 +170,7 @@ func (tSlice TenantSlice) InsertAll(ctx context.Context) error {
         %s
     `, strings.Join(valueStmts, ","))
 
-	err := spannerTransaction.ExecContext(ctx, sql, params)
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
 	if err != nil {
 		return err
 	}
@@ -180,11 +178,46 @@ func (tSlice TenantSlice) InsertAll(ctx context.Context) error {
 	return nil
 }
 
-// Update returns a Mutation to update a row in a table. If the row does not
-// already exist, the write or transaction fails.
-func (t *Tenant) Update(ctx context.Context) *spanner.Mutation {
-	values, _ := t.columnsToValues(TenantWritableColumns())
-	return spanner.Update("Tenants", TenantWritableColumns(), values)
+func (t *Tenant) Update(ctx context.Context) error {
+	updateColumns := []string{}
+
+	updateColumns = append(updateColumns, "Name = @param_Name")
+	updateColumns = append(updateColumns, "CreatedAt = @param_CreatedAt")
+	updateColumns = append(updateColumns, "UpdatedAt = @param_UpdatedAt")
+
+	sql := fmt.Sprintf(`
+	UPDATE Tenants
+	SET
+		%s
+    WHERE
+            TenantID = @update_params0
+	`, strings.Join(updateColumns, ","))
+
+	setParams := map[string]interface{}{
+
+		"param_Name":      t.Name,
+		"param_CreatedAt": t.CreatedAt,
+		"param_UpdatedAt": t.UpdatedAt,
+	}
+
+	whereParams := map[string]interface{}{
+		"update_params0": t.TenantID,
+	}
+
+	params := make(map[string]interface{})
+	for key, value := range setParams {
+		params[key] = value
+	}
+	for key, value := range whereParams {
+		params[key] = value
+	}
+
+	err := GetSpannerTransaction(ctx).ExecContext(ctx, sql, params)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // InsertOrUpdate returns a Mutation to insert a row into a table. If the row
