@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"cloud.google.com/go/spanner"
-	"google.golang.org/grpc/codes"
 )
 
 // Staff represents a row from 'Staffs'.
@@ -233,6 +232,7 @@ func (sSlice StaffSlice) InsertAll(ctx context.Context) error {
 	return nil
 }
 
+// Update the Staff
 func (s *Staff) Update(ctx context.Context) error {
 	updateColumns := []string{}
 
@@ -285,68 +285,7 @@ func (s *Staff) Update(ctx context.Context) error {
 	return nil
 }
 
-// InsertOrUpdate returns a Mutation to insert a row into a table. If the row
-// already exists, it updates it instead. Any column values not explicitly
-// written are preserved.
-func (s *Staff) InsertOrUpdate(ctx context.Context) *spanner.Mutation {
-	values, _ := s.columnsToValues(StaffWritableColumns())
-	return spanner.InsertOrUpdate("Staffs", StaffWritableColumns(), values)
-}
-
-// UpdateColumns returns a Mutation to update specified columns of a row in a table.
-func (s *Staff) UpdateColumns(ctx context.Context, cols ...string) (*spanner.Mutation, error) {
-	// add primary keys to columns to update by primary keys
-	colsWithPKeys := append(cols, StaffPrimaryKeys()...)
-
-	values, err := s.columnsToValues(colsWithPKeys)
-	if err != nil {
-		return nil, newErrorWithCode(codes.InvalidArgument, "Staff.UpdateColumns", "Staffs", err)
-	}
-
-	return spanner.Update("Staffs", colsWithPKeys, values), nil
-}
-
-// FindStaff gets a Staff by primary key
-func FindStaff(ctx context.Context, db YORODB, staffID string) (*Staff, error) {
-	key := spanner.Key{staffID}
-	row, err := db.ReadRow(ctx, "Staffs", key, StaffColumns())
-	if err != nil {
-		return nil, newError("FindStaff", "Staffs", err)
-	}
-
-	decoder := newStaff_Decoder(StaffColumns())
-	s, err := decoder(row)
-	if err != nil {
-		return nil, newErrorWithCode(codes.Internal, "FindStaff", "Staffs", err)
-	}
-
-	return s, nil
-}
-
-// ReadStaff retrieves multiples rows from Staff by KeySet as a slice.
-func ReadStaff(ctx context.Context, db YORODB, keys spanner.KeySet) ([]*Staff, error) {
-	var res []*Staff
-
-	decoder := newStaff_Decoder(StaffColumns())
-
-	rows := db.Read(ctx, "Staffs", keys, StaffColumns())
-	err := rows.Do(func(row *spanner.Row) error {
-		s, err := decoder(row)
-		if err != nil {
-			return err
-		}
-		res = append(res, s)
-
-		return nil
-	})
-	if err != nil {
-		return nil, newErrorWithCode(codes.Internal, "ReadStaff", "Staffs", err)
-	}
-
-	return res, nil
-}
-
-// Delete deletes the Staff from the database.
+// Delete the Staff from the database.
 func (s *Staff) Delete(ctx context.Context) error {
 	sql := fmt.Sprintf(`
         	DELETE FROM Staffs
