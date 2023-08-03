@@ -87,14 +87,7 @@ func newStaffRole_Decoder(cols []string) func(*spanner.Row) (*StaffRole, error) 
 	}
 }
 
-// Insert returns a Mutation to insert a row into a table. If the row already
-// exists, the write or transaction fails.
-func (sr *StaffRole) Insert(ctx context.Context) *spanner.Mutation {
-	values, _ := sr.columnsToValues(StaffRoleWritableColumns())
-	return spanner.Insert("StaffRoles", StaffRoleWritableColumns(), values)
-}
-
-func (sr *StaffRole) InsertDML(ctx context.Context) error {
+func (sr *StaffRole) Insert(ctx context.Context) error {
 	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	params[fmt.Sprintf("StaffRoleID")] = sr.StaffRoleID
@@ -110,6 +103,39 @@ func (sr *StaffRole) InsertDML(ctx context.Context) error {
     VALUES
         %s
     `, rowValue)
+
+	err := spannerTransaction.ExecContext(ctx, sql, params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (srSlice StaffRoleSlice) InsertAll(ctx context.Context) error {
+	if len(srSlice) == 0 {
+		return nil
+	}
+
+	spannerTransaction := GetSpannerTransaction(ctx)
+	params := make(map[string]interface{})
+	valueStmts := make([]string, 0, len(srSlice))
+	for i, m := range srSlice {
+		params[fmt.Sprintf("StaffRoleID%d", i)] = m.StaffRoleID
+
+		values := []string{
+			fmt.Sprintf("@StaffRoleID%d", i),
+		}
+		rowValue := fmt.Sprintf("(%s)", strings.Join(values, ","))
+		valueStmts = append(valueStmts, rowValue)
+	}
+
+	sql := fmt.Sprintf(`
+    INSERT INTO StaffRoles
+        (StaffRoleID)
+    VALUES
+        %s
+    `, strings.Join(valueStmts, ","))
 
 	err := spannerTransaction.ExecContext(ctx, sql, params)
 	if err != nil {
