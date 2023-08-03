@@ -110,14 +110,7 @@ func newTenant_Decoder(cols []string) func(*spanner.Row) (*Tenant, error) {
 	}
 }
 
-// Insert returns a Mutation to insert a row into a table. If the row already
-// exists, the write or transaction fails.
-func (t *Tenant) Insert(ctx context.Context) *spanner.Mutation {
-	values, _ := t.columnsToValues(TenantWritableColumns())
-	return spanner.Insert("Tenants", TenantWritableColumns(), values)
-}
-
-func (t *Tenant) InsertDML(ctx context.Context) error {
+func (t *Tenant) Insert(ctx context.Context) error {
 	spannerTransaction := GetSpannerTransaction(ctx)
 	params := make(map[string]interface{})
 	params[fmt.Sprintf("TenantID")] = t.TenantID
@@ -139,6 +132,45 @@ func (t *Tenant) InsertDML(ctx context.Context) error {
     VALUES
         %s
     `, rowValue)
+
+	err := spannerTransaction.ExecContext(ctx, sql, params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (tSlice TenantSlice) InsertAll(ctx context.Context) error {
+	if len(tSlice) == 0 {
+		return nil
+	}
+
+	spannerTransaction := GetSpannerTransaction(ctx)
+	params := make(map[string]interface{})
+	valueStmts := make([]string, 0, len(tSlice))
+	for i, m := range tSlice {
+		params[fmt.Sprintf("TenantID%d", i)] = m.TenantID
+		params[fmt.Sprintf("Name%d", i)] = m.Name
+		params[fmt.Sprintf("CreatedAt%d", i)] = m.CreatedAt
+		params[fmt.Sprintf("UpdatedAt%d", i)] = m.UpdatedAt
+
+		values := []string{
+			fmt.Sprintf("@TenantID%d", i),
+			fmt.Sprintf("@Name%d", i),
+			fmt.Sprintf("@CreatedAt%d", i),
+			fmt.Sprintf("@UpdatedAt%d", i),
+		}
+		rowValue := fmt.Sprintf("(%s)", strings.Join(values, ","))
+		valueStmts = append(valueStmts, rowValue)
+	}
+
+	sql := fmt.Sprintf(`
+    INSERT INTO Tenants
+        (TenantID, Name, CreatedAt, UpdatedAt)
+    VALUES
+        %s
+    `, strings.Join(valueStmts, ","))
 
 	err := spannerTransaction.ExecContext(ctx, sql, params)
 	if err != nil {
