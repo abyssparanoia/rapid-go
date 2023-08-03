@@ -143,7 +143,7 @@ func (srSlice StaffRoleSlice) InsertAll(ctx context.Context) error {
 	return nil
 }
 
-// Delete deletes the StaffRole from the database.
+// Delete the StaffRole from the database.
 func (sr *StaffRole) Delete(ctx context.Context) error {
 	sql := fmt.Sprintf(`
         	DELETE FROM StaffRoles
