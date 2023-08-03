@@ -13,6 +13,8 @@ type {{ .Name }} struct {
 {{- end }}
 }
 
+type {{ .Name }}Slice []*{{ .Name }}
+
 {{ if .PrimaryKey }}
 func {{ .Name }}PrimaryKeys() []string {
      return []string{
@@ -123,6 +125,39 @@ func new{{ .Name }}_Decoder(cols []string) func(*spanner.Row) (*{{ .Name }}, err
 func ({{ $short }} *{{ .Name }}) Insert(ctx context.Context) *spanner.Mutation {
 	values, _ := {{ $short }}.columnsToValues({{ .Name }}WritableColumns())
 	return spanner.Insert("{{ $table }}", {{ .Name }}WritableColumns(), values)
+}
+
+func ({{ $short }} *{{ .Name }}) InsertDML(ctx context.Context, rwt *spanner.ReadWriteTransaction) error {
+	params := make(map[string]interface{})
+	{{- range .Fields }}
+		params[fmt.Sprintf("{{ .Name }}")] = {{ $short }}.{{ .Name }}
+	{{- end }}
+
+	values := []string{
+		{{- range .Fields }}
+			fmt.Sprintf("@{{ .Name }}"),
+		{{- end }}
+	}
+	rowValue := fmt.Sprintf("(%s)", strings.Join(values, ","))
+
+	sql := fmt.Sprintf(`
+    INSERT INTO $table
+        ({{ colnames .Fields }})
+    VALUES
+        %s
+    `, rowValue)
+
+	stmt := spanner.Statement{
+		SQL: sql,
+		Params: params,
+	}
+
+	_, err := rwt.Update(ctx, stmt)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 {{ if ne (fieldnames .Fields $short .PrimaryKeyFields) "" }}
