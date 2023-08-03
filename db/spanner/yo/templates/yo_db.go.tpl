@@ -79,7 +79,8 @@ type SpannerTransactable struct {
 	db *spanner.Client
 }
 
-func (t *SpannerTransactable) BeginRoTransaction(ctx context.Context, fn func(ctx context.Context) error) error {
+// read only transaction
+func (t *SpannerTransactable) ROTx(ctx context.Context, fn func(ctx context.Context) error) error {
 
 	err := (func() error {
 		ro := t.db.ReadOnlyTransaction()
@@ -99,7 +100,8 @@ func (t *SpannerTransactable) BeginRoTransaction(ctx context.Context, fn func(ct
 	return nil
 }
 
-func (t *SpannerTransactable) BeginRwTransaction(ctx context.Context, fn func(ctx context.Context) error) error {
+// read and write transaction
+func (t *SpannerTransactable) RWTx(ctx context.Context, fn func(ctx context.Context) error) error {
 	_, err := t.db.ReadWriteTransaction(ctx, func(ctx context.Context, rw *spanner.ReadWriteTransaction) error {
 
 		txn := &SpannerTransaction{rw: rw}
