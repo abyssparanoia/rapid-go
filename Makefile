@@ -41,6 +41,8 @@ generate.yo:
 		$(SPANNER_DATABASE_ID) \
 		--out internal/infrastructure/spanner/internal/dbmodel \
 		--package dbmodel \
+		--template-path db/spanner/yo/templates \
+		--suffix .go \
 		--ignore-tables "SchemaMigrations"
 	$(call format)
 
