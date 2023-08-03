@@ -5,6 +5,7 @@ package dbmodel
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/spanner"
@@ -23,6 +24,8 @@ type Staff struct {
 	CreatedAt   time.Time `spanner:"CreatedAt" json:"CreatedAt"`     // CreatedAt
 	UpdatedAt   time.Time `spanner:"UpdatedAt" json:"UpdatedAt"`     // UpdatedAt
 }
+
+type StaffSlice []*Staff
 
 func StaffPrimaryKeys() []string {
 	return []string{
@@ -147,6 +150,51 @@ func newStaff_Decoder(cols []string) func(*spanner.Row) (*Staff, error) {
 func (s *Staff) Insert(ctx context.Context) *spanner.Mutation {
 	values, _ := s.columnsToValues(StaffWritableColumns())
 	return spanner.Insert("Staffs", StaffWritableColumns(), values)
+}
+
+func (s *Staff) InsertDML(ctx context.Context, rwt *spanner.ReadWriteTransaction) error {
+	params := make(map[string]interface{})
+	params[fmt.Sprintf("StaffID")] = s.StaffID
+	params[fmt.Sprintf("TenantID")] = s.TenantID
+	params[fmt.Sprintf("Role")] = s.Role
+	params[fmt.Sprintf("AuthUID")] = s.AuthUID
+	params[fmt.Sprintf("DisplayName")] = s.DisplayName
+	params[fmt.Sprintf("ImagePath")] = s.ImagePath
+	params[fmt.Sprintf("Email")] = s.Email
+	params[fmt.Sprintf("CreatedAt")] = s.CreatedAt
+	params[fmt.Sprintf("UpdatedAt")] = s.UpdatedAt
+
+	values := []string{
+		fmt.Sprintf("@StaffID"),
+		fmt.Sprintf("@TenantID"),
+		fmt.Sprintf("@Role"),
+		fmt.Sprintf("@AuthUID"),
+		fmt.Sprintf("@DisplayName"),
+		fmt.Sprintf("@ImagePath"),
+		fmt.Sprintf("@Email"),
+		fmt.Sprintf("@CreatedAt"),
+		fmt.Sprintf("@UpdatedAt"),
+	}
+	rowValue := fmt.Sprintf("(%s)", strings.Join(values, ","))
+
+	sql := fmt.Sprintf(`
+    INSERT INTO $table
+        (StaffID, TenantID, Role, AuthUID, DisplayName, ImagePath, Email, CreatedAt, UpdatedAt)
+    VALUES
+        %s
+    `, rowValue)
+
+	stmt := spanner.Statement{
+		SQL:    sql,
+		Params: params,
+	}
+
+	_, err := rwt.Update(ctx, stmt)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Update returns a Mutation to update a row in a table. If the row does not
