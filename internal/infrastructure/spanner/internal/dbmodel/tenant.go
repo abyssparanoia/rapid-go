@@ -21,6 +21,10 @@ type Tenant struct {
 
 type TenantSlice []*Tenant
 
+func TenantTableName() string {
+	return "Tenants"
+}
+
 func TenantPrimaryKeys() []string {
 	return []string{
 		"TenantID",
