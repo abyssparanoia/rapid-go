@@ -17,6 +17,10 @@ type StaffRole struct {
 
 type StaffRoleSlice []*StaffRole
 
+func StaffRoleTableName() string {
+	return "StaffRoles"
+}
+
 func StaffRolePrimaryKeys() []string {
 	return []string{
 		"StaffRoleID",
