@@ -8,6 +8,10 @@ import (
 
 type mockTx struct{}
 
+func (mock *mockTx) ROTx(ctx context.Context, fn func(ctx context.Context) error) error {
+	return fn(ctx)
+}
+
 func (mock *mockTx) RWTx(ctx context.Context, fn func(ctx context.Context) error) error {
 	return fn(ctx)
 }
