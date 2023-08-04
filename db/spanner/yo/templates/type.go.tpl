@@ -15,6 +15,10 @@ type {{ .Name }} struct {
 
 type {{ .Name }}Slice []*{{ .Name }}
 
+func {{ .Name }}TableName() string {
+	return "{{ .Table.TableName }}"
+}
+
 {{ if .PrimaryKey }}
 func {{ .Name }}PrimaryKeys() []string {
      return []string{
