@@ -34,6 +34,20 @@ func (m *MockTransactable) EXPECT() *MockTransactableMockRecorder {
 	return m.recorder
 }
 
+// ROTx mocks base method.
+func (m *MockTransactable) ROTx(ctx context.Context, fn func(context.Context) error) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ROTx", ctx, fn)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ROTx indicates an expected call of ROTx.
+func (mr *MockTransactableMockRecorder) ROTx(ctx, fn interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ROTx", reflect.TypeOf((*MockTransactable)(nil).ROTx), ctx, fn)
+}
+
 // RWTx mocks base method.
 func (m *MockTransactable) RWTx(ctx context.Context, fn func(context.Context) error) error {
 	m.ctrl.T.Helper()
