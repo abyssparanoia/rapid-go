@@ -11,7 +11,8 @@ func TypeFrom[T any](v T) Type[T] {
 
 func TypeFromPtr[T any](v *T) Type[T] {
 	if v == nil {
-		return NewType(*v, false)
+		var zeroValue T
+		return NewType(zeroValue, false)
 	}
 	return NewType(*v, true)
 }
