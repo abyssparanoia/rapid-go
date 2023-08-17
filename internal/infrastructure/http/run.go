@@ -1,4 +1,4 @@
-package http //nolint:cyclop // this is entry package, so it's ok to have long function
+package http 
 
 import (
 	"context"
