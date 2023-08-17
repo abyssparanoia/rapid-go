@@ -67,7 +67,7 @@ func Run() {
 	}()
 
 	grpcGateway := runtime.NewServeMux(runtime.WithMarshalerOption("*", &runtime.HTTPBodyMarshaler{
-		Marshaler: &runtime.JSONPb{
+		Marshaler: &CustomJSONPb{
 			MarshalOptions: protojson.MarshalOptions{
 				UseProtoNames:   true,
 				EmitUnpopulated: true,
