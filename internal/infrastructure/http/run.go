@@ -1,4 +1,4 @@
-package http //nolint:cyclop // this is entry package, so it's ok to have long function
+package http
 
 import (
 	"context"
@@ -67,7 +67,7 @@ func Run() {
 	}()
 
 	grpcGateway := runtime.NewServeMux(runtime.WithMarshalerOption("*", &runtime.HTTPBodyMarshaler{
-		Marshaler: &runtime.JSONPb{
+		Marshaler: &CustomJSONPb{
 			MarshalOptions: protojson.MarshalOptions{
 				UseProtoNames:   true,
 				EmitUnpopulated: true,
