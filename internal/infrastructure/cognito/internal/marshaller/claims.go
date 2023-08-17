@@ -30,8 +30,8 @@ func StaffClaimsToCustomUserAttributes(
 		TenantID: claims.TenantID,
 		StaffID:  claims.StaffID,
 	}
-	if claims.StaffRole.Valid && claims.StaffRole.Value.Valid() {
-		ua.StaffRole = null.StringFrom(claims.StaffRole.Value.String())
+	if claims.StaffRole.Valid && claims.StaffRole.Value().Valid() {
+		ua.StaffRole = null.StringFrom(claims.StaffRole.Value().String())
 	}
 	return ua
 }

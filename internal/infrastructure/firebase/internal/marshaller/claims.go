@@ -37,8 +37,8 @@ func StaffClaimsToMap(m *model.StaffClaims) map[string]interface{} {
 	if m.StaffID.Valid {
 		cmap["staff_id"] = m.StaffID.String
 	}
-	if m.StaffRole.Valid && m.StaffRole.Value.Valid() {
-		cmap["staff_role"] = m.StaffRole.Value.String()
+	if m.StaffRole.Valid && m.StaffRole.Value().Valid() {
+		cmap["staff_role"] = m.StaffRole.Value().String()
 	}
 	return cmap
 }
