@@ -281,6 +281,7 @@ github.com/envoyproxy/go-control-plane v0.11.1-0.20230524094728-9239064ad72f/go.
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/envoyproxy/protoc-gen-validate v0.10.1 h1:c0g45+xCJhdgFGw7a5QAfdS4byAbud7miNWJ1WwEVf8=
 github.com/envoyproxy/protoc-gen-validate v0.10.1/go.mod h1:DRjgyB0I43LtJapqN6NiRwroiAU2PaFuvk/vjgh61ss=
+github.com/ericlagergren/decimal v0.0.0-20190420051523-6335edbaa640/go.mod h1:mdYyfAkzn9kyJ/kMk/7WE9ufl9lflh+2NvecQ5mAghs=
 github.com/ericlagergren/decimal v0.0.0-20211103172832-aca2edc11f73/go.mod h1:5sruVSMrZCk0U4hwRaGD0D8wIMFVsBWQqG74jQDFg4k=
 github.com/esimonov/ifshort v1.0.4 h1:6SID4yGWfRae/M7hkVDVVyppy8q/v9OuxNdmjLQStBA=
 github.com/esimonov/ifshort v1.0.4/go.mod h1:Pe8zjlRrJ80+q2CxHLfEOfTwxCZ4O+MuhcHcfgNWTk0=
@@ -987,6 +988,8 @@ github.com/volatiletech/randomize v0.0.1 h1:eE5yajattWqTB2/eN8df4dw+8jwAzBtbdo5s
 github.com/volatiletech/randomize v0.0.1/go.mod h1:GN3U0QYqfZ9FOJ67bzax1cqZ5q2xuj2mXrXBjWaRTlY=
 github.com/volatiletech/sqlboiler/v4 v4.14.2 h1:j5QnlR5/wYDmGDDTutI3BO+4oPBiqYoVrfReVr7VSxA=
 github.com/volatiletech/sqlboiler/v4 v4.14.2/go.mod h1:65288sb8jBLnTynTumBK6eU8C2JwWsiPjoPihEfC0/A=
+github.com/volatiletech/sqlboiler/v4 v4.15.0 h1:+twm3mA34SaUF6wB9U6QkXxkK8AKkV5EfgMSvcKWeY4=
+github.com/volatiletech/sqlboiler/v4 v4.15.0/go.mod h1:s643wqYyCQ7Ak2hMVxH7kTS0+lFPNlj+gHKUIukJ0YA=
 github.com/volatiletech/strmangle v0.0.1/go.mod h1:F6RA6IkB5vq0yTG4GQ0UsbbRcl3ni9P76i+JrTBKFFg=
 github.com/volatiletech/strmangle v0.0.4/go.mod h1:ycDvbDkjDvhC0NUU8w3fWwl5JEMTV56vTKXzR3GeR+0=
 github.com/volatiletech/strmangle v0.0.5 h1:CompJPy+lAi9h+YU/IzBR4X2RDRuAuEIP+kjFdyZXcU=
