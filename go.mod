@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	cloud.google.com/go/spanner v1.49.0
-	cloud.google.com/go/storage v1.32.0
+	cloud.google.com/go/storage v1.33.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/memeduck v1.0.1
 	github.com/aws/aws-sdk-go v1.45.6
