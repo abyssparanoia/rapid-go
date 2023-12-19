@@ -17,7 +17,7 @@ require (
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.1.1
 	github.com/go-playground/validator/v10 v10.15.3
-	github.com/go-redis/redis/v8 v8.11.5
+	github.com/go-redis/redis/v9 v9.3.1
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/goccy/go-json v0.10.2
 	github.com/golang-jwt/jwt/v5 v5.0.0
