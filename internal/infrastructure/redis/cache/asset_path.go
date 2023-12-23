@@ -8,7 +8,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/cache"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 type assetPath struct {
