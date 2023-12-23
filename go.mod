@@ -17,7 +17,6 @@ require (
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.1.1
 	github.com/go-playground/validator/v10 v10.15.3
-	github.com/go-redis/redis/v9 v9.3.1
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/goccy/go-json v0.10.2
 	github.com/golang-jwt/jwt/v5 v5.0.0
@@ -32,6 +31,7 @@ require (
 	github.com/lucsky/cuid v1.2.1
 	github.com/pkg/errors v0.9.1
 	github.com/pressly/goose/v3 v3.13.1
+	github.com/redis/go-redis/v9 v9.3.1
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	github.com/volatiletech/null/v8 v8.1.2
