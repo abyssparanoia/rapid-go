@@ -9,7 +9,7 @@ require (
 	github.com/abyssparanoia/memeduck v1.0.1
 	github.com/aws/aws-sdk-go v1.45.6
 	github.com/blendle/zapdriver v1.3.1
-	github.com/bufbuild/buf v1.23.1
+	github.com/bufbuild/buf v1.28.1
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cloudspannerecosystem/wrench v1.5.0
@@ -32,19 +32,19 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pressly/goose/v3 v3.13.1
 	github.com/redis/go-redis/v9 v9.3.1
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
 	github.com/volatiletech/null/v8 v8.1.2
 	github.com/volatiletech/sqlboiler/v4 v4.15.0
 	github.com/volatiletech/strmangle v0.0.5
 	go.mercari.io/yo v0.5.4
-	go.uber.org/zap v1.25.0
+	go.uber.org/zap v1.26.0
 	golang.org/x/tools v0.16.1
 	google.golang.org/api v0.149.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20231127180814-3a041ad873d4
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231127180814-3a041ad873d4
 	google.golang.org/grpc v1.59.0
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.31.1-0.20231027082548-f4a6c1f6e5c1
 )
 
 require (
@@ -85,7 +85,7 @@ require (
 	github.com/breml/errchkjson v0.3.6 // indirect
 	github.com/bufbuild/connect-go v1.8.0 // indirect
 	github.com/bufbuild/connect-opentelemetry-go v0.3.0 // indirect
-	github.com/bufbuild/protocompile v0.5.1 // indirect
+	github.com/bufbuild/protocompile v0.6.1-0.20231108163138-146b831231f7 // indirect
 	github.com/butuzov/ireturn v0.2.2 // indirect
 	github.com/butuzov/mirror v1.1.0 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.4.1 // indirect
@@ -96,8 +96,8 @@ require (
 	github.com/cloudspannerecosystem/memefish v0.0.0-20230403015737-24c8a514b9e7 // indirect
 	github.com/cncf/udpa/go v0.0.0-20220112060539-c52dc94e7fbe // indirect
 	github.com/cncf/xds/go v0.0.0-20230607035331-e9ce68804cb4 // indirect
-	github.com/containerd/stargz-snapshotter/estargz v0.14.3 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
+	github.com/containerd/stargz-snapshotter/estargz v0.15.1 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
 	github.com/creack/pty v1.1.18 // indirect
 	github.com/curioswitch/go-reassign v0.2.0 // indirect
 	github.com/daixiang0/gci v0.11.2 // indirect
@@ -105,10 +105,10 @@ require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
 	github.com/denis-tingaikin/go-header v0.4.3 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/docker/cli v24.0.2+incompatible // indirect
-	github.com/docker/distribution v2.8.2+incompatible // indirect
+	github.com/docker/cli v24.0.7+incompatible // indirect
+	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/docker v24.0.7+incompatible // indirect
-	github.com/docker/docker-credential-helpers v0.7.0 // indirect
+	github.com/docker/docker-credential-helpers v0.8.0 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/envoyproxy/go-control-plane v0.11.1 // indirect
@@ -123,9 +123,9 @@ require (
 	github.com/fzipp/gocyclo v0.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gedex/inflector v0.0.0-20170307190818-16278e9db813 // indirect
-	github.com/go-chi/chi/v5 v5.0.8 // indirect
+	github.com/go-chi/chi/v5 v5.0.10 // indirect
 	github.com/go-critic/go-critic v0.9.0 // indirect
-	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
@@ -156,8 +156,8 @@ require (
 	github.com/golangci/revgrep v0.5.2 // indirect
 	github.com/golangci/unconvert v0.0.0-20180507085042-28b1c447d1f4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/go-containerregistry v0.15.2 // indirect
-	github.com/google/pprof v0.0.0-20230602150820-91b7bce49751 // indirect
+	github.com/google/go-containerregistry v0.16.1 // indirect
+	github.com/google/pprof v0.0.0-20231101202521-4ca4178f5c7a // indirect
 	github.com/google/s2a-go v0.1.7 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
 	github.com/gordonklaus/ineffassign v0.0.0-20230610083614-0e73809eb601 // indirect
@@ -185,7 +185,7 @@ require (
 	github.com/kisielk/errcheck v1.6.3 // indirect
 	github.com/kisielk/gotool v1.0.0 // indirect
 	github.com/kkHAIKE/contextcheck v1.1.4 // indirect
-	github.com/klauspost/compress v1.16.6 // indirect
+	github.com/klauspost/compress v1.17.2 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/kulti/thelper v0.6.3 // indirect
 	github.com/kunwardeep/paralleltest v1.0.8 // indirect
@@ -224,7 +224,7 @@ require (
 	github.com/nunnatsa/ginkgolinter v0.14.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
-	github.com/opencontainers/image-spec v1.1.0-rc3 // indirect
+	github.com/opencontainers/image-spec v1.1.0-rc5 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
@@ -239,7 +239,7 @@ require (
 	github.com/quasilyte/gogrep v0.5.0 // indirect
 	github.com/quasilyte/regex/syntax v0.0.0-20210819130434-b3f0c404a727 // indirect
 	github.com/quasilyte/stdinfo v0.0.0-20220114132959-f7386bf02567 // indirect
-	github.com/rs/cors v1.9.0 // indirect
+	github.com/rs/cors v1.10.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryancurrah/gomodguard v1.3.0 // indirect
 	github.com/ryanrolds/sqlclosecheck v0.5.1 // indirect
@@ -269,7 +269,7 @@ require (
 	github.com/tdakkota/asciicheck v0.2.0 // indirect
 	github.com/tdewolff/parse/v2 v2.6.5 // indirect
 	github.com/tetafro/godot v1.4.15 // indirect
-	github.com/tetratelabs/wazero v1.2.1 // indirect
+	github.com/tetratelabs/wazero v1.5.0 // indirect
 	github.com/timakin/bodyclose v0.0.0-20230421092635-574207250966 // indirect
 	github.com/timonwong/loggercheck v0.9.4 // indirect
 	github.com/tomarrell/wrapcheck/v2 v2.8.1 // indirect
@@ -277,7 +277,7 @@ require (
 	github.com/ultraware/funlen v0.1.0 // indirect
 	github.com/ultraware/whitespace v0.0.5 // indirect
 	github.com/uudashr/gocognit v1.1.2 // indirect
-	github.com/vbatts/tar-split v0.11.3 // indirect
+	github.com/vbatts/tar-split v0.11.5 // indirect
 	github.com/volatiletech/inflect v0.0.1 // indirect
 	github.com/volatiletech/randomize v0.0.1 // indirect
 	github.com/xen0n/gosmopolitan v1.2.2 // indirect
@@ -286,15 +286,15 @@ require (
 	github.com/ykadowak/zerologlint v0.1.3 // indirect
 	gitlab.com/bosi/decorder v0.4.1 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/otel v1.16.0 // indirect
-	go.opentelemetry.io/otel/metric v1.16.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.16.0 // indirect
-	go.opentelemetry.io/otel/trace v1.16.0 // indirect
+	go.opentelemetry.io/otel v1.20.0 // indirect
+	go.opentelemetry.io/otel/metric v1.20.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.20.0 // indirect
+	go.opentelemetry.io/otel/trace v1.20.0 // indirect
 	go.tmz.dev/musttag v0.7.2 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
+	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
 	golang.org/x/exp/typeparams v0.0.0-20230307190834-24139beb5833 // indirect
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/net v0.19.0 // indirect
