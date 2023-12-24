@@ -1,8 +1,6 @@
 module github.com/abyssparanoia/rapid-go
 
-go 1.21
-
-toolchain go1.21.5
+go 1.20
 
 require (
 	cloud.google.com/go/spanner v1.53.0
@@ -62,6 +60,7 @@ require (
 	cloud.google.com/go/longrunning v0.5.4 // indirect
 	connectrpc.com/connect v1.12.0 // indirect
 	connectrpc.com/otelconnect v0.6.0 // indirect
+	dario.cat/mergo v1.0.0 // indirect
 	github.com/4meepo/tagalign v1.3.3 // indirect
 	github.com/Abirdcfly/dupword v0.0.13 // indirect
 	github.com/Antonboom/errname v0.1.12 // indirect
