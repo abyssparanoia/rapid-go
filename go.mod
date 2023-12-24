@@ -13,7 +13,7 @@ require (
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cloudspannerecosystem/wrench v1.5.0
-	github.com/cosmtrek/air v1.44.0
+	github.com/cosmtrek/air v1.49.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.1.1
 	github.com/go-playground/validator/v10 v10.15.3
@@ -30,7 +30,7 @@ require (
 	github.com/lestrrat-go/jwx/v2 v2.0.18
 	github.com/lucsky/cuid v1.2.1
 	github.com/pkg/errors v0.9.1
-	github.com/pressly/goose/v3 v3.13.1
+	github.com/pressly/goose/v3 v3.17.0
 	github.com/redis/go-redis/v9 v9.3.1
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
@@ -42,7 +42,7 @@ require (
 	golang.org/x/tools v0.16.1
 	google.golang.org/api v0.149.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20231212172506-995d672761c0
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20231211222908-989df2bf70f3
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20231212172506-995d672761c0
 	google.golang.org/grpc v1.60.0
 	google.golang.org/protobuf v1.31.1-0.20231027082548-f4a6c1f6e5c1
 )
@@ -60,6 +60,7 @@ require (
 	cloud.google.com/go/longrunning v0.5.4 // indirect
 	connectrpc.com/connect v1.12.0 // indirect
 	connectrpc.com/otelconnect v0.6.0 // indirect
+	dario.cat/mergo v1.0.0 // indirect
 	github.com/4meepo/tagalign v1.3.3 // indirect
 	github.com/Abirdcfly/dupword v0.0.13 // indirect
 	github.com/Antonboom/errname v0.1.12 // indirect
@@ -217,7 +218,7 @@ require (
 	github.com/maratori/testpackage v1.1.1 // indirect
 	github.com/matoous/godox v0.0.0-20230222163458-006bad1f9d26 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 // indirect
 	github.com/mbilski/exhaustivestruct v1.2.0 // indirect
@@ -245,7 +246,7 @@ require (
 	github.com/prometheus/client_golang v1.12.1 // indirect
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
-	github.com/prometheus/procfs v0.10.1 // indirect
+	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/quasilyte/go-ruleguard v0.4.0 // indirect
 	github.com/quasilyte/gogrep v0.5.0 // indirect
 	github.com/quasilyte/regex/syntax v0.0.0-20210819130434-b3f0c404a727 // indirect
@@ -259,6 +260,7 @@ require (
 	github.com/sashamelentyev/usestdlibvars v1.24.0 // indirect
 	github.com/securego/gosec/v2 v2.18.2 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
+	github.com/sethvargo/go-retry v0.2.4 // indirect
 	github.com/shazow/go-diff v0.0.0-20160112020656-b6b7b6733b8c // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
