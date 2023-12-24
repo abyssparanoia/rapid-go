@@ -1,6 +1,8 @@
 module github.com/abyssparanoia/rapid-go
 
-go 1.20
+go 1.21
+
+toolchain go1.21.5
 
 require (
 	cloud.google.com/go/spanner v1.53.0
@@ -13,7 +15,7 @@ require (
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cloudspannerecosystem/wrench v1.5.0
-	github.com/cosmtrek/air v1.44.0
+	github.com/cosmtrek/air v1.49.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.1.1
 	github.com/go-playground/validator/v10 v10.15.3
