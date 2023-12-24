@@ -13,7 +13,7 @@ require (
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cloudspannerecosystem/wrench v1.5.0
-	github.com/cosmtrek/air v1.44.0
+	github.com/cosmtrek/air v1.49.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.1.1
 	github.com/go-playground/validator/v10 v10.15.3
@@ -60,6 +60,7 @@ require (
 	cloud.google.com/go/longrunning v0.5.4 // indirect
 	connectrpc.com/connect v1.12.0 // indirect
 	connectrpc.com/otelconnect v0.6.0 // indirect
+	dario.cat/mergo v1.0.0 // indirect
 	github.com/4meepo/tagalign v1.3.3 // indirect
 	github.com/Abirdcfly/dupword v0.0.13 // indirect
 	github.com/Antonboom/errname v0.1.12 // indirect
