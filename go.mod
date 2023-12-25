@@ -1,6 +1,6 @@
 module github.com/abyssparanoia/rapid-go
 
-go 1.21.5
+go 1.21
 
 require (
 	cloud.google.com/go/spanner v1.54.0
