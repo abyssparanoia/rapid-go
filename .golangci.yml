@@ -54,6 +54,7 @@ linters-settings:
       - "^github.com/stretchr/testify/mock.Mock$"
       - "^github.com/testcontainers/testcontainers-go.+Request$"
       - "^github.com/testcontainers/testcontainers-go.FromDockerfile$"
+      - "^github.com/aws/aws-sdk-go$"
       - "^golang.org/x/tools/go/analysis.Analyzer$"
       - "^google.golang.org/protobuf/.+Options$"
       - "^gopkg.in/yaml.v3.Node$"
