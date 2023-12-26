@@ -12,7 +12,7 @@ require (
 	github.com/bufbuild/buf v1.28.1
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/cloudspannerecosystem/wrench v1.5.0
+	github.com/cloudspannerecosystem/wrench v1.6.0
 	github.com/cosmtrek/air v1.49.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.1.1
