@@ -7,6 +7,7 @@ require (
 	cloud.google.com/go/storage v1.36.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/memeduck v1.0.3
+	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/aws/aws-sdk-go v1.49.9
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.28.1
