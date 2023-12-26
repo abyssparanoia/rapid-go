@@ -211,6 +211,7 @@ github.com/butuzov/ireturn v0.2.2 h1:jWI36dxXwVrI+RnXDwux2IZOewpmfv930OuIRfaBUJ0
 github.com/butuzov/ireturn v0.2.2/go.mod h1:RfGHUvvAuFFxoHKf4Z8Yxuh6OjlCw1KvR2zM1NFHeBk=
 github.com/butuzov/mirror v1.1.0 h1:ZqX54gBVMXu78QLoiqdwpl2mgmoOJTk7s4p4o+0avZI=
 github.com/butuzov/mirror v1.1.0/go.mod h1:8Q0BdQU6rC6WILDiBM60DBfvV78OLJmMmixe7GF45AE=
+github.com/caarlos0/env/v10 v10.0.0/go.mod h1:ZfulV76NvVPw3tm591U4SwL3Xx9ldzBP9aGxzeN7G18=
 github.com/caarlos0/env/v9 v9.0.0 h1:SI6JNsOA+y5gj9njpgybykATIylrRMklbs5ch6wO6pc=
 github.com/caarlos0/env/v9 v9.0.0/go.mod h1:ye5mlCVMYh6tZ+vCgrs/B95sj88cg5Tlnc0XIzgZ020=
 github.com/catenacyber/perfsprint v0.2.0 h1:azOocHLscPjqXVJ7Mf14Zjlkn4uNua0+Hcg1wTR6vUo=
