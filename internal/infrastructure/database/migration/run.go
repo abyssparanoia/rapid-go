@@ -8,7 +8,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
-	"github.com/caarlos0/env/v9"
+	"github.com/caarlos0/env/v10"
 	"github.com/pressly/goose/v3"
 )
 
