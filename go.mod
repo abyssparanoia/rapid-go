@@ -11,7 +11,7 @@ require (
 	github.com/aws/aws-sdk-go v1.49.10
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.28.1
-	github.com/caarlos0/env/v9 v9.0.0
+	github.com/caarlos0/env/v10 v10.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cloudspannerecosystem/wrench v1.6.0
 	github.com/cosmtrek/air v1.49.0
@@ -26,7 +26,6 @@ require (
 	github.com/google/uuid v1.5.0
 	github.com/googleapis/gax-go/v2 v2.12.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1
 	github.com/kauche/splanter v0.1.2
 	github.com/lestrrat-go/jwx/v2 v2.0.18
