@@ -12,7 +12,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
-	"github.com/caarlos0/env/v9"
+	"github.com/caarlos0/env/v10"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/volatiletech/null/v8"
 	"go.uber.org/zap"
