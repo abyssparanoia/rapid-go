@@ -6,7 +6,7 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
 	"google.golang.org/grpc"
 )
 
