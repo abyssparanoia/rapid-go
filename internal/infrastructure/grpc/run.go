@@ -17,9 +17,8 @@ import (
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1"
 	debug_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/debug_api/v1"
 	public_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/public_api/v1"
-	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -60,15 +59,13 @@ func NewServer(ctx context.Context,
 				Timeout:               10 * time.Second,
 			},
 		),
-		grpc.UnaryInterceptor(
-			grpcmiddleware.ChainUnaryServer(
-				requestLogInterceptor.UnaryServerInterceptor(),
-				grpc_recovery.UnaryServerInterceptor(
-					grpc_recovery.WithRecoveryHandler(recoverFuncFactory(logger)),
-				),
-				grpc_auth.UnaryServerInterceptor(authFunc.Authenticate),
-				authorizationInterceptor.UnaryServerInterceptor(),
+		grpc.ChainUnaryInterceptor(
+			requestLogInterceptor.UnaryServerInterceptor(),
+			grpc_recovery.UnaryServerInterceptor(
+				grpc_recovery.WithRecoveryHandler(recoverFuncFactory(logger)),
 			),
+			grpc_auth.UnaryServerInterceptor(authFunc.Authenticate),
+			authorizationInterceptor.UnaryServerInterceptor(),
 		),
 	)
 
