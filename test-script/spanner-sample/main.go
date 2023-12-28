@@ -13,7 +13,6 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
 	"github.com/caarlos0/env/v10"
-	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/volatiletech/null/v8"
 	"go.uber.org/zap"
 )
@@ -26,8 +25,8 @@ func main() {
 		panic(err)
 	}
 
-	logger := logger.New()
-	ctx = ctxzap.ToContext(ctx, logger)
+	l := logger.New()
+	ctx = logger.ToContext(ctx, l)
 
 	spannerCli := spanner.NewClient(
 		e.SpannerProjectID,
@@ -68,7 +67,7 @@ func main() {
 		if err != nil {
 			return err
 		}
-		logger.Info("tenants", zap.Any("tenants", got))
+		l.Info("tenants", zap.Any("tenants", got))
 		return nil
 	}); err != nil {
 		panic(err)
