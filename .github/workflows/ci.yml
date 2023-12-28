@@ -19,7 +19,7 @@ jobs:
           cache: false
 
       - name: Check typos
-        uses: crate-ci/typos@v1.16.25
+        uses: crate-ci/typos@v1.16.26
         with:
           files: ./
           config: ./_typos.toml
