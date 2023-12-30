@@ -39,7 +39,7 @@ func (d *Dependency) Inject(
 	ctx context.Context,
 	e *environment.Environment,
 ) {
-	d.DatabaseCli = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
+	d.DatabaseCli = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, e.DBLogEnable)
 	redisCli := redis.NewClient(e.RedisHost, e.RedisPort, e.RedisUsername, e.RedisPassword, e.RedisTLSEnable)
 
 	firebaseCli := firebase.NewClient(e.GCPProjectID)
