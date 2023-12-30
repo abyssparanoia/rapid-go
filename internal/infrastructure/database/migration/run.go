@@ -32,7 +32,7 @@ func RunUp() {
 
 	logger.Info("start database schema migration")
 
-	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
+	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
 
 	goose.SetBaseFS(migration_files.EmbedMigrations)
 
