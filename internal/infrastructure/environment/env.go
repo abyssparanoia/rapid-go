@@ -11,10 +11,11 @@ type Environment struct {
 }
 
 type DatabaseEnvironment struct {
-	DBHost     string `env:"DB_HOST,required"`
-	DBUser     string `env:"DB_USER,required"`
-	DBPassword string `env:"DB_PASSWORD,required"`
-	DBDatabase string `env:"DB_DATABASE,required"`
+	DBHost      string `env:"DB_HOST,required"`
+	DBUser      string `env:"DB_USER,required"`
+	DBPassword  string `env:"DB_PASSWORD,required"`
+	DBDatabase  string `env:"DB_DATABASE,required"`
+	DBLogEnable bool   `env:"DB_LOG_ENABLE" envDefault:"false"`
 }
 
 type RedisEnvironment struct {
