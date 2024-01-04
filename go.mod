@@ -26,7 +26,7 @@ require (
 	github.com/google/uuid v1.5.0
 	github.com/googleapis/gax-go/v2 v2.12.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.1
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.0
 	github.com/kauche/splanter v0.1.2
 	github.com/lestrrat-go/jwx/v2 v2.0.18
 	github.com/lucsky/cuid v1.2.1
