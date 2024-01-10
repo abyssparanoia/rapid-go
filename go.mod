@@ -3,7 +3,7 @@ module github.com/abyssparanoia/rapid-go
 go 1.21
 
 require (
-	cloud.google.com/go/spanner v1.54.0
+	cloud.google.com/go/spanner v1.55.0
 	cloud.google.com/go/storage v1.36.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/memeduck v1.0.3
