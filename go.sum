@@ -1103,6 +1103,8 @@ github.com/volatiletech/sqlboiler/v4 v4.15.0 h1:+twm3mA34SaUF6wB9U6QkXxkK8AKkV5E
 github.com/volatiletech/sqlboiler/v4 v4.15.0/go.mod h1:s643wqYyCQ7Ak2hMVxH7kTS0+lFPNlj+gHKUIukJ0YA=
 github.com/volatiletech/sqlboiler/v4 v4.16.0 h1:FMzn7eE9FCmnCQYzzV5mzqsUzYlxuozoG5s5nb+k9JA=
 github.com/volatiletech/sqlboiler/v4 v4.16.0/go.mod h1:B14BPBGTrJ2X6l7lwnvV/iXgYR48+ozGSlzHI3frl6U=
+github.com/volatiletech/sqlboiler/v4 v4.16.1 h1:utSd0n+zoasYAGOwbeGzzLb3p9vdItRyYR6zm20SVP0=
+github.com/volatiletech/sqlboiler/v4 v4.16.1/go.mod h1:B14BPBGTrJ2X6l7lwnvV/iXgYR48+ozGSlzHI3frl6U=
 github.com/volatiletech/strmangle v0.0.1/go.mod h1:F6RA6IkB5vq0yTG4GQ0UsbbRcl3ni9P76i+JrTBKFFg=
 github.com/volatiletech/strmangle v0.0.5 h1:CompJPy+lAi9h+YU/IzBR4X2RDRuAuEIP+kjFdyZXcU=
 github.com/volatiletech/strmangle v0.0.5/go.mod h1:ycDvbDkjDvhC0NUU8w3fWwl5JEMTV56vTKXzR3GeR+0=
