@@ -8,7 +8,7 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/memeduck v1.0.3
 	github.com/avast/retry-go v3.0.0+incompatible
-	github.com/aws/aws-sdk-go v1.50.4
+	github.com/aws/aws-sdk-go v1.50.5
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.28.1
 	github.com/caarlos0/env/v10 v10.0.0
@@ -43,8 +43,8 @@ require (
 	golang.org/x/tools v0.16.1
 	google.golang.org/api v0.159.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240125205218-1f4bbc51befe
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240116215550-a9fa1716bcac
-	google.golang.org/grpc v1.60.1
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240125205218-1f4bbc51befe
+	google.golang.org/grpc v1.61.0
 	google.golang.org/protobuf v1.32.0
 )
 
