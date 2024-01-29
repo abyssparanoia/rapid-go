@@ -13,9 +13,9 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/volatiletech/null/v8"
+	"go.uber.org/mock/gomock"
 )
 
 func TestAdminAdminTenantInteractor_Get(t *testing.T) {
