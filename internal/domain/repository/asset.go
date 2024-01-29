@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-//go:generate mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
+//go:generate go run go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
 type Asset interface {
 	GenerateWritePresignedURL(
 		ctx context.Context,

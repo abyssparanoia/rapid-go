@@ -6,7 +6,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 )
 
-//go:generate mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_service
+//go:generate go run go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_service
 type Asset interface {
 	CreatePresignedURL(
 		ctx context.Context,
