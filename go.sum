@@ -796,6 +796,8 @@ github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182aff
 github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369/go.mod h1:BSXmuO+STAnVfrANrmjBb36TMTDstsz7MSK+HVaYKv4=
 github.com/mbilski/exhaustivestruct v1.2.0 h1:wCBmUnSYufAHO6J4AVWY6ff+oxWxsVFrwgOdMUQePUo=
 github.com/mbilski/exhaustivestruct v1.2.0/go.mod h1:OeTBVxQWoEmB2J2JCHmXWPJ0aksxSUOUy+nvtVEfzXc=
+github.com/mfridman/interpolate v0.0.2 h1:pnuTK7MQIxxFz1Gr+rjSIx9u7qVjf5VOoM/u6BbAxPY=
+github.com/mfridman/interpolate v0.0.2/go.mod h1:p+7uk6oE07mpE/Ik1b8EckO0O4ZXiGAfshKBWLUM9Xg=
 github.com/mgechev/revive v1.3.4 h1:k/tO3XTaWY4DEHal9tWBkkUMJYO/dLDVyMmAQxmIMDc=
 github.com/mgechev/revive v1.3.4/go.mod h1:W+pZCMu9qj8Uhfs1iJMQsEFLRozUfvwFwqVvRbSNLVw=
 github.com/microsoft/go-mssqldb v0.17.0/go.mod h1:OkoNGhGEs8EZqchVTtochlXruEhEOaO4S0d2sB5aeGQ=
@@ -892,6 +894,8 @@ github.com/posener/complete v1.1.1/go.mod h1:em0nMJCgc9GFtwrmVmEMR/ZL6WyhyjMBndr
 github.com/posener/complete v1.2.3/go.mod h1:WZIdtGGp+qx0sLrYKtIRAruyNpv6hFCicSgv7Sy7s/s=
 github.com/pressly/goose/v3 v3.17.0 h1:fT4CL3LRm4kfyLuPWzDFAoxjR5ZHjeJ6uQhibQtBaIs=
 github.com/pressly/goose/v3 v3.17.0/go.mod h1:22aw7NpnCPlS86oqkO/+3+o9FuCaJg4ZVWRUO3oGzHQ=
+github.com/pressly/goose/v3 v3.18.0 h1:CUQKjZ0li91GLrMekHPR0yz4UyjT21AqyhSm/ERcPTo=
+github.com/pressly/goose/v3 v3.18.0/go.mod h1:NTDry9taDJXEV6IqkABnZqm1MRGOSrCWrNEz1x6f4wI=
 github.com/prometheus/client_golang v0.9.1/go.mod h1:7SWBe2y4D6OKWSNQJUaRYU/AaXPKyh/dDVn+NZz0KFw=
 github.com/prometheus/client_golang v1.0.0/go.mod h1:db9x61etRT2tGnBNRi70OPL5FsnadC4Ky3P0J6CfImo=
 github.com/prometheus/client_golang v1.4.0/go.mod h1:e9GMxYsXl05ICDXkRhurwBS4Q3OK1iX/F2sw+iXX5zU=
