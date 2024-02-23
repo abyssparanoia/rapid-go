@@ -191,12 +191,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/definitions/AdminV1ServiceUpdateTenantBody"
             }
           }
         ],
@@ -207,6 +202,14 @@
     }
   },
   "definitions": {
+    "AdminV1ServiceUpdateTenantBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "v1AssetType": {
       "type": "string",
       "enum": [
