@@ -23,7 +23,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/golangci/golangci-lint v1.56.2
 	github.com/google/uuid v1.6.0
-	github.com/googleapis/gax-go/v2 v2.12.0
+	github.com/googleapis/gax-go/v2 v2.12.1
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/kauche/splanter v0.1.2
@@ -41,7 +41,7 @@ require (
 	go.uber.org/mock v0.4.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/tools v0.18.0
-	google.golang.org/api v0.163.0
+	google.golang.org/api v0.164.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240213162025-012b6fc9bca9
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240213162025-012b6fc9bca9
 	google.golang.org/grpc v1.61.1
@@ -325,7 +325,7 @@ require (
 	golang.org/x/exp/typeparams v0.0.0-20231219180239-dc181d75b848 // indirect
 	golang.org/x/mod v0.15.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
-	golang.org/x/oauth2 v0.16.0 // indirect
+	golang.org/x/oauth2 v0.17.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/term v0.17.0 // indirect
