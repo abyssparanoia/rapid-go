@@ -3,12 +3,12 @@ module github.com/abyssparanoia/rapid-go
 go 1.21
 
 require (
-	cloud.google.com/go/spanner v1.56.0
-	cloud.google.com/go/storage v1.37.0
+	cloud.google.com/go/spanner v1.57.0
+	cloud.google.com/go/storage v1.38.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/memeduck v1.0.3
 	github.com/avast/retry-go v3.0.0+incompatible
-	github.com/aws/aws-sdk-go v1.50.16
+	github.com/aws/aws-sdk-go v1.50.22
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.29.0
 	github.com/caarlos0/env/v10 v10.0.0
@@ -43,8 +43,8 @@ require (
 	golang.org/x/tools v0.17.0
 	google.golang.org/api v0.163.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240213162025-012b6fc9bca9
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240205150955-31a09d347014
-	google.golang.org/grpc v1.61.0
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240213162025-012b6fc9bca9
+	google.golang.org/grpc v1.61.1
 	google.golang.org/protobuf v1.32.0
 )
 
