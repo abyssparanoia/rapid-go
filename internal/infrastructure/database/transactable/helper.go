@@ -12,9 +12,7 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
-var (
-	ctxTxKey = struct{}{}
-)
+var ctxTxKey = struct{}{}
 
 // GetContextExecutor :.
 func GetContextExecutor(ctx context.Context) boil.ContextExecutor {
