@@ -11,9 +11,7 @@ import (
 
 type staffContextKey struct{}
 
-var (
-	staffSessionContextKey staffContextKey = staffContextKey{}
-)
+var staffSessionContextKey staffContextKey = staffContextKey{}
 
 func SaveStaffSessionContext(
 	ctx context.Context,

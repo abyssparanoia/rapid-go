@@ -13,4 +13,5 @@ import (
 	_ "go.mercari.io/yo"                                             //nolint
 	_ "go.uber.org/mock/mockgen"                                     //nolint
 	_ "golang.org/x/tools/cmd/goimports"                             //nolint
+	_ "mvdan.cc/gofumpt"                                             //nolint
 )
