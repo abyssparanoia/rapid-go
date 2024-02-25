@@ -39,7 +39,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.6
 	go.mercari.io/yo v0.5.5
 	go.uber.org/mock v0.4.0
-	go.uber.org/zap v1.26.0
+	go.uber.org/zap v1.27.0
 	golang.org/x/tools v0.18.0
 	google.golang.org/api v0.164.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240221002015-b0ce06bbee7c
