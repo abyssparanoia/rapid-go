@@ -41,7 +41,7 @@ require (
 	go.uber.org/mock v0.4.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/tools v0.18.0
-	google.golang.org/api v0.164.0
+	google.golang.org/api v0.167.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240221002015-b0ce06bbee7c
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240221002015-b0ce06bbee7c
 	google.golang.org/grpc v1.61.1
@@ -311,8 +311,8 @@ require (
 	go-simpler.org/musttag v0.8.0 // indirect
 	go-simpler.org/sloglint v0.4.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.47.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.47.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.48.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.48.0 // indirect
 	go.opentelemetry.io/otel v1.23.1 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.23.1 // indirect
 	go.opentelemetry.io/otel/metric v1.23.1 // indirect
