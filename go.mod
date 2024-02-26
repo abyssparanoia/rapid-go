@@ -43,7 +43,7 @@ require (
 	golang.org/x/tools v0.18.0
 	google.golang.org/api v0.164.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240221002015-b0ce06bbee7c
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240213162025-012b6fc9bca9
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240221002015-b0ce06bbee7c
 	google.golang.org/grpc v1.61.1
 	google.golang.org/protobuf v1.32.0
 	mvdan.cc/gofumpt v0.6.0
