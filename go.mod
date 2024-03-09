@@ -5,7 +5,7 @@ go 1.22
 toolchain go1.22.0
 
 require (
-	cloud.google.com/go/spanner v1.57.0
+	cloud.google.com/go/spanner v1.58.0
 	cloud.google.com/go/storage v1.38.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/memeduck v1.0.3
@@ -55,7 +55,7 @@ require (
 	4d63.com/gocheckcompilerdirectives v1.2.1 // indirect
 	4d63.com/gochecknoglobals v0.2.1 // indirect
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.32.0-20231115204500-e097f827e652.1 // indirect
-	cloud.google.com/go v0.112.0 // indirect
+	cloud.google.com/go v0.112.1 // indirect
 	cloud.google.com/go/compute v1.24.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/firestore v1.14.0 // indirect
