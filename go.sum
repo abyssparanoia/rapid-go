@@ -1288,6 +1288,7 @@ go.etcd.io/etcd/client/v2 v2.305.4/go.mod h1:Ud+VUwIi9/uQHOMA+4ekToJ12lTxlv0zB/+
 go.etcd.io/etcd/client/v3 v3.5.4/go.mod h1:ZaRkVgBZC+L+dLCjTcF1hRXpgZXQPOvnA/Ak/gq3kiY=
 go.mercari.io/yo v0.5.6 h1:Zw2t7DQa7K4NF0Ubwl9B2ELt2cKuzAVMLV5Qwy+TZtE=
 go.mercari.io/yo v0.5.6/go.mod h1:D75yQJ0CfIfdws3NmWz3z4WC4cHSHVdz/9JHY9eD3aI=
+go.mercari.io/yo v0.5.7/go.mod h1:2xF5cXdaqTCVEaF6ShUT6RwBZp78a9pg/h5IZdsq34o=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
