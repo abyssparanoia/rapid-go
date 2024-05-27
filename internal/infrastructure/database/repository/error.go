@@ -15,5 +15,8 @@ func handleError(err error) error {
 	if goerrors.Is(err, context.Canceled) {
 		return errors.CanceledErr.Wrap(err)
 	}
+	if goerrors.Is(err, context.DeadlineExceeded) {
+		return errors.CanceledErr.Wrap(err)
+	}
 	return errors.InternalErr.Wrap(err)
 }
