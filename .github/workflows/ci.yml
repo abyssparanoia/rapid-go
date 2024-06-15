@@ -26,8 +26,19 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      SPANNER_EMULATOR_HOST: localhost:9010
+      SPANNER_EMULATOR_HOST_REST: localhost:9020
+      SPANNER_PROJECT_ID: test_project
+      SPANNER_INSTANCE_ID: test-instance
+      SPANNER_DATABASE_ID: test_database
     needs: build
-
+    services:
+      spanner_emulator:
+        image: gcr.io/cloud-spanner-emulator/emulator:1.5.19
+        ports:
+          - 9010:9010
+          - 9020:9020
     steps:
       - uses: actions/checkout@v4
 
@@ -36,6 +47,11 @@ jobs:
         with:
           go-version-file: ./go.mod
           cache: true
+
+      - name: setup spanner emulator
+        run: |
+          curl -s "$SPANNER_EMULATOR_HOST_REST/v1/projects/$SPANNER_PROJECT_ID/instances" --data '{"instanceId": "'$SPANNER_INSTANCE_ID'"}'
+          go run github.com/cloudspannerecosystem/wrench create --directory ./db/spanner
 
       - name: test
         run: make test
