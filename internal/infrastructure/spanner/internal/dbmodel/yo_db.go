@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"cloud.google.com/go/spanner"
 	"github.com/cenkalti/backoff"
@@ -158,7 +159,14 @@ func NewTransactable(
 	db *spanner.Client,
 ) *SpannerTransactable {
 	bo := backoff.WithMaxRetries(
-		backoff.NewExponentialBackOff(),
+		&backoff.ExponentialBackOff{
+			InitialInterval:     backoff.DefaultInitialInterval,
+			RandomizationFactor: backoff.DefaultRandomizationFactor,
+			Multiplier:          backoff.DefaultMultiplier,
+			MaxInterval:         5 * time.Second,
+			MaxElapsedTime:      10 * time.Minute,
+			Clock:               backoff.SystemClock,
+		},
 		5,
 	)
 	return &SpannerTransactable{
