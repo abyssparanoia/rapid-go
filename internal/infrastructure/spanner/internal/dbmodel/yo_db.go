@@ -6,9 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/cenkalti/backoff"
 
 	"cloud.google.com/go/spanner"
+	"github.com/cenkalti/backoff"
 	"github.com/googleapis/gax-go/v2/apierror"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
@@ -145,8 +145,8 @@ func (t *SpannerTransactable) RWTx(ctx context.Context, fn func(ctx context.Cont
 	return nil
 }
 
-func (t *SpannerTransactable) retryable(err error)bool{
-	switch spanner.ErrCode(err){
+func (t *SpannerTransactable) retryable(err error) bool {
+	switch spanner.ErrCode(err) {
 	case codes.Unknown, codes.DeadlineExceeded:
 		return true
 	default:
