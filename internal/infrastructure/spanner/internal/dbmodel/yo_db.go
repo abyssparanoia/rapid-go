@@ -6,8 +6,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"cloud.google.com/go/spanner"
+	"github.com/cenkalti/backoff"
 	"github.com/googleapis/gax-go/v2/apierror"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
@@ -92,6 +94,7 @@ func GetSpannerTransaction(ctx context.Context) *SpannerTransaction {
 
 type SpannerTransactable struct {
 	db *spanner.Client
+	bo backoff.BackOff
 }
 
 // read only transaction
@@ -117,28 +120,59 @@ func (t *SpannerTransactable) ROTx(ctx context.Context, fn func(ctx context.Cont
 
 // read and write transaction
 func (t *SpannerTransactable) RWTx(ctx context.Context, fn func(ctx context.Context) error) error {
-	_, err := t.db.ReadWriteTransaction(ctx, func(ctx context.Context, rw *spanner.ReadWriteTransaction) error {
+	err := backoff.Retry(func() error {
+		_, err := t.db.ReadWriteTransaction(ctx, func(ctx context.Context, rw *spanner.ReadWriteTransaction) error {
 
-		txn := &SpannerTransaction{rw: rw}
-		ctxWithTx := context.WithValue(ctx, &ctxTKey, txn)
-		// トランザクション内で処理を実行
-		if err := fn(ctxWithTx); err != nil {
+			txn := &SpannerTransaction{rw: rw}
+			ctxWithTx := context.WithValue(ctx, &ctxTKey, txn)
+			// トランザクション内で処理を実行
+			if err := fn(ctxWithTx); err != nil {
+				return err
+			}
+
+			return nil
+		})
+
+		if t.retryable(err) {
 			return err
 		}
 
-		return nil
-	})
+		return backoff.Permanent(err)
+	}, backoff.WithContext(t.bo, ctx))
+
 	if err != nil {
 		return err
 	}
-
 	return nil
+}
+
+func (t *SpannerTransactable) retryable(err error) bool {
+	switch spanner.ErrCode(err) {
+	case codes.Unknown, codes.DeadlineExceeded:
+		return true
+	default:
+		return false
+	}
 }
 
 func NewTransactable(
 	db *spanner.Client,
 ) *SpannerTransactable {
-	return &SpannerTransactable{db}
+	bo := backoff.WithMaxRetries(
+		&backoff.ExponentialBackOff{
+			InitialInterval:     backoff.DefaultInitialInterval,
+			RandomizationFactor: backoff.DefaultRandomizationFactor,
+			Multiplier:          backoff.DefaultMultiplier,
+			MaxInterval:         5 * time.Second,
+			MaxElapsedTime:      10 * time.Minute,
+			Clock:               backoff.SystemClock,
+		},
+		5,
+	)
+	return &SpannerTransactable{
+		db,
+		bo,
+	}
 }
 
 type SpannerTransaction struct {
