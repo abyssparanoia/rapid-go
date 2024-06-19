@@ -32,7 +32,7 @@ require (
 	github.com/lestrrat-go/jwx/v2 v2.0.21
 	github.com/lucsky/cuid v1.2.1
 	github.com/pkg/errors v0.9.1
-	github.com/pressly/goose/v3 v3.19.2
+	github.com/pressly/goose/v3 v3.21.1
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
@@ -325,7 +325,7 @@ require (
 	go.uber.org/automaxprocs v1.5.3 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
-	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225 // indirect
+	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20240314144324-c7f7c6466f7f // indirect
 	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
