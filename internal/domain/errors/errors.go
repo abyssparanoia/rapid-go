@@ -11,6 +11,7 @@ const (
 	InvalidAdminRequestUserErr UnauthorizedError = "E100005"
 	AssetInvalidErr            BadRequestError   = "E100006"
 	AssetNotFoundErr           NotFoundError     = "E100007"
+	CanceledErr                CanceledError     = "E900001"
 
 	// tenant error.
 	TenantNotFoundErr NotFoundError = "E200101"
