@@ -11,7 +11,7 @@ test:
 
 .PHONY: http.dev
 http.dev:
-	@go run github.com/cosmtrek/air -c .air.toml
+	@go run github.com/air-verse/air -c .air.toml
 
 .PHONY: generate.mock
 generate.mock:
