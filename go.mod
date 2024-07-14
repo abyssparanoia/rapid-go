@@ -18,7 +18,7 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cloudspannerecosystem/wrench v1.8.0
 	github.com/friendsofgo/errors v0.9.2
-	github.com/go-faker/faker/v4 v4.4.1
+	github.com/go-faker/faker/v4 v4.4.2
 	github.com/go-playground/validator/v10 v10.20.0
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/goccy/go-json v0.10.2
