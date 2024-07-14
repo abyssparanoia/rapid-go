@@ -10,7 +10,7 @@ import "rapid/admin_api/v1/api_tenant.proto";
 service AdminV1Service {
   rpc CreateAssetPresignedURL(CreateAssetPresignedURLRequest) returns (CreateAssetPresignedURLResponse) {
     option (google.api.http) = {
-      post: "/admin/v1/assets/-/presigned_url",
+      post: "/admin/v1/assets/-/presigned_url"
       body: "*"
     };
   }
@@ -22,13 +22,13 @@ service AdminV1Service {
   }
   rpc CreateTenant(CreateTenantRequest) returns (CreateTenantResponse) {
     option (google.api.http) = {
-      post: "/admin/v1/tenants",
+      post: "/admin/v1/tenants"
       body: "*"
     };
   }
   rpc UpdateTenant(UpdateTenantRequest) returns (UpdateTenantResponse) {
     option (google.api.http) = {
-      patch: "/admin/v1/tenants/{tenant_id}",
+      patch: "/admin/v1/tenants/{tenant_id}"
       body: "*"
     };
   }
@@ -37,7 +37,7 @@ service AdminV1Service {
   }
   rpc CreateStaff(CreateStaffRequest) returns (CreateStaffResponse) {
     option (google.api.http) = {
-      post: "/admin/v1/staffs",
+      post: "/admin/v1/staffs"
       body: "*"
     };
   }
