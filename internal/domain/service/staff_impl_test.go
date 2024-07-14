@@ -11,9 +11,9 @@ import (
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/volatiletech/null/v8"
+	"go.uber.org/mock/gomock"
 )
 
 func TestStaffService_Create(t *testing.T) {

@@ -26,6 +26,7 @@ func NewClient(
 	user,
 	password,
 	database string,
+	logEnable bool,
 ) *Client {
 	dbs := fmt.Sprintf("%s:%s@%s/%s?parseTime=true&charset=utf8mb4",
 		user,
@@ -44,7 +45,7 @@ func NewClient(
 	}
 	boil.SetLocation(time.Local)
 	boil.SetDB(db)
-	boil.DebugMode = true
+	boil.DebugMode = logEnable
 	return &Client{
 		DB: db,
 	}

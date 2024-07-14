@@ -61,10 +61,8 @@ func (j *CustomJSONPb) marshalTo(w io.Writer, v interface{}) error {
 	return err
 }
 
-var (
-	// protoMessageType is stored to prevent constant lookup of the same type at runtime.
-	protoMessageType = reflect.TypeOf((*proto.Message)(nil)).Elem()
-)
+// protoMessageType is stored to prevent constant lookup of the same type at runtime.
+var protoMessageType = reflect.TypeOf((*proto.Message)(nil)).Elem()
 
 // marshalNonProto marshals a non-message field of a protobuf message.
 // This function does not correctly marshal arbitrary data structures into JSON,
@@ -334,16 +332,14 @@ func (j *CustomJSONPb) Delimiter() []byte {
 	return []byte("\n")
 }
 
-var (
-	convFromType = map[reflect.Kind]reflect.Value{ //nolint:exhaustive // This is a false positive.
-		reflect.String:  reflect.ValueOf(runtime.String),
-		reflect.Bool:    reflect.ValueOf(runtime.Bool),
-		reflect.Float64: reflect.ValueOf(runtime.Float64),
-		reflect.Float32: reflect.ValueOf(runtime.Float32),
-		reflect.Int64:   reflect.ValueOf(runtime.Int64),
-		reflect.Int32:   reflect.ValueOf(runtime.Int32),
-		reflect.Uint64:  reflect.ValueOf(runtime.Uint64),
-		reflect.Uint32:  reflect.ValueOf(runtime.Uint32),
-		reflect.Slice:   reflect.ValueOf(runtime.Bytes),
-	}
-)
+var convFromType = map[reflect.Kind]reflect.Value{ //nolint:exhaustive // This is a false positive.
+	reflect.String:  reflect.ValueOf(runtime.String),
+	reflect.Bool:    reflect.ValueOf(runtime.Bool),
+	reflect.Float64: reflect.ValueOf(runtime.Float64),
+	reflect.Float32: reflect.ValueOf(runtime.Float32),
+	reflect.Int64:   reflect.ValueOf(runtime.Int64),
+	reflect.Int32:   reflect.ValueOf(runtime.Int32),
+	reflect.Uint64:  reflect.ValueOf(runtime.Uint64),
+	reflect.Uint32:  reflect.ValueOf(runtime.Uint32),
+	reflect.Slice:   reflect.ValueOf(runtime.Bytes),
+}

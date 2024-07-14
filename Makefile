@@ -88,5 +88,6 @@ define format
 	@go fmt ./... 
 	@go run github.com/bufbuild/buf/cmd/buf format -w
 	@go run golang.org/x/tools/cmd/goimports -w ./ 
+	@go run mvdan.cc/gofumpt -l -w .
 	@go mod tidy
 endef

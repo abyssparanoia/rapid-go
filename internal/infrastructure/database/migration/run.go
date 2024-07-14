@@ -8,7 +8,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
-	"github.com/caarlos0/env/v9"
+	"github.com/caarlos0/env/v10"
 	"github.com/pressly/goose/v3"
 )
 
@@ -32,7 +32,7 @@ func RunUp() {
 
 	logger.Info("start database schema migration")
 
-	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase)
+	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
 
 	goose.SetBaseFS(migration_files.EmbedMigrations)
 

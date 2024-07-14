@@ -25,7 +25,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/http/internal/handler"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/http/internal/middlewares"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
-	"github.com/caarlos0/env/v9"
+	"github.com/caarlos0/env/v10"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
