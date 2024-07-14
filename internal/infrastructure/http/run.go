@@ -78,10 +78,8 @@ func Run() {
 		},
 	}))
 
-	conn, err := grpc.DialContext(
-		context.Background(),
+	conn, err := grpc.NewClient(
 		fmt.Sprintf(":%s", InternalGRPCPort),
-		grpc.WithBlock(),
 		grpc.WithTransportCredentials(
 			insecure.NewCredentials(),
 		),
