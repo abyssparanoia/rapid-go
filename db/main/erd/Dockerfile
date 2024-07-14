@@ -1,4 +1,4 @@
-FROM openjdk:20-jdk-slim
+FROM openjdk:21-jdk-slim
 
 ENV DRIVER_URL https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.11/mysql-connector-java-8.0.11.jar
 ENV APP_URL https://github.com/schemaspy/schemaspy/releases/download/v6.1.0/schemaspy-6.1.0.jar
