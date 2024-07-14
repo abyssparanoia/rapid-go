@@ -9,6 +9,7 @@ require (
 	cloud.google.com/go/storage v1.40.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/memeduck v1.0.3
+	github.com/air-verse/air v1.52.3
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/aws/aws-sdk-go v1.52.3
 	github.com/blendle/zapdriver v1.3.1
@@ -16,7 +17,6 @@ require (
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cloudspannerecosystem/wrench v1.8.0
-	github.com/cosmtrek/air v1.52.3
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.4.1
 	github.com/go-playground/validator/v10 v10.20.0
