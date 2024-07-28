@@ -16,7 +16,7 @@ require (
 	github.com/bufbuild/buf v1.34.0
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/cloudspannerecosystem/wrench v1.9.1
+	github.com/cloudspannerecosystem/wrench v1.10.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.4.2
 	github.com/go-playground/validator/v10 v10.22.0
