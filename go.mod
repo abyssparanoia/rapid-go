@@ -11,7 +11,7 @@ require (
 	github.com/abyssparanoia/memeduck v1.0.3
 	github.com/air-verse/air v1.52.3
 	github.com/avast/retry-go v3.0.0+incompatible
-	github.com/aws/aws-sdk-go v1.55.3
+	github.com/aws/aws-sdk-go v1.55.5
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.34.0
 	github.com/caarlos0/env/v10 v10.0.0
