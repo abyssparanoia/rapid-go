@@ -125,7 +125,7 @@ func Run() {
 		}
 	}()
 
-	// graceful shuttdown
+	// graceful shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, os.Interrupt)
 	logger.Info(fmt.Sprintf("SIGNAL %d received, so server shutting down now...\n", <-quit))
