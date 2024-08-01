@@ -313,6 +313,7 @@ func local_request_AdminV1Service_CreateStaff_0(ctx context.Context, marshaler r
 // UnaryRPC     :call AdminV1ServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAdminV1ServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterAdminV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AdminV1ServiceServer) error {
 
 	mux.Handle("POST", pattern_AdminV1Service_CreateAssetPresignedURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -528,7 +529,7 @@ func RegisterAdminV1ServiceHandler(ctx context.Context, mux *runtime.ServeMux, c
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "AdminV1ServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "AdminV1ServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "AdminV1ServiceClient" to call the correct interceptors.
+// "AdminV1ServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterAdminV1ServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AdminV1ServiceClient) error {
 
 	mux.Handle("POST", pattern_AdminV1Service_CreateAssetPresignedURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
