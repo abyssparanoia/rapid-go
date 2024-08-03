@@ -852,6 +852,7 @@ github.com/cloudspannerecosystem/memefish v0.0.0-20231128072053-0a1141e8eb65 h1:
 github.com/cloudspannerecosystem/memefish v0.0.0-20231128072053-0a1141e8eb65/go.mod h1:Q40NmYZbmaw9ay7p94ng9NNBuX1N+4OK3cSjN4q5tPM=
 github.com/cloudspannerecosystem/wrench v1.10.0 h1:fjlB6J3DXCkFxxMCr/7c3xZdAOCTHzjhoWCkclEePGs=
 github.com/cloudspannerecosystem/wrench v1.10.0/go.mod h1:NFWKXWSm2XNts8S9hfVfU/lOFFYV9AzCSkkjIl8D924=
+github.com/cloudspannerecosystem/wrench v1.10.1/go.mod h1:NFWKXWSm2XNts8S9hfVfU/lOFFYV9AzCSkkjIl8D924=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/cncf/udpa/go v0.0.0-20200629203442-efcf912fb354/go.mod h1:WmhPx2Nbnhtbo57+VJT5O0JRkEi1Wbu0z5j0R8u5Hbk=
 github.com/cncf/udpa/go v0.0.0-20201120205902-5459f2c99403/go.mod h1:WmhPx2Nbnhtbo57+VJT5O0JRkEi1Wbu0z5j0R8u5Hbk=
