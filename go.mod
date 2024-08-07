@@ -15,6 +15,7 @@ require (
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.35.1
 	github.com/caarlos0/env/v10 v10.0.0
+	github.com/caarlos0/env/v11 v11.2.2
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cloudspannerecosystem/wrench v1.10.1
 	github.com/friendsofgo/errors v0.9.2
