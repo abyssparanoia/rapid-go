@@ -2,7 +2,7 @@ module github.com/abyssparanoia/rapid-go
 
 go 1.22
 
-toolchain go1.22.6
+toolchain go1.23.0
 
 require (
 	cloud.google.com/go/spanner v1.66.0
