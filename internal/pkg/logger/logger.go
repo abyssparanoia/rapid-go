@@ -30,9 +30,7 @@ func New() *zap.Logger {
 }
 
 // L ... logger.
-var L = func(ctx context.Context) *zap.Logger {
-	return Extract(ctx)
-}
+var L = Extract
 
 func AddFields(ctx context.Context, fields ...zapcore.Field) {
 	l, ok := ctx.Value(ctxMarkerKey).(*ctxLogger)

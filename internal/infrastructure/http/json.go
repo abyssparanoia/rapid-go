@@ -94,7 +94,7 @@ func (j *CustomJSONPb) marshalNonProtoField(v interface{}) ([]byte, error) { //n
 			if err := buf.WriteByte('['); err != nil {
 				return nil, err
 			}
-			for i := 0; i < rv.Len(); i++ {
+			for i := range rv.Len() {
 				if i != 0 {
 					if err := buf.WriteByte(','); err != nil {
 						return nil, err
@@ -116,7 +116,7 @@ func (j *CustomJSONPb) marshalNonProtoField(v interface{}) ([]byte, error) { //n
 			if err := buf.WriteByte('['); err != nil {
 				return nil, err
 			}
-			for i := 0; i < rv.Len(); i++ {
+			for i := range rv.Len() {
 				if i != 0 {
 					if err := buf.WriteByte(','); err != nil {
 						return nil, err

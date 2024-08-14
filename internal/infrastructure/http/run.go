@@ -61,7 +61,7 @@ func Run() {
 	logger.Info(fmt.Sprintf("[START] server. port: %s\n", addr))
 
 	go func() {
-		if err := grpcServer.Serve(grpcLis); err != nil {
+		if err = grpcServer.Serve(grpcLis); err != nil {
 			logger.Error("failed to start server", zap.Error(err))
 		}
 	}()
@@ -94,21 +94,21 @@ func Run() {
 		panic(err)
 	}
 
-	if err := admin_apiv1.RegisterAdminV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
+	if err = admin_apiv1.RegisterAdminV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
 		panic(err)
 	}
 
-	if err := public_apiv1.RegisterPublicV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
+	if err = public_apiv1.RegisterPublicV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
 		panic(err)
 	}
 
 	if e.Environment == "local" || e.Environment == "development" {
-		if err := debug_apiv1.RegisterDebugV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
+		if err = debug_apiv1.RegisterDebugV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
 			panic(err)
 		}
 	}
 
-	if err := grpcGateway.HandlePath(http.MethodGet, "/", handler.Ping); err != nil {
+	if err = grpcGateway.HandlePath(http.MethodGet, "/", handler.Ping); err != nil {
 		panic(err)
 	}
 
@@ -120,7 +120,7 @@ func Run() {
 	}
 
 	go func() {
-		if err := server.ListenAndServe(); err != http.ErrServerClosed {
+		if err = server.ListenAndServe(); err != http.ErrServerClosed {
 			logger.Error("[CLOSED] server closed with error", zap.Error(err))
 		}
 	}()
