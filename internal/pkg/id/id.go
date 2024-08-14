@@ -4,9 +4,7 @@ import (
 	"github.com/lucsky/cuid"
 )
 
-var New = func() string {
-	return cuid.New()
-}
+var New = cuid.New
 
 func Mock() string {
 	mockID := "mock"
