@@ -49,14 +49,14 @@ func runTxWithDB(ctx context.Context, db boil.ContextBeginner, fn func(context.C
 
 		ctxWithTx := context.WithValue(ctx, &ctxTxKey, tx)
 		if err := fn(ctxWithTx); err != nil {
-			if err := tx.Rollback(); err != nil {
-				return errors.InternalErr.Wrap(err)
+			if rollbackErr := tx.Rollback(); rollbackErr != nil {
+				return errors.InternalErr.Wrap(rollbackErr)
 			}
 			return err
 		}
 		if err := tx.Commit(); err != nil {
-			if err := tx.Rollback(); err != nil {
-				return errors.InternalErr.Wrap(err)
+			if rollbackErr := tx.Rollback(); rollbackErr != nil {
+				return errors.InternalErr.Wrap(rollbackErr)
 			}
 			return errors.InternalErr.Wrap(err)
 		}
@@ -65,9 +65,7 @@ func runTxWithDB(ctx context.Context, db boil.ContextBeginner, fn func(context.C
 
 	if err := retry.Do(
 		txFn,
-		retry.RetryIf(func(err error) bool {
-			return isDeadLock(err)
-		}),
+		retry.RetryIf(isDeadLock),
 		retry.DelayType(func(n uint, err error, config *retry.Config) time.Duration {
 			return time.Duration(n) * time.Second
 		}),

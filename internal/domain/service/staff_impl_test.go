@@ -11,7 +11,7 @@ import (
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/volatiletech/null/v8"
 	"go.uber.org/mock/gomock"
 )
@@ -64,7 +64,7 @@ func TestStaffService_Create(t *testing.T) {
 				imagePath:   staff.ImagePath,
 				requestTime: requestTime,
 			},
-			service: func(ctx context.Context, ctrl *gomock.Controller) Staff {
+			service: func(_ context.Context, ctrl *gomock.Controller) Staff {
 				mockStaffRepo := mock_repository.NewMockStaff(ctrl)
 				mockStaffAuthenticationRepo := mock_repository.NewMockStaffAuthentication(ctrl)
 
@@ -124,10 +124,10 @@ func TestStaffService_Create(t *testing.T) {
 				RequestTime: tc.args.requestTime,
 			})
 			if tc.want.expectedResult == nil {
-				assert.NoError(t, err)
-				assert.Equal(t, tc.want.staff, got)
+				require.NoError(t, err)
+				require.Equal(t, tc.want.staff, got)
 			} else {
-				assert.ErrorContains(t, err, tc.want.expectedResult.Error())
+				require.ErrorContains(t, err, tc.want.expectedResult.Error())
 			}
 		})
 	}
