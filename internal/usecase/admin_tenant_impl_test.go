@@ -13,7 +13,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/volatiletech/null/v8"
 	"go.uber.org/mock/gomock"
 )
@@ -39,7 +39,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 	}{
 		"invalid argument": {
 			args: args{},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				return &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
@@ -53,7 +53,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 			args: args{
 				tenantID: tenant.ID,
 			},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
 					Get(
@@ -77,7 +77,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 			args: args{
 				tenantID: tenant.ID,
 			},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
 					Get(gomock.Any(),
@@ -112,10 +112,10 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 				tc.args.tenantID,
 			))
 			if tc.want.expectedResult == nil {
-				assert.NoError(t, err)
-				assert.Equal(t, tc.want.tenant, got)
+				require.NoError(t, err)
+				require.Equal(t, tc.want.tenant, got)
 			} else {
-				assert.ErrorContains(t, err, tc.want.expectedResult.Error())
+				require.ErrorContains(t, err, tc.want.expectedResult.Error())
 			}
 		})
 	}
@@ -146,7 +146,7 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 				page:  2,
 				limit: 30,
 			},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
 					List(
@@ -198,10 +198,10 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 				tc.args.limit,
 			))
 			if tc.want.expectedResult == nil {
-				assert.NoError(t, err)
-				assert.Equal(t, tc.want.output, got)
+				require.NoError(t, err)
+				require.Equal(t, tc.want.output, got)
 			} else {
-				assert.ErrorContains(t, err, tc.want.expectedResult.Error())
+				require.ErrorContains(t, err, tc.want.expectedResult.Error())
 			}
 		})
 	}
@@ -232,7 +232,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 	}{
 		"invalid argument": {
 			args: args{},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				return &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
@@ -247,7 +247,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 				name:        tenant.Name,
 				requestTime: requestTime,
 			},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
 					Create(gomock.Any(), tenant).
@@ -277,10 +277,10 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 				tc.args.requestTime,
 			))
 			if tc.want.expectedResult == nil {
-				assert.NoError(t, err)
-				assert.Equal(t, tc.want.tenant, got)
+				require.NoError(t, err)
+				require.Equal(t, tc.want.tenant, got)
 			} else {
-				assert.ErrorContains(t, err, tc.want.expectedResult.Error())
+				require.ErrorContains(t, err, tc.want.expectedResult.Error())
 			}
 		})
 	}
@@ -310,7 +310,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 	}{
 		"invalid argument": {
 			args: args{},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, _ *gomock.Controller) AdminTenantInteractor {
 				return &adminTenantInteractor{}
 			},
 			want: want{
@@ -323,7 +323,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 				name:        null.StringFrom(tenant.Name),
 				requestTime: requestTime,
 			},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
 					Get(gomock.Any(),
@@ -365,10 +365,10 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 				tc.args.requestTime,
 			))
 			if tc.want.expectedResult == nil {
-				assert.NoError(t, err)
-				assert.Equal(t, tc.want.tenant, got)
+				require.NoError(t, err)
+				require.Equal(t, tc.want.tenant, got)
 			} else {
-				assert.ErrorContains(t, err, tc.want.expectedResult.Error())
+				require.ErrorContains(t, err, tc.want.expectedResult.Error())
 			}
 		})
 	}
@@ -394,7 +394,7 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 	}{
 		"invalid argument": {
 			args: args{},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, _ *gomock.Controller) AdminTenantInteractor {
 				return &adminTenantInteractor{}
 			},
 			want: want{
@@ -405,7 +405,7 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 			args: args{
 				tenantID: tenant.ID,
 			},
-			usecase: func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
+			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
 				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 				mockTenantRepo.EXPECT().
 					Delete(gomock.Any(), tenant.ID).
@@ -432,9 +432,9 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 				tc.args.tenantID,
 			))
 			if tc.want.expectedResult == nil {
-				assert.NoError(t, err)
+				require.NoError(t, err)
 			} else {
-				assert.ErrorContains(t, err, tc.want.expectedResult.Error())
+				require.ErrorContains(t, err, tc.want.expectedResult.Error())
 			}
 		})
 	}
