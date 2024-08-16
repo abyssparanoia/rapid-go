@@ -63,7 +63,7 @@ func (r *tenant) Get(
 	return marshaller.TenantToModel(&dst), nil
 }
 
-func (r *tenant) buildListQuery(query repository.ListTenantsQuery) ([]memeduck.WhereCond, map[string]interface{}) {
+func (r *tenant) buildListQuery(_ repository.ListTenantsQuery) ([]memeduck.WhereCond, map[string]interface{}) {
 	return []memeduck.WhereCond{}, map[string]interface{}{}
 }
 
@@ -165,7 +165,7 @@ func (r *tenant) Delete(
 	ctx context.Context,
 	id string,
 ) error {
-	dst := dbmodel.Tenant{TenantID: id}
+	dst := dbmodel.Tenant{TenantID: id} //nolint:exhaustruct
 	if err := dst.Delete(ctx); err != nil {
 		return errors.InternalErr.Wrap(err)
 	}
