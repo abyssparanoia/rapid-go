@@ -361,7 +361,7 @@ severity:
   # Only affects out formats that support setting severity information.
   #
   # Default: []
-  rules:
-    - linters:
-        - godox
-      severity: info
+  # rules:
+  #   - linters:
+  #       - godox
+  #     severity: info
