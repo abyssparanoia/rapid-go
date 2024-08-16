@@ -83,7 +83,7 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 					},
 				)
 			if err != nil {
-				return nil, err
+				return nil, errors.InternalErr.Wrap(err)
 			}
 
 			return nil, st.Err()

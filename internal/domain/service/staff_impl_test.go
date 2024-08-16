@@ -25,6 +25,7 @@ func TestStaffService_Create(t *testing.T) {
 	mockID := id.Mock()
 	staff := testdata.Staff
 	staff.ID = mockID
+	staff.ImageURL = null.String{}
 	staff.Tenant = nil
 
 	claims := model.NewStaffClaims(

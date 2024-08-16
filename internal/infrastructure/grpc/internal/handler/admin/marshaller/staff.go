@@ -20,6 +20,8 @@ func StaffToPB(m *model.Staff) *admin_apiv1.Staff {
 		Email:       m.Email,
 		CreatedAt:   timestamppb.New(m.CreatedAt),
 		UpdatedAt:   timestamppb.New(m.UpdatedAt),
+
+		Tenant: nil,
 	}
 	if m.Tenant != nil {
 		dst.Tenant = TenantToPB(m.Tenant)

@@ -46,7 +46,7 @@ func (i *staffInteractor) CreateRoot(
 			service.StaffCreateParam{
 				TenantID:    tenant.ID,
 				Email:       param.Email,
-				Password:    "random1234",
+				Password:    param.Password,
 				StaffRole:   model.StaffRoleAdmin,
 				DisplayName: "Root Staff",
 				ImagePath:   "staff_profile_images/default_image.jpeg",

@@ -2,8 +2,8 @@ package create_root_staff_cmd
 
 import (
 	"context"
-	"errors"
 
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
@@ -18,18 +18,18 @@ type CMD struct {
 func (c *CMD) CreateRootStaff(cmd *cobra.Command) error {
 	email, err := cmd.Flags().GetString("email")
 	if err != nil {
-		return err
+		return errors.InternalErr.Wrap(err)
 	}
 	if email == "" {
-		return errors.New("email is required")
+		return errors.InternalErr.Errorf("email is required")
 	}
 
 	password, err := cmd.Flags().GetString("password")
 	if err != nil {
-		return err
+		return errors.InternalErr.Wrap(err)
 	}
 	if password == "" {
-		return errors.New("password is required")
+		return errors.InternalErr.Errorf("password is required")
 	}
 
 	if err := c.staffInteractor.CreateRoot(

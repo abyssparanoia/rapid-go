@@ -1,3 +1,4 @@
+//nolint:exhaustruct
 package factory
 
 import (
@@ -7,6 +8,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/go-faker/faker/v4"
+	"github.com/go-faker/faker/v4/pkg/options"
 )
 
 func NewFactory() struct {
@@ -14,16 +16,24 @@ func NewFactory() struct {
 	Tenant      *model.Tenant
 	Staff       *model.Staff
 } {
+	opts := []options.OptionFunc{
+		options.WithIgnoreInterface(true),
+		options.WithNilIfLenIsZero(true),
+		options.WithRandomMapAndSliceMaxSize(1),
+	}
 	n := now.Now()
 
 	tenant := &model.Tenant{}
-	if err := faker.FakeData(tenant); err != nil {
+	if err := faker.FakeData(tenant, opts...); err != nil {
 		panic(err)
 	}
 	tenant.CreatedAt = n
 	tenant.UpdatedAt = n
 
 	user := &model.Staff{}
+	if err := faker.FakeData(user, opts...); err != nil {
+		panic(err)
+	}
 	user.TenantID = tenant.ID
 	user.Tenant = tenant
 	user.CreatedAt = n
