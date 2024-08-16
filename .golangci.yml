@@ -27,36 +27,18 @@ linters-settings:
       - switch
       - map
 
-  # exhaustruct:
-  #   # List of regular expressions to exclude struct packages and their names from checks.
-  #   # Regular expressions must match complete canonical struct package/name/structname.
-  #   # Default: []
-  #   exclude:
-  #     # std libs
-  #     - "^net/http.Client$"
-  #     - "^net/http.Cookie$"
-  #     - "^net/http.Request$"
-  #     - "^net/http.Response$"
-  #     - "^net/http.Server$"
-  #     - "^net/http.Transport$"
-  #     - "^net/url.URL$"
-  #     - "^os/exec.Cmd$"
-  #     - "^reflect.StructField$"
-  #     # public libs
-  #     - "^github.com/Shopify/sarama.Config$"
-  #     - "^github.com/Shopify/sarama.ProducerMessage$"
-  #     - "^github.com/mitchellh/mapstructure.DecoderConfig$"
-  #     - "^github.com/prometheus/client_golang/.+Opts$"
-  #     - "^github.com/spf13/cobra.Command$"
-  #     - "^github.com/spf13/cobra.CompletionOptions$"
-  #     - "^github.com/stretchr/testify/mock.Mock$"
-  #     - "^github.com/testcontainers/testcontainers-go.+Request$"
-  #     - "^github.com/testcontainers/testcontainers-go.FromDockerfile$"
-  #     - "^golang.org/x/tools/go/analysis.Analyzer$"
-  #     - "^google.golang.org/protobuf/.+Options$"
-  #     - "^gopkg.in/yaml.v3.Node$"
-  #     - "^.+/repository.BaseGetOptions$"
-  #     - "^.+/repository.BaseListOptions$"
+  exhaustruct:
+    # List of regular expressions to match struct packages and their names.
+    # Regular expressions must match complete canonical struct package/name/structname.
+    # If this list is empty, all structs are tested.
+    # Default: []
+    include:
+      - "github.com/abyssparanoia/rapid-go/internal/domain/model.*"
+      - "github.com/abyssparanoia/rapid-go/internal/usecase/input.*"
+      - "github.com/abyssparanoia/rapid-go/internal/usecase/output.*"
+      - "github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/dbmodel.*"
+      - "github.com/abyssparanoia/rapid-go/internal/infrastructure/spanner/internal/dbmodel.*"
+      - "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1.*"
 
   funlen:
     # Checks the number of lines in a function.
@@ -275,7 +257,7 @@ linters:
 
     ## you may want to enable
     - decorder # checks declaration order and count of types, constants, variables and functions
-    # - exhaustruct # [highly recommend to enable] checks if all structure fields are initialized
+    - exhaustruct # [highly recommend to enable] checks if all structure fields are initialized
     - gci # controls golang package import order and makes it always deterministic
     - ginkgolinter # [if you use ginkgo/gomega] enforces standards of using ginkgo and gomega
     # - godox # detects FIXME, TODO and other comment keywords
