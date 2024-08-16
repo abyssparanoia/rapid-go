@@ -15,7 +15,7 @@ type DatabaseEnvironment struct {
 	DBUser      string `env:"DB_USER,required"`
 	DBPassword  string `env:"DB_PASSWORD,required"`
 	DBDatabase  string `env:"DB_DATABASE,required"`
-	DBLogEnable bool   `env:"DB_LOG_ENABLE" envDefault:"false"`
+	DBLogEnable bool   `env:"DB_LOG_ENABLE"        envDefault:"false"`
 }
 
 type RedisEnvironment struct {
@@ -23,7 +23,7 @@ type RedisEnvironment struct {
 	RedisPort      string `env:"REDIS_PORT,required"`
 	RedisUsername  string `env:"REDIS_USERNAME"`
 	RedisPassword  string `env:"REDIS_PASSWORD,required"`
-	RedisTLSEnable bool   `env:"REDIS_TLS_ENABLE" envDefault:"true"`
+	RedisTLSEnable bool   `env:"REDIS_TLS_ENABLE"        envDefault:"true"`
 }
 
 type GCPEnvironment struct {
