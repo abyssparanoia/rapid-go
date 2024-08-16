@@ -24,11 +24,10 @@ func TenantsToModel(slice dbmodel.TenantSlice) model.Tenants {
 }
 
 func TenantToDBModel(m *model.Tenant) *dbmodel.Tenant {
-	e := &dbmodel.Tenant{}
-	e.TenantID = m.ID
-	e.Name = m.Name
-	e.CreatedAt = m.CreatedAt
-	e.UpdatedAt = m.UpdatedAt
-
-	return e
+	return &dbmodel.Tenant{
+		TenantID:  m.ID,
+		Name:      m.Name,
+		CreatedAt: m.CreatedAt,
+		UpdatedAt: m.UpdatedAt,
+	}
 }
