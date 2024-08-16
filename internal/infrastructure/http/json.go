@@ -50,15 +50,15 @@ func (j *CustomJSONPb) marshalTo(w io.Writer, v interface{}) error {
 			return err
 		}
 		_, err = w.Write(buf)
-		return err
+		return fmt.Errorf("failed to marshal non-proto field: %w", err)
 	}
 	b, err := j.MarshalOptions.Marshal(p)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to marshal proto field: %w", err)
 	}
 
 	_, err = w.Write(b)
-	return err
+	return fmt.Errorf("failed to write marshaled proto field: %w", err)
 }
 
 // protoMessageType is stored to prevent constant lookup of the same type at runtime.
@@ -92,20 +92,20 @@ func (j *CustomJSONPb) marshalNonProtoField(v interface{}) ([]byte, error) { //n
 		if rv.Type().Elem().Implements(protoMessageType) {
 			var buf bytes.Buffer
 			if err := buf.WriteByte('['); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to write '[': %w", err)
 			}
 			for i := range rv.Len() {
 				if i != 0 {
 					if err := buf.WriteByte(','); err != nil {
-						return nil, err
+						return nil, fmt.Errorf("failed to write ',': %w", err)
 					}
 				}
 				if err := j.marshalTo(&buf, rv.Index(i).Interface().(proto.Message)); err != nil {
-					return nil, err
+					return nil, fmt.Errorf("failed to marshal slice element: %w", err)
 				}
 			}
 			if err := buf.WriteByte(']'); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to write ']': %w", err)
 			}
 
 			return buf.Bytes(), nil
@@ -114,12 +114,12 @@ func (j *CustomJSONPb) marshalNonProtoField(v interface{}) ([]byte, error) { //n
 		if rv.Type().Elem().Implements(typeProtoEnum) {
 			var buf bytes.Buffer
 			if err := buf.WriteByte('['); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to write '[': %w", err)
 			}
 			for i := range rv.Len() {
 				if i != 0 {
 					if err := buf.WriteByte(','); err != nil {
-						return nil, err
+						return nil, fmt.Errorf("failed to write ',': %w", err)
 					}
 				}
 				var err error
@@ -129,11 +129,11 @@ func (j *CustomJSONPb) marshalNonProtoField(v interface{}) ([]byte, error) { //n
 					_, err = buf.WriteString("\"" + rv.Index(i).Interface().(protoEnum).String() + "\"")
 				}
 				if err != nil {
-					return nil, err
+					return nil, fmt.Errorf("failed to write slice element: %w", err)
 				}
 			}
 			if err := buf.WriteByte(']'); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to write ']': %w", err)
 			}
 
 			return buf.Bytes(), nil
@@ -145,19 +145,35 @@ func (j *CustomJSONPb) marshalNonProtoField(v interface{}) ([]byte, error) { //n
 		for _, k := range rv.MapKeys() {
 			buf, err := j.Marshal(rv.MapIndex(k).Interface())
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to marshal map key: %w", err)
 			}
 			m[fmt.Sprintf("%v", k.Interface())] = (*json.RawMessage)(&buf)
 		}
 		if j.Indent != "" {
-			return json.MarshalIndent(m, "", j.Indent)
+			buf, err := json.MarshalIndent(m, "", j.Indent)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal map: %w", err)
+			}
+			return buf, nil
 		}
-		return json.Marshal(m)
+		buf, err := json.Marshal(m)
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal map: %w", err)
+		}
+		return buf, nil
 	}
 	if enum, ok := rv.Interface().(protoEnum); ok && !j.UseEnumNumbers {
-		return json.Marshal(enum.String())
+		buf, err := json.Marshal(enum.String())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal enum: %w", err)
+		}
+		return buf, nil
 	}
-	return json.Marshal(rv.Interface())
+	buf, err := json.Marshal(rv.Interface())
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal non-proto field: %w", err)
+	}
+	return buf, nil
 }
 
 // Unmarshal unmarshals JSON "data" into "v".
@@ -196,7 +212,7 @@ func (j *CustomJSONPb) NewEncoder(w io.Writer) runtime.Encoder {
 		// mimic json.Encoder by adding a newline (makes output
 		// easier to read when it contains multiple encoded items)
 		_, err := w.Write(j.Delimiter())
-		return err
+		return fmt.Errorf("failed to write delimiter: %w", err)
 	})
 }
 
@@ -214,10 +230,13 @@ func decodeCustomJSONPb(d *json.Decoder, unmarshaler protojson.UnmarshalOptions,
 	// Decode into bytes for marshalling
 	var b json.RawMessage
 	if err := d.Decode(&b); err != nil {
-		return err
+		return fmt.Errorf("failed to decode into bytes: %w", err)
 	}
 
-	return unmarshaler.Unmarshal([]byte(b), p)
+	if err := unmarshaler.Unmarshal([]byte(b), p); err != nil {
+		return fmt.Errorf("failed to unmarshal proto field: %w", err)
+	}
+	return nil
 }
 
 func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, v interface{}) error { //nolint:gocognit //
@@ -233,10 +252,13 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 			// Decode into bytes for marshalling
 			var b json.RawMessage
 			if err := d.Decode(&b); err != nil {
-				return err
+				return fmt.Errorf("failed to decode into bytes: %w", err)
 			}
 
-			return unmarshaler.Unmarshal([]byte(b), rv.Interface().(proto.Message))
+			if err := unmarshaler.Unmarshal([]byte(b), rv.Interface().(proto.Message)); err != nil {
+				return fmt.Errorf("failed to unmarshal proto field: %w", err)
+			}
+			return nil
 		}
 		rv = rv.Elem()
 	}
@@ -251,12 +273,12 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 
 		m := make(map[string]*json.RawMessage)
 		if err := d.Decode(&m); err != nil {
-			return err
+			return fmt.Errorf("failed to decode map: %w", err)
 		}
 		for k, v := range m {
 			result := conv.Call([]reflect.Value{reflect.ValueOf(k)})
-			if err := result[1].Interface(); err != nil {
-				return err.(error)
+			if err, ok := result[1].Interface().(error); ok && err != nil {
+				return fmt.Errorf("failed to decode map key: %w", err)
 			}
 			bk := result[0]
 			bv := reflect.New(rv.Type().Elem())
@@ -265,7 +287,7 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 				v = &null
 			}
 			if err := unmarshalCustomJSONPb([]byte(*v), unmarshaler, bv.Interface()); err != nil {
-				return err
+				return fmt.Errorf("failed to unmarshal map value: %w", err)
 			}
 			rv.SetMapIndex(bk, bv.Elem())
 		}
@@ -275,7 +297,7 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 		if rv.Type().Elem().Kind() == reflect.Uint8 {
 			var sl []byte
 			if err := d.Decode(&sl); err != nil {
-				return err
+				return fmt.Errorf("failed to decode slice: %w", err)
 			}
 			if sl != nil {
 				rv.SetBytes(sl)
@@ -285,7 +307,7 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 
 		var sl []json.RawMessage
 		if err := d.Decode(&sl); err != nil {
-			return err
+			return fmt.Errorf("failed to decode slice: %w", err)
 		}
 		if sl != nil {
 			rv.Set(reflect.MakeSlice(rv.Type(), 0, 0))
@@ -293,7 +315,7 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 		for _, item := range sl {
 			bv := reflect.New(rv.Type().Elem())
 			if err := unmarshalCustomJSONPb([]byte(item), unmarshaler, bv.Interface()); err != nil {
-				return err
+				return fmt.Errorf("failed to unmarshal slice element: %w", err)
 			}
 			rv.Set(reflect.Append(rv, bv.Elem()))
 		}
@@ -302,7 +324,7 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 	if _, ok := rv.Interface().(protoEnum); ok {
 		var repr interface{}
 		if err := d.Decode(&repr); err != nil {
-			return err
+			return fmt.Errorf("failed to decode enum: %w", err)
 		}
 		switch v := repr.(type) {
 		case string:
@@ -315,7 +337,7 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 			return fmt.Errorf("cannot assign %#v into Go type %T", repr, rv.Interface())
 		}
 	}
-	return d.Decode(v)
+	return fmt.Errorf("failed to decode non-proto field: %w", d.Decode(v))
 }
 
 type protoEnum interface {
