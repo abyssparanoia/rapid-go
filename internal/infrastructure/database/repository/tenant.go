@@ -105,7 +105,7 @@ func (r *tenant) Delete(
 	ctx context.Context,
 	id string,
 ) error {
-	dst := &dbmodel.Tenant{
+	dst := &dbmodel.Tenant{ //nolint:exhaustruct
 		ID: id,
 	}
 	if _, err := dst.Delete(ctx, transactable.GetContextExecutor(ctx)); err != nil {
