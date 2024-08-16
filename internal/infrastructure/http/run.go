@@ -10,12 +10,6 @@ import (
 	"syscall"
 	"time"
 
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/keepalive"
-	"google.golang.org/protobuf/encoding/protojson"
-
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/dependency"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	internal_grpc "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc"
@@ -27,6 +21,11 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
 	"github.com/caarlos0/env/v11"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/keepalive"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 const InternalGRPCPort = "50051"
