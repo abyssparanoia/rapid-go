@@ -17,14 +17,15 @@ func NewPagination(
 	totalCount uint64,
 ) *Pagination {
 	pagination := &Pagination{
-		TotalCount: totalCount,
+		CurrentPage: 1,
+		PrevPage:    0,
+		NextPage:    0,
+		TotalPage:   1,
+		TotalCount:  totalCount,
+		HasNext:     false,
 	}
 
-	if page <= 0 {
-		pagination.CurrentPage = 1
-		pagination.TotalPage = 1
-		pagination.HasNext = false
-	} else {
+	if page > 0 {
 		pagination.CurrentPage = page
 		pagination.PrevPage = page - 1
 		pagination.TotalPage = uint64(math.Ceil(float64(totalCount) / float64(limit)))
