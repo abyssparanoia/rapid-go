@@ -9,7 +9,7 @@ import (
 
 type CreateRootStaff struct {
 	Email       string    `validate:"required"`
-	Passoword   string    `validate:"required"`
+	Password    string    `validate:"required"`
 	RequestTime time.Time `validate:"required"`
 }
 
@@ -20,7 +20,7 @@ func NewCreateRootStaff(
 ) *CreateRootStaff {
 	return &CreateRootStaff{
 		Email:       email,
-		Passoword:   password,
+		Password:    password,
 		RequestTime: t,
 	}
 }
