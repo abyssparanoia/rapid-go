@@ -43,6 +43,9 @@ func NewStaff(
 		Email:       email,
 		CreatedAt:   t,
 		UpdatedAt:   t,
+
+		ImageURL: null.String{},
+		Tenant:   nil,
 	}
 }
 
