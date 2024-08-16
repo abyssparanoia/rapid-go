@@ -107,7 +107,7 @@ func (r *staffStaffAuthentication) CreateIDToken(
 ) (string, error) {
 	customToken, err := r.cli.CustomToken(ctx, authUID)
 	if err != nil {
-		return "", err
+		return "", errors.InternalErr.Wrap(err)
 	}
 
 	values := url.Values{}
@@ -117,24 +117,24 @@ func (r *staffStaffAuthentication) CreateIDToken(
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken", strings.NewReader(values.Encode()))
 	if err != nil {
-		return "", err
+		return "", errors.InternalErr.Wrap(err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", err
+		return "", errors.InternalErr.Wrap(err)
 	}
 	defer resp.Body.Close()
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return "", errors.InternalErr.Wrap(err)
 	}
 
 	var res dto.VerifyCustomTokenResponse
 	if err := json.Unmarshal(b, &res); err != nil {
-		return "", err
+		return "", errors.InternalErr.Wrap(err)
 	}
 
 	return res.IDToken, nil
