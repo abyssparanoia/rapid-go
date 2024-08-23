@@ -43,7 +43,7 @@ require (
 	go.uber.org/mock v0.4.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/tools v0.24.0
-	google.golang.org/api v0.193.0
+	google.golang.org/api v0.194.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240822170219-fc7c04adadcd
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240822170219-fc7c04adadcd
 	google.golang.org/grpc v1.65.0
@@ -59,7 +59,7 @@ require (
 	buf.build/gen/go/bufbuild/registry/protocolbuffers/go v1.34.2-20240801134127-09fbc17f7c9e.2 // indirect
 	cel.dev/expr v0.15.0 // indirect
 	cloud.google.com/go v0.115.1 // indirect
-	cloud.google.com/go/auth v0.9.0 // indirect
+	cloud.google.com/go/auth v0.9.1 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.4 // indirect
 	cloud.google.com/go/compute/metadata v0.5.0 // indirect
 	cloud.google.com/go/firestore v1.16.0 // indirect
