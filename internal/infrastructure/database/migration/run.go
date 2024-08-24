@@ -46,3 +46,45 @@ func RunUp() {
 
 	logger.Info("complete database schema migration")
 }
+
+func RunExtractSchema() {
+	e := &environment.DatabaseEnvironment{}
+	if err := env.Parse(e); err != nil {
+		panic(err)
+	}
+
+	logger := logger.New()
+
+	logger.Info("start extracting database schema")
+
+	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
+
+	//nolint:execinquery
+	tables, err := databaseCli.DB.Query("SHOW TABLES")
+	if err != nil {
+		panic(err)
+	}
+	defer tables.Close()
+
+	file, err := os.Create("./db/main/schema.sql")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	var tableName string
+	for tables.Next() {
+		if err := tables.Scan(&tableName); err != nil {
+			panic(err)
+		}
+		var createStatement string
+		//nolint:execinquery
+		if err := databaseCli.DB.QueryRow("SHOW CREATE TABLE "+tableName).Scan(&tableName, &createStatement); err != nil {
+			panic(err)
+		}
+		_, err := file.WriteString(createStatement + ";\n\n")
+		if err != nil {
+			panic(err)
+		}
+	}
+}
