@@ -97,7 +97,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Check typos
-        uses: crate-ci/typos@v1.23.7
+        uses: crate-ci/typos@v1.24.1
         with:
           files: ./
           config: ./_typos.toml
