@@ -37,5 +37,12 @@ func NewDatabaseCmd() *cobra.Command {
 			migration.RunUp()
 		},
 	})
+	cmd.AddCommand(&cobra.Command{
+		Use:   "extract-schema",
+		Short: "extract schema",
+		Run: func(cmd *cobra.Command, args []string) {
+			migration.RunExtractSchema()
+		},
+	})
 	return cmd
 }
