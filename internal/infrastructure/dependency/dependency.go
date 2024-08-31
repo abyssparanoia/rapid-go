@@ -47,8 +47,8 @@ func (d *Dependency) Inject(
 	gcsCli := gcs.NewClient(ctx)
 	gcsBucketHandle := gcs.NewBucketHandle(gcsCli, e.GCPBucketName)
 
-	awsSession := aws.NewSession(e.AWSRegion, e.AWSEmulatorHost)
-	_ = s3.NewClient(awsSession)
+	awsSession := aws.NewConfig(ctx, e.AWSRegion)
+	_ = s3.NewClient(awsSession, e.AWSEmulatorHost)
 
 	cognitoCli := cognito.NewClient(awsSession, e.AWSCognitoEmulatorHost)
 
