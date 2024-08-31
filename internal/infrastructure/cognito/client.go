@@ -1,15 +1,15 @@
 package cognito
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 )
 
-func NewClient(session *session.Session, localhost string) *cognitoidentityprovider.CognitoIdentityProvider {
-	cfgs := []*aws.Config{}
+func NewClient(cfg aws.Config, localhost string) *cognitoidentityprovider.Client {
 	if localhost != "" {
-		cfgs = append(cfgs, aws.NewConfig().WithEndpoint(localhost))
+		return cognitoidentityprovider.NewFromConfig(cfg, func(o *cognitoidentityprovider.Options) {
+			o.BaseEndpoint = &localhost
+		})
 	}
-	return cognitoidentityprovider.New(session, cfgs...)
+	return cognitoidentityprovider.NewFromConfig(cfg)
 }
