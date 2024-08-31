@@ -11,14 +11,15 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/internal/dto"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/internal/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
 type staffAuthentication struct {
-	cli          *cognitoidentityprovider.CognitoIdentityProvider
+	cli          *cognitoidentityprovider.Client
 	userPoolID   string
 	clientID     string
 	publicKeySet jwk.Set
@@ -26,16 +27,16 @@ type staffAuthentication struct {
 
 func NewStaffAuthentication(
 	ctx context.Context,
-	cognitoCli *cognitoidentityprovider.CognitoIdentityProvider,
+	cognitoCli *cognitoidentityprovider.Client,
 	userPoolID string,
 	clientID string,
 	emulatorHost string,
 ) repository.StaffAuthentication {
-	endpoint := cognitoCli.Endpoint
+	endpoint := cognitoCli.Options().BaseEndpoint
 	if emulatorHost != "" {
-		endpoint = emulatorHost
+		endpoint = &emulatorHost
 	}
-	publicKeysURL := fmt.Sprintf("%s/%s/.well-known/jwks.json", endpoint, userPoolID)
+	publicKeysURL := fmt.Sprintf("%s/%s/.well-known/jwks.json", *endpoint, userPoolID)
 	publicKeySet, err := jwk.Fetch(ctx, publicKeysURL)
 	if err != nil {
 		panic(err)
@@ -97,17 +98,17 @@ func (r *staffAuthentication) GetUserByEmail(
 	req := &cognitoidentityprovider.ListUsersInput{
 		UserPoolId: aws.String(r.userPoolID),
 		Filter:     aws.String(fmt.Sprintf("email = \"%s\"", email)),
-		Limit:      aws.Int64(1),
+		Limit:      aws.Int32(1),
 	}
-	res, err := r.cli.ListUsers(req)
+	res, err := r.cli.ListUsers(ctx, req)
 	if err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
-	var user *cognitoidentityprovider.UserType
+	var user *types.UserType
 	for _, cognitoUser := range res.Users {
 		for _, attr := range cognitoUser.Attributes {
 			if attr.Name == aws.String("email") && attr.Value == aws.String(email) {
-				user = cognitoUser
+				user = &cognitoUser
 			}
 		}
 	}
@@ -128,18 +129,18 @@ func (r *staffAuthentication) CreateUser(
 	param repository.StaffAuthenticationCreateUserParam,
 ) (string, error) {
 	authUID := uuid.UUIDBase64()
-	emailAttr := &cognitoidentityprovider.AttributeType{
-		Name:  aws.String(cognitoidentityprovider.UsernameAttributeTypeEmail),
+	emailAttr := &types.AttributeType{
+		Name:  aws.String(string(types.UsernameAttributeTypeEmail)),
 		Value: aws.String(param.Email),
 	}
-	attrs := []*cognitoidentityprovider.AttributeType{emailAttr}
+	attrs := []types.AttributeType{*emailAttr}
 	req := &cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:             aws.String(r.userPoolID),
 		Username:               aws.String(authUID),
 		UserAttributes:         attrs,
-		DesiredDeliveryMediums: aws.StringSlice([]string{cognitoidentityprovider.DeliveryMediumTypeEmail}),
+		DesiredDeliveryMediums: []types.DeliveryMediumType{types.DeliveryMediumTypeEmail},
 	}
-	_, err := r.cli.AdminCreateUser(req)
+	_, err := r.cli.AdminCreateUser(ctx, req)
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}
@@ -149,9 +150,9 @@ func (r *staffAuthentication) CreateUser(
 			UserPoolId: aws.String(r.userPoolID),
 			Username:   aws.String(authUID),
 			Password:   aws.String(param.Password.String),
-			Permanent:  aws.Bool(true),
+			Permanent:  true,
 		}
-		_, err := r.cli.AdminSetUserPassword(req)
+		_, err := r.cli.AdminSetUserPassword(ctx, req)
 		if err != nil {
 			return "", errors.InternalErr.Wrap(err)
 		}
@@ -169,7 +170,7 @@ func (r *staffAuthentication) StoreClaims(
 		Username:       aws.String(authUID),
 		UserAttributes: marshaller.StaffClaimsToCustomUserAttributes(claims).ToSlice(),
 	}
-	_, err := r.cli.AdminUpdateUserAttributes(req)
+	_, err := r.cli.AdminUpdateUserAttributes(ctx, req)
 	if err != nil {
 		return errors.InternalErr.Wrap(err)
 	}
@@ -189,15 +190,15 @@ func (r *staffAuthentication) CreateIDToken(
 	password string,
 ) (string, error) {
 	req := &cognitoidentityprovider.AdminInitiateAuthInput{
-		AuthFlow: aws.String(cognitoidentityprovider.AuthFlowTypeAdminUserPasswordAuth),
-		AuthParameters: map[string]*string{
-			"USERNAME": aws.String(authUID),
-			"PASSWORD": aws.String(password),
+		AuthFlow: types.AuthFlowTypeAdminUserPasswordAuth,
+		AuthParameters: map[string]string{
+			"USERNAME": authUID,
+			"PASSWORD": password,
 		},
 		ClientId:   aws.String(r.clientID),
 		UserPoolId: aws.String(r.userPoolID),
 	}
-	res, err := r.cli.AdminInitiateAuth(req)
+	res, err := r.cli.AdminInitiateAuth(ctx, req)
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}
