@@ -1,8 +1,8 @@
 package dto
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/volatiletech/null/v8"
 )
@@ -28,7 +28,7 @@ type UserAttributes struct {
 	CustomUserAttributes
 }
 
-func NewUserAttributesFromCognitoUser(cognitoUser *cognitoidentityprovider.UserType) *UserAttributes {
+func NewUserAttributesFromCognitoUser(cognitoUser *types.UserType) *UserAttributes {
 	userAttributes := &UserAttributes{
 		AuthUID: *cognitoUser.Username,
 	}
@@ -69,22 +69,22 @@ type CustomUserAttributes struct {
 	StaffRole null.String
 }
 
-func (ua *CustomUserAttributes) ToSlice() []*cognitoidentityprovider.AttributeType {
-	attrs := []*cognitoidentityprovider.AttributeType{}
+func (ua *CustomUserAttributes) ToSlice() []types.AttributeType {
+	attrs := []types.AttributeType{}
 	if ua.TenantID.Valid {
-		attrs = append(attrs, NewUserAttribute("custom:tenant_id", ua.TenantID.String))
+		attrs = append(attrs, *NewUserAttribute("custom:tenant_id", ua.TenantID.String))
 	}
 	if ua.StaffID.Valid {
-		attrs = append(attrs, NewUserAttribute("custom:staff_id", ua.StaffID.String))
+		attrs = append(attrs, *NewUserAttribute("custom:staff_id", ua.StaffID.String))
 	}
 	if ua.StaffRole.Valid {
-		attrs = append(attrs, NewUserAttribute("custom:staff_role", ua.StaffRole.String))
+		attrs = append(attrs, *NewUserAttribute("custom:staff_role", ua.StaffRole.String))
 	}
 	return attrs
 }
 
-func NewUserAttribute(name, value string) *cognitoidentityprovider.AttributeType {
-	attr := &cognitoidentityprovider.AttributeType{
+func NewUserAttribute(name, value string) *types.AttributeType {
+	attr := &types.AttributeType{
 		Name:  aws.String(name),
 		Value: aws.String(value),
 	}
