@@ -35,7 +35,7 @@ require (
 	github.com/lestrrat-go/jwx/v2 v2.1.1
 	github.com/lucsky/cuid v1.2.1
 	github.com/pkg/errors v0.9.1
-	github.com/pressly/goose/v3 v3.21.1
+	github.com/pressly/goose/v3 v3.22.0
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
@@ -316,9 +316,9 @@ require (
 	github.com/sashamelentyev/usestdlibvars v1.27.0 // indirect
 	github.com/securego/gosec/v2 v2.20.1-0.20240822074752-ab3f6c1c83a0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
-	github.com/sethvargo/go-retry v0.2.4 // indirect
+	github.com/sethvargo/go-retry v0.3.0 // indirect
 	github.com/shazow/go-diff v0.0.0-20160112020656-b6b7b6733b8c // indirect
-	github.com/shopspring/decimal v1.3.1 // indirect
+	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sivchari/containedctx v1.0.3 // indirect
 	github.com/sivchari/tenv v1.10.0 // indirect
