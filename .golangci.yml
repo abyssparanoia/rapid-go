@@ -178,6 +178,10 @@ linters-settings:
     # Default: false
     all: true
 
+  gosec:
+    excludes:
+      - G115
+
 linters:
   disable-all: true
   enable:
