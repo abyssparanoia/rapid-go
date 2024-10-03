@@ -14,7 +14,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.31.0
 	github.com/aws/aws-sdk-go-v2/config v1.27.39
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.45.3
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.63.3
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.64.0
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.42.0
 	github.com/caarlos0/env/v11 v11.2.2
