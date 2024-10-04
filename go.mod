@@ -5,7 +5,7 @@ go 1.23
 toolchain go1.23.2
 
 require (
-	cloud.google.com/go/spanner v1.68.0
+	cloud.google.com/go/spanner v1.69.0
 	cloud.google.com/go/storage v1.44.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/memeduck v1.0.3
