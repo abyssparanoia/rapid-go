@@ -9,7 +9,7 @@ require (
 	cloud.google.com/go/storage v1.44.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/memeduck v1.0.3
-	github.com/air-verse/air v1.60.0
+	github.com/air-verse/air v1.61.0
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/aws/aws-sdk-go-v2 v1.32.2
 	github.com/aws/aws-sdk-go-v2/config v1.27.43
