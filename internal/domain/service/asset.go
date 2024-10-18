@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 )
@@ -12,6 +13,7 @@ type Asset interface {
 		ctx context.Context,
 		assetType model.AssetType,
 		contentType string,
+		requestTime time.Time,
 	) (*AssetCreatePresignedURLResult, error)
 	GetWithValidate(
 		ctx context.Context,
