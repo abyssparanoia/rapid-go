@@ -7,7 +7,9 @@ import (
 
 	mock_cache "github.com/abyssparanoia/rapid-go/internal/domain/cache/mock"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -16,18 +18,17 @@ import (
 func TestAssetService_CreatePresignedURL(t *testing.T) {
 	t.Parallel()
 
-	mockUUID := uuid.MockUUIDBase64()
-	asset := &model.Asset{
-		Key:         mockUUID,
-		ContentType: "image/png",
-		AssetType:   model.AssetTypeUserImage,
-		Path:        "private/user_images/" + mockUUID + ".png",
-	}
+	mockID := id.Mock()
+	uuid.MockUUIDBase64()
+	testdata := factory.NewFactory()
+	asset := testdata.Asset
+	asset.ID = mockID
 	presignedURL := "presignedURL"
-
+	requestTime := testdata.RequestTime
 	type args struct {
 		assetType   model.AssetType
 		contentType string
+		requestTime time.Time
 	}
 
 	type want struct {
@@ -42,8 +43,9 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 	}{
 		"success": {
 			args: args{
-				assetType:   asset.AssetType,
+				assetType:   asset.Type,
 				contentType: asset.ContentType,
+				requestTime: requestTime,
 			},
 			service: func(_ context.Context, ctrl *gomock.Controller) Asset {
 				mockAssetRepo := mock_repository.NewMockAsset(ctrl)
@@ -53,14 +55,13 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 						gomock.Any(),
 						asset.ContentType,
 						asset.Path,
-						15*time.Minute,
+						asset.Expiration(),
 					).
 					Return(presignedURL, nil)
 				mockAssetPathCache.EXPECT().
 					Set(
 						gomock.Any(),
 						asset,
-						24*time.Hour,
 					).
 					Return(nil)
 				return &assetService{
@@ -70,7 +71,7 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 			},
 			want: want{
 				got: &AssetCreatePresignedURLResult{
-					AssetKey:     asset.Key,
+					AssetKey:     asset.ID,
 					PresignedURL: presignedURL,
 				},
 			},
@@ -87,7 +88,7 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 
 			u := tc.service(ctx, ctrl)
 
-			got, err := u.CreatePresignedURL(ctx, tc.args.assetType, tc.args.contentType)
+			got, err := u.CreatePresignedURL(ctx, tc.args.assetType, tc.args.contentType, tc.args.requestTime)
 			if tc.want.expectedResult == nil {
 				require.NoError(t, err)
 				require.Equal(t, tc.want.got, got)
