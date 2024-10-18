@@ -54,7 +54,7 @@ func (i *adminStaffInteractor) Create(
 			return err
 		}
 
-		imagePath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.AssetKey)
+		imagePath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID)
 		if err != nil {
 			return err
 		}
