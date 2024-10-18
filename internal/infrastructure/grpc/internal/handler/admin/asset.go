@@ -22,7 +22,7 @@ func (h *AdminHandler) CreateAssetPresignedURL(ctx context.Context, req *admin_a
 		return nil, err
 	}
 	return &admin_apiv1.CreateAssetPresignedURLResponse{
-		AssetKey:     got.AssetKey,
+		AssetId:      got.AssetID,
 		PresignedUrl: got.PresignedURL,
 	}, nil
 }
