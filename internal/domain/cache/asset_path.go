@@ -2,7 +2,6 @@ package cache
 
 import (
 	"context"
-	"time"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 )
@@ -11,11 +10,14 @@ import (
 type AssetPath interface {
 	Get(
 		ctx context.Context,
-		assetKey string,
+		id string,
 	) (string, error)
 	Set(
 		ctx context.Context,
 		asset *model.Asset,
-		expiration time.Duration,
+	) error
+	Clear(
+		ctx context.Context,
+		id string,
 	) error
 }
