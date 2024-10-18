@@ -12,7 +12,6 @@ package mock_cache
 import (
 	context "context"
 	reflect "reflect"
-	time "time"
 
 	model "github.com/abyssparanoia/rapid-go/internal/domain/model"
 	gomock "go.uber.org/mock/gomock"
@@ -41,31 +40,45 @@ func (m *MockAssetPath) EXPECT() *MockAssetPathMockRecorder {
 	return m.recorder
 }
 
-// Get mocks base method.
-func (m *MockAssetPath) Get(ctx context.Context, assetKey string) (string, error) {
+// Clear mocks base method.
+func (m *MockAssetPath) Clear(ctx context.Context, id string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, assetKey)
+	ret := m.ctrl.Call(m, "Clear", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Clear indicates an expected call of Clear.
+func (mr *MockAssetPathMockRecorder) Clear(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Clear", reflect.TypeOf((*MockAssetPath)(nil).Clear), ctx, id)
+}
+
+// Get mocks base method.
+func (m *MockAssetPath) Get(ctx context.Context, id string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", ctx, id)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockAssetPathMockRecorder) Get(ctx, assetKey any) *gomock.Call {
+func (mr *MockAssetPathMockRecorder) Get(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAssetPath)(nil).Get), ctx, assetKey)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAssetPath)(nil).Get), ctx, id)
 }
 
 // Set mocks base method.
-func (m *MockAssetPath) Set(ctx context.Context, asset *model.Asset, expiration time.Duration) error {
+func (m *MockAssetPath) Set(ctx context.Context, asset *model.Asset) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Set", ctx, asset, expiration)
+	ret := m.ctrl.Call(m, "Set", ctx, asset)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Set indicates an expected call of Set.
-func (mr *MockAssetPathMockRecorder) Set(ctx, asset, expiration any) *gomock.Call {
+func (mr *MockAssetPathMockRecorder) Set(ctx, asset any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockAssetPath)(nil).Set), ctx, asset, expiration)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockAssetPath)(nil).Set), ctx, asset)
 }
