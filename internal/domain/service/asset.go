@@ -18,7 +18,7 @@ type Asset interface {
 	GetWithValidate(
 		ctx context.Context,
 		assetType model.AssetType,
-		assetKey string,
+		assetID string,
 	) (string, error)
 	BatchSetStaffURLs(
 		ctx context.Context,
@@ -27,6 +27,6 @@ type Asset interface {
 }
 
 type AssetCreatePresignedURLResult struct {
-	AssetKey     string
+	AssetID      string
 	PresignedURL string
 }
