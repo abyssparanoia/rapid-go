@@ -15,6 +15,7 @@ func NewFactory() struct {
 	RequestTime time.Time
 	Tenant      *model.Tenant
 	Staff       *model.Staff
+	Asset       *model.Asset
 } {
 	opts := []options.OptionFunc{
 		options.WithIgnoreInterface(true),
@@ -39,14 +40,27 @@ func NewFactory() struct {
 	user.CreatedAt = n
 	user.UpdatedAt = n
 
+	asset := &model.Asset{}
+	if err := faker.FakeData(asset, opts...); err != nil {
+		panic(err)
+	}
+	asset.ContentType = "image/png"
+	asset.Type = model.AssetTypeUserImage
+	asset.Path = "private/user_images/mock.png"
+	asset.ExpiresAt = n.Add(15 * time.Minute)
+	asset.CreatedAt = n
+	asset.UpdatedAt = n
+
 	return struct {
 		RequestTime time.Time
 		Tenant      *model.Tenant
 		Staff       *model.Staff
+		Asset       *model.Asset
 	}{
 		RequestTime: n,
 		Tenant:      tenant,
 		Staff:       user,
+		Asset:       asset,
 	}
 }
 
