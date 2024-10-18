@@ -55,7 +55,7 @@ func (s *assetService) CreatePresignedURL(
 	}
 
 	return &AssetCreatePresignedURLResult{
-		AssetKey:     asset.ID,
+		AssetID:      asset.ID,
 		PresignedURL: presignedURL,
 	}, nil
 }
@@ -63,9 +63,9 @@ func (s *assetService) CreatePresignedURL(
 func (s *assetService) GetWithValidate(
 	ctx context.Context,
 	assetType model.AssetType,
-	assetKey string,
+	assetID string,
 ) (string, error) {
-	got, err := s.assetPathCache.Get(ctx, assetKey)
+	got, err := s.assetPathCache.Get(ctx, assetID)
 	if err != nil {
 		return "", err
 	}
