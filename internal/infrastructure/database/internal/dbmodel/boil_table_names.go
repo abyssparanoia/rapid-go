@@ -4,11 +4,15 @@
 package dbmodel
 
 var TableNames = struct {
+	AssetTypes     string
+	Assets         string
 	GooseDBVersion string
 	StaffRoles     string
 	Staffs         string
 	Tenants        string
 }{
+	AssetTypes:     "asset_types",
+	Assets:         "assets",
 	GooseDBVersion: "goose_db_version",
 	StaffRoles:     "staff_roles",
 	Staffs:         "staffs",
