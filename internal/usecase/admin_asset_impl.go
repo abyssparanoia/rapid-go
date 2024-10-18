@@ -31,12 +31,13 @@ func (i *adminAssetInteractor) CreatePresignedURL(
 		ctx,
 		param.AssetType,
 		param.ContentType,
+		param.RequestTime,
 	)
 	if err != nil {
 		return nil, err
 	}
 	return output.NewAdminCreateAssetPresignedURL(
-		got.AssetKey,
+		got.AssetID,
 		got.PresignedURL,
 	), nil
 }

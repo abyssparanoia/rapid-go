@@ -32,7 +32,7 @@ type Staff struct { // id
 	AuthUID string `boil:"auth_uid" json:"auth_uid" toml:"auth_uid" yaml:"auth_uid"`
 	// display_name
 	DisplayName string `boil:"display_name" json:"display_name" toml:"display_name" yaml:"display_name"`
-	// auth_uid
+	// image_path
 	ImagePath string `boil:"image_path" json:"image_path" toml:"image_path" yaml:"image_path"`
 	// email
 	Email string `boil:"email" json:"email" toml:"email" yaml:"email"`
@@ -90,27 +90,6 @@ var StaffTableColumns = struct {
 }
 
 // Generated where
-
-type whereHelpertime_Time struct{ field string }
-
-func (w whereHelpertime_Time) EQ(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.EQ, x)
-}
-func (w whereHelpertime_Time) NEQ(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.NEQ, x)
-}
-func (w whereHelpertime_Time) LT(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpertime_Time) LTE(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpertime_Time) GT(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
 
 var StaffWhere = struct {
 	ID          whereHelperstring

@@ -1,6 +1,8 @@
 package input
 
 import (
+	"time"
+
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/validation"
@@ -9,15 +11,18 @@ import (
 type AdminCreateAssetPresignedURL struct {
 	ContentType string          `validate:"required"`
 	AssetType   model.AssetType `validate:"required"`
+	RequestTime time.Time       `validate:"required"`
 }
 
 func NewAdminCreateAssetPresignedURL(
 	contentType string,
 	assetType model.AssetType,
+	requestTime time.Time,
 ) *AdminCreateAssetPresignedURL {
 	return &AdminCreateAssetPresignedURL{
 		ContentType: contentType,
 		AssetType:   assetType,
+		RequestTime: requestTime,
 	}
 }
 

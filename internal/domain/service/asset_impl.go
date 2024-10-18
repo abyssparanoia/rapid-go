@@ -28,10 +28,12 @@ func (s *assetService) CreatePresignedURL(
 	ctx context.Context,
 	assetType model.AssetType,
 	contentType string,
+	requestTime time.Time,
 ) (*AssetCreatePresignedURLResult, error) {
 	asset, err := model.NewAsset(
 		assetType,
 		contentType,
+		requestTime,
 	)
 	if err != nil {
 		return nil, err
@@ -40,8 +42,7 @@ func (s *assetService) CreatePresignedURL(
 		ctx,
 		contentType,
 		asset.Path,
-		// 有効期限は15分とする
-		15*time.Minute,
+		asset.Expiration(),
 	)
 	if err != nil {
 		return nil, err
@@ -49,14 +50,12 @@ func (s *assetService) CreatePresignedURL(
 	if err := s.assetPathCache.Set(
 		ctx,
 		asset,
-		// 有効期限は30分とする
-		24*time.Hour,
 	); err != nil {
 		return nil, err
 	}
 
 	return &AssetCreatePresignedURLResult{
-		AssetKey:     asset.Key,
+		AssetID:      asset.ID,
 		PresignedURL: presignedURL,
 	}, nil
 }
@@ -64,9 +63,9 @@ func (s *assetService) CreatePresignedURL(
 func (s *assetService) GetWithValidate(
 	ctx context.Context,
 	assetType model.AssetType,
-	assetKey string,
+	assetID string,
 ) (string, error) {
-	got, err := s.assetPathCache.Get(ctx, assetKey)
+	got, err := s.assetPathCache.Get(ctx, assetID)
 	if err != nil {
 		return "", err
 	}

@@ -10,7 +10,7 @@ message CreateStaffRequest {
   string email = 2;
   string display_name = 3;
   StaffRole role = 4;
-  string asset_key = 5;
+  string image_asset_id = 5;
 
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
@@ -19,7 +19,7 @@ message CreateStaffRequest {
         "email",
         "display_name",
         "role",
-        "asset_key"
+        "image_asset_id"
       ]
     }
   };

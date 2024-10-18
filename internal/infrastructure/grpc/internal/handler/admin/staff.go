@@ -22,7 +22,7 @@ func (h *AdminHandler) CreateStaff(ctx context.Context, req *admin_apiv1.CreateS
 			req.GetEmail(),
 			req.GetDisplayName(),
 			marshaller.StaffRoleToModel(req.GetRole()),
-			req.GetAssetKey(),
+			req.GetImageAssetId(),
 			request_interceptor.GetRequestTime(ctx),
 		),
 	)
