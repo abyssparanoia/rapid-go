@@ -1,3 +1,4 @@
+// nolint:godot,gci
 package dependency
 
 import (
@@ -8,6 +9,9 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
 	cognito_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
+	database_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/database/cache"
+
+	// redis_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/redis/cache"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/transactable"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
@@ -15,8 +19,6 @@ import (
 	firebase_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs"
 	gcs_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs/repository"
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/redis"
-	redis_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/redis/cache"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/s3"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
@@ -40,7 +42,7 @@ func (d *Dependency) Inject(
 	e *environment.Environment,
 ) {
 	d.DatabaseCli = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, e.DBLogEnable)
-	redisCli := redis.NewClient(e.RedisHost, e.RedisPort, e.RedisUsername, e.RedisPassword, e.RedisTLSEnable)
+	// redisCli := redis.NewClient(e.RedisHost, e.RedisPort, e.RedisUsername, e.RedisPassword, e.RedisTLSEnable)
 
 	firebaseCli := firebase.NewClient(e.GCPProjectID)
 
@@ -69,7 +71,8 @@ func (d *Dependency) Inject(
 	assetRepository := gcs_repository.NewAsset(gcsBucketHandle)
 	// assetRepository := s3_repository.NewAsset(s3Client, e.AWSBucketName)
 
-	assetPathCache := redis_cache.NewAssetPath(redisCli)
+	// assetPathCache := redis_cache.NewAssetPath(redisCli)
+	assetPathCache := database_cache.NewAssetPath()
 
 	assetService := service.NewAsset(
 		assetRepository,
