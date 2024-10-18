@@ -37,7 +37,7 @@ func (i *adminAssetInteractor) CreatePresignedURL(
 		return nil, err
 	}
 	return output.NewAdminCreateAssetPresignedURL(
-		got.AssetKey,
+		got.AssetID,
 		got.PresignedURL,
 	), nil
 }
