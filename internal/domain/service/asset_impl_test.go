@@ -71,7 +71,7 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 			},
 			want: want{
 				got: &AssetCreatePresignedURLResult{
-					AssetKey:     asset.ID,
+					AssetID:      asset.ID,
 					PresignedURL: presignedURL,
 				},
 			},
