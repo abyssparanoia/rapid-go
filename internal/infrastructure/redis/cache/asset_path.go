@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/cache"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
@@ -31,9 +30,9 @@ func (c *assetPath) buildCacheKey(
 
 func (c *assetPath) Get(
 	ctx context.Context,
-	assetKey string,
+	id string,
 ) (string, error) {
-	cacheKey := c.buildCacheKey(assetKey)
+	cacheKey := c.buildCacheKey(id)
 	got, err := c.cli.Get(ctx, cacheKey).Result()
 	if err != nil {
 		if err == redis.Nil {
@@ -47,10 +46,20 @@ func (c *assetPath) Get(
 func (c *assetPath) Set(
 	ctx context.Context,
 	asset *model.Asset,
-	expiration time.Duration,
 ) error {
-	cacheKey := c.buildCacheKey(asset.Key)
-	if err := c.cli.Set(ctx, cacheKey, asset.Path, expiration).Err(); err != nil {
+	cacheKey := c.buildCacheKey(asset.ID)
+	if err := c.cli.Set(ctx, cacheKey, asset.Path, asset.Expiration()).Err(); err != nil {
+		return errors.InternalErr.Wrap(err)
+	}
+	return nil
+}
+
+func (c *assetPath) Clear(
+	ctx context.Context,
+	id string,
+) error {
+	cacheKey := c.buildCacheKey(id)
+	if err := c.cli.Del(ctx, cacheKey).Err(); err != nil {
 		return errors.InternalErr.Wrap(err)
 	}
 	return nil
