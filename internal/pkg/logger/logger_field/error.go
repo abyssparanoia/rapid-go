@@ -10,5 +10,5 @@ func Error(err error) zapcore.Field {
 	if goErr := goerr.Unwrap(err); goErr != nil {
 		return zap.Object("error", goErr)
 	}
-	return zap.Error(err)
+	return zap.Error(err) //nolint:forbidigo
 }
