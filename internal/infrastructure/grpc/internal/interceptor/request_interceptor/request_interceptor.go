@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/abyssparanoia/goerr"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/logger/logger_field"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/blendle/zapdriver"
 	"github.com/google/uuid"
@@ -65,13 +67,13 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			fields = append(
 				fields,
 				zap.String("grpc.code", code.String()),
-				zap.Error(err),
+				logger_field.Error(err),
 			)
 			zapcoreLevel := codeToZapCoreLevel(code)
 			logger.L(ctx).Check(zapcoreLevel, fmt.Sprintf("code: %s  rpc: %s", code.String(), info.FullMethod)).
 				Write(fields...)
 
-			errCode, errMessage := errors.ExtractPlaneErrMessage(err)
+			errCode, errMessage := extractErrInfo(err)
 			st, err := status.
 				New(code, errCode).
 				WithDetails(
@@ -106,4 +108,11 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 		return resp, nil
 	}
+}
+
+func extractErrInfo(err error) (string, string) {
+	if goErr := goerr.Unwrap(err); goErr != nil {
+		return goErr.Code(), goErr.Error()
+	}
+	return "E100001", "An internal error has occurred"
 }
