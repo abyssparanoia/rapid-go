@@ -46,7 +46,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 				}
 			},
 			want: want{
-				expectedResult: errors.RequestInvalidArgumentErr.New(),
+				expectedResult: errors.RequestInvalidArgumentErr,
 			},
 		},
 		"not found": {
@@ -64,13 +64,13 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 								OrFail: true,
 							},
 						}).
-					Return(nil, errors.TenantNotFoundErr.New())
+					Return(nil, errors.TenantNotFoundErr)
 				return &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
 				}
 			},
 			want: want{
-				expectedResult: errors.TenantNotFoundErr.New(),
+				expectedResult: errors.TenantNotFoundErr,
 			},
 		},
 		"success": {
@@ -239,7 +239,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 				}
 			},
 			want: want{
-				expectedResult: errors.RequestInvalidArgumentErr.New(),
+				expectedResult: errors.RequestInvalidArgumentErr,
 			},
 		},
 		"success": {
@@ -314,7 +314,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 				return &adminTenantInteractor{}
 			},
 			want: want{
-				expectedResult: errors.RequestInvalidArgumentErr.New(),
+				expectedResult: errors.RequestInvalidArgumentErr,
 			},
 		},
 		"success": {
@@ -398,7 +398,7 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 				return &adminTenantInteractor{}
 			},
 			want: want{
-				expectedResult: errors.RequestInvalidArgumentErr.New(),
+				expectedResult: errors.RequestInvalidArgumentErr,
 			},
 		},
 		"success": {
