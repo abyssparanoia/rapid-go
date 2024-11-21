@@ -1,6 +1,7 @@
 package input
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
@@ -31,7 +32,7 @@ func (p *AdminCreateAssetPresignedURL) Validate() error {
 		return errors.RequestInvalidArgumentErr.Wrap(err)
 	}
 	if !p.AssetType.Valid() {
-		return errors.RequestInvalidArgumentErr.Errorf("invalid asset type %s", p.AssetType)
+		return errors.RequestInvalidArgumentErr.WithDetail(fmt.Sprintf("invalid asset type %s", p.AssetType))
 	}
 	return nil
 }
