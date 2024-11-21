@@ -2,8 +2,10 @@ package session_interceptor
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
+	"github.com/abyssparanoia/goerr"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
@@ -31,6 +33,9 @@ func (i *Session) Authenticate(ctx context.Context) (context.Context, error) {
 	if strings.Contains(method, "AdminV1Service") {
 		claims, err := i.authenticationInteractor.VerifyStaffIDToken(ctx, input.NewVerifyIDToken(idToken))
 		if err != nil {
+			if goErr := goerr.Unwrap(err); goErr != nil {
+				fmt.Println("check", goErr.Category(), goErr.Code(), goErr.Detail())
+			}
 			return ctx, err
 		}
 		ctx = SaveStaffSessionContext(ctx, claims)
