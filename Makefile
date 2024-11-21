@@ -51,6 +51,11 @@ lint.go:
 	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run
 	$(call format)
 
+.PHONY: lint.go.fix
+lint.go.fix:
+	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run --fix
+	$(call format)
+
 .PHONY: lint.proto
 lint.proto:
 	@go run github.com/bufbuild/buf/cmd/buf lint

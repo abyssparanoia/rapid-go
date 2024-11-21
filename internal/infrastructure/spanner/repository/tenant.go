@@ -51,7 +51,9 @@ func (r *tenant) Get(
 		if !query.OrFail {
 			return nil, nil
 		} else {
-			return nil, errors.TenantNotFoundErr.Errorf("tenant is not found")
+			return nil, errors.TenantNotFoundErr.
+				WithDetail("tenant is not found").
+				WithValue("query", query)
 		}
 	}
 

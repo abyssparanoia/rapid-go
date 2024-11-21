@@ -55,7 +55,9 @@ func (r *staff) Get(
 		if !query.OrFail {
 			return nil, nil
 		} else {
-			return nil, errors.StaffNotFoundErr.Errorf("staff is not found")
+			return nil, errors.StaffNotFoundErr.
+				WithDetail("staff is not found").
+				WithValue("query", query)
 		}
 	}
 

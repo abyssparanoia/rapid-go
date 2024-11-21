@@ -26,8 +26,8 @@ func Test_handleError(t *testing.T) {
 			want: errors.CanceledErr.Wrap(context.DeadlineExceeded),
 		},
 		"internal error": {
-			err:  errors.InternalErr.New(),
-			want: errors.InternalErr.Wrap(errors.InternalErr.New()),
+			err:  errors.InternalErr,
+			want: errors.InternalErr.Wrap(errors.InternalErr),
 		},
 		"other error": {
 			err:  fmt.Errorf("other error"),

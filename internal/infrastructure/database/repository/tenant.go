@@ -38,7 +38,9 @@ func (r *tenant) Get(
 		if err == sql.ErrNoRows && !query.OrFail {
 			return nil, nil
 		} else if err == sql.ErrNoRows {
-			return nil, errors.TenantNotFoundErr.Errorf("tenant is not found")
+			return nil, errors.TenantNotFoundErr.
+				WithDetail("tenant is not found").
+				WithValue("query", query)
 		}
 		return nil, errors.InternalErr.Wrap(err)
 	}

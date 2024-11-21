@@ -182,6 +182,11 @@ linters-settings:
     excludes:
       - G115
 
+  forbidigo:
+    forbid:
+      - fmt\.Print.*
+      - zap\.Error.*
+
 linters:
   disable-all: true
   enable:

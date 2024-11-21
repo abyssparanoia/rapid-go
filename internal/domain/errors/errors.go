@@ -1,62 +1,18 @@
 package errors
 
-import "github.com/pkg/errors"
-
-const (
-	// common error.
-	InternalErr                InternalError     = "E100001"
-	RequestInvalidArgumentErr  BadRequestError   = "E100002"
-	InvalidIDTokenErr          UnauthorizedError = "E100003"
-	RequireStaffSessionErr     UnauthorizedError = "E100004"
-	InvalidAdminRequestUserErr UnauthorizedError = "E100005"
-	AssetInvalidErr            BadRequestError   = "E100006"
-	AssetNotFoundErr           NotFoundError     = "E100007"
-	CanceledErr                CanceledError     = "E900001"
+var (
+	InternalErr                = NewInternalError("E100001", "An internal error has occurred")
+	RequestInvalidArgumentErr  = NewBadRequestError("E100002", "Request argument is invalid")
+	InvalidIDTokenErr          = NewUnauthorizedError("E100003", "Invalid ID token")
+	RequireStaffSessionErr     = NewUnauthorizedError("E100004", "Require staff session")
+	InvalidAdminRequestUserErr = NewUnauthorizedError("E100005", "Invalid admin request user")
+	AssetInvalidErr            = NewBadRequestError("E100006", "Asset is invalid")
+	AssetNotFoundErr           = NewNotFoundError("E100007", "Asset not found")
+	CanceledErr                = NewCanceledError("E100008", "Canceled")
 
 	// tenant error.
-	TenantNotFoundErr NotFoundError = "E200101"
+	TenantNotFoundErr = NewNotFoundError("E200101", "Tenant not found")
 
 	// staff error.
-	StaffNotFoundErr NotFoundError = "E200201"
+	StaffNotFoundErr = NewNotFoundError("E200201", "Staff not found")
 )
-
-var errorMessageMap = map[error]string{
-	// common error
-	InternalErr:                "An internal error has occurred",
-	RequestInvalidArgumentErr:  "Request argument is invalid",
-	InvalidIDTokenErr:          "Invalid ID token",
-	RequireStaffSessionErr:     "Require staff session",
-	AssetInvalidErr:            "Asset is invalid",
-	InvalidAdminRequestUserErr: "Invalid admin request user",
-
-	// tenant error
-	TenantNotFoundErr: "Tenant not found",
-
-	// staff error
-	StaffNotFoundErr: "Staff not found",
-}
-
-func ExtractPlaneErrMessage(err error) (code string, message string) { //nolint: nonamedreturns
-	switch errors.Cause(err) {
-	// tenant error
-	case TenantNotFoundErr:
-		return TenantNotFoundErr.Error(), errorMessageMap[TenantNotFoundErr]
-
-	// staff error
-	case StaffNotFoundErr:
-		return StaffNotFoundErr.Error(), errorMessageMap[StaffNotFoundErr]
-
-	// common error
-	case InvalidIDTokenErr:
-		return InvalidIDTokenErr.Error(), errorMessageMap[InvalidIDTokenErr]
-	case RequireStaffSessionErr:
-		return RequireStaffSessionErr.Error(), errorMessageMap[RequireStaffSessionErr]
-	case InvalidAdminRequestUserErr:
-		return InvalidAdminRequestUserErr.Error(), errorMessageMap[InvalidAdminRequestUserErr]
-	case AssetInvalidErr:
-		return AssetInvalidErr.Error(), errorMessageMap[AssetInvalidErr]
-	case RequestInvalidArgumentErr:
-		return RequestInvalidArgumentErr.Error(), errorMessageMap[RequestInvalidArgumentErr]
-	}
-	return InternalErr.Error(), errorMessageMap[InternalErr]
-}
