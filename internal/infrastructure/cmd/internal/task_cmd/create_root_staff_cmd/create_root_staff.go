@@ -21,7 +21,7 @@ func (c *CMD) CreateRootStaff(cmd *cobra.Command) error {
 		return errors.InternalErr.Wrap(err)
 	}
 	if email == "" {
-		return errors.InternalErr.Errorf("email is required")
+		return errors.InternalErr.WithDetail("email is required")
 	}
 
 	password, err := cmd.Flags().GetString("password")
@@ -29,7 +29,7 @@ func (c *CMD) CreateRootStaff(cmd *cobra.Command) error {
 		return errors.InternalErr.Wrap(err)
 	}
 	if password == "" {
-		return errors.InternalErr.Errorf("password is required")
+		return errors.InternalErr.WithDetail("password is required")
 	}
 
 	if err := c.staffInteractor.CreateRoot(
