@@ -39,7 +39,7 @@ require (
 	github.com/pressly/goose/v3 v3.23.0
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/spf13/cobra v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/volatiletech/null/v8 v8.1.2
 	github.com/volatiletech/sqlboiler/v4 v4.17.1
 	github.com/volatiletech/strmangle v0.0.8
