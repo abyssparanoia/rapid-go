@@ -8,7 +8,7 @@ require (
 	cloud.google.com/go/spanner v1.73.0
 	cloud.google.com/go/storage v1.47.0
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/abyssparanoia/goerr v0.7.0
+	github.com/abyssparanoia/goerr v0.9.0
 	github.com/abyssparanoia/memeduck v1.0.3
 	github.com/air-verse/air v1.61.1
 	github.com/avast/retry-go v3.0.0+incompatible

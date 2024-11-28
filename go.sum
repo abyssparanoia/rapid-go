@@ -726,6 +726,8 @@ github.com/abyssparanoia/goerr v0.6.0 h1:owujAXlLbhJo1qUfjwdx3XpDKDJy4ApGhck3Pgc
 github.com/abyssparanoia/goerr v0.6.0/go.mod h1:skPqhm3WZWL9sSeO9IdDffyPJh6I0UCBgfToL90xiYA=
 github.com/abyssparanoia/goerr v0.7.0 h1:O170KAm5F01ftzgNj4AmJPv7VWzRFA/wEDzrmx2Vx1k=
 github.com/abyssparanoia/goerr v0.7.0/go.mod h1:skPqhm3WZWL9sSeO9IdDffyPJh6I0UCBgfToL90xiYA=
+github.com/abyssparanoia/goerr v0.9.0 h1:NaJJ6kuRUkvS0jon4vAaMO8Mdw1ZpGgPZa0NsHZlkeQ=
+github.com/abyssparanoia/goerr v0.9.0/go.mod h1:skPqhm3WZWL9sSeO9IdDffyPJh6I0UCBgfToL90xiYA=
 github.com/abyssparanoia/memeduck v1.0.3 h1:P8tiupAACEPGOZhlGIpAZ8QsvWtjWjPNSBjUYh5XkKY=
 github.com/abyssparanoia/memeduck v1.0.3/go.mod h1:6dWEqPe+Xxk9bWWAkbV+mTON6EppzbkLPa8PEmODebc=
 github.com/air-verse/air v1.61.1 h1:W3iLkvWd9XompcUbGZef3Fo1rj4Ts0SSI7Wlw9Z9OcU=
