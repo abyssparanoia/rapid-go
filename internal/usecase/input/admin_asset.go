@@ -32,7 +32,8 @@ func (p *AdminCreateAssetPresignedURL) Validate() error {
 		return errors.RequestInvalidArgumentErr.Wrap(err)
 	}
 	if !p.AssetType.Valid() {
-		return errors.RequestInvalidArgumentErr.WithDetail(fmt.Sprintf("invalid asset type %s", p.AssetType))
+		return errors.RequestInvalidArgumentErr.New().
+			WithDetail(fmt.Sprintf("invalid asset type %s", p.AssetType))
 	}
 	return nil
 }
