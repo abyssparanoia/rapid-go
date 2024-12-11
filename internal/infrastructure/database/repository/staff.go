@@ -46,7 +46,7 @@ func (r *staff) Get(
 		if err == sql.ErrNoRows && !query.OrFail {
 			return nil, nil
 		} else if err == sql.ErrNoRows {
-			return nil, errors.StaffNotFoundErr.
+			return nil, errors.StaffNotFoundErr.New().
 				WithDetail("staff is not found").
 				WithValue("query", query)
 		}
