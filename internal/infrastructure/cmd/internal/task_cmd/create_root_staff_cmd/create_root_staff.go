@@ -29,7 +29,7 @@ func (c *CMD) CreateRootStaff(cmd *cobra.Command) error {
 		return errors.InternalErr.Wrap(err)
 	}
 	if password == "" {
-		return errors.InternalErr.WithDetail("password is required")
+		return errors.InternalErr.New().WithDetail("password is required")
 	}
 
 	if err := c.staffInteractor.CreateRoot(
