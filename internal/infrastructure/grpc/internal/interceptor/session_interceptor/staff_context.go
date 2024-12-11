@@ -24,7 +24,7 @@ func SaveStaffSessionContext(
 func RequireStaffSessionContext(ctx context.Context) (*model.StaffClaims, error) {
 	sctx, ok := GetStaffSessionContext(ctx)
 	if !ok {
-		return nil, errors.RequireStaffSessionErr
+		return nil, errors.RequireStaffSessionErr.New()
 	}
 	return sctx, nil
 }

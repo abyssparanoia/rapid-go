@@ -84,12 +84,12 @@ func ValidateAssetPath(
 	path string,
 ) error {
 	if !assetType.Valid() {
-		return errors.AssetInvalidErr.
+		return errors.AssetInvalidErr.New().
 			WithDetail("asset_type is invalid").
 			WithValue("asset_type", assetType.String())
 	}
 	if !strings.HasPrefix(path, assetType.String()) {
-		return errors.AssetInvalidErr.
+		return errors.AssetInvalidErr.New().
 			WithDetail("path is invalid").
 			WithValue("path", path)
 	}

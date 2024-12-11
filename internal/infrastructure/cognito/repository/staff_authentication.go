@@ -57,19 +57,19 @@ func (r *staffAuthentication) VerifyIDToken(
 
 	jwtToken, err := jwt.ParseWithClaims(idToken, customClaims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, errors.InvalidIDTokenErr.WithDetail("unexpected signing method")
+			return nil, errors.InvalidIDTokenErr.New().WithDetail("unexpected signing method")
 		}
 		kid, ok := token.Header["kid"].(string)
 		if !ok {
-			return nil, errors.InvalidIDTokenErr.WithDetail("kid header not found")
+			return nil, errors.InvalidIDTokenErr.New().WithDetail("kid header not found")
 		}
 		key, ok := r.publicKeySet.LookupKeyID(kid)
 		if !ok {
-			return nil, errors.InvalidIDTokenErr.WithDetail(fmt.Sprintf("key %v not found", kid))
+			return nil, errors.InvalidIDTokenErr.New().WithDetail(fmt.Sprintf("key %v not found", kid))
 		}
 		var tokenKey interface{}
 		if err := key.Raw(&tokenKey); err != nil {
-			return nil, errors.InvalidIDTokenErr.WithDetail("failed to create token key")
+			return nil, errors.InvalidIDTokenErr.New().WithDetail("failed to create token key")
 		}
 
 		return tokenKey, nil
@@ -181,7 +181,7 @@ func (r *staffAuthentication) CreateCustomToken(
 	ctx context.Context,
 	authUID string,
 ) (string, error) {
-	return "", errors.InternalErr.WithDetail("can not create custom token in cognito")
+	return "", errors.InternalErr.New().WithDetail("can not create custom token in cognito")
 }
 
 func (r *staffAuthentication) CreateIDToken(
@@ -203,7 +203,7 @@ func (r *staffAuthentication) CreateIDToken(
 		return "", errors.InternalErr.Wrap(err)
 	}
 	if res == nil || res.AuthenticationResult == nil || res.AuthenticationResult.IdToken == nil {
-		return "", errors.InternalErr.WithDetail("failed to auth")
+		return "", errors.InternalErr.New().WithDetail("failed to auth")
 	}
 
 	return *res.AuthenticationResult.IdToken, nil
