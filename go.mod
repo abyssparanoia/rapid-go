@@ -1,6 +1,6 @@
 module github.com/abyssparanoia/rapid-go
 
-go 1.23
+go 1.23.1
 
 toolchain go1.23.4
 
@@ -20,7 +20,7 @@ require (
 	github.com/bufbuild/buf v1.47.2
 	github.com/caarlos0/env/v11 v11.3.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/cloudspannerecosystem/wrench v1.10.1
+	github.com/cloudspannerecosystem/wrench v1.11.2
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.5.0
 	github.com/go-playground/validator/v10 v10.23.0
@@ -142,7 +142,7 @@ require (
 	github.com/chavacava/garif v0.1.0 // indirect
 	github.com/ckaznocha/intrange v0.2.1 // indirect
 	github.com/cli/safeexec v1.0.1 // indirect
-	github.com/cloudspannerecosystem/memefish v0.0.0-20231128072053-0a1141e8eb65 // indirect
+	github.com/cloudspannerecosystem/memefish v0.0.0-20241106111047-2b2b4b23a1e7 // indirect
 	github.com/cncf/xds/go v0.0.0-20240905190251-b4127c9b8d78 // indirect
 	github.com/containerd/cgroups/v3 v3.0.3 // indirect
 	github.com/containerd/containerd v1.7.23 // indirect
@@ -391,7 +391,7 @@ require (
 	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
 	golang.org/x/exp/typeparams v0.0.0-20241108190413-2d47ceb2692f // indirect
 	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/net v0.32.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.24.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
