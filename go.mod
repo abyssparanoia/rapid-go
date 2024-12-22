@@ -1,6 +1,6 @@
 module github.com/abyssparanoia/rapid-go
 
-go 1.23
+go 1.23.1
 
 toolchain go1.23.4
 
@@ -20,7 +20,7 @@ require (
 	github.com/bufbuild/buf v1.48.0
 	github.com/caarlos0/env/v11 v11.3.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/cloudspannerecosystem/wrench v1.10.1
+	github.com/cloudspannerecosystem/wrench v1.11.2
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.5.0
 	github.com/go-playground/validator/v10 v10.23.0
@@ -104,6 +104,7 @@ require (
 	github.com/alexkohler/prealloc v1.0.0 // indirect
 	github.com/alingse/asasalint v0.0.11 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
+	github.com/apstndb/gsqlutils v0.0.0-20241110070457-b8882df29778 // indirect
 	github.com/ashanbrown/forbidigo v1.6.0 // indirect
 	github.com/ashanbrown/makezero v1.1.1 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.7 // indirect
@@ -142,7 +143,7 @@ require (
 	github.com/chavacava/garif v0.1.0 // indirect
 	github.com/ckaznocha/intrange v0.2.1 // indirect
 	github.com/cli/safeexec v1.0.1 // indirect
-	github.com/cloudspannerecosystem/memefish v0.0.0-20231128072053-0a1141e8eb65 // indirect
+	github.com/cloudspannerecosystem/memefish v0.0.0-20241106111047-2b2b4b23a1e7 // indirect
 	github.com/cncf/xds/go v0.0.0-20240905190251-b4127c9b8d78 // indirect
 	github.com/containerd/cgroups/v3 v3.0.5 // indirect
 	github.com/containerd/containerd v1.7.24 // indirect
@@ -322,6 +323,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryancurrah/gomodguard v1.3.5 // indirect
 	github.com/ryanrolds/sqlclosecheck v0.5.1 // indirect
+	github.com/samber/lo v1.47.0 // indirect
 	github.com/sanposhiho/wastedassign/v2 v2.0.7 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
 	github.com/sashamelentyev/interfacebloat v1.1.0 // indirect
@@ -408,4 +410,5 @@ require (
 	honnef.co/go/tools v0.5.1 // indirect
 	mvdan.cc/unparam v0.0.0-20240528143540-8a5130ca722f // indirect
 	pluginrpc.com/pluginrpc v0.5.0 // indirect
+	spheric.cloud/xiter v0.0.0-20240904151420-c999f37a46b2 // indirect
 )
