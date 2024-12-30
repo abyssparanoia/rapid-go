@@ -6,7 +6,7 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 
 message CreateAssetPresignedURLRequest {
   AssetType asset_type = 1;
-  string content_type = 2;
+  ContentType content_type = 2;
 
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
@@ -35,4 +35,10 @@ message CreateAssetPresignedURLResponse {
 enum AssetType {
   ASSET_TYPE_UNSPECIFIED = 0;
   ASSET_TYPE_USER_IMAGE = 1;
+}
+
+enum ContentType {
+  CONTENT_TYPE_UNSPECIFIED = 0;
+  CONTENT_TYPE_IMAGE_PNG = 1;
+  CONTENT_TYPE_IMAGE_JPEG = 2;
 }
