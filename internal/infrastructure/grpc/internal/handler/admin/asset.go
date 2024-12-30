@@ -13,7 +13,7 @@ func (h *AdminHandler) CreateAssetPresignedURL(ctx context.Context, req *admin_a
 	got, err := h.assetInteractor.CreatePresignedURL(
 		ctx,
 		input.NewAdminCreateAssetPresignedURL(
-			req.GetContentType(),
+			marshaller.AdminContentTypeToModel(req.GetContentType()),
 			marshaller.AdminAssetTypeToModel(req.GetAssetType()),
 			request_interceptor.GetRequestTime(ctx),
 		),
