@@ -218,6 +218,15 @@
       ],
       "default": "ASSET_TYPE_UNSPECIFIED"
     },
+    "v1ContentType": {
+      "type": "string",
+      "enum": [
+        "CONTENT_TYPE_UNSPECIFIED",
+        "CONTENT_TYPE_IMAGE_PNG",
+        "CONTENT_TYPE_IMAGE_JPEG"
+      ],
+      "default": "CONTENT_TYPE_UNSPECIFIED"
+    },
     "v1CreateAssetPresignedURLRequest": {
       "type": "object",
       "properties": {
@@ -225,7 +234,7 @@
           "$ref": "#/definitions/v1AssetType"
         },
         "content_type": {
-          "type": "string"
+          "$ref": "#/definitions/v1ContentType"
         }
       },
       "required": [
