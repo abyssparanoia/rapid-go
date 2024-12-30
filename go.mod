@@ -47,7 +47,7 @@ require (
 	go.uber.org/zap v1.27.0
 	golang.org/x/tools v0.28.0
 	google.golang.org/api v0.214.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20241223144023-3abc09e42ca8
+	google.golang.org/genproto/googleapis/api v0.0.0-20241230172942-26aa7a208def
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241223144023-3abc09e42ca8
 	google.golang.org/grpc v1.69.2
 	google.golang.org/protobuf v1.36.1
