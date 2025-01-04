@@ -1,0 +1,54 @@
+erDiagram
+
+  maindbasset_types {
+    VARCHAR id PK "id"
+  }
+
+  maindbcontent_types {
+    VARCHAR id PK "id"
+  }
+
+  maindbgoose_db_version {
+    BIGINTUNSIGNED id PK
+    BIGINT version_id
+    BIT is_applied
+    TIMESTAMP tstamp
+  }
+
+  maindbstaff_roles {
+    VARCHAR id PK "id"
+  }
+
+  maindbtenants {
+    VARCHAR id PK "id"
+    VARCHAR name "name"
+    DATETIME created_at "created date"
+    DATETIME updated_at "update date"
+  }
+
+  maindbassets {
+    VARCHAR id PK "id"
+    VARCHAR content_type FK "content_type"
+    VARCHAR type FK "type"
+    TEXT path "path"
+    DATETIME expires_at "expires_at"
+    DATETIME created_at "created date"
+    DATETIME updated_at "update date"
+  }
+
+  maindbstaffs {
+    VARCHAR id PK "id"
+    VARCHAR tenant_id FK "tenant_id"
+    VARCHAR role FK "role"
+    VARCHAR auth_uid UK "auth_uid"
+    VARCHAR display_name "display_name"
+    VARCHAR image_path "image_path"
+    VARCHAR email UK "email"
+    DATETIME created_at "created date"
+    DATETIME updated_at "update date"
+  }
+
+  maindbasset_types ||--o{ maindbassets : "foreign key"
+  maindbcontent_types ||--o{ maindbassets : "foreign key"
+  maindbstaff_roles ||--o{ maindbstaffs : "foreign key"
+  maindbtenants ||--o{ maindbstaffs : "foreign key"
