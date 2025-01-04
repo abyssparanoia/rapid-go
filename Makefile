@@ -70,6 +70,7 @@ migrate.create:
 migrate.up:
 	make build
 	.bin/app-cli schema-migration database up
+	.bin/app-cli schema-migration database sync-constants
 	.bin/app-cli schema-migration database extract-schema
 
 .PHONY: migrate.spanner.up
