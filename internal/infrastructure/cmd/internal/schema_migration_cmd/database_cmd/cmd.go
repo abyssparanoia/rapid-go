@@ -44,5 +44,12 @@ func NewDatabaseCmd() *cobra.Command {
 			migration.RunExtractSchema()
 		},
 	})
+	cmd.AddCommand(&cobra.Command{
+		Use:   "sync-constants",
+		Short: "sync constants",
+		Run: func(cmd *cobra.Command, args []string) {
+			migration.RunSyncConstants()
+		},
+	})
 	return cmd
 }
