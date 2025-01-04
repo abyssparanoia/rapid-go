@@ -2,7 +2,6 @@ package model
 
 import (
 	"fmt"
-	"mime"
 	"strings"
 	"time"
 
@@ -13,7 +12,7 @@ import (
 
 type Asset struct {
 	ID          string
-	ContentType string
+	ContentType ContentType
 	Type        AssetType
 	Path        string
 	ExpiresAt   time.Time
@@ -25,22 +24,18 @@ type Assets []*Asset
 
 func NewAsset(
 	assetType AssetType,
-	contentType string,
+	contentType ContentType,
 	t time.Time,
-) (*Asset, error) {
-	ext, err := mime.ExtensionsByType(contentType)
-	if err != nil {
-		return nil, errors.InternalErr.Wrap(err)
-	}
+) *Asset {
 	return &Asset{
 		ID:          id.New(),
 		ContentType: contentType,
 		Type:        assetType,
-		Path:        fmt.Sprintf("%s/%s%s", assetType.String(), uuid.UUIDBase64(), ext[0]),
+		Path:        fmt.Sprintf("%s/%s.%s", assetType.String(), uuid.UUIDBase64(), contentType.Extension()),
 		ExpiresAt:   t.Add(15 * time.Minute),
 		CreatedAt:   t,
 		UpdatedAt:   t,
-	}, nil
+	}
 }
 
 func (m *Asset) Expiration() time.Duration {
