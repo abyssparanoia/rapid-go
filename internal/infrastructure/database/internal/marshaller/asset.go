@@ -8,7 +8,7 @@ import (
 func AssetToModel(e *dbmodel.Asset) *model.Asset {
 	m := &model.Asset{
 		ID:          e.ID,
-		ContentType: e.ContentType,
+		ContentType: model.NewContentType(e.ContentType),
 		Type:        model.NewAssetType(e.Type),
 		Path:        e.Path,
 		ExpiresAt:   e.ExpiresAt,
@@ -30,7 +30,7 @@ func AssetsToModel(slice dbmodel.AssetSlice) model.Assets {
 func AssetToDBModel(m *model.Asset) *dbmodel.Asset {
 	return &dbmodel.Asset{
 		ID:          m.ID,
-		ContentType: m.ContentType,
+		ContentType: m.ContentType.String(),
 		Type:        m.Type.String(),
 		Path:        m.Path,
 		ExpiresAt:   m.ExpiresAt,

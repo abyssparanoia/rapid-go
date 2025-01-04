@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package rapid.admin_api.v1;
+
+enum AssetType {
+  ASSET_TYPE_UNSPECIFIED = 0;
+  ASSET_TYPE_USER_IMAGE = 1;
+}
+
+enum ContentType {
+  CONTENT_TYPE_UNSPECIFIED = 0;
+  CONTENT_TYPE_IMAGE_PNG = 1;
+  CONTENT_TYPE_IMAGE_JPEG = 2;
+  CONTENT_TYPE_APPLICATION_ZIP = 3;
+  CONTENT_TYPE_APPLICATION_PDF = 4;
+  CONTENT_TYPE_TEXT_CSV = 5;
+}

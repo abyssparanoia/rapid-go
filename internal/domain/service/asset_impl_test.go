@@ -27,7 +27,7 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 	requestTime := testdata.RequestTime
 	type args struct {
 		assetType   model.AssetType
-		contentType string
+		contentType model.ContentType
 		requestTime time.Time
 	}
 

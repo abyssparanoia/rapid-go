@@ -23,6 +23,7 @@ import (
 type MockAsset struct {
 	ctrl     *gomock.Controller
 	recorder *MockAssetMockRecorder
+	isgomock struct{}
 }
 
 // MockAssetMockRecorder is the mock recorder for MockAsset.
@@ -57,7 +58,7 @@ func (mr *MockAssetMockRecorder) BatchSetStaffURLs(ctx, staffs any) *gomock.Call
 }
 
 // CreatePresignedURL mocks base method.
-func (m *MockAsset) CreatePresignedURL(ctx context.Context, assetType model.AssetType, contentType string, requestTime time.Time) (*service.AssetCreatePresignedURLResult, error) {
+func (m *MockAsset) CreatePresignedURL(ctx context.Context, assetType model.AssetType, contentType model.ContentType, requestTime time.Time) (*service.AssetCreatePresignedURLResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePresignedURL", ctx, assetType, contentType, requestTime)
 	ret0, _ := ret[0].(*service.AssetCreatePresignedURLResult)

@@ -44,7 +44,7 @@ func NewFactory() struct {
 	if err := faker.FakeData(asset, opts...); err != nil {
 		panic(err)
 	}
-	asset.ContentType = "image/png"
+	asset.ContentType = model.ContentTypeImagePNG
 	asset.Type = model.AssetTypeUserImage
 	asset.Path = "private/user_images/mock.png"
 	asset.ExpiresAt = n.Add(15 * time.Minute)

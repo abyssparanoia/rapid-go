@@ -27,17 +27,14 @@ func NewAsset(
 func (s *assetService) CreatePresignedURL(
 	ctx context.Context,
 	assetType model.AssetType,
-	contentType string,
+	contentType model.ContentType,
 	requestTime time.Time,
 ) (*AssetCreatePresignedURLResult, error) {
-	asset, err := model.NewAsset(
+	asset := model.NewAsset(
 		assetType,
 		contentType,
 		requestTime,
 	)
-	if err != nil {
-		return nil, err
-	}
 	presignedURL, err := s.assetRepository.GenerateWritePresignedURL(
 		ctx,
 		contentType,

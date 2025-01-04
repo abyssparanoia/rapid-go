@@ -5,7 +5,7 @@ CREATE TABLE `asset_types` (
 
 CREATE TABLE `assets` (
   `id` varchar(64) NOT NULL COMMENT 'id',
-  `content_type` varchar(1024) NOT NULL COMMENT 'content_type',
+  `content_type` varchar(256) NOT NULL COMMENT 'content_type',
   `type` varchar(256) NOT NULL COMMENT 'type',
   `path` text NOT NULL COMMENT 'path',
   `expires_at` datetime NOT NULL COMMENT 'expires_at',
@@ -13,8 +13,15 @@ CREATE TABLE `assets` (
   `updated_at` datetime NOT NULL COMMENT 'update date',
   PRIMARY KEY (`id`),
   KEY `assets_fkey_type` (`type`),
+  KEY `assets_fkey_content_type` (`content_type`),
+  CONSTRAINT `assets_fkey_content_type` FOREIGN KEY (`content_type`) REFERENCES `content_types` (`id`),
   CONSTRAINT `assets_fkey_type` FOREIGN KEY (`type`) REFERENCES `asset_types` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='asset';
+
+CREATE TABLE `content_types` (
+  `id` varchar(256) NOT NULL COMMENT 'id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='content_type';
 
 CREATE TABLE `goose_db_version` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,

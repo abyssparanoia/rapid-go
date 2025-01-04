@@ -14,6 +14,7 @@ import (
 	reflect "reflect"
 	time "time"
 
+	model "github.com/abyssparanoia/rapid-go/internal/domain/model"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -21,6 +22,7 @@ import (
 type MockAsset struct {
 	ctrl     *gomock.Controller
 	recorder *MockAssetMockRecorder
+	isgomock struct{}
 }
 
 // MockAssetMockRecorder is the mock recorder for MockAsset.
@@ -56,7 +58,7 @@ func (mr *MockAssetMockRecorder) GenerateReadPresignedURL(ctx, path, expires any
 }
 
 // GenerateWritePresignedURL mocks base method.
-func (m *MockAsset) GenerateWritePresignedURL(ctx context.Context, contentType, path string, expires time.Duration) (string, error) {
+func (m *MockAsset) GenerateWritePresignedURL(ctx context.Context, contentType model.ContentType, path string, expires time.Duration) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateWritePresignedURL", ctx, contentType, path, expires)
 	ret0, _ := ret[0].(string)

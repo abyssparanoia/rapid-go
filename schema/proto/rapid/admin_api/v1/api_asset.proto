@@ -3,6 +3,7 @@ syntax = "proto3";
 package rapid.admin_api.v1;
 
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "rapid/admin_api/v1/model_asset.proto";
 
 message CreateAssetPresignedURLRequest {
   AssetType asset_type = 1;
@@ -30,15 +31,4 @@ message CreateAssetPresignedURLResponse {
       ]
     }
   };
-}
-
-enum AssetType {
-  ASSET_TYPE_UNSPECIFIED = 0;
-  ASSET_TYPE_USER_IMAGE = 1;
-}
-
-enum ContentType {
-  CONTENT_TYPE_UNSPECIFIED = 0;
-  CONTENT_TYPE_IMAGE_PNG = 1;
-  CONTENT_TYPE_IMAGE_JPEG = 2;
 }

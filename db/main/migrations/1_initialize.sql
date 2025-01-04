@@ -1,4 +1,10 @@
 -- +goose Up
+CREATE TABLE `content_types` (
+  `id`                          VARCHAR(256)    NOT NULL COMMENT "id",
+  CONSTRAINT `content_types_pkey` PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT "content_type";
+
 CREATE TABLE `asset_types` (
   `id`                          VARCHAR(256)    NOT NULL COMMENT "id",
   CONSTRAINT `asset_types_pkey` PRIMARY KEY (`id`)
@@ -7,14 +13,15 @@ COMMENT "asset_type";
 
 CREATE TABLE `assets` (
   `id`                       VARCHAR(64)    NOT NULL COMMENT "id",
-  `content_type`             VARCHAR(1024)  NOT NULL COMMENT "content_type",
+  `content_type`             VARCHAR(256)  NOT NULL COMMENT "content_type",
   `type`                     VARCHAR(256)   NOT NULL COMMENT "type",
   `path`                     TEXT           NOT NULL COMMENT "path",
   `expires_at`               DATETIME       NOT NULL COMMENT "expires_at",
   `created_at`               DATETIME       NOT NULL COMMENT "created date",
   `updated_at`               DATETIME       NOT NULL COMMENT "update date",
   CONSTRAINT `assets_pkey` PRIMARY KEY (`id`),
-  CONSTRAINT `assets_fkey_type` FOREIGN KEY (`type`) REFERENCES `asset_types` (`id`)
+  CONSTRAINT `assets_fkey_type` FOREIGN KEY (`type`) REFERENCES `asset_types` (`id`),
+  CONSTRAINT `assets_fkey_content_type` FOREIGN KEY (`content_type`) REFERENCES `content_types` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 COMMENT "asset";
 
@@ -57,3 +64,4 @@ DROP TABLE staff_roles;
 DROP TABLE tenants;
 DROP TABLE assets;
 DROP TABLE asset_types;
+DROP TABLE content_types;

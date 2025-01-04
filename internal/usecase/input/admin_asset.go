@@ -10,13 +10,13 @@ import (
 )
 
 type AdminCreateAssetPresignedURL struct {
-	ContentType string          `validate:"required"`
-	AssetType   model.AssetType `validate:"required"`
-	RequestTime time.Time       `validate:"required"`
+	ContentType model.ContentType `validate:"required"`
+	AssetType   model.AssetType   `validate:"required"`
+	RequestTime time.Time         `validate:"required"`
 }
 
 func NewAdminCreateAssetPresignedURL(
-	contentType string,
+	contentType model.ContentType,
 	assetType model.AssetType,
 	requestTime time.Time,
 ) *AdminCreateAssetPresignedURL {
@@ -34,6 +34,10 @@ func (p *AdminCreateAssetPresignedURL) Validate() error {
 	if !p.AssetType.Valid() {
 		return errors.RequestInvalidArgumentErr.New().
 			WithDetail(fmt.Sprintf("invalid asset type %s", p.AssetType))
+	}
+	if !p.ContentType.Valid() {
+		return errors.RequestInvalidArgumentErr.New().
+			WithDetail(fmt.Sprintf("invalid content type %s", p.ContentType))
 	}
 	return nil
 }

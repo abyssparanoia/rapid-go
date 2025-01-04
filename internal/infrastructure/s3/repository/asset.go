@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -30,14 +31,14 @@ func NewAsset(
 
 func (r *asset) GenerateWritePresignedURL(
 	ctx context.Context,
-	contentType string,
+	contentType model.ContentType,
 	path string,
 	expires time.Duration,
 ) (string, error) {
 	req, err := r.presignCli.PresignPutObject(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(r.bucketName),
 		Key:         aws.String(path),
-		ContentType: aws.String(contentType),
+		ContentType: aws.String(contentType.String()),
 	}, func(opts *s3.PresignOptions) {
 		opts.Expires = expires
 	})
