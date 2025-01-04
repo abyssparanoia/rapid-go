@@ -1,4 +1,23 @@
 -- +goose Up
+CREATE TABLE `asset_types` (
+  `id`                          VARCHAR(256)    NOT NULL COMMENT "id",
+  CONSTRAINT `asset_types_pkey` PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT "asset_type";
+
+CREATE TABLE `assets` (
+  `id`                       VARCHAR(64)    NOT NULL COMMENT "id",
+  `content_type`             VARCHAR(1024)  NOT NULL COMMENT "content_type",
+  `type`                     VARCHAR(256)   NOT NULL COMMENT "type",
+  `path`                     TEXT           NOT NULL COMMENT "path",
+  `expires_at`               DATETIME       NOT NULL COMMENT "expires_at",
+  `created_at`               DATETIME       NOT NULL COMMENT "created date",
+  `updated_at`               DATETIME       NOT NULL COMMENT "update date",
+  CONSTRAINT `assets_pkey` PRIMARY KEY (`id`),
+  CONSTRAINT `assets_fkey_type` FOREIGN KEY (`type`) REFERENCES `asset_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT "asset";
+
 CREATE TABLE `tenants` (
   `id`                       VARCHAR(64)  NOT NULL COMMENT "id",
   `name`                     VARCHAR(256) NOT NULL COMMENT "name",
@@ -13,13 +32,6 @@ CREATE TABLE `staff_roles` (
   CONSTRAINT `staff_roles_pkey` PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 COMMENT "staff_role";
-
-INSERT INTO `staff_roles`
-    (`id`)
-VALUES
-    ('normal'),
-    ('admin');
-
 
 CREATE TABLE `staffs` (
   `id`                       VARCHAR(64)    NOT NULL COMMENT "id",
@@ -39,33 +51,9 @@ CREATE TABLE `staffs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 COMMENT "staff";
 
-CREATE TABLE `asset_types` (
-  `id`                          VARCHAR(256)    NOT NULL COMMENT "id",
-  CONSTRAINT `asset_types_pkey` PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-COMMENT "asset_type";
-
-INSERT INTO `asset_types`
-    (`id`)
-VALUES
-    ('private/user_images');
-
-CREATE TABLE `assets` (
-  `id`                       VARCHAR(64)    NOT NULL COMMENT "id",
-  `content_type`             VARCHAR(1024)  NOT NULL COMMENT "content_type",
-  `type`                     VARCHAR(256)   NOT NULL COMMENT "type",
-  `path`                     TEXT           NOT NULL COMMENT "path",
-  `expires_at`               DATETIME       NOT NULL COMMENT "expires_at",
-  `created_at`               DATETIME       NOT NULL COMMENT "created date",
-  `updated_at`               DATETIME       NOT NULL COMMENT "update date",
-  CONSTRAINT `assets_pkey` PRIMARY KEY (`id`),
-  CONSTRAINT `assets_fkey_type` FOREIGN KEY (`type`) REFERENCES `asset_types` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-COMMENT "asset";
-
 -- +goose Down
-DROP TABLE assets;
-DROP TABLE asset_types;
 DROP TABLE staffs;
 DROP TABLE staff_roles;
 DROP TABLE tenants;
+DROP TABLE assets;
+DROP TABLE asset_types;
