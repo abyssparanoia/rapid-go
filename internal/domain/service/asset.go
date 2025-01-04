@@ -12,7 +12,7 @@ type Asset interface {
 	CreatePresignedURL(
 		ctx context.Context,
 		assetType model.AssetType,
-		contentType string,
+		contentType model.ContentType,
 		requestTime time.Time,
 	) (*AssetCreatePresignedURLResult, error)
 	GetWithValidate(
