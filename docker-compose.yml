@@ -10,16 +10,8 @@ services:
       TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: maindb
-
-  main-db-schema:
-    depends_on:
-      - main-db
-    build: ./db/main/erd
-    volumes:
-      - "./db/main/erd/src:/output"
-      - "./db/main/erd/schemaspy.properties:/app/schemaspy.properties:ro"
-    container_name: "schemaspy"
-    command: "java -jar schemaspy.jar"
+    networks:
+      - rapid-go-network
 
   redis:
     image: "redis:latest"
@@ -28,6 +20,8 @@ services:
     command: redis-server --requirepass password
     volumes:
       - ./db/redis:/data
+    networks:
+      - rapid-go-network
 
   aws:
     build: ./localstack
@@ -45,6 +39,8 @@ services:
       - 4566:4566
       - 8000:8080
       - 4572:4572
+    networks:
+      - rapid-go-network
 
   aws-cognito:
     image: jagregory/cognito-local:latest
@@ -54,6 +50,8 @@ services:
     command: ["node", "/app/start.js"]
     ports:
       - 9229:9229
+    networks:
+      - rapid-go-network
     # environment:
     #   DEBUG: 1
 
@@ -62,6 +60,8 @@ services:
     ports:
       - "9010:9010"
       - "9020:9020"
+    networks:
+      - rapid-go-network
 
   spanner-init:
     image: gcr.io/google.com/cloudsdktool/cloud-sdk
@@ -78,3 +78,9 @@ services:
       SPANNER_EMULATOR_URL: "http://spanner:9020/"
       INSTANCE_NAME: "test-instance"
       DATABASE_NAME: "test-database"
+    networks:
+      - rapid-go-network
+
+networks:
+  rapid-go-network:
+    driver: bridge
