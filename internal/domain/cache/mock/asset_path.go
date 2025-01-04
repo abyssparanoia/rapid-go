@@ -21,6 +21,7 @@ import (
 type MockAssetPath struct {
 	ctrl     *gomock.Controller
 	recorder *MockAssetPathMockRecorder
+	isgomock struct{}
 }
 
 // MockAssetPathMockRecorder is the mock recorder for MockAssetPath.
