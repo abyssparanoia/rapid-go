@@ -72,6 +72,24 @@ migrate.up:
 	.bin/app-cli schema-migration database up
 	.bin/app-cli schema-migration database sync-constants
 	.bin/app-cli schema-migration database extract-schema
+	docker run \
+		--mount type=bind,source=$(PWD),target=/home/schcrwlr/share \
+		--rm -it \
+		--network rapid-go_rapid-go-network \
+		schemacrawler/schemacrawler \
+		/opt/schemacrawler/bin/schemacrawler.sh \
+		--server mysql \
+		--host main-db \
+		--port 3306 \
+		--user root \
+		--password=password \
+		--database maindb \
+		--info-level standard \
+		--command script \
+		--script-language python \
+		--script mermaid.py \
+		--output-file share/db/main/mermaid.mmd
+	docker run --rm -v $(PWD):/data:z ghcr.io/mermaid-js/mermaid-cli/mermaid-cli -i db/main/mermaid.mmd -o db/main/mermaid.svg
 
 .PHONY: migrate.spanner.up
 migrate.spanner.up:
