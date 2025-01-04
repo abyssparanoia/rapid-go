@@ -54,8 +54,8 @@ services:
     command: ["node", "/app/start.js"]
     ports:
       - 9229:9229
-    environment:
-      DEBUG: 1
+    # environment:
+    #   DEBUG: 1
 
   spanner:
     image: gcr.io/cloud-spanner-emulator/emulator
