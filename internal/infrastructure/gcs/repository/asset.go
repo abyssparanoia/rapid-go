@@ -7,6 +7,7 @@ import (
 
 	"cloud.google.com/go/storage"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 )
@@ -25,7 +26,7 @@ func NewAsset(
 
 func (r *asset) GenerateWritePresignedURL(
 	ctx context.Context,
-	contentType string,
+	contentType model.ContentType,
 	path string,
 	expires time.Duration,
 ) (string, error) {
@@ -33,7 +34,7 @@ func (r *asset) GenerateWritePresignedURL(
 	opts := &storage.SignedURLOptions{
 		Expires:     now.Add(expires),
 		Method:      http.MethodPut,
-		ContentType: contentType,
+		ContentType: contentType.String(),
 	}
 	singedURL, err := r.bucketHandle.SignedURL(path, opts)
 	if err != nil {
