@@ -51,6 +51,7 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241230172942-26aa7a208def
 	google.golang.org/grpc v1.69.2
 	google.golang.org/protobuf v1.36.1
+	gopkg.in/yaml.v2 v2.4.0
 	mvdan.cc/gofumpt v0.7.0
 )
 
@@ -98,11 +99,11 @@ require (
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/Microsoft/hcsshim v0.12.9 // indirect
 	github.com/OpenPeeDeeP/depguard/v2 v2.2.0 // indirect
-	github.com/alecthomas/assert/v2 v2.11.0 // indirect
 	github.com/alecthomas/go-check-sumtype v0.3.1 // indirect
 	github.com/alexkohler/nakedret/v2 v2.0.5 // indirect
 	github.com/alexkohler/prealloc v1.0.0 // indirect
 	github.com/alingse/asasalint v0.0.11 // indirect
+	github.com/alingse/nilnesserr v0.1.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/ashanbrown/forbidigo v1.6.0 // indirect
 	github.com/ashanbrown/makezero v1.2.0 // indirect
@@ -211,7 +212,6 @@ require (
 	github.com/golangci/go-printf-func-name v0.1.0 // indirect
 	github.com/golangci/gofmt v0.0.0-20241223200906-057b0627d9b9 // indirect
 	github.com/golangci/misspell v0.6.0 // indirect
-	github.com/golangci/modinfo v0.3.4 // indirect
 	github.com/golangci/plugin-module-register v0.1.1 // indirect
 	github.com/golangci/revgrep v0.5.3 // indirect
 	github.com/golangci/unconvert v0.0.0-20240309020433-c5143eacb3ed // indirect
@@ -227,8 +227,10 @@ require (
 	github.com/gostaticanalysis/forcetypeassert v0.1.0 // indirect
 	github.com/gostaticanalysis/nilerr v0.1.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
+	github.com/hashicorp/go-immutable-radix/v2 v2.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
+	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hexops/gotextdiff v1.0.3 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
@@ -252,8 +254,11 @@ require (
 	github.com/kunwardeep/paralleltest v1.0.10 // indirect
 	github.com/kyoh86/exportloopref v0.1.11 // indirect
 	github.com/lasiar/canonicalheader v1.1.2 // indirect
+	github.com/ldez/exptostd v0.3.1 // indirect
 	github.com/ldez/gomoddirectives v0.6.0 // indirect
+	github.com/ldez/grignotin v0.7.0 // indirect
 	github.com/ldez/tagliatelle v0.7.1 // indirect
+	github.com/ldez/usetesting v0.4.2 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/leonklingele/grouper v1.1.2 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.2 // indirect
@@ -323,7 +328,7 @@ require (
 	github.com/ryancurrah/gomodguard v1.3.5 // indirect
 	github.com/ryanrolds/sqlclosecheck v0.5.1 // indirect
 	github.com/sanposhiho/wastedassign/v2 v2.1.0 // indirect
-	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
+	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1 // indirect
 	github.com/sashamelentyev/interfacebloat v1.1.0 // indirect
 	github.com/sashamelentyev/usestdlibvars v1.28.0 // indirect
 	github.com/securego/gosec/v2 v2.21.4 // indirect
@@ -403,7 +408,6 @@ require (
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto v0.0.0-20241118233622-e639e219e697 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	honnef.co/go/tools v0.5.1 // indirect
 	mvdan.cc/unparam v0.0.0-20240528143540-8a5130ca722f // indirect
