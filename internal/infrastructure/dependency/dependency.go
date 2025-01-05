@@ -62,9 +62,10 @@ func (d *Dependency) Inject(
 	staffAuthenticationRepository := cognito_repository.NewStaffAuthentication(
 		ctx,
 		cognitoCli,
-		e.AWSCognitoUserPoolID,
-		e.AWSCognitoClientID,
+		e.AWSCognitoStaffUserPoolID,
+		e.AWSCognitoStaffClientID,
 		e.AWSCognitoEmulatorHost,
+		e.AWSRegion,
 	)
 	tenantRepository := repository.NewTenant()
 	staffRepository := repository.NewStaff()
