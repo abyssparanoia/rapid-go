@@ -21,115 +21,90 @@ import (
 	"github.com/volatiletech/strmangle"
 )
 
-// AssetType is an object representing the database table.
-type AssetType struct { // id
+// ContentType is an object representing the database table.
+type ContentType struct { // id
 	ID string `boil:"id" json:"id" toml:"id" yaml:"id"`
 
-	R *assetTypeR `boil:"-" json:"-" toml:"-" yaml:"-"`
-	L assetTypeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
+	R *contentTypeR `boil:"-" json:"-" toml:"-" yaml:"-"`
+	L contentTypeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
-var AssetTypeColumns = struct {
+var ContentTypeColumns = struct {
 	ID string
 }{
 	ID: "id",
 }
 
-var AssetTypeTableColumns = struct {
+var ContentTypeTableColumns = struct {
 	ID string
 }{
-	ID: "asset_types.id",
+	ID: "content_types.id",
 }
 
 // Generated where
 
-type whereHelperstring struct{ field string }
-
-func (w whereHelperstring) EQ(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperstring) NEQ(x string) qm.QueryMod   { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperstring) LT(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperstring) LTE(x string) qm.QueryMod   { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperstring) GT(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperstring) GTE(x string) qm.QueryMod   { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperstring) LIKE(x string) qm.QueryMod  { return qm.Where(w.field+" LIKE ?", x) }
-func (w whereHelperstring) NLIKE(x string) qm.QueryMod { return qm.Where(w.field+" NOT LIKE ?", x) }
-func (w whereHelperstring) IN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
-var AssetTypeWhere = struct {
+var ContentTypeWhere = struct {
 	ID whereHelperstring
 }{
-	ID: whereHelperstring{field: "`asset_types`.`id`"},
+	ID: whereHelperstring{field: "`content_types`.`id`"},
 }
 
-// AssetTypeRels is where relationship names are stored.
-var AssetTypeRels = struct {
-	TypeAssets string
+// ContentTypeRels is where relationship names are stored.
+var ContentTypeRels = struct {
+	Assets string
 }{
-	TypeAssets: "TypeAssets",
+	Assets: "Assets",
 }
 
-// assetTypeR is where relationships are stored.
-type assetTypeR struct {
-	TypeAssets AssetSlice `boil:"TypeAssets" json:"TypeAssets" toml:"TypeAssets" yaml:"TypeAssets"`
+// contentTypeR is where relationships are stored.
+type contentTypeR struct {
+	Assets AssetSlice `boil:"Assets" json:"Assets" toml:"Assets" yaml:"Assets"`
 }
 
 // NewStruct creates a new relationship struct
-func (*assetTypeR) NewStruct() *assetTypeR {
-	return &assetTypeR{}
+func (*contentTypeR) NewStruct() *contentTypeR {
+	return &contentTypeR{}
 }
 
-func (r *assetTypeR) GetTypeAssets() AssetSlice {
+func (r *contentTypeR) GetAssets() AssetSlice {
 	if r == nil {
 		return nil
 	}
-	return r.TypeAssets
+	return r.Assets
 }
 
-// assetTypeL is where Load methods for each relationship are stored.
-type assetTypeL struct{}
+// contentTypeL is where Load methods for each relationship are stored.
+type contentTypeL struct{}
 
 var (
-	assetTypeAllColumns            = []string{"id"}
-	assetTypeColumnsWithoutDefault = []string{"id"}
-	assetTypeColumnsWithDefault    = []string{}
-	assetTypePrimaryKeyColumns     = []string{"id"}
-	assetTypeGeneratedColumns      = []string{}
+	contentTypeAllColumns            = []string{"id"}
+	contentTypeColumnsWithoutDefault = []string{"id"}
+	contentTypeColumnsWithDefault    = []string{}
+	contentTypePrimaryKeyColumns     = []string{"id"}
+	contentTypeGeneratedColumns      = []string{}
 )
 
 type (
-	// AssetTypeSlice is an alias for a slice of pointers to AssetType.
-	// This should almost always be used instead of []AssetType.
-	AssetTypeSlice []*AssetType
+	// ContentTypeSlice is an alias for a slice of pointers to ContentType.
+	// This should almost always be used instead of []ContentType.
+	ContentTypeSlice []*ContentType
 
-	assetTypeQuery struct {
+	contentTypeQuery struct {
 		*queries.Query
 	}
 )
 
 // Cache for insert, update and upsert
 var (
-	assetTypeType                 = reflect.TypeOf(&AssetType{})
-	assetTypeMapping              = queries.MakeStructMapping(assetTypeType)
-	assetTypePrimaryKeyMapping, _ = queries.BindMapping(assetTypeType, assetTypeMapping, assetTypePrimaryKeyColumns)
-	assetTypeInsertCacheMut       sync.RWMutex
-	assetTypeInsertCache          = make(map[string]insertCache)
-	assetTypeUpdateCacheMut       sync.RWMutex
-	assetTypeUpdateCache          = make(map[string]updateCache)
-	assetTypeUpsertCacheMut       sync.RWMutex
-	assetTypeUpsertCache          = make(map[string]insertCache)
+	contentTypeType                 = reflect.TypeOf(&ContentType{})
+	contentTypeMapping              = queries.MakeStructMapping(contentTypeType)
+	contentTypePrimaryKeyMapping, _ = queries.BindMapping(contentTypeType, contentTypeMapping, contentTypePrimaryKeyColumns)
+	contentTypeInsertCacheMut       sync.RWMutex
+	contentTypeInsertCache          = make(map[string]insertCache)
+	contentTypeUpdateCacheMut       sync.RWMutex
+	contentTypeUpdateCache          = make(map[string]updateCache)
+	contentTypeUpsertCacheMut       sync.RWMutex
+	contentTypeUpsertCache          = make(map[string]insertCache)
 )
 
 var (
@@ -140,13 +115,13 @@ var (
 	_ = qmhelper.Where
 )
 
-// OneG returns a single assetType record from the query using the global executor.
-func (q assetTypeQuery) OneG(ctx context.Context) (*AssetType, error) {
+// OneG returns a single contentType record from the query using the global executor.
+func (q contentTypeQuery) OneG(ctx context.Context) (*ContentType, error) {
 	return q.One(ctx, boil.GetContextDB())
 }
 
-// OneGP returns a single assetType record from the query using the global executor, and panics on error.
-func (q assetTypeQuery) OneGP(ctx context.Context) *AssetType {
+// OneGP returns a single contentType record from the query using the global executor, and panics on error.
+func (q contentTypeQuery) OneGP(ctx context.Context) *ContentType {
 	o, err := q.One(ctx, boil.GetContextDB())
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -155,8 +130,8 @@ func (q assetTypeQuery) OneGP(ctx context.Context) *AssetType {
 	return o
 }
 
-// OneP returns a single assetType record from the query, and panics on error.
-func (q assetTypeQuery) OneP(ctx context.Context, exec boil.ContextExecutor) *AssetType {
+// OneP returns a single contentType record from the query, and panics on error.
+func (q contentTypeQuery) OneP(ctx context.Context, exec boil.ContextExecutor) *ContentType {
 	o, err := q.One(ctx, exec)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -165,9 +140,9 @@ func (q assetTypeQuery) OneP(ctx context.Context, exec boil.ContextExecutor) *As
 	return o
 }
 
-// One returns a single assetType record from the query.
-func (q assetTypeQuery) One(ctx context.Context, exec boil.ContextExecutor) (*AssetType, error) {
-	o := &AssetType{}
+// One returns a single contentType record from the query.
+func (q contentTypeQuery) One(ctx context.Context, exec boil.ContextExecutor) (*ContentType, error) {
+	o := &ContentType{}
 
 	queries.SetLimit(q.Query, 1)
 
@@ -176,19 +151,19 @@ func (q assetTypeQuery) One(ctx context.Context, exec boil.ContextExecutor) (*As
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "dbmodel: failed to execute a one query for asset_types")
+		return nil, errors.Wrap(err, "dbmodel: failed to execute a one query for content_types")
 	}
 
 	return o, nil
 }
 
-// AllG returns all AssetType records from the query using the global executor.
-func (q assetTypeQuery) AllG(ctx context.Context) (AssetTypeSlice, error) {
+// AllG returns all ContentType records from the query using the global executor.
+func (q contentTypeQuery) AllG(ctx context.Context) (ContentTypeSlice, error) {
 	return q.All(ctx, boil.GetContextDB())
 }
 
-// AllGP returns all AssetType records from the query using the global executor, and panics on error.
-func (q assetTypeQuery) AllGP(ctx context.Context) AssetTypeSlice {
+// AllGP returns all ContentType records from the query using the global executor, and panics on error.
+func (q contentTypeQuery) AllGP(ctx context.Context) ContentTypeSlice {
 	o, err := q.All(ctx, boil.GetContextDB())
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -197,8 +172,8 @@ func (q assetTypeQuery) AllGP(ctx context.Context) AssetTypeSlice {
 	return o
 }
 
-// AllP returns all AssetType records from the query, and panics on error.
-func (q assetTypeQuery) AllP(ctx context.Context, exec boil.ContextExecutor) AssetTypeSlice {
+// AllP returns all ContentType records from the query, and panics on error.
+func (q contentTypeQuery) AllP(ctx context.Context, exec boil.ContextExecutor) ContentTypeSlice {
 	o, err := q.All(ctx, exec)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -207,25 +182,25 @@ func (q assetTypeQuery) AllP(ctx context.Context, exec boil.ContextExecutor) Ass
 	return o
 }
 
-// All returns all AssetType records from the query.
-func (q assetTypeQuery) All(ctx context.Context, exec boil.ContextExecutor) (AssetTypeSlice, error) {
-	var o []*AssetType
+// All returns all ContentType records from the query.
+func (q contentTypeQuery) All(ctx context.Context, exec boil.ContextExecutor) (ContentTypeSlice, error) {
+	var o []*ContentType
 
 	err := q.Bind(ctx, exec, &o)
 	if err != nil {
-		return nil, errors.Wrap(err, "dbmodel: failed to assign all query results to AssetType slice")
+		return nil, errors.Wrap(err, "dbmodel: failed to assign all query results to ContentType slice")
 	}
 
 	return o, nil
 }
 
-// CountG returns the count of all AssetType records in the query using the global executor
-func (q assetTypeQuery) CountG(ctx context.Context) (int64, error) {
+// CountG returns the count of all ContentType records in the query using the global executor
+func (q contentTypeQuery) CountG(ctx context.Context) (int64, error) {
 	return q.Count(ctx, boil.GetContextDB())
 }
 
-// CountGP returns the count of all AssetType records in the query using the global executor, and panics on error.
-func (q assetTypeQuery) CountGP(ctx context.Context) int64 {
+// CountGP returns the count of all ContentType records in the query using the global executor, and panics on error.
+func (q contentTypeQuery) CountGP(ctx context.Context) int64 {
 	c, err := q.Count(ctx, boil.GetContextDB())
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -234,8 +209,8 @@ func (q assetTypeQuery) CountGP(ctx context.Context) int64 {
 	return c
 }
 
-// CountP returns the count of all AssetType records in the query, and panics on error.
-func (q assetTypeQuery) CountP(ctx context.Context, exec boil.ContextExecutor) int64 {
+// CountP returns the count of all ContentType records in the query, and panics on error.
+func (q contentTypeQuery) CountP(ctx context.Context, exec boil.ContextExecutor) int64 {
 	c, err := q.Count(ctx, exec)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -244,8 +219,8 @@ func (q assetTypeQuery) CountP(ctx context.Context, exec boil.ContextExecutor) i
 	return c
 }
 
-// Count returns the count of all AssetType records in the query.
-func (q assetTypeQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+// Count returns the count of all ContentType records in the query.
+func (q contentTypeQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -253,19 +228,19 @@ func (q assetTypeQuery) Count(ctx context.Context, exec boil.ContextExecutor) (i
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: failed to count asset_types rows")
+		return 0, errors.Wrap(err, "dbmodel: failed to count content_types rows")
 	}
 
 	return count, nil
 }
 
 // ExistsG checks if the row exists in the table using the global executor.
-func (q assetTypeQuery) ExistsG(ctx context.Context) (bool, error) {
+func (q contentTypeQuery) ExistsG(ctx context.Context) (bool, error) {
 	return q.Exists(ctx, boil.GetContextDB())
 }
 
 // ExistsGP checks if the row exists in the table using the global executor, and panics on error.
-func (q assetTypeQuery) ExistsGP(ctx context.Context) bool {
+func (q contentTypeQuery) ExistsGP(ctx context.Context) bool {
 	e, err := q.Exists(ctx, boil.GetContextDB())
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -275,7 +250,7 @@ func (q assetTypeQuery) ExistsGP(ctx context.Context) bool {
 }
 
 // ExistsP checks if the row exists in the table, and panics on error.
-func (q assetTypeQuery) ExistsP(ctx context.Context, exec boil.ContextExecutor) bool {
+func (q contentTypeQuery) ExistsP(ctx context.Context, exec boil.ContextExecutor) bool {
 	e, err := q.Exists(ctx, exec)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -285,7 +260,7 @@ func (q assetTypeQuery) ExistsP(ctx context.Context, exec boil.ContextExecutor) 
 }
 
 // Exists checks if the row exists in the table.
-func (q assetTypeQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
+func (q contentTypeQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -294,50 +269,50 @@ func (q assetTypeQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return false, errors.Wrap(err, "dbmodel: failed to check if asset_types exists")
+		return false, errors.Wrap(err, "dbmodel: failed to check if content_types exists")
 	}
 
 	return count > 0, nil
 }
 
-// TypeAssets retrieves all the asset's Assets with an executor via type column.
-func (o *AssetType) TypeAssets(mods ...qm.QueryMod) assetQuery {
+// Assets retrieves all the asset's Assets with an executor.
+func (o *ContentType) Assets(mods ...qm.QueryMod) assetQuery {
 	var queryMods []qm.QueryMod
 	if len(mods) != 0 {
 		queryMods = append(queryMods, mods...)
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("`assets`.`type`=?", o.ID),
+		qm.Where("`assets`.`content_type`=?", o.ID),
 	)
 
 	return Assets(queryMods...)
 }
 
-// LoadTypeAssets allows an eager lookup of values, cached into the
+// LoadAssets allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (assetTypeL) LoadTypeAssets(ctx context.Context, e boil.ContextExecutor, singular bool, maybeAssetType interface{}, mods queries.Applicator) error {
-	var slice []*AssetType
-	var object *AssetType
+func (contentTypeL) LoadAssets(ctx context.Context, e boil.ContextExecutor, singular bool, maybeContentType interface{}, mods queries.Applicator) error {
+	var slice []*ContentType
+	var object *ContentType
 
 	if singular {
 		var ok bool
-		object, ok = maybeAssetType.(*AssetType)
+		object, ok = maybeContentType.(*ContentType)
 		if !ok {
-			object = new(AssetType)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeAssetType)
+			object = new(ContentType)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeContentType)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeAssetType))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeContentType))
 			}
 		}
 	} else {
-		s, ok := maybeAssetType.(*[]*AssetType)
+		s, ok := maybeContentType.(*[]*ContentType)
 		if ok {
 			slice = *s
 		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeAssetType)
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeContentType)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeAssetType))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeContentType))
 			}
 		}
 	}
@@ -345,13 +320,13 @@ func (assetTypeL) LoadTypeAssets(ctx context.Context, e boil.ContextExecutor, si
 	args := make(map[interface{}]struct{})
 	if singular {
 		if object.R == nil {
-			object.R = &assetTypeR{}
+			object.R = &contentTypeR{}
 		}
 		args[object.ID] = struct{}{}
 	} else {
 		for _, obj := range slice {
 			if obj.R == nil {
-				obj.R = &assetTypeR{}
+				obj.R = &contentTypeR{}
 			}
 			args[obj.ID] = struct{}{}
 		}
@@ -370,7 +345,7 @@ func (assetTypeL) LoadTypeAssets(ctx context.Context, e boil.ContextExecutor, si
 
 	query := NewQuery(
 		qm.From(`assets`),
-		qm.WhereIn(`assets.type in ?`, argsSlice...),
+		qm.WhereIn(`assets.content_type in ?`, argsSlice...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -394,24 +369,24 @@ func (assetTypeL) LoadTypeAssets(ctx context.Context, e boil.ContextExecutor, si
 	}
 
 	if singular {
-		object.R.TypeAssets = resultSlice
+		object.R.Assets = resultSlice
 		for _, foreign := range resultSlice {
 			if foreign.R == nil {
 				foreign.R = &assetR{}
 			}
-			foreign.R.TypeAssetType = object
+			foreign.R.AssetContentType = object
 		}
 		return nil
 	}
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.ID == foreign.Type {
-				local.R.TypeAssets = append(local.R.TypeAssets, foreign)
+			if local.ID == foreign.ContentType {
+				local.R.Assets = append(local.R.Assets, foreign)
 				if foreign.R == nil {
 					foreign.R = &assetR{}
 				}
-				foreign.R.TypeAssetType = local
+				foreign.R.AssetContentType = local
 				break
 			}
 		}
@@ -420,53 +395,53 @@ func (assetTypeL) LoadTypeAssets(ctx context.Context, e boil.ContextExecutor, si
 	return nil
 }
 
-// AddTypeAssetsG adds the given related objects to the existing relationships
-// of the asset_type, optionally inserting them as new records.
-// Appends related to o.R.TypeAssets.
-// Sets related.R.TypeAssetType appropriately.
+// AddAssetsG adds the given related objects to the existing relationships
+// of the content_type, optionally inserting them as new records.
+// Appends related to o.R.Assets.
+// Sets related.R.AssetContentType appropriately.
 // Uses the global database handle.
-func (o *AssetType) AddTypeAssetsG(ctx context.Context, insert bool, related ...*Asset) error {
-	return o.AddTypeAssets(ctx, boil.GetContextDB(), insert, related...)
+func (o *ContentType) AddAssetsG(ctx context.Context, insert bool, related ...*Asset) error {
+	return o.AddAssets(ctx, boil.GetContextDB(), insert, related...)
 }
 
-// AddTypeAssetsP adds the given related objects to the existing relationships
-// of the asset_type, optionally inserting them as new records.
-// Appends related to o.R.TypeAssets.
-// Sets related.R.TypeAssetType appropriately.
+// AddAssetsP adds the given related objects to the existing relationships
+// of the content_type, optionally inserting them as new records.
+// Appends related to o.R.Assets.
+// Sets related.R.AssetContentType appropriately.
 // Panics on error.
-func (o *AssetType) AddTypeAssetsP(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Asset) {
-	if err := o.AddTypeAssets(ctx, exec, insert, related...); err != nil {
+func (o *ContentType) AddAssetsP(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Asset) {
+	if err := o.AddAssets(ctx, exec, insert, related...); err != nil {
 		panic(boil.WrapErr(err))
 	}
 }
 
-// AddTypeAssetsGP adds the given related objects to the existing relationships
-// of the asset_type, optionally inserting them as new records.
-// Appends related to o.R.TypeAssets.
-// Sets related.R.TypeAssetType appropriately.
+// AddAssetsGP adds the given related objects to the existing relationships
+// of the content_type, optionally inserting them as new records.
+// Appends related to o.R.Assets.
+// Sets related.R.AssetContentType appropriately.
 // Uses the global database handle and panics on error.
-func (o *AssetType) AddTypeAssetsGP(ctx context.Context, insert bool, related ...*Asset) {
-	if err := o.AddTypeAssets(ctx, boil.GetContextDB(), insert, related...); err != nil {
+func (o *ContentType) AddAssetsGP(ctx context.Context, insert bool, related ...*Asset) {
+	if err := o.AddAssets(ctx, boil.GetContextDB(), insert, related...); err != nil {
 		panic(boil.WrapErr(err))
 	}
 }
 
-// AddTypeAssets adds the given related objects to the existing relationships
-// of the asset_type, optionally inserting them as new records.
-// Appends related to o.R.TypeAssets.
-// Sets related.R.TypeAssetType appropriately.
-func (o *AssetType) AddTypeAssets(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Asset) error {
+// AddAssets adds the given related objects to the existing relationships
+// of the content_type, optionally inserting them as new records.
+// Appends related to o.R.Assets.
+// Sets related.R.AssetContentType appropriately.
+func (o *ContentType) AddAssets(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Asset) error {
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.Type = o.ID
+			rel.ContentType = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
 		} else {
 			updateQuery := fmt.Sprintf(
 				"UPDATE `assets` SET %s WHERE %s",
-				strmangle.SetParamNames("`", "`", 0, []string{"type"}),
+				strmangle.SetParamNames("`", "`", 0, []string{"content_type"}),
 				strmangle.WhereClause("`", "`", 0, assetPrimaryKeyColumns),
 			)
 			values := []interface{}{o.ID, rel.ID}
@@ -480,49 +455,49 @@ func (o *AssetType) AddTypeAssets(ctx context.Context, exec boil.ContextExecutor
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.Type = o.ID
+			rel.ContentType = o.ID
 		}
 	}
 
 	if o.R == nil {
-		o.R = &assetTypeR{
-			TypeAssets: related,
+		o.R = &contentTypeR{
+			Assets: related,
 		}
 	} else {
-		o.R.TypeAssets = append(o.R.TypeAssets, related...)
+		o.R.Assets = append(o.R.Assets, related...)
 	}
 
 	for _, rel := range related {
 		if rel.R == nil {
 			rel.R = &assetR{
-				TypeAssetType: o,
+				AssetContentType: o,
 			}
 		} else {
-			rel.R.TypeAssetType = o
+			rel.R.AssetContentType = o
 		}
 	}
 	return nil
 }
 
-// AssetTypes retrieves all the records using an executor.
-func AssetTypes(mods ...qm.QueryMod) assetTypeQuery {
-	mods = append(mods, qm.From("`asset_types`"))
+// ContentTypes retrieves all the records using an executor.
+func ContentTypes(mods ...qm.QueryMod) contentTypeQuery {
+	mods = append(mods, qm.From("`content_types`"))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"`asset_types`.*"})
+		queries.SetSelect(q, []string{"`content_types`.*"})
 	}
 
-	return assetTypeQuery{q}
+	return contentTypeQuery{q}
 }
 
-// FindAssetTypeG retrieves a single record by ID.
-func FindAssetTypeG(ctx context.Context, iD string, selectCols ...string) (*AssetType, error) {
-	return FindAssetType(ctx, boil.GetContextDB(), iD, selectCols...)
+// FindContentTypeG retrieves a single record by ID.
+func FindContentTypeG(ctx context.Context, iD string, selectCols ...string) (*ContentType, error) {
+	return FindContentType(ctx, boil.GetContextDB(), iD, selectCols...)
 }
 
-// FindAssetTypeP retrieves a single record by ID with an executor, and panics on error.
-func FindAssetTypeP(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) *AssetType {
-	retobj, err := FindAssetType(ctx, exec, iD, selectCols...)
+// FindContentTypeP retrieves a single record by ID with an executor, and panics on error.
+func FindContentTypeP(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) *ContentType {
+	retobj, err := FindContentType(ctx, exec, iD, selectCols...)
 	if err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -530,9 +505,9 @@ func FindAssetTypeP(ctx context.Context, exec boil.ContextExecutor, iD string, s
 	return retobj
 }
 
-// FindAssetTypeGP retrieves a single record by ID, and panics on error.
-func FindAssetTypeGP(ctx context.Context, iD string, selectCols ...string) *AssetType {
-	retobj, err := FindAssetType(ctx, boil.GetContextDB(), iD, selectCols...)
+// FindContentTypeGP retrieves a single record by ID, and panics on error.
+func FindContentTypeGP(ctx context.Context, iD string, selectCols ...string) *ContentType {
+	retobj, err := FindContentType(ctx, boil.GetContextDB(), iD, selectCols...)
 	if err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -540,40 +515,40 @@ func FindAssetTypeGP(ctx context.Context, iD string, selectCols ...string) *Asse
 	return retobj
 }
 
-// FindAssetType retrieves a single record by ID with an executor.
+// FindContentType retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindAssetType(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*AssetType, error) {
-	assetTypeObj := &AssetType{}
+func FindContentType(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*ContentType, error) {
+	contentTypeObj := &ContentType{}
 
 	sel := "*"
 	if len(selectCols) > 0 {
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `asset_types` where `id`=?", sel,
+		"select %s from `content_types` where `id`=?", sel,
 	)
 
 	q := queries.Raw(query, iD)
 
-	err := q.Bind(ctx, exec, assetTypeObj)
+	err := q.Bind(ctx, exec, contentTypeObj)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "dbmodel: unable to select from asset_types")
+		return nil, errors.Wrap(err, "dbmodel: unable to select from content_types")
 	}
 
-	return assetTypeObj, nil
+	return contentTypeObj, nil
 }
 
 // InsertG a single record. See Insert for whitelist behavior description.
-func (o *AssetType) InsertG(ctx context.Context, columns boil.Columns) error {
+func (o *ContentType) InsertG(ctx context.Context, columns boil.Columns) error {
 	return o.Insert(ctx, boil.GetContextDB(), columns)
 }
 
 // InsertP a single record using an executor, and panics on error. See Insert
 // for whitelist behavior description.
-func (o *AssetType) InsertP(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) {
+func (o *ContentType) InsertP(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) {
 	if err := o.Insert(ctx, exec, columns); err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -581,7 +556,7 @@ func (o *AssetType) InsertP(ctx context.Context, exec boil.ContextExecutor, colu
 
 // InsertGP a single record, and panics on error. See Insert for whitelist
 // behavior description.
-func (o *AssetType) InsertGP(ctx context.Context, columns boil.Columns) {
+func (o *ContentType) InsertGP(ctx context.Context, columns boil.Columns) {
 	if err := o.Insert(ctx, boil.GetContextDB(), columns); err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -589,46 +564,46 @@ func (o *AssetType) InsertGP(ctx context.Context, columns boil.Columns) {
 
 // Insert a single record using an executor.
 // See boil.Columns.InsertColumnSet documentation to understand column list inference for inserts.
-func (o *AssetType) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
+func (o *ContentType) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
 	if o == nil {
-		return errors.New("dbmodel: no asset_types provided for insertion")
+		return errors.New("dbmodel: no content_types provided for insertion")
 	}
 
 	var err error
 
-	nzDefaults := queries.NonZeroDefaultSet(assetTypeColumnsWithDefault, o)
+	nzDefaults := queries.NonZeroDefaultSet(contentTypeColumnsWithDefault, o)
 
 	key := makeCacheKey(columns, nzDefaults)
-	assetTypeInsertCacheMut.RLock()
-	cache, cached := assetTypeInsertCache[key]
-	assetTypeInsertCacheMut.RUnlock()
+	contentTypeInsertCacheMut.RLock()
+	cache, cached := contentTypeInsertCache[key]
+	contentTypeInsertCacheMut.RUnlock()
 
 	if !cached {
 		wl, returnColumns := columns.InsertColumnSet(
-			assetTypeAllColumns,
-			assetTypeColumnsWithDefault,
-			assetTypeColumnsWithoutDefault,
+			contentTypeAllColumns,
+			contentTypeColumnsWithDefault,
+			contentTypeColumnsWithoutDefault,
 			nzDefaults,
 		)
 
-		cache.valueMapping, err = queries.BindMapping(assetTypeType, assetTypeMapping, wl)
+		cache.valueMapping, err = queries.BindMapping(contentTypeType, contentTypeMapping, wl)
 		if err != nil {
 			return err
 		}
-		cache.retMapping, err = queries.BindMapping(assetTypeType, assetTypeMapping, returnColumns)
+		cache.retMapping, err = queries.BindMapping(contentTypeType, contentTypeMapping, returnColumns)
 		if err != nil {
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO `asset_types` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO `content_types` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO `asset_types` () VALUES ()%s%s"
+			cache.query = "INSERT INTO `content_types` () VALUES ()%s%s"
 		}
 
 		var queryOutput, queryReturning string
 
 		if len(cache.retMapping) != 0 {
-			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `asset_types` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, assetTypePrimaryKeyColumns))
+			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `content_types` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, contentTypePrimaryKeyColumns))
 		}
 
 		cache.query = fmt.Sprintf(cache.query, queryOutput, queryReturning)
@@ -645,7 +620,7 @@ func (o *AssetType) Insert(ctx context.Context, exec boil.ContextExecutor, colum
 	_, err = exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to insert into asset_types")
+		return errors.Wrap(err, "dbmodel: unable to insert into content_types")
 	}
 
 	var identifierCols []interface{}
@@ -665,28 +640,28 @@ func (o *AssetType) Insert(ctx context.Context, exec boil.ContextExecutor, colum
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, identifierCols...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to populate default values for asset_types")
+		return errors.Wrap(err, "dbmodel: unable to populate default values for content_types")
 	}
 
 CacheNoHooks:
 	if !cached {
-		assetTypeInsertCacheMut.Lock()
-		assetTypeInsertCache[key] = cache
-		assetTypeInsertCacheMut.Unlock()
+		contentTypeInsertCacheMut.Lock()
+		contentTypeInsertCache[key] = cache
+		contentTypeInsertCacheMut.Unlock()
 	}
 
 	return nil
 }
 
-// UpdateG a single AssetType record using the global executor.
+// UpdateG a single ContentType record using the global executor.
 // See Update for more documentation.
-func (o *AssetType) UpdateG(ctx context.Context, columns boil.Columns) (int64, error) {
+func (o *ContentType) UpdateG(ctx context.Context, columns boil.Columns) (int64, error) {
 	return o.Update(ctx, boil.GetContextDB(), columns)
 }
 
-// UpdateP uses an executor to update the AssetType, and panics on error.
+// UpdateP uses an executor to update the ContentType, and panics on error.
 // See Update for more documentation.
-func (o *AssetType) UpdateP(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) int64 {
+func (o *ContentType) UpdateP(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) int64 {
 	rowsAff, err := o.Update(ctx, exec, columns)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -695,9 +670,9 @@ func (o *AssetType) UpdateP(ctx context.Context, exec boil.ContextExecutor, colu
 	return rowsAff
 }
 
-// UpdateGP a single AssetType record using the global executor. Panics on error.
+// UpdateGP a single ContentType record using the global executor. Panics on error.
 // See Update for more documentation.
-func (o *AssetType) UpdateGP(ctx context.Context, columns boil.Columns) int64 {
+func (o *ContentType) UpdateGP(ctx context.Context, columns boil.Columns) int64 {
 	rowsAff, err := o.Update(ctx, boil.GetContextDB(), columns)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -706,30 +681,30 @@ func (o *AssetType) UpdateGP(ctx context.Context, columns boil.Columns) int64 {
 	return rowsAff
 }
 
-// Update uses an executor to update the AssetType.
+// Update uses an executor to update the ContentType.
 // See boil.Columns.UpdateColumnSet documentation to understand column list inference for updates.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
-func (o *AssetType) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+func (o *ContentType) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
 	var err error
 	key := makeCacheKey(columns, nil)
-	assetTypeUpdateCacheMut.RLock()
-	cache, cached := assetTypeUpdateCache[key]
-	assetTypeUpdateCacheMut.RUnlock()
+	contentTypeUpdateCacheMut.RLock()
+	cache, cached := contentTypeUpdateCache[key]
+	contentTypeUpdateCacheMut.RUnlock()
 
 	if !cached {
 		wl := columns.UpdateColumnSet(
-			assetTypeAllColumns,
-			assetTypePrimaryKeyColumns,
+			contentTypeAllColumns,
+			contentTypePrimaryKeyColumns,
 		)
 		if len(wl) == 0 {
-			return 0, errors.New("dbmodel: unable to update asset_types, could not build whitelist")
+			return 0, errors.New("dbmodel: unable to update content_types, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE `asset_types` SET %s WHERE %s",
+		cache.query = fmt.Sprintf("UPDATE `content_types` SET %s WHERE %s",
 			strmangle.SetParamNames("`", "`", 0, wl),
-			strmangle.WhereClause("`", "`", 0, assetTypePrimaryKeyColumns),
+			strmangle.WhereClause("`", "`", 0, contentTypePrimaryKeyColumns),
 		)
-		cache.valueMapping, err = queries.BindMapping(assetTypeType, assetTypeMapping, append(wl, assetTypePrimaryKeyColumns...))
+		cache.valueMapping, err = queries.BindMapping(contentTypeType, contentTypeMapping, append(wl, contentTypePrimaryKeyColumns...))
 		if err != nil {
 			return 0, err
 		}
@@ -745,25 +720,25 @@ func (o *AssetType) Update(ctx context.Context, exec boil.ContextExecutor, colum
 	var result sql.Result
 	result, err = exec.ExecContext(ctx, cache.query, values...)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: unable to update asset_types row")
+		return 0, errors.Wrap(err, "dbmodel: unable to update content_types row")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by update for asset_types")
+		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by update for content_types")
 	}
 
 	if !cached {
-		assetTypeUpdateCacheMut.Lock()
-		assetTypeUpdateCache[key] = cache
-		assetTypeUpdateCacheMut.Unlock()
+		contentTypeUpdateCacheMut.Lock()
+		contentTypeUpdateCache[key] = cache
+		contentTypeUpdateCacheMut.Unlock()
 	}
 
 	return rowsAff, nil
 }
 
 // UpdateAllP updates all rows with matching column names, and panics on error.
-func (q assetTypeQuery) UpdateAllP(ctx context.Context, exec boil.ContextExecutor, cols M) int64 {
+func (q contentTypeQuery) UpdateAllP(ctx context.Context, exec boil.ContextExecutor, cols M) int64 {
 	rowsAff, err := q.UpdateAll(ctx, exec, cols)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -773,12 +748,12 @@ func (q assetTypeQuery) UpdateAllP(ctx context.Context, exec boil.ContextExecuto
 }
 
 // UpdateAllG updates all rows with the specified column values.
-func (q assetTypeQuery) UpdateAllG(ctx context.Context, cols M) (int64, error) {
+func (q contentTypeQuery) UpdateAllG(ctx context.Context, cols M) (int64, error) {
 	return q.UpdateAll(ctx, boil.GetContextDB(), cols)
 }
 
 // UpdateAllGP updates all rows with the specified column values, and panics on error.
-func (q assetTypeQuery) UpdateAllGP(ctx context.Context, cols M) int64 {
+func (q contentTypeQuery) UpdateAllGP(ctx context.Context, cols M) int64 {
 	rowsAff, err := q.UpdateAll(ctx, boil.GetContextDB(), cols)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -788,29 +763,29 @@ func (q assetTypeQuery) UpdateAllGP(ctx context.Context, cols M) int64 {
 }
 
 // UpdateAll updates all rows with the specified column values.
-func (q assetTypeQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (q contentTypeQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	queries.SetUpdate(q.Query, cols)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: unable to update all for asset_types")
+		return 0, errors.Wrap(err, "dbmodel: unable to update all for content_types")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: unable to retrieve rows affected for asset_types")
+		return 0, errors.Wrap(err, "dbmodel: unable to retrieve rows affected for content_types")
 	}
 
 	return rowsAff, nil
 }
 
 // UpdateAllG updates all rows with the specified column values.
-func (o AssetTypeSlice) UpdateAllG(ctx context.Context, cols M) (int64, error) {
+func (o ContentTypeSlice) UpdateAllG(ctx context.Context, cols M) (int64, error) {
 	return o.UpdateAll(ctx, boil.GetContextDB(), cols)
 }
 
 // UpdateAllGP updates all rows with the specified column values, and panics on error.
-func (o AssetTypeSlice) UpdateAllGP(ctx context.Context, cols M) int64 {
+func (o ContentTypeSlice) UpdateAllGP(ctx context.Context, cols M) int64 {
 	rowsAff, err := o.UpdateAll(ctx, boil.GetContextDB(), cols)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -820,7 +795,7 @@ func (o AssetTypeSlice) UpdateAllGP(ctx context.Context, cols M) int64 {
 }
 
 // UpdateAllP updates all rows with the specified column values, and panics on error.
-func (o AssetTypeSlice) UpdateAllP(ctx context.Context, exec boil.ContextExecutor, cols M) int64 {
+func (o ContentTypeSlice) UpdateAllP(ctx context.Context, exec boil.ContextExecutor, cols M) int64 {
 	rowsAff, err := o.UpdateAll(ctx, exec, cols)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -830,7 +805,7 @@ func (o AssetTypeSlice) UpdateAllP(ctx context.Context, exec boil.ContextExecuto
 }
 
 // UpdateAll updates all rows with the specified column values, using an executor.
-func (o AssetTypeSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (o ContentTypeSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	ln := int64(len(o))
 	if ln == 0 {
 		return 0, nil
@@ -852,13 +827,13 @@ func (o AssetTypeSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor
 
 	// Append all of the primary key values for each column
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), assetTypePrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), contentTypePrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE `asset_types` SET %s WHERE %s",
+	sql := fmt.Sprintf("UPDATE `content_types` SET %s WHERE %s",
 		strmangle.SetParamNames("`", "`", 0, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, assetTypePrimaryKeyColumns, len(o)))
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, contentTypePrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -867,23 +842,23 @@ func (o AssetTypeSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: unable to update all in assetType slice")
+		return 0, errors.Wrap(err, "dbmodel: unable to update all in contentType slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: unable to retrieve rows affected all in update all assetType")
+		return 0, errors.Wrap(err, "dbmodel: unable to retrieve rows affected all in update all contentType")
 	}
 	return rowsAff, nil
 }
 
 // UpsertG attempts an insert, and does an update or ignore on conflict.
-func (o *AssetType) UpsertG(ctx context.Context, updateColumns, insertColumns boil.Columns) error {
+func (o *ContentType) UpsertG(ctx context.Context, updateColumns, insertColumns boil.Columns) error {
 	return o.Upsert(ctx, boil.GetContextDB(), updateColumns, insertColumns)
 }
 
 // UpsertGP attempts an insert, and does an update or ignore on conflict. Panics on error.
-func (o *AssetType) UpsertGP(ctx context.Context, updateColumns, insertColumns boil.Columns) {
+func (o *ContentType) UpsertGP(ctx context.Context, updateColumns, insertColumns boil.Columns) {
 	if err := o.Upsert(ctx, boil.GetContextDB(), updateColumns, insertColumns); err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -891,25 +866,25 @@ func (o *AssetType) UpsertGP(ctx context.Context, updateColumns, insertColumns b
 
 // UpsertP attempts an insert using an executor, and does an update or ignore on conflict.
 // UpsertP panics on error.
-func (o *AssetType) UpsertP(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) {
+func (o *ContentType) UpsertP(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) {
 	if err := o.Upsert(ctx, exec, updateColumns, insertColumns); err != nil {
 		panic(boil.WrapErr(err))
 	}
 }
 
-var mySQLAssetTypeUniqueColumns = []string{
+var mySQLContentTypeUniqueColumns = []string{
 	"id",
 }
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *AssetType) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
+func (o *ContentType) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
-		return errors.New("dbmodel: no asset_types provided for upsert")
+		return errors.New("dbmodel: no content_types provided for upsert")
 	}
 
-	nzDefaults := queries.NonZeroDefaultSet(assetTypeColumnsWithDefault, o)
-	nzUniques := queries.NonZeroDefaultSet(mySQLAssetTypeUniqueColumns, o)
+	nzDefaults := queries.NonZeroDefaultSet(contentTypeColumnsWithDefault, o)
+	nzUniques := queries.NonZeroDefaultSet(mySQLContentTypeUniqueColumns, o)
 
 	if len(nzUniques) == 0 {
 		return errors.New("cannot upsert with a table that cannot conflict on a unique column")
@@ -937,43 +912,43 @@ func (o *AssetType) Upsert(ctx context.Context, exec boil.ContextExecutor, updat
 	key := buf.String()
 	strmangle.PutBuffer(buf)
 
-	assetTypeUpsertCacheMut.RLock()
-	cache, cached := assetTypeUpsertCache[key]
-	assetTypeUpsertCacheMut.RUnlock()
+	contentTypeUpsertCacheMut.RLock()
+	cache, cached := contentTypeUpsertCache[key]
+	contentTypeUpsertCacheMut.RUnlock()
 
 	var err error
 
 	if !cached {
 		insert, ret := insertColumns.InsertColumnSet(
-			assetTypeAllColumns,
-			assetTypeColumnsWithDefault,
-			assetTypeColumnsWithoutDefault,
+			contentTypeAllColumns,
+			contentTypeColumnsWithDefault,
+			contentTypeColumnsWithoutDefault,
 			nzDefaults,
 		)
 
 		update := updateColumns.UpdateColumnSet(
-			assetTypeAllColumns,
-			assetTypePrimaryKeyColumns,
+			contentTypeAllColumns,
+			contentTypePrimaryKeyColumns,
 		)
 
 		if !updateColumns.IsNone() && len(update) == 0 {
-			return errors.New("dbmodel: unable to upsert asset_types, could not build update column list")
+			return errors.New("dbmodel: unable to upsert content_types, could not build update column list")
 		}
 
 		ret = strmangle.SetComplement(ret, nzUniques)
-		cache.query = buildUpsertQueryMySQL(dialect, "`asset_types`", update, insert)
+		cache.query = buildUpsertQueryMySQL(dialect, "`content_types`", update, insert)
 		cache.retQuery = fmt.Sprintf(
-			"SELECT %s FROM `asset_types` WHERE %s",
+			"SELECT %s FROM `content_types` WHERE %s",
 			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, ret), ","),
 			strmangle.WhereClause("`", "`", 0, nzUniques),
 		)
 
-		cache.valueMapping, err = queries.BindMapping(assetTypeType, assetTypeMapping, insert)
+		cache.valueMapping, err = queries.BindMapping(contentTypeType, contentTypeMapping, insert)
 		if err != nil {
 			return err
 		}
 		if len(ret) != 0 {
-			cache.retMapping, err = queries.BindMapping(assetTypeType, assetTypeMapping, ret)
+			cache.retMapping, err = queries.BindMapping(contentTypeType, contentTypeMapping, ret)
 			if err != nil {
 				return err
 			}
@@ -995,7 +970,7 @@ func (o *AssetType) Upsert(ctx context.Context, exec boil.ContextExecutor, updat
 	_, err = exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to upsert for asset_types")
+		return errors.Wrap(err, "dbmodel: unable to upsert for content_types")
 	}
 
 	var uniqueMap []uint64
@@ -1005,9 +980,9 @@ func (o *AssetType) Upsert(ctx context.Context, exec boil.ContextExecutor, updat
 		goto CacheNoHooks
 	}
 
-	uniqueMap, err = queries.BindMapping(assetTypeType, assetTypeMapping, nzUniques)
+	uniqueMap, err = queries.BindMapping(contentTypeType, contentTypeMapping, nzUniques)
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to retrieve unique values for asset_types")
+		return errors.Wrap(err, "dbmodel: unable to retrieve unique values for content_types")
 	}
 	nzUniqueCols = queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uniqueMap)
 
@@ -1018,29 +993,29 @@ func (o *AssetType) Upsert(ctx context.Context, exec boil.ContextExecutor, updat
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, nzUniqueCols...).Scan(returns...)
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to populate default values for asset_types")
+		return errors.Wrap(err, "dbmodel: unable to populate default values for content_types")
 	}
 
 CacheNoHooks:
 	if !cached {
-		assetTypeUpsertCacheMut.Lock()
-		assetTypeUpsertCache[key] = cache
-		assetTypeUpsertCacheMut.Unlock()
+		contentTypeUpsertCacheMut.Lock()
+		contentTypeUpsertCache[key] = cache
+		contentTypeUpsertCacheMut.Unlock()
 	}
 
 	return nil
 }
 
-// DeleteG deletes a single AssetType record.
+// DeleteG deletes a single ContentType record.
 // DeleteG will match against the primary key column to find the record to delete.
-func (o *AssetType) DeleteG(ctx context.Context) (int64, error) {
+func (o *ContentType) DeleteG(ctx context.Context) (int64, error) {
 	return o.Delete(ctx, boil.GetContextDB())
 }
 
-// DeleteP deletes a single AssetType record with an executor.
+// DeleteP deletes a single ContentType record with an executor.
 // DeleteP will match against the primary key column to find the record to delete.
 // Panics on error.
-func (o *AssetType) DeleteP(ctx context.Context, exec boil.ContextExecutor) int64 {
+func (o *ContentType) DeleteP(ctx context.Context, exec boil.ContextExecutor) int64 {
 	rowsAff, err := o.Delete(ctx, exec)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -1049,10 +1024,10 @@ func (o *AssetType) DeleteP(ctx context.Context, exec boil.ContextExecutor) int6
 	return rowsAff
 }
 
-// DeleteGP deletes a single AssetType record.
+// DeleteGP deletes a single ContentType record.
 // DeleteGP will match against the primary key column to find the record to delete.
 // Panics on error.
-func (o *AssetType) DeleteGP(ctx context.Context) int64 {
+func (o *ContentType) DeleteGP(ctx context.Context) int64 {
 	rowsAff, err := o.Delete(ctx, boil.GetContextDB())
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -1061,15 +1036,15 @@ func (o *AssetType) DeleteGP(ctx context.Context) int64 {
 	return rowsAff
 }
 
-// Delete deletes a single AssetType record with an executor.
+// Delete deletes a single ContentType record with an executor.
 // Delete will match against the primary key column to find the record to delete.
-func (o *AssetType) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o *ContentType) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if o == nil {
-		return 0, errors.New("dbmodel: no AssetType provided for delete")
+		return 0, errors.New("dbmodel: no ContentType provided for delete")
 	}
 
-	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), assetTypePrimaryKeyMapping)
-	sql := "DELETE FROM `asset_types` WHERE `id`=?"
+	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), contentTypePrimaryKeyMapping)
+	sql := "DELETE FROM `content_types` WHERE `id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1078,23 +1053,23 @@ func (o *AssetType) Delete(ctx context.Context, exec boil.ContextExecutor) (int6
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: unable to delete from asset_types")
+		return 0, errors.Wrap(err, "dbmodel: unable to delete from content_types")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by delete for asset_types")
+		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by delete for content_types")
 	}
 
 	return rowsAff, nil
 }
 
-func (q assetTypeQuery) DeleteAllG(ctx context.Context) (int64, error) {
+func (q contentTypeQuery) DeleteAllG(ctx context.Context) (int64, error) {
 	return q.DeleteAll(ctx, boil.GetContextDB())
 }
 
 // DeleteAllP deletes all rows, and panics on error.
-func (q assetTypeQuery) DeleteAllP(ctx context.Context, exec boil.ContextExecutor) int64 {
+func (q contentTypeQuery) DeleteAllP(ctx context.Context, exec boil.ContextExecutor) int64 {
 	rowsAff, err := q.DeleteAll(ctx, exec)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -1104,7 +1079,7 @@ func (q assetTypeQuery) DeleteAllP(ctx context.Context, exec boil.ContextExecuto
 }
 
 // DeleteAllGP deletes all rows, and panics on error.
-func (q assetTypeQuery) DeleteAllGP(ctx context.Context) int64 {
+func (q contentTypeQuery) DeleteAllGP(ctx context.Context) int64 {
 	rowsAff, err := q.DeleteAll(ctx, boil.GetContextDB())
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -1114,33 +1089,33 @@ func (q assetTypeQuery) DeleteAllGP(ctx context.Context) int64 {
 }
 
 // DeleteAll deletes all matching rows.
-func (q assetTypeQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (q contentTypeQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if q.Query == nil {
-		return 0, errors.New("dbmodel: no assetTypeQuery provided for delete all")
+		return 0, errors.New("dbmodel: no contentTypeQuery provided for delete all")
 	}
 
 	queries.SetDelete(q.Query)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: unable to delete all from asset_types")
+		return 0, errors.Wrap(err, "dbmodel: unable to delete all from content_types")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by deleteall for asset_types")
+		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by deleteall for content_types")
 	}
 
 	return rowsAff, nil
 }
 
 // DeleteAllG deletes all rows in the slice.
-func (o AssetTypeSlice) DeleteAllG(ctx context.Context) (int64, error) {
+func (o ContentTypeSlice) DeleteAllG(ctx context.Context) (int64, error) {
 	return o.DeleteAll(ctx, boil.GetContextDB())
 }
 
 // DeleteAllP deletes all rows in the slice, using an executor, and panics on error.
-func (o AssetTypeSlice) DeleteAllP(ctx context.Context, exec boil.ContextExecutor) int64 {
+func (o ContentTypeSlice) DeleteAllP(ctx context.Context, exec boil.ContextExecutor) int64 {
 	rowsAff, err := o.DeleteAll(ctx, exec)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -1150,7 +1125,7 @@ func (o AssetTypeSlice) DeleteAllP(ctx context.Context, exec boil.ContextExecuto
 }
 
 // DeleteAllGP deletes all rows in the slice, and panics on error.
-func (o AssetTypeSlice) DeleteAllGP(ctx context.Context) int64 {
+func (o ContentTypeSlice) DeleteAllGP(ctx context.Context) int64 {
 	rowsAff, err := o.DeleteAll(ctx, boil.GetContextDB())
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -1160,19 +1135,19 @@ func (o AssetTypeSlice) DeleteAllGP(ctx context.Context) int64 {
 }
 
 // DeleteAll deletes all rows in the slice, using an executor.
-func (o AssetTypeSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o ContentTypeSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if len(o) == 0 {
 		return 0, nil
 	}
 
 	var args []interface{}
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), assetTypePrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), contentTypePrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM `asset_types` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, assetTypePrimaryKeyColumns, len(o))
+	sql := "DELETE FROM `content_types` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, contentTypePrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1181,35 +1156,35 @@ func (o AssetTypeSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: unable to delete all from assetType slice")
+		return 0, errors.Wrap(err, "dbmodel: unable to delete all from contentType slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by deleteall for asset_types")
+		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by deleteall for content_types")
 	}
 
 	return rowsAff, nil
 }
 
 // ReloadG refetches the object from the database using the primary keys.
-func (o *AssetType) ReloadG(ctx context.Context) error {
+func (o *ContentType) ReloadG(ctx context.Context) error {
 	if o == nil {
-		return errors.New("dbmodel: no AssetType provided for reload")
+		return errors.New("dbmodel: no ContentType provided for reload")
 	}
 
 	return o.Reload(ctx, boil.GetContextDB())
 }
 
 // ReloadP refetches the object from the database with an executor. Panics on error.
-func (o *AssetType) ReloadP(ctx context.Context, exec boil.ContextExecutor) {
+func (o *ContentType) ReloadP(ctx context.Context, exec boil.ContextExecutor) {
 	if err := o.Reload(ctx, exec); err != nil {
 		panic(boil.WrapErr(err))
 	}
 }
 
 // ReloadGP refetches the object from the database and panics on error.
-func (o *AssetType) ReloadGP(ctx context.Context) {
+func (o *ContentType) ReloadGP(ctx context.Context) {
 	if err := o.Reload(ctx, boil.GetContextDB()); err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -1217,8 +1192,8 @@ func (o *AssetType) ReloadGP(ctx context.Context) {
 
 // Reload refetches the object from the database
 // using the primary keys with an executor.
-func (o *AssetType) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindAssetType(ctx, exec, o.ID)
+func (o *ContentType) Reload(ctx context.Context, exec boil.ContextExecutor) error {
+	ret, err := FindContentType(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -1229,9 +1204,9 @@ func (o *AssetType) Reload(ctx context.Context, exec boil.ContextExecutor) error
 
 // ReloadAllG refetches every row with matching primary key column values
 // and overwrites the original object slice with the newly updated slice.
-func (o *AssetTypeSlice) ReloadAllG(ctx context.Context) error {
+func (o *ContentTypeSlice) ReloadAllG(ctx context.Context) error {
 	if o == nil {
-		return errors.New("dbmodel: empty AssetTypeSlice provided for reload all")
+		return errors.New("dbmodel: empty ContentTypeSlice provided for reload all")
 	}
 
 	return o.ReloadAll(ctx, boil.GetContextDB())
@@ -1240,7 +1215,7 @@ func (o *AssetTypeSlice) ReloadAllG(ctx context.Context) error {
 // ReloadAllP refetches every row with matching primary key column values
 // and overwrites the original object slice with the newly updated slice.
 // Panics on error.
-func (o *AssetTypeSlice) ReloadAllP(ctx context.Context, exec boil.ContextExecutor) {
+func (o *ContentTypeSlice) ReloadAllP(ctx context.Context, exec boil.ContextExecutor) {
 	if err := o.ReloadAll(ctx, exec); err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -1249,7 +1224,7 @@ func (o *AssetTypeSlice) ReloadAllP(ctx context.Context, exec boil.ContextExecut
 // ReloadAllGP refetches every row with matching primary key column values
 // and overwrites the original object slice with the newly updated slice.
 // Panics on error.
-func (o *AssetTypeSlice) ReloadAllGP(ctx context.Context) {
+func (o *ContentTypeSlice) ReloadAllGP(ctx context.Context) {
 	if err := o.ReloadAll(ctx, boil.GetContextDB()); err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -1257,26 +1232,26 @@ func (o *AssetTypeSlice) ReloadAllGP(ctx context.Context) {
 
 // ReloadAll refetches every row with matching primary key column values
 // and overwrites the original object slice with the newly updated slice.
-func (o *AssetTypeSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
+func (o *ContentTypeSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
 	if o == nil || len(*o) == 0 {
 		return nil
 	}
 
-	slice := AssetTypeSlice{}
+	slice := ContentTypeSlice{}
 	var args []interface{}
 	for _, obj := range *o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), assetTypePrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), contentTypePrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT `asset_types`.* FROM `asset_types` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, assetTypePrimaryKeyColumns, len(*o))
+	sql := "SELECT `content_types`.* FROM `content_types` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, contentTypePrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
 	err := q.Bind(ctx, exec, &slice)
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to reload all in AssetTypeSlice")
+		return errors.Wrap(err, "dbmodel: unable to reload all in ContentTypeSlice")
 	}
 
 	*o = slice
@@ -1284,14 +1259,14 @@ func (o *AssetTypeSlice) ReloadAll(ctx context.Context, exec boil.ContextExecuto
 	return nil
 }
 
-// AssetTypeExistsG checks if the AssetType row exists.
-func AssetTypeExistsG(ctx context.Context, iD string) (bool, error) {
-	return AssetTypeExists(ctx, boil.GetContextDB(), iD)
+// ContentTypeExistsG checks if the ContentType row exists.
+func ContentTypeExistsG(ctx context.Context, iD string) (bool, error) {
+	return ContentTypeExists(ctx, boil.GetContextDB(), iD)
 }
 
-// AssetTypeExistsP checks if the AssetType row exists. Panics on error.
-func AssetTypeExistsP(ctx context.Context, exec boil.ContextExecutor, iD string) bool {
-	e, err := AssetTypeExists(ctx, exec, iD)
+// ContentTypeExistsP checks if the ContentType row exists. Panics on error.
+func ContentTypeExistsP(ctx context.Context, exec boil.ContextExecutor, iD string) bool {
+	e, err := ContentTypeExists(ctx, exec, iD)
 	if err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -1299,9 +1274,9 @@ func AssetTypeExistsP(ctx context.Context, exec boil.ContextExecutor, iD string)
 	return e
 }
 
-// AssetTypeExistsGP checks if the AssetType row exists. Panics on error.
-func AssetTypeExistsGP(ctx context.Context, iD string) bool {
-	e, err := AssetTypeExists(ctx, boil.GetContextDB(), iD)
+// ContentTypeExistsGP checks if the ContentType row exists. Panics on error.
+func ContentTypeExistsGP(ctx context.Context, iD string) bool {
+	e, err := ContentTypeExists(ctx, boil.GetContextDB(), iD)
 	if err != nil {
 		panic(boil.WrapErr(err))
 	}
@@ -1309,10 +1284,10 @@ func AssetTypeExistsGP(ctx context.Context, iD string) bool {
 	return e
 }
 
-// AssetTypeExists checks if the AssetType row exists.
-func AssetTypeExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
+// ContentTypeExists checks if the ContentType row exists.
+func ContentTypeExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `asset_types` where `id`=? limit 1)"
+	sql := "select exists(select 1 from `content_types` where `id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1323,19 +1298,19 @@ func AssetTypeExists(ctx context.Context, exec boil.ContextExecutor, iD string) 
 
 	err := row.Scan(&exists)
 	if err != nil {
-		return false, errors.Wrap(err, "dbmodel: unable to check if asset_types exists")
+		return false, errors.Wrap(err, "dbmodel: unable to check if content_types exists")
 	}
 
 	return exists, nil
 }
 
-// Exists checks if the AssetType row exists.
-func (o *AssetType) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
-	return AssetTypeExists(ctx, exec, o.ID)
+// Exists checks if the ContentType row exists.
+func (o *ContentType) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
+	return ContentTypeExists(ctx, exec, o.ID)
 }
 
 // InsertAll inserts all rows with the specified column values, using an executor.
-func (o AssetTypeSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
+func (o ContentTypeSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
 	ln := int64(len(o))
 	if ln == 0 {
 		return nil
@@ -1344,21 +1319,21 @@ func (o AssetTypeSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor
 	vals := []interface{}{}
 	for i, row := range o {
 
-		nzDefaults := queries.NonZeroDefaultSet(assetTypeColumnsWithDefault, row)
+		nzDefaults := queries.NonZeroDefaultSet(contentTypeColumnsWithDefault, row)
 		wl, _ := columns.InsertColumnSet(
-			assetTypeAllColumns,
-			assetTypeColumnsWithDefault,
-			assetTypeColumnsWithoutDefault,
+			contentTypeAllColumns,
+			contentTypeColumnsWithDefault,
+			contentTypeColumnsWithoutDefault,
 			nzDefaults,
 		)
 		if i == 0 {
-			sql = "INSERT INTO `asset_types` " + "(`" + strings.Join(wl, "`,`") + "`)" + " VALUES "
+			sql = "INSERT INTO `content_types` " + "(`" + strings.Join(wl, "`,`") + "`)" + " VALUES "
 		}
 		sql += strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), len(vals)+1, len(wl))
 		if i != len(o)-1 {
 			sql += ","
 		}
-		valMapping, err := queries.BindMapping(assetTypeType, assetTypeMapping, wl)
+		valMapping, err := queries.BindMapping(contentTypeType, contentTypeMapping, wl)
 		if err != nil {
 			return err
 		}
@@ -1372,7 +1347,7 @@ func (o AssetTypeSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor
 
 	_, err := exec.ExecContext(ctx, sql, vals...)
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to insert into asset_types")
+		return errors.Wrap(err, "dbmodel: unable to insert into content_types")
 	}
 
 	return nil
@@ -1382,7 +1357,7 @@ func (o AssetTypeSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor
 // Currently it doesn't support "NoContext" and "NoRowsAffected".
 // IMPORTANT: this will calculate the widest columns from all items in the slice, be careful if you want to use default column values.
 // IMPORTANT: any AUTO_INCREMENT column should be excluded from `updateColumns` and `insertColumns` including PK.
-func (o AssetTypeSlice) UpsertAll(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) (int64, error) {
+func (o ContentTypeSlice) UpsertAll(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) (int64, error) {
 	return o.upsertAllOnConflictColumns(ctx, exec, nil, updateColumns, insertColumns)
 }
 
@@ -1392,11 +1367,11 @@ func (o AssetTypeSlice) UpsertAll(ctx context.Context, exec boil.ContextExecutor
 // can include multiple columns.
 // This function allows passing multiple conflict columns, but it cannot check whether they are correct or not.
 // So use it at your own risk.
-func (o AssetTypeSlice) UpsertAllOnConflictColumns(ctx context.Context, exec boil.ContextExecutor, conflictColumns []string, updateColumns, insertColumns boil.Columns) (int64, error) {
+func (o ContentTypeSlice) UpsertAllOnConflictColumns(ctx context.Context, exec boil.ContextExecutor, conflictColumns []string, updateColumns, insertColumns boil.Columns) (int64, error) {
 	return o.upsertAllOnConflictColumns(ctx, exec, conflictColumns, updateColumns, insertColumns)
 }
 
-func (o AssetTypeSlice) upsertAllOnConflictColumns(ctx context.Context, exec boil.ContextExecutor, conflictColumns []string, updateColumns, insertColumns boil.Columns) (int64, error) {
+func (o ContentTypeSlice) upsertAllOnConflictColumns(ctx context.Context, exec boil.ContextExecutor, conflictColumns []string, updateColumns, insertColumns boil.Columns) (int64, error) {
 	if len(o) == 0 {
 		return 0, nil
 	}
@@ -1405,7 +1380,7 @@ func (o AssetTypeSlice) upsertAllOnConflictColumns(ctx context.Context, exec boi
 	if len(conflictColumns) > 0 {
 		mapConflictColumns := make(map[string]struct{}, len(conflictColumns))
 		for _, col := range conflictColumns {
-			for _, existCol := range assetTypeAllColumns {
+			for _, existCol := range contentTypeAllColumns {
 				if col == existCol {
 					mapConflictColumns[col] = struct{}{}
 					break
@@ -1421,37 +1396,37 @@ func (o AssetTypeSlice) upsertAllOnConflictColumns(ctx context.Context, exec boi
 	insertCols := make(map[string]struct{}, 10)
 	for _, row := range o {
 		if checkNZUniques {
-			nzUniques := queries.NonZeroDefaultSet(mySQLAssetTypeUniqueColumns, row)
+			nzUniques := queries.NonZeroDefaultSet(mySQLContentTypeUniqueColumns, row)
 			if len(nzUniques) == 0 {
 				return 0, errors.New("cannot upsert with a table that cannot conflict on a unique column")
 			}
 		}
 		insert, _ := insertColumns.InsertColumnSet(
-			assetTypeAllColumns,
-			assetTypeColumnsWithDefault,
-			assetTypeColumnsWithoutDefault,
-			queries.NonZeroDefaultSet(assetTypeColumnsWithDefault, row),
+			contentTypeAllColumns,
+			contentTypeColumnsWithDefault,
+			contentTypeColumnsWithoutDefault,
+			queries.NonZeroDefaultSet(contentTypeColumnsWithDefault, row),
 		)
 		for _, col := range insert {
 			insertCols[col] = struct{}{}
 		}
-		if len(insertCols) == len(assetTypeAllColumns) || (insertColumns.IsWhitelist() && len(insertCols) == len(insertColumns.Cols)) {
+		if len(insertCols) == len(contentTypeAllColumns) || (insertColumns.IsWhitelist() && len(insertCols) == len(insertColumns.Cols)) {
 			break
 		}
 	}
 	insert := make([]string, 0, len(insertCols))
-	for _, col := range assetTypeAllColumns {
+	for _, col := range contentTypeAllColumns {
 		if _, ok := insertCols[col]; ok {
 			insert = append(insert, col)
 		}
 	}
 
 	update := updateColumns.UpdateColumnSet(
-		assetTypeAllColumns,
-		assetTypePrimaryKeyColumns,
+		contentTypeAllColumns,
+		contentTypePrimaryKeyColumns,
 	)
 	if !updateColumns.IsNone() && len(update) == 0 {
-		return 0, errors.New("dbmodel: unable to upsert asset_types, could not build update column list")
+		return 0, errors.New("dbmodel: unable to upsert content_types, could not build update column list")
 	}
 
 	buf := strmangle.GetBuffer()
@@ -1460,14 +1435,14 @@ func (o AssetTypeSlice) upsertAllOnConflictColumns(ctx context.Context, exec boi
 	if len(update) == 0 {
 		fmt.Fprintf(
 			buf,
-			"INSERT IGNORE INTO `asset_types`(%s) VALUES %s",
+			"INSERT IGNORE INTO `content_types`(%s) VALUES %s",
 			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert), ","),
 			strmangle.Placeholders(false, len(insert)*len(o), 1, len(insert)),
 		)
 	} else {
 		fmt.Fprintf(
 			buf,
-			"INSERT INTO `asset_types`(%s) VALUES %s ON DUPLICATE KEY UPDATE ",
+			"INSERT INTO `content_types`(%s) VALUES %s ON DUPLICATE KEY UPDATE ",
 			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert), ","),
 			strmangle.Placeholders(false, len(insert)*len(o), 1, len(insert)),
 		)
@@ -1484,7 +1459,7 @@ func (o AssetTypeSlice) upsertAllOnConflictColumns(ctx context.Context, exec boi
 	}
 
 	query := buf.String()
-	valueMapping, err := queries.BindMapping(assetTypeType, assetTypeMapping, insert)
+	valueMapping, err := queries.BindMapping(contentTypeType, contentTypeMapping, insert)
 	if err != nil {
 		return 0, err
 	}
@@ -1504,12 +1479,12 @@ func (o AssetTypeSlice) upsertAllOnConflictColumns(ctx context.Context, exec boi
 
 	result, err := exec.ExecContext(ctx, query, vals...)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: unable to upsert for asset_types")
+		return 0, errors.Wrap(err, "dbmodel: unable to upsert for content_types")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by upsert for asset_types")
+		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by upsert for content_types")
 	}
 
 	return rowsAff, nil
