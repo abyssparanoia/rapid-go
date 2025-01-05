@@ -33,12 +33,12 @@ type GCPEnvironment struct {
 }
 
 type AWSEnvironment struct {
-	AWSRegion              string `env:"AWS_REGION,required"`
-	AWSEmulatorHost        string `env:"AWS_EMULATOR_HOST"`
-	AWSCognitoEmulatorHost string `env:"AWS_COGNITO_EMULATOR_HOST"`
-	AWSBucketName          string `env:"AWS_BUCKET_NAME,required"`
-	AWSCognitoUserPoolID   string `env:"AWS_COGNITO_USER_POOL_ID,required"`
-	AWSCognitoClientID     string `env:"AWS_COGNITO_CLIENT_ID,required"`
+	AWSRegion                 string `env:"AWS_REGION,required"`
+	AWSEmulatorHost           string `env:"AWS_EMULATOR_HOST"`
+	AWSCognitoEmulatorHost    string `env:"AWS_COGNITO_EMULATOR_HOST"`
+	AWSBucketName             string `env:"AWS_BUCKET_NAME,required"`
+	AWSCognitoStaffUserPoolID string `env:"AWS_COGNITO_STAFF_USER_POOL_ID,required"`
+	AWSCognitoStaffClientID   string `env:"AWS_COGNITO_STAFF_CLIENT_ID,required"`
 }
 
 type SpannerEnvironment struct {
