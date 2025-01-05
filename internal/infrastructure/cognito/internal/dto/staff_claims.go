@@ -1,13 +1,12 @@
 package dto
 
 import (
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/volatiletech/null/v8"
 )
 
-type AWSCognitoClaims struct {
+type AWSCognitoStaffClaims struct {
 	Username      string `json:"cognito:username"`
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`
@@ -18,28 +17,28 @@ type AWSCognitoClaims struct {
 }
 
 const (
-	attributesTenantIDKey  = "custom:tenant_id"
-	attributesStaffIDKey   = "custom:staff_id"
-	attributesStaffRoleKey = "custom:staff_role"
+	staffAttributesTenantIDKey  = "custom:tenant_id"
+	staffAttributesStaffIDKey   = "custom:staff_id"
+	staffAttributesStaffRoleKey = "custom:staff_role"
 )
 
-type UserAttributes struct {
+type StaffUserAttributes struct {
 	AuthUID string
-	CustomUserAttributes
+	StaffCustomUserAttributes
 }
 
-func NewUserAttributesFromCognitoUser(cognitoUser *types.UserType) *UserAttributes {
-	userAttributes := &UserAttributes{
+func NewUserAttributesFromCognitoUser(cognitoUser *types.UserType) *StaffUserAttributes {
+	userAttributes := &StaffUserAttributes{
 		AuthUID: *cognitoUser.Username,
 	}
 	for _, attribute := range cognitoUser.Attributes {
-		if *attribute.Name == attributesTenantIDKey {
+		if *attribute.Name == staffAttributesTenantIDKey {
 			userAttributes.TenantID = null.StringFrom(*attribute.Value)
 		}
-		if *attribute.Name == attributesStaffIDKey {
+		if *attribute.Name == staffAttributesStaffIDKey {
 			userAttributes.StaffID = null.StringFrom(*attribute.Value)
 		}
-		if *attribute.Name == attributesStaffRoleKey {
+		if *attribute.Name == staffAttributesStaffRoleKey {
 			userAttributes.StaffRole = null.StringFrom(*attribute.Value)
 		}
 	}
@@ -47,8 +46,8 @@ func NewUserAttributesFromCognitoUser(cognitoUser *types.UserType) *UserAttribut
 	return userAttributes
 }
 
-func NewUserAttributesFromClaims(awsClaims *AWSCognitoClaims) *UserAttributes {
-	userAttributes := &UserAttributes{
+func NewUserAttributesFromClaims(awsClaims *AWSCognitoStaffClaims) *StaffUserAttributes {
+	userAttributes := &StaffUserAttributes{
 		AuthUID: awsClaims.Username,
 	}
 	if awsClaims.TenantID != "" {
@@ -63,13 +62,13 @@ func NewUserAttributesFromClaims(awsClaims *AWSCognitoClaims) *UserAttributes {
 	return userAttributes
 }
 
-type CustomUserAttributes struct {
+type StaffCustomUserAttributes struct {
 	TenantID  null.String
 	StaffID   null.String
 	StaffRole null.String
 }
 
-func (ua *CustomUserAttributes) ToSlice() []types.AttributeType {
+func (ua *StaffCustomUserAttributes) ToSlice() []types.AttributeType {
 	attrs := []types.AttributeType{}
 	if ua.TenantID.Valid {
 		attrs = append(attrs, *NewUserAttribute("custom:tenant_id", ua.TenantID.String))
@@ -81,12 +80,4 @@ func (ua *CustomUserAttributes) ToSlice() []types.AttributeType {
 		attrs = append(attrs, *NewUserAttribute("custom:staff_role", ua.StaffRole.String))
 	}
 	return attrs
-}
-
-func NewUserAttribute(name, value string) *types.AttributeType {
-	attr := &types.AttributeType{
-		Name:  aws.String(name),
-		Value: aws.String(value),
-	}
-	return attr
 }

@@ -7,8 +7,8 @@ import (
 	"github.com/volatiletech/null/v8"
 )
 
-func UserAttributesToModel(
-	userAttribute *dto.UserAttributes,
+func StaffUserAttributesToModel(
+	userAttribute *dto.StaffUserAttributes,
 ) *model.StaffClaims {
 	var staffRole nullable.Type[model.StaffRole]
 	if userAttribute.StaffRole.Valid {
@@ -23,10 +23,10 @@ func UserAttributesToModel(
 	return claims
 }
 
-func StaffClaimsToCustomUserAttributes(
+func StaffClaimsToStaffCustomUserAttributes(
 	claims *model.StaffClaims,
-) *dto.CustomUserAttributes {
-	ua := &dto.CustomUserAttributes{
+) *dto.StaffCustomUserAttributes {
+	ua := &dto.StaffCustomUserAttributes{
 		TenantID: claims.TenantID,
 		StaffID:  claims.StaffID,
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/internal/dto"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/internal/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
@@ -31,13 +32,9 @@ func NewStaffAuthentication(
 	userPoolID string,
 	clientID string,
 	emulatorHost string,
+	region string,
 ) repository.StaffAuthentication {
-	endpoint := cognitoCli.Options().BaseEndpoint
-	if emulatorHost != "" {
-		endpoint = &emulatorHost
-	}
-	publicKeysURL := fmt.Sprintf("%s/%s/.well-known/jwks.json", *endpoint, userPoolID)
-	publicKeySet, err := jwk.Fetch(ctx, publicKeysURL)
+	publicKeySet, err := cognito.NewPublicKeySet(ctx, cognitoCli, userPoolID, emulatorHost, region)
 	if err != nil {
 		panic(err)
 	}
@@ -83,12 +80,12 @@ func (r *staffAuthentication) VerifyIDToken(
 		return nil, errors.InvalidIDTokenErr.Wrap(err)
 	}
 
-	jwtClaims := &dto.AWSCognitoClaims{}
+	jwtClaims := &dto.AWSCognitoStaffClaims{}
 	if err := json.Unmarshal(jsonString, jwtClaims); err != nil {
 		return nil, errors.InvalidIDTokenErr.Wrap(err)
 	}
 
-	return marshaller.UserAttributesToModel(dto.NewUserAttributesFromClaims(jwtClaims)), nil
+	return marshaller.StaffUserAttributesToModel(dto.NewUserAttributesFromClaims(jwtClaims)), nil
 }
 
 func (r *staffAuthentication) GetUserByEmail(
@@ -119,7 +116,7 @@ func (r *staffAuthentication) GetUserByEmail(
 	}
 	return &repository.StaffAuthenticationGetUserByEmailResult{
 		AuthUID:     *user.Username,
-		StaffClaims: marshaller.UserAttributesToModel(dto.NewUserAttributesFromCognitoUser(user)),
+		StaffClaims: marshaller.StaffUserAttributesToModel(dto.NewUserAttributesFromCognitoUser(user)),
 		Exist:       true,
 	}, nil
 }
@@ -168,7 +165,7 @@ func (r *staffAuthentication) StoreClaims(
 	req := &cognitoidentityprovider.AdminUpdateUserAttributesInput{
 		UserPoolId:     aws.String(r.userPoolID),
 		Username:       aws.String(authUID),
-		UserAttributes: marshaller.StaffClaimsToCustomUserAttributes(claims).ToSlice(),
+		UserAttributes: marshaller.StaffClaimsToStaffCustomUserAttributes(claims).ToSlice(),
 	}
 	_, err := r.cli.AdminUpdateUserAttributes(ctx, req)
 	if err != nil {
