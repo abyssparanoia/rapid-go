@@ -1,8 +1,8 @@
 #!/bin/bash -e
 
-user_pool_id=$(aws \
+staff_user_pool_id=$(aws \
     --endpoint-url=http://localhost:9229 \
-    cognito-idp create-user-pool --pool-name local-user-pool \
+    cognito-idp create-user-pool --pool-name local-staff-user-pool \
     --schema Name="tenant_id",AttributeDataType="String",DeveloperOnlyAttribute=false,Required=false,StringAttributeConstraints="{MinLength=1,MaxLength=256}" \
         Name="staff_id",AttributeDataType="String",DeveloperOnlyAttribute=false,Required=false,StringAttributeConstraints="{MinLength=1,MaxLength=256}" \
         Name="staff_role",AttributeDataType="String",DeveloperOnlyAttribute=false,Required=false,StringAttributeConstraints="{MinLength=1,MaxLength=256}" \
@@ -10,14 +10,14 @@ user_pool_id=$(aws \
     | sed 's/"//g' \
     )
 
-echo "user pool id is $user_pool_id"
+echo "staff user pool id is $staff_user_pool_id"
 
-client_id=$(aws \
+staff_client_id=$(aws \
     --endpoint-url=http://localhost:9229 \
     cognito-idp create-user-pool-client \
-    --user-pool-id $user_pool_id \
-    --client-name local-client \
+    --user-pool-id $staff_user_pool_id \
+    --client-name local-staff-client \
     --query UserPoolClient.ClientId
     )
 
-echo "client id is ${client_id}"
+echo "staff client id is ${staff_client_id}"
