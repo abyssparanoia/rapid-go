@@ -1429,6 +1429,7 @@ github.com/k0kubun/pp v1.3.1-0.20200204103551-99835366d1cc h1:XLjmW07gT7cG/wb6ma
 github.com/k0kubun/pp v1.3.1-0.20200204103551-99835366d1cc/go.mod h1:qK2ivXw91omfE1uXcpR5kWbAMZRdDOnGbqWlZ7reRFk=
 github.com/karamaru-alpha/copyloopvar v1.1.0 h1:x7gNyKcC2vRBO1H2Mks5u1VxQtYvFiym7fCjIP8RPos=
 github.com/karamaru-alpha/copyloopvar v1.1.0/go.mod h1:u7CIfztblY0jZLOQZgH3oYsJzpC2A7S6u/lfgSXHy0k=
+github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12/go.mod h1:u9MdXq/QageOOSGp7qG4XAQsYUMP+V5zEel/Vrl6OOc=
 github.com/kauche/splanter v0.1.2 h1:NnYtMHlwV6oI3Q09KQGTYoBcjibb8wsmUeFXO3x2NkI=
 github.com/kauche/splanter v0.1.2/go.mod h1:Enq2DMmRLSHbNsnBIBe201ToeD72Rbc3CbnYlFnfXCk=
 github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51/go.mod h1:CzGEWj7cYgsdH8dAjBGEr58BoE7ScuLd+fwFZ44+/x8=
@@ -1884,7 +1885,10 @@ github.com/volatiletech/randomize v0.0.1 h1:eE5yajattWqTB2/eN8df4dw+8jwAzBtbdo5s
 github.com/volatiletech/randomize v0.0.1/go.mod h1:GN3U0QYqfZ9FOJ67bzax1cqZ5q2xuj2mXrXBjWaRTlY=
 github.com/volatiletech/sqlboiler/v4 v4.17.1 h1:3AggaTfY9SLBp7m3H0X2qMXN4OZzGGtCm20BfQ7O88g=
 github.com/volatiletech/sqlboiler/v4 v4.17.1/go.mod h1:XgPlHwMabot/eOqvsRnzc4Bw84BJNzizr+ac+T9LTic=
+github.com/volatiletech/sqlboiler/v4 v4.18.0 h1:ISz4w94NmJrGAIO3FnYqzD76yYL54Ll61PIfM/c5cdM=
+github.com/volatiletech/sqlboiler/v4 v4.18.0/go.mod h1:e4TAZHRyiLwKrHzKS9OuOfc9SJy/AprEMbn+ZrAohO8=
 github.com/volatiletech/strmangle v0.0.1/go.mod h1:F6RA6IkB5vq0yTG4GQ0UsbbRcl3ni9P76i+JrTBKFFg=
+github.com/volatiletech/strmangle v0.0.6/go.mod h1:ycDvbDkjDvhC0NUU8w3fWwl5JEMTV56vTKXzR3GeR+0=
 github.com/volatiletech/strmangle v0.0.7-0.20240503230658-86517898275a/go.mod h1:ycDvbDkjDvhC0NUU8w3fWwl5JEMTV56vTKXzR3GeR+0=
 github.com/volatiletech/strmangle v0.0.8 h1:UZkTDFIjZcL1Lk4BXhGsxcyXxNcWuM5ZwdzZc0sJcWg=
 github.com/volatiletech/strmangle v0.0.8/go.mod h1:ycDvbDkjDvhC0NUU8w3fWwl5JEMTV56vTKXzR3GeR+0=
