@@ -10,7 +10,7 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/goerr v0.9.0
 	github.com/abyssparanoia/memeduck v1.0.3
-	github.com/air-verse/air v1.61.5
+	github.com/air-verse/air v1.61.7
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/aws/aws-sdk-go-v2 v1.33.0
 	github.com/aws/aws-sdk-go-v2/config v1.29.1
