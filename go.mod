@@ -8,7 +8,7 @@ require (
 	cloud.google.com/go/spanner v1.75.0
 	cloud.google.com/go/storage v1.50.0
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/abyssparanoia/goerr v0.9.0
+	github.com/abyssparanoia/goerr v0.10.0
 	github.com/abyssparanoia/memeduck v1.0.3
 	github.com/air-verse/air v1.61.7
 	github.com/avast/retry-go v3.0.0+incompatible
@@ -52,7 +52,6 @@ require (
 	google.golang.org/grpc v1.70.0
 	google.golang.org/protobuf v1.36.5
 	gopkg.in/yaml.v2 v2.4.0
-	gopkg.in/yaml.v3 v3.0.1
 	mvdan.cc/gofumpt v0.7.0
 )
 
@@ -409,6 +408,7 @@ require (
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto v0.0.0-20250122153221-138b5a5a4fd4 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	honnef.co/go/tools v0.5.1 // indirect
 	mvdan.cc/unparam v0.0.0-20240528143540-8a5130ca722f // indirect
 	pluginrpc.com/pluginrpc v0.5.0 // indirect
