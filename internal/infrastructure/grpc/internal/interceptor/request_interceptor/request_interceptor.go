@@ -112,7 +112,7 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 func extractErrInfo(err error) (string, string) {
 	if goErr := goerr.Unwrap(err); goErr != nil {
-		return goErr.Code(), goErr.Error()
+		return goErr.Code(), goErr.Message()
 	}
 	return "E100001", "An internal error has occurred"
 }

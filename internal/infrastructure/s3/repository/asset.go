@@ -56,6 +56,8 @@ func (r *asset) GenerateReadPresignedURL(
 	req, err := r.presignCli.PresignGetObject(ctx, &s3.GetObjectInput{
 		Bucket: aws.String(r.bucketName),
 		Key:    aws.String(path),
+	}, func(opts *s3.PresignOptions) {
+		opts.Expires = expires
 	})
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
