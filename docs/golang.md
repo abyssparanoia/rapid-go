@@ -10,7 +10,7 @@
 > direnv allow
 ```
 
-- replce GCP_PROJECT_ID and FIREBASE_CLIENT_KEY
+- replace GCP_PROJECT_ID and FIREBASE_CLIENT_KEY
 
 ## run
 
