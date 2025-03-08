@@ -11,7 +11,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
 	_ "github.com/go-sql-driver/mysql"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 // constantData represents the structure of a YAML file for a constants table.
