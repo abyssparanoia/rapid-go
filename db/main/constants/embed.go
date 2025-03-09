@@ -1,6 +1,6 @@
 package constant_files
 
-import "embed"
+import _ "embed"
 
-//go:embed *.yaml
-var EmbedConstants embed.FS
+//go:embed constants.yaml
+var EmbedConstants []byte
