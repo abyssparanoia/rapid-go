@@ -3,6 +3,7 @@ module github.com/abyssparanoia/rapid-go
 go 1.24.0
 
 require (
+	cloud.google.com/go v0.118.3
 	cloud.google.com/go/spanner v1.77.0
 	cloud.google.com/go/storage v1.50.0
 	firebase.google.com/go v3.13.0+incompatible
@@ -65,7 +66,6 @@ require (
 	buf.build/go/protoyaml v0.3.1 // indirect
 	buf.build/go/spdx v0.2.0 // indirect
 	cel.dev/expr v0.19.1 // indirect
-	cloud.google.com/go v0.118.3 // indirect
 	cloud.google.com/go/auth v0.15.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.7 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
