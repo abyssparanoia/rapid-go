@@ -2,18 +2,20 @@ package migration
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	constant_files "github.com/abyssparanoia/rapid-go/db/main/constants"
 	migration_files "github.com/abyssparanoia/rapid-go/db/main/migrations"
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger/logger_field"
 	"github.com/caarlos0/env/v11"
 	"github.com/pressly/goose/v3"
+	"gopkg.in/yaml.v3"
 )
 
 func RunNewFile(fileName string) {
@@ -93,6 +95,12 @@ func RunExtractSchema() {
 	}
 }
 
+// constantData represents the structure of a YAML file for a constants table.
+type constantData []*struct {
+	Table  string   `yaml:"table"`
+	Values []string `yaml:"values"`
+}
+
 func RunSyncConstants() {
 	e := &environment.DatabaseEnvironment{}
 	if err := env.Parse(e); err != nil {
@@ -103,12 +111,18 @@ func RunSyncConstants() {
 	l := logger.New()
 	ctx = logger.ToContext(ctx, l)
 
+	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
+	runSyncConstantsWithContext(ctx, databaseCli)
+}
+
+func runSyncConstantsWithContext( //nolint:gocognit
+	ctx context.Context,
+	databaseCli *database.Client,
+) {
 	logger.L(ctx).Info("start sync constants")
 
-	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
-
-	dirEntries, err := constant_files.EmbedConstants.ReadDir(".")
-	if err != nil {
+	var data constantData
+	if err := yaml.Unmarshal(constant_files.EmbedConstants, &data); err != nil {
 		panic(err)
 	}
 
@@ -120,6 +134,7 @@ func RunSyncConstants() {
 	defer func() {
 		// If there's an error, rollback the transaction, else commit it
 		if syncErr != nil {
+			logger.L(ctx).Error("Failed to sync constants", logger_field.Error(syncErr))
 			if rollbackErr := tx.Rollback(); rollbackErr != nil {
 				logger.L(ctx).Error("Failed to rollback transaction", logger_field.Error(rollbackErr))
 			}
@@ -130,12 +145,71 @@ func RunSyncConstants() {
 		}
 	}()
 
-	for _, entry := range dirEntries {
-		if strings.HasSuffix(entry.Name(), ".yaml") || strings.HasSuffix(entry.Name(), ".yml") {
-			syncErr = syncConstantByYaml(ctx, tx, entry)
-			if syncErr != nil {
-				return
+	if err := func() error {
+		for _, dst := range data {
+			// Fetch current IDs from the database
+			query := fmt.Sprintf("SELECT id FROM %s", dst.Table) //nolint:gosec
+			rows, err := tx.Query(query)                         //nolint:rowserrcheck
+			if err != nil {
+				return errors.InternalErr.Wrap(err)
 			}
+			defer rows.Close()
+
+			currentIDs := make(map[string]struct{})
+			for rows.Next() {
+				var id string
+				if err := rows.Scan(&id); err != nil {
+					return errors.InternalErr.Wrap(err)
+				}
+				currentIDs[id] = struct{}{}
+			}
+
+			// Determine IDs to insert and delete
+			newIDs := make(map[string]struct{})
+			for _, id := range dst.Values {
+				newIDs[id] = struct{}{}
+			}
+
+			var toInsert []string
+			var toDelete []string
+
+			for id := range newIDs {
+				if _, exists := currentIDs[id]; !exists {
+					toInsert = append(toInsert, id)
+				}
+			}
+			for id := range currentIDs {
+				if _, exists := newIDs[id]; !exists {
+					toDelete = append(toDelete, id)
+				}
+			}
+
+			// Perform insertions
+			if len(toInsert) > 0 {
+				for _, id := range toInsert {
+					insertQuery := fmt.Sprintf("INSERT INTO %s (id) VALUES ('%s');", dst.Table, id) //nolint:gosec
+					if _, err := tx.Exec(insertQuery); err != nil {
+						return errors.InternalErr.Wrap(err)
+					}
+				}
+			}
+
+			// Perform deletions
+			if len(toDelete) > 0 {
+				for _, id := range toDelete {
+					deleteQuery := fmt.Sprintf("DELETE FROM %s WHERE id = '%s';", dst.Table, id) //nolint:gosec
+					if _, err := tx.Exec(deleteQuery); err != nil {
+						return errors.InternalErr.Wrap(err)
+					}
+				}
+			}
+			logger.L(ctx).Info(fmt.Sprintf("Synced table %s: %d inserted, %d deleted", dst.Table, len(toInsert), len(toDelete)))
 		}
+		return nil
+	}(); err != nil {
+		syncErr = err
+		return
 	}
+
+	logger.L(ctx).Info("complete sync constants")
 }
