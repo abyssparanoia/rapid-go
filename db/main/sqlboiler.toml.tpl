@@ -25,3 +25,25 @@ boil = "snake"
   user    = "root"
   pass    = "password"
   sslmode = "false"
+
+[[types]]
+ [types.match]
+    nullable = false
+    db_type = "date"
+
+ [types.replace]
+    type = "custom_types.Date"
+
+ [types.imports]
+    third_party = ['"github.com/abyssparanoia/rapid-go/db/main/custom_types"']
+
+[[types]]
+ [types.match]
+    nullable = true
+    db_type = "date"
+
+ [types.replace]
+    type = "custom_types.NullDate"
+
+ [types.imports]
+    third_party = ['"github.com/abyssparanoia/rapid-go/db/main/custom_types"']
