@@ -1,8 +1,3 @@
-- table: admin_roles
-  values:
-    - root
-    - normal
-
 - table: content_types
   values:
     - image/jpeg
