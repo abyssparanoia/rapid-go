@@ -1581,22 +1581,39 @@ func (o *Asset) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, er
 }
 
 // InsertAll inserts all rows with the specified column values, using an executor.
-func (o AssetSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
-	ln := int64(len(o))
-	if ln == 0 {
-		return nil
+// IMPORTANT: this will calculate the widest columns from all items in the slice, be careful if you want to use default column values
+func (o AssetSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+	if len(o) == 0 {
+		return 0, nil
 	}
-	var sql string
-	vals := []interface{}{}
-	for i, row := range o {
 
-		nzDefaults := queries.NonZeroDefaultSet(assetColumnsWithDefault, row)
+	// Calculate the widest columns from all rows need to insert
+	wlCols := make(map[string]struct{}, 10)
+	for _, row := range o {
 		wl, _ := columns.InsertColumnSet(
 			assetAllColumns,
 			assetColumnsWithDefault,
 			assetColumnsWithoutDefault,
-			nzDefaults,
+			queries.NonZeroDefaultSet(assetColumnsWithDefault, row),
 		)
+		for _, col := range wl {
+			wlCols[col] = struct{}{}
+		}
+		if len(wlCols) == len(assetAllColumns) {
+			break
+		}
+	}
+	wl := make([]string, 0, len(wlCols))
+	for _, col := range assetAllColumns {
+		if _, ok := wlCols[col]; ok {
+			wl = append(wl, col)
+		}
+	}
+
+	var sql string
+	vals := []interface{}{}
+	for i, row := range o {
+
 		if i == 0 {
 			sql = "INSERT INTO `assets` " + "(`" + strings.Join(wl, "`,`") + "`)" + " VALUES "
 		}
@@ -1606,22 +1623,36 @@ func (o AssetSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor, co
 		}
 		valMapping, err := queries.BindMapping(assetType, assetMapping, wl)
 		if err != nil {
-			return err
+			return 0, err
 		}
+
 		value := reflect.Indirect(reflect.ValueOf(row))
 		vals = append(vals, queries.ValuesFromMapping(value, valMapping)...)
 	}
-	if boil.DebugMode {
-		fmt.Fprintln(boil.DebugWriter, sql)
-		fmt.Fprintln(boil.DebugWriter, vals...)
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, sql)
+		fmt.Fprintln(writer, vals)
 	}
 
-	_, err := exec.ExecContext(ctx, sql, vals...)
+	result, err := exec.ExecContext(ctx, sql, vals...)
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to insert into assets")
+		return 0, errors.Wrap(err, "dbmodel: unable to insert all from asset slice")
 	}
 
-	return nil
+	rowsAff, err := result.RowsAffected()
+	if err != nil {
+		return 0, errors.Wrap(err, "dbmodel: failed to get rows affected by insertall for assets")
+	}
+
+	return rowsAff, nil
+}
+
+// InsertIgnoreAll inserts all rows with ignoring the existing ones having the same primary key values.
+// IMPORTANT: this will calculate the widest columns from all items in the slice, be careful if you want to use default column values
+func (o AssetSlice) InsertIgnoreAll(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+	return o.UpsertAll(ctx, exec, boil.None(), columns)
 }
 
 // UpsertAll inserts or updates all rows.
@@ -1717,6 +1748,7 @@ func (o AssetSlice) upsertAllOnConflictColumns(ctx context.Context, exec boil.Co
 			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert), ","),
 			strmangle.Placeholders(false, len(insert)*len(o), 1, len(insert)),
 		)
+
 		for i, v := range update {
 			if i != 0 {
 				buf.WriteByte(',')
