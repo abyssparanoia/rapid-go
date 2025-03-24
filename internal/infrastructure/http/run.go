@@ -40,7 +40,7 @@ func Run() {
 		panic(err)
 	}
 
-	logger := logger.New()
+	logger := logger.New(e.MinLogLevel)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3000*time.Second)
 	defer cancel()
@@ -61,7 +61,7 @@ func Run() {
 
 	go func() {
 		if err = grpcServer.Serve(grpcLis); err != nil {
-			logger.Error("failed to start server", zap.Error(err))
+			logger.Error("failed to start server", zap.Error(err)) //nolint:forbidigo
 		}
 	}()
 
@@ -120,7 +120,7 @@ func Run() {
 
 	go func() {
 		if err = server.ListenAndServe(); err != http.ErrServerClosed {
-			logger.Error("[CLOSED] server closed with error", zap.Error(err))
+			logger.Error("[CLOSED] server closed with error", zap.Error(err)) //nolint:forbidigo
 		}
 	}()
 
@@ -131,7 +131,7 @@ func Run() {
 
 	err = server.Shutdown(ctx)
 	if err != nil {
-		logger.Error("failed to gracefully shutdown", zap.Error(err))
+		logger.Error("failed to gracefully shutdown", zap.Error(err)) //nolint:forbidigo
 	}
 	grpcServer.GracefulStop()
 
