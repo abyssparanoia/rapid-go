@@ -91,17 +91,17 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			return nil, st.Err()
 		}
 
-		var logResp interface{}
-		if len(fmt.Sprintf("%v", resp)) < MAX_RESPONSE_LOG_SIZE {
-			logResp = resp
-		}
+		// var logResp interface{}
+		// if len(fmt.Sprintf("%v", resp)) < MAX_RESPONSE_LOG_SIZE {
+		// 	logResp = resp
+		// }
 
 		fields = append(
 			fields,
 			zap.String("grpc.code", codes.OK.String()),
-			zap.Any("response", logResp),
+			// zap.Any("response", logResp),
 		)
-		logger.L(ctx).Info(
+		logger.L(ctx).Debug(
 			fmt.Sprintf("code: %s  rpc: %s", codes.OK.String(), info.FullMethod),
 			fields...,
 		)
@@ -112,6 +112,10 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 func extractErrInfo(err error) (string, string) {
 	if goErr := goerr.Unwrap(err); goErr != nil {
+		detail := goErr.Detail()
+		if detail != "" {
+			return goErr.Code(), fmt.Sprintf("%s: %s", goErr.Message(), detail)
+		}
 		return goErr.Code(), goErr.Message()
 	}
 	return "E100001", "An internal error has occurred"

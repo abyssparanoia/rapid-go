@@ -22,7 +22,7 @@ func NewCreateRootStaffCmd() *cobra.Command {
 				panic(err)
 			}
 
-			l := logger.New()
+			l := logger.New(e.MinLogLevel)
 			ctx = logger.ToContext(ctx, l)
 
 			d := &dependency.Dependency{}

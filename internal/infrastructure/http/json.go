@@ -1,4 +1,4 @@
-//nolint:wrapcheck
+//nolint:wrapcheck,errcheck
 package http
 
 import (

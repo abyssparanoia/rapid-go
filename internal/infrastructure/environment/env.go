@@ -1,14 +1,36 @@
 package environment
 
 type Environment struct {
-	Port        string `env:"PORT,required"`
-	Environment string `env:"ENV,required"`
+	Port        string                 `env:"PORT,required"`
+	Environment ApplicationEnvironment `env:"ENV,required"`
+	MinLogLevel MinLogLevel            `env:"MIN_LOG_LEVEL" envDefault:"info"`
 	DatabaseEnvironment
 	RedisEnvironment
 	GCPEnvironment
 	AWSEnvironment
 	SpannerEnvironment
 }
+
+type ApplicationEnvironment string
+
+const (
+	ApplicationEnvironmentLocal       ApplicationEnvironment = "local"
+	ApplicationEnvironmentDevelopment ApplicationEnvironment = "development"
+	ApplicationEnvironmentStaging     ApplicationEnvironment = "staging"
+	ApplicationEnvironmentProduction  ApplicationEnvironment = "production"
+)
+
+func (ae ApplicationEnvironment) String() string {
+	return string(ae)
+}
+
+type MinLogLevel string
+
+const (
+	MinLogLevelDebug   MinLogLevel = "debug"
+	MinLogLevelInfo    MinLogLevel = "info"
+	MinLogLevelWarning MinLogLevel = "warning"
+)
 
 type DatabaseEnvironment struct {
 	DBHost      string `env:"DB_HOST,required"`
