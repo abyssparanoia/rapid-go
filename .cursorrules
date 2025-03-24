@@ -1,0 +1,214 @@
+# Backend Application Rules
+
+Backend Application Rules
+
+## Architecture
+
+This project follows **Clean Architecture** pattern with the following layers:
+
+### Domain Layer (`internal/domain`)
+
+Core business logic and domain models.
+
+- No external dependencies allowed
+- Define interfaces for core business operations
+- Contains domain models and value objects
+
+**Implementation Rules:**
+
+- One file per domain model/interface
+- Use Go interfaces to define repository and service contracts
+- Models should be free of infrastructure concerns
+- Define clear validation rules within domain objects
+- Use value objects for immutable concepts
+
+### Use Case Layer (`internal/usecase`)
+
+Application use cases and business flows.
+
+- Depends only on domain layer
+- Implements business use cases
+- Orchestrates domain objects
+
+**Implementation Rules:**
+
+- One file per use case
+- Implement interfaces defined in domain layer
+- Focus on orchestration of domain objects
+- Keep business logic in domain layer, not use cases
+- Return domain errors, not infrastructure errors
+- Use dependency injection for domain interfaces
+
+### Infrastructure Layer (`internal/infrastructure`)
+
+External implementations and adapters.
+
+- Implements interfaces defined in domain layer
+- Contains external service integrations
+- Handles data persistence and external communications
+
+**Components:**
+
+- **gRPC**: gRPC server implementation
+- **HTTP**: HTTP handlers and middleware
+- **Cognito**: AWS Cognito integration
+- **SNS**: AWS SNS integration
+- **Google Spreadsheet**: Google Spreadsheet integration
+- Additional components can be added as needed
+
+**Implementation Rules:**
+
+- Group code by external service or functionality
+- Implement repository interfaces defined in domain layer
+- Adapt external services to domain interfaces
+- Handle infrastructure errors and convert to domain errors where appropriate
+- Keep external service configuration separate from business logic
+
+### Package Layer (`internal/pkg`)
+
+Shared utilities and common functionality.
+
+- Contains reusable components
+- Should not contain business logic
+- Can be used by any layer
+
+**Implementation Rules:**
+
+- Focus on technical concerns, not business logic
+- Keep utilities stateless where possible
+- Document public functions with GoDoc
+- Implement proper error handling
+- Write thorough unit tests for shared utilities
+
+## Data Flow
+
+1. gRPC/HTTP Request → Infrastructure Layer
+2. Infrastructure Layer → Use Case Layer
+3. Use Case Layer → Domain Layer
+4. Domain Layer → Infrastructure Layer (for persistence)
+5. Infrastructure Layer → External Services
+
+## Go Coding Guidelines
+
+### General Structure
+
+1. **File Organization**:
+
+   - One file per model/entity/interface
+   - Meaningful file names that reflect their contents
+   - Test files adjacent to implementation files with `_test.go` suffix
+
+2. **Package Structure**:
+
+   - Domain packages focus on business entities and rules
+   - Use case packages implement specific business flows
+   - Infrastructure packages implement technical concerns
+   - Pkg packages provide shared utilities
+
+3. **Naming Conventions**:
+
+   - Use camelCase for variable and function names
+   - Use PascalCase for exported identifiers (types, functions, variables)
+   - Use snake_case for file names
+   - Use descriptive, intention-revealing names
+
+4. **Code Format**:
+   - Follow standard Go formatting (gofmt)
+   - Group related imports
+   - Import domains in a specific order: standard library, then external libraries, then internal packages
+
+### Interface Design
+
+1. **Interface Definition**:
+
+   - Define interfaces in the domain layer
+   - One interface per file
+   - Focus on behavior, not implementation
+   - Use Go interfaces for dependency inversion
+   - Generate mocks for testing with mockgen
+
+2. **Function Parameters**:
+
+   - Use context as the first parameter in functions that cross package boundaries
+   - Group related parameters into structs for readability
+   - Use query objects for repository methods
+   - Maintain consistent parameter ordering across similar methods
+
+3. **Error Handling**:
+   - Return domain errors, not infrastructure errors
+   - Use descriptive error messages
+   - Include error context with `WithDetail` and `WithValue`
+   - Check errors immediately and handle appropriately
+
+### Testing
+
+1. **Test Structure**:
+
+   - Comprehensive test coverage for all business logic
+   - Use table-driven tests for multiple test cases
+   - Use mocks for external dependencies
+   - Include both positive and negative test cases
+
+2. **Mock Generation**:
+   - Use mockgen for generating mocks
+   - Use mock_repository package for repository mocks
+
+### Comments and Documentation
+
+1. **Code Documentation**:
+
+   - Use GoDoc style comments for exported functions and types
+   - Include example usage where appropriate
+   - Document non-obvious behavior
+
+2. **Function Comments**:
+   - Document parameters and return values
+   - Explain side effects
+   - Note any assumptions or preconditions
+
+### Implementation Patterns
+
+1. **Repository Pattern**:
+
+   - Define repository interfaces in domain layer
+   - Implement repositories in infrastructure layer
+   - Use query objects for filtering and pagination
+   - Include transactional support
+
+2. **Dependency Injection**:
+
+   - Constructor-based dependency injection
+   - Accept interfaces as dependencies
+   - Return interface types from constructors
+   - Keep explicit dependency declarations
+
+3. **Value Objects**:
+
+   - Use value objects for immutable concepts
+   - Implement validation within model constructors
+   - Use factory methods for complex object creation
+
+4. **Error Types**:
+   - Define domain-specific error types
+   - Use error wrapping for maintaining context
+   - Convert infrastructure errors to domain errors
+
+### Performance and Safety
+
+1. **Concurrency**:
+
+   - Pass context to all long-running operations
+   - Use appropriate concurrency primitives
+   - Avoid shared mutable state
+
+2. **Resource Management**:
+
+   - Properly close resources in defer statements
+   - Check for nil before dereferencing pointers
+   - Use context for cancellation and timeouts
+
+3. **Security**:
+   - Validate all input data
+   - Use prepared statements for database queries
+   - Avoid string concatenation in SQL queries
+   - Follow the principle of least privilege

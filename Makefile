@@ -90,6 +90,7 @@ migrate.up:
 		--script mermaid.py \
 		--output-file share/db/main/mermaid.mmd
 	docker run --rm -v $(PWD):/data:z ghcr.io/mermaid-js/mermaid-cli/mermaid-cli -i db/main/mermaid.mmd -o db/main/mermaid.svg
+	make generate.sqlboiler
 
 .PHONY: migrate.spanner.up
 migrate.spanner.up:

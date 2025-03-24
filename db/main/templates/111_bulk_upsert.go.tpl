@@ -97,6 +97,7 @@ func (o {{$alias.UpSingular}}Slice) upsertAllOnConflictColumns(ctx context.Conte
             strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert), ","),
             strmangle.Placeholders(false, len(insert)*len(o), 1, len(insert)),
         )
+
         for i, v := range update {
             if i != 0 {
                 buf.WriteByte(',')
