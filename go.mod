@@ -33,6 +33,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3
 	github.com/kauche/splanter v0.1.3
 	github.com/lestrrat-go/jwx/v2 v2.1.4
+	github.com/lestrrat-go/jwx/v3 v3.0.0
 	github.com/lucsky/cuid v1.2.1
 	github.com/pressly/goose/v3 v3.24.1
 	github.com/redis/go-redis/v9 v9.7.3
