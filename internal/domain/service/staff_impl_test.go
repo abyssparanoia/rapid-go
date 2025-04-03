@@ -18,22 +18,6 @@ import (
 
 func TestStaffService_Create(t *testing.T) {
 	t.Parallel()
-	mockPassword := "password"
-	testdata := factory.NewFactory()
-	requestTime := testdata.RequestTime
-	tenant := testdata.Tenant
-	mockID := id.Mock()
-	staff := testdata.Staff
-	staff.ID = mockID
-	staff.ImageURL = null.String{}
-	staff.Tenant = nil
-
-	claims := model.NewStaffClaims(
-		staff.AuthUID,
-		null.StringFrom(tenant.ID),
-		null.StringFrom(staff.ID),
-		nullable.TypeFrom(staff.Role),
-	)
 
 	type args struct {
 		tenantID    string
@@ -50,72 +34,94 @@ func TestStaffService_Create(t *testing.T) {
 		expectedResult error
 	}
 
-	tests := map[string]struct {
+	type testcase struct {
 		args    args
-		service func(ctx context.Context, ctrl *gomock.Controller) Staff
+		service Staff
 		want    want
-	}{
-		"success": {
-			args: args{
-				tenantID:    tenant.ID,
-				email:       staff.Email,
-				password:    mockPassword,
-				staffRole:   staff.Role,
-				displayName: staff.DisplayName,
-				imagePath:   staff.ImagePath,
-				requestTime: requestTime,
-			},
-			service: func(_ context.Context, ctrl *gomock.Controller) Staff {
-				mockStaffRepo := mock_repository.NewMockStaff(ctrl)
-				mockStaffAuthenticationRepo := mock_repository.NewMockStaffAuthentication(ctrl)
+	}
 
-				mockStaffAuthenticationRepo.EXPECT().
-					GetUserByEmail(
-						gomock.Any(),
-						staff.Email,
-					).
-					Return(&repository.StaffAuthenticationGetUserByEmailResult{}, nil)
-				mockStaffAuthenticationRepo.EXPECT().
-					CreateUser(
-						gomock.Any(),
-						repository.StaffAuthenticationCreateUserParam{
-							Email:    staff.Email,
-							Password: null.StringFrom(mockPassword),
-						},
-					).
-					Return(staff.AuthUID, nil)
-				mockStaffRepo.EXPECT().
-					Create(gomock.Any(), staff).
-					Return(nil)
-				mockStaffAuthenticationRepo.EXPECT().
-					StoreClaims(
-						gomock.Any(),
-						staff.AuthUID,
-						claims,
-					).
-					Return(nil)
+	type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
 
-				return &staffService{
+	tests := map[string]testcaseFunc{
+		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			mockPassword := "password"
+			testdata := factory.NewFactory()
+			requestTime := testdata.RequestTime
+			tenant := testdata.Tenant
+			mockID := id.Mock()
+			staff := testdata.Staff
+			staff.ID = mockID
+			staff.ImageURL = null.String{}
+			staff.Tenant = nil
+
+			claims := model.NewStaffClaims(
+				staff.AuthUID,
+				null.StringFrom(tenant.ID),
+				null.StringFrom(staff.ID),
+				nullable.TypeFrom(staff.Role),
+			)
+
+			mockStaffRepo := mock_repository.NewMockStaff(ctrl)
+			mockStaffAuthenticationRepo := mock_repository.NewMockStaffAuthentication(ctrl)
+
+			mockStaffAuthenticationRepo.EXPECT().
+				GetUserByEmail(
+					gomock.Any(),
+					staff.Email,
+				).
+				Return(&repository.StaffAuthenticationGetUserByEmailResult{}, nil)
+			mockStaffAuthenticationRepo.EXPECT().
+				CreateUser(
+					gomock.Any(),
+					repository.StaffAuthenticationCreateUserParam{
+						Email:    staff.Email,
+						Password: null.StringFrom(mockPassword),
+					},
+				).
+				Return(staff.AuthUID, nil)
+			mockStaffRepo.EXPECT().
+				Create(gomock.Any(), staff).
+				Return(nil)
+			mockStaffAuthenticationRepo.EXPECT().
+				StoreClaims(
+					gomock.Any(),
+					staff.AuthUID,
+					claims,
+				).
+				Return(nil)
+
+			return testcase{
+				args: args{
+					tenantID:    tenant.ID,
+					email:       staff.Email,
+					password:    mockPassword,
+					staffRole:   staff.Role,
+					displayName: staff.DisplayName,
+					imagePath:   staff.ImagePath,
+					requestTime: requestTime,
+				},
+				service: &staffService{
 					staffRepository:               mockStaffRepo,
 					staffAuthenticationRepository: mockStaffAuthenticationRepo,
-				}
-			},
-			want: want{
-				staff: staff,
-			},
+				},
+				want: want{
+					staff: staff,
+				},
+			}
 		},
 	}
+
 	for name, tc := range tests {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			s := tc.service(ctx, ctrl)
+			tc := tc(ctx, ctrl)
 
-			got, err := s.Create(ctx, StaffCreateParam{
+			got, err := tc.service.Create(ctx, StaffCreateParam{
 				TenantID:    tc.args.tenantID,
 				Email:       tc.args.email,
 				Password:    tc.args.password,
