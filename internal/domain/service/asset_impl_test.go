@@ -18,13 +18,6 @@ import (
 func TestAssetService_CreatePresignedURL(t *testing.T) {
 	t.Parallel()
 
-	mockID := id.Mock()
-	uuid.MockUUIDBase64()
-	testdata := factory.NewFactory()
-	asset := testdata.Asset
-	asset.ID = mockID
-	presignedURL := "presignedURL"
-	requestTime := testdata.RequestTime
 	type args struct {
 		assetType   model.AssetType
 		contentType model.ContentType
@@ -36,45 +29,58 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 		expectedResult error
 	}
 
-	tests := map[string]struct {
+	type testcase struct {
 		args    args
-		service func(ctx context.Context, ctrl *gomock.Controller) Asset
+		service Asset
 		want    want
-	}{
-		"success": {
-			args: args{
-				assetType:   asset.Type,
-				contentType: asset.ContentType,
-				requestTime: requestTime,
-			},
-			service: func(_ context.Context, ctrl *gomock.Controller) Asset {
-				mockAssetRepo := mock_repository.NewMockAsset(ctrl)
-				mockAssetPathCache := mock_cache.NewMockAssetPath(ctrl)
-				mockAssetRepo.EXPECT().
-					GenerateWritePresignedURL(
-						gomock.Any(),
-						asset.ContentType,
-						asset.Path,
-						asset.Expiration(),
-					).
-					Return(presignedURL, nil)
-				mockAssetPathCache.EXPECT().
-					Set(
-						gomock.Any(),
-						asset,
-					).
-					Return(nil)
-				return &assetService{
+	}
+
+	type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
+
+	tests := map[string]testcaseFunc{
+		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			mockID := id.Mock()
+			uuid.MockUUIDBase64()
+			testdata := factory.NewFactory()
+			asset := testdata.Asset
+			asset.ID = mockID
+			presignedURL := "presignedURL"
+			requestTime := testdata.RequestTime
+
+			mockAssetRepo := mock_repository.NewMockAsset(ctrl)
+			mockAssetPathCache := mock_cache.NewMockAssetPath(ctrl)
+			mockAssetRepo.EXPECT().
+				GenerateWritePresignedURL(
+					gomock.Any(),
+					asset.ContentType,
+					asset.Path,
+					asset.Expiration(),
+				).
+				Return(presignedURL, nil)
+			mockAssetPathCache.EXPECT().
+				Set(
+					gomock.Any(),
+					asset,
+				).
+				Return(nil)
+
+			return testcase{
+				args: args{
+					assetType:   asset.Type,
+					contentType: asset.ContentType,
+					requestTime: requestTime,
+				},
+				service: &assetService{
 					assetRepository: mockAssetRepo,
 					assetPathCache:  mockAssetPathCache,
-				}
-			},
-			want: want{
-				got: &AssetCreatePresignedURLResult{
-					AssetID:      asset.ID,
-					PresignedURL: presignedURL,
 				},
-			},
+				want: want{
+					got: &AssetCreatePresignedURLResult{
+						AssetID:      asset.ID,
+						PresignedURL: presignedURL,
+					},
+				},
+			}
 		},
 	}
 
@@ -82,13 +88,13 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			u := tc.service(ctx, ctrl)
+			tc := tc(ctx, ctrl)
 
-			got, err := u.CreatePresignedURL(ctx, tc.args.assetType, tc.args.contentType, tc.args.requestTime)
+			got, err := tc.service.CreatePresignedURL(ctx, tc.args.assetType, tc.args.contentType, tc.args.requestTime)
 			if tc.want.expectedResult == nil {
 				require.NoError(t, err)
 				require.Equal(t, tc.want.got, got)
