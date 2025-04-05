@@ -20,8 +20,6 @@ import (
 
 func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 	t.Parallel()
-	testdata := factory.NewFactory()
-	tenant := testdata.Tenant
 
 	type args struct {
 		tenantID string
@@ -32,83 +30,97 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 		expectedResult error
 	}
 
-	tests := map[string]struct {
+	type testcase struct {
 		args    args
-		usecase func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor
+		usecase AdminTenantInteractor
 		want    want
-	}{
-		"invalid argument": {
-			args: args{},
-			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
-				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-				return &adminTenantInteractor{
-					tenantRepository: mockTenantRepo,
-				}
-			},
-			want: want{
-				expectedResult: errors.RequestInvalidArgumentErr,
-			},
-		},
-		"not found": {
-			args: args{
-				tenantID: tenant.ID,
-			},
-			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
-				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-				mockTenantRepo.EXPECT().
-					Get(
-						gomock.Any(),
-						repository.GetTenantQuery{
-							ID: null.StringFrom(tenant.ID),
-							BaseGetOptions: repository.BaseGetOptions{
-								OrFail: true,
-							},
-						}).
-					Return(nil, errors.TenantNotFoundErr)
-				return &adminTenantInteractor{
-					tenantRepository: mockTenantRepo,
-				}
-			},
-			want: want{
-				expectedResult: errors.TenantNotFoundErr,
-			},
-		},
-		"success": {
-			args: args{
-				tenantID: tenant.ID,
-			},
-			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
-				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-				mockTenantRepo.EXPECT().
-					Get(gomock.Any(),
-						repository.GetTenantQuery{
-							ID: null.StringFrom(tenant.ID),
-							BaseGetOptions: repository.BaseGetOptions{
-								OrFail: true,
-							},
-						}).
-					Return(tenant, nil)
+	}
 
-				return &adminTenantInteractor{
+	type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
+
+	tests := map[string]testcaseFunc{
+		"invalid argument": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			return testcase{
+				args: args{},
+				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
-				}
-			},
-			want: want{
-				tenant: tenant,
-			},
+				},
+				want: want{
+					expectedResult: errors.RequestInvalidArgumentErr,
+				},
+			}
+		},
+		"not found": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			testdata := factory.NewFactory()
+			tenant := testdata.Tenant
+			mockID := id.Mock()
+			tenant.ID = mockID
+
+			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			mockTenantRepo.EXPECT().
+				Get(gomock.Any(),
+					repository.GetTenantQuery{
+						ID: null.StringFrom(tenant.ID),
+						BaseGetOptions: repository.BaseGetOptions{
+							OrFail: true,
+						},
+					}).
+				Return(nil, errors.TenantNotFoundErr)
+
+			return testcase{
+				args: args{
+					tenantID: tenant.ID,
+				},
+				usecase: &adminTenantInteractor{
+					tenantRepository: mockTenantRepo,
+				},
+				want: want{
+					expectedResult: errors.TenantNotFoundErr,
+				},
+			}
+		},
+		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			testdata := factory.NewFactory()
+			tenant := testdata.Tenant
+			mockID := id.Mock()
+			tenant.ID = mockID
+
+			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			mockTenantRepo.EXPECT().
+				Get(gomock.Any(),
+					repository.GetTenantQuery{
+						ID: null.StringFrom(tenant.ID),
+						BaseGetOptions: repository.BaseGetOptions{
+							OrFail: true,
+						},
+					}).
+				Return(tenant, nil)
+
+			return testcase{
+				args: args{
+					tenantID: tenant.ID,
+				},
+				usecase: &adminTenantInteractor{
+					tenantRepository: mockTenantRepo,
+				},
+				want: want{
+					tenant: tenant,
+				},
+			}
 		},
 	}
 	for name, tc := range tests {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			u := tc.usecase(ctx, ctrl)
+			tc := tc(ctx, ctrl)
 
-			got, err := u.Get(ctx, input.NewAdminGetTenant(
+			got, err := tc.usecase.Get(ctx, input.NewAdminGetTenant(
 				tc.args.tenantID,
 			))
 			if tc.want.expectedResult == nil {
@@ -123,8 +135,6 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 
 func TestAdminAdminTenantInteractor_List(t *testing.T) {
 	t.Parallel()
-	testdata := factory.NewFactory()
-	tenant := testdata.Tenant
 
 	type args struct {
 		page  uint64
@@ -136,64 +146,72 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 		expectedResult error
 	}
 
-	tests := map[string]struct {
+	type testcase struct {
 		args    args
-		usecase func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor
+		usecase AdminTenantInteractor
 		want    want
-	}{
-		"success": {
-			args: args{
-				page:  2,
-				limit: 30,
-			},
-			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
-				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-				mockTenantRepo.EXPECT().
-					List(
-						gomock.Any(),
-						repository.ListTenantsQuery{
-							BaseListOptions: repository.BaseListOptions{
-								Page:  null.Uint64From(2),
-								Limit: null.Uint64From(30),
-							},
-						}).
-					Return(model.Tenants{tenant}, nil)
+	}
 
-				mockTenantRepo.EXPECT().
-					Count(
-						gomock.Any(),
-						repository.ListTenantsQuery{
-							BaseListOptions: repository.BaseListOptions{
-								Page:  null.Uint64From(2),
-								Limit: null.Uint64From(30),
-							},
+	type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
+
+	tests := map[string]testcaseFunc{
+		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			testdata := factory.NewFactory()
+			tenant := testdata.Tenant
+
+			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			mockTenantRepo.EXPECT().
+				List(
+					gomock.Any(),
+					repository.ListTenantsQuery{
+						BaseListOptions: repository.BaseListOptions{
+							Page:  null.Uint64From(2),
+							Limit: null.Uint64From(30),
 						},
-					).
-					Return(uint64(60), nil)
+					}).
+				Return(model.Tenants{tenant}, nil)
 
-				return &adminTenantInteractor{
+			mockTenantRepo.EXPECT().
+				Count(
+					gomock.Any(),
+					repository.ListTenantsQuery{
+						BaseListOptions: repository.BaseListOptions{
+							Page:  null.Uint64From(2),
+							Limit: null.Uint64From(30),
+						},
+					},
+				).
+				Return(uint64(60), nil)
+
+			return testcase{
+				args: args{
+					page:  2,
+					limit: 30,
+				},
+				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
-				}
-			},
-			want: want{
-				output: output.NewAdminListTenants(
-					model.Tenants{tenant},
-					model.NewPagination(2, 30, 60),
-				),
-			},
+				},
+				want: want{
+					output: output.NewAdminListTenants(
+						model.Tenants{tenant},
+						model.NewPagination(2, 30, 60),
+					),
+				},
+			}
 		},
 	}
+
 	for name, tc := range tests {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			u := tc.usecase(ctx, ctrl)
+			tc := tc(ctx, ctrl)
 
-			got, err := u.List(ctx, input.NewAdminListTenants(
+			got, err := tc.usecase.List(ctx, input.NewAdminListTenants(
 				tc.args.page,
 				tc.args.limit,
 			))
@@ -209,11 +227,6 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 
 func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 	t.Parallel()
-	testdata := factory.NewFactory()
-	requestTime := testdata.RequestTime
-	tenant := testdata.Tenant
-	mockID := id.Mock()
-	tenant.ID = mockID
 
 	type args struct {
 		name        string
@@ -225,54 +238,65 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 		expectedResult error
 	}
 
-	tests := map[string]struct {
+	type testcase struct {
 		args    args
-		usecase func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor
+		usecase AdminTenantInteractor
 		want    want
-	}{
-		"invalid argument": {
-			args: args{},
-			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
-				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-				return &adminTenantInteractor{
-					tenantRepository: mockTenantRepo,
-				}
-			},
-			want: want{
-				expectedResult: errors.RequestInvalidArgumentErr,
-			},
-		},
-		"success": {
-			args: args{
-				name:        tenant.Name,
-				requestTime: requestTime,
-			},
-			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
-				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-				mockTenantRepo.EXPECT().
-					Create(gomock.Any(), tenant).
-					Return(nil)
+	}
 
-				return &adminTenantInteractor{
+	type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
+
+	tests := map[string]testcaseFunc{
+		"invalid argument": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			return testcase{
+				args: args{},
+				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
-				}
-			},
-			want: want{
-				tenant: tenant,
-			},
+				},
+				want: want{
+					expectedResult: errors.RequestInvalidArgumentErr,
+				},
+			}
+		},
+		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			testdata := factory.NewFactory()
+			requestTime := testdata.RequestTime
+			tenant := testdata.Tenant
+			mockID := id.Mock()
+			tenant.ID = mockID
+
+			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			mockTenantRepo.EXPECT().
+				Create(gomock.Any(), tenant).
+				Return(nil)
+
+			return testcase{
+				args: args{
+					name:        tenant.Name,
+					requestTime: requestTime,
+				},
+				usecase: &adminTenantInteractor{
+					tenantRepository: mockTenantRepo,
+				},
+				want: want{
+					tenant: tenant,
+				},
+			}
 		},
 	}
+
 	for name, tc := range tests {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			u := tc.usecase(ctx, ctrl)
+			tc := tc(ctx, ctrl)
 
-			got, err := u.Create(ctx, input.NewAdminCreateTenant(
+			got, err := tc.usecase.Create(ctx, input.NewAdminCreateTenant(
 				tc.args.name,
 				tc.args.requestTime,
 			))
@@ -288,9 +312,6 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 
 func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 	t.Parallel()
-	testdata := factory.NewFactory()
-	requestTime := testdata.RequestTime
-	tenant := testdata.Tenant
 
 	type args struct {
 		tenantID    string
@@ -303,63 +324,72 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 		expectedResult error
 	}
 
-	tests := map[string]struct {
+	type testcase struct {
 		args    args
-		usecase func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor
+		usecase AdminTenantInteractor
 		want    want
-	}{
-		"invalid argument": {
-			args: args{},
-			usecase: func(_ context.Context, _ *gomock.Controller) AdminTenantInteractor {
-				return &adminTenantInteractor{}
-			},
-			want: want{
-				expectedResult: errors.RequestInvalidArgumentErr,
-			},
-		},
-		"success": {
-			args: args{
-				tenantID:    tenant.ID,
-				name:        null.StringFrom(tenant.Name),
-				requestTime: requestTime,
-			},
-			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
-				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-				mockTenantRepo.EXPECT().
-					Get(gomock.Any(),
-						repository.GetTenantQuery{
-							ID: null.StringFrom(tenant.ID),
-							BaseGetOptions: repository.BaseGetOptions{
-								OrFail:    true,
-								ForUpdate: true,
-							},
-						}).
-					Return(tenant, nil)
-				mockTenantRepo.EXPECT().
-					Update(gomock.Any(), tenant).
-					Return(nil)
+	}
 
-				return &adminTenantInteractor{
+	type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
+
+	tests := map[string]testcaseFunc{
+		"invalid argument": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			return testcase{
+				args:    args{},
+				usecase: &adminTenantInteractor{},
+				want: want{
+					expectedResult: errors.RequestInvalidArgumentErr,
+				},
+			}
+		},
+		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			testdata := factory.NewFactory()
+			requestTime := testdata.RequestTime
+			tenant := testdata.Tenant
+
+			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			mockTenantRepo.EXPECT().
+				Get(gomock.Any(),
+					repository.GetTenantQuery{
+						ID: null.StringFrom(tenant.ID),
+						BaseGetOptions: repository.BaseGetOptions{
+							OrFail:    true,
+							ForUpdate: true,
+						},
+					}).
+				Return(tenant, nil)
+			mockTenantRepo.EXPECT().
+				Update(gomock.Any(), tenant).
+				Return(nil)
+
+			return testcase{
+				args: args{
+					tenantID:    tenant.ID,
+					name:        null.StringFrom(tenant.Name),
+					requestTime: requestTime,
+				},
+				usecase: &adminTenantInteractor{
 					transactable:     mock_repository.TestMockTransactable(),
 					tenantRepository: mockTenantRepo,
-				}
-			},
-			want: want{
-				tenant: tenant,
-			},
+				},
+				want: want{
+					tenant: tenant,
+				},
+			}
 		},
 	}
+
 	for name, tc := range tests {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			u := tc.usecase(ctx, ctrl)
+			tc := tc(ctx, ctrl)
 
-			got, err := u.Update(ctx, input.NewAdminUpdateTenant(
+			got, err := tc.usecase.Update(ctx, input.NewAdminUpdateTenant(
 				tc.args.tenantID,
 				tc.args.name,
 				tc.args.requestTime,
@@ -376,8 +406,6 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 
 func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 	t.Parallel()
-	testdata := factory.NewFactory()
-	tenant := testdata.Tenant
 
 	type args struct {
 		tenantID string
@@ -387,48 +415,56 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 		expectedResult error
 	}
 
-	tests := map[string]struct {
+	type testcase struct {
 		args    args
-		usecase func(ctx context.Context, ctrl *gomock.Controller) AdminTenantInteractor
+		usecase AdminTenantInteractor
 		want    want
-	}{
-		"invalid argument": {
-			args: args{},
-			usecase: func(_ context.Context, _ *gomock.Controller) AdminTenantInteractor {
-				return &adminTenantInteractor{}
-			},
-			want: want{
-				expectedResult: errors.RequestInvalidArgumentErr,
-			},
-		},
-		"success": {
-			args: args{
-				tenantID: tenant.ID,
-			},
-			usecase: func(_ context.Context, ctrl *gomock.Controller) AdminTenantInteractor {
-				mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-				mockTenantRepo.EXPECT().
-					Delete(gomock.Any(), tenant.ID).
-					Return(nil)
+	}
 
-				return &adminTenantInteractor{
+	type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
+
+	tests := map[string]testcaseFunc{
+		"invalid argument": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			return testcase{
+				args:    args{},
+				usecase: &adminTenantInteractor{},
+				want: want{
+					expectedResult: errors.RequestInvalidArgumentErr,
+				},
+			}
+		},
+		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			testdata := factory.NewFactory()
+			tenant := testdata.Tenant
+
+			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			mockTenantRepo.EXPECT().
+				Delete(gomock.Any(), tenant.ID).
+				Return(nil)
+
+			return testcase{
+				args: args{
+					tenantID: tenant.ID,
+				},
+				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
-				}
-			},
-			want: want{},
+				},
+				want: want{},
+			}
 		},
 	}
+
 	for name, tc := range tests {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			u := tc.usecase(ctx, ctrl)
+			tc := tc(ctx, ctrl)
 
-			err := u.Delete(ctx, input.NewAdminDeleteTenant(
+			err := tc.usecase.Delete(ctx, input.NewAdminDeleteTenant(
 				tc.args.tenantID,
 			))
 			if tc.want.expectedResult == nil {

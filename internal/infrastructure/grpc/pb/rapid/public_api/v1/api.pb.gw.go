@@ -40,6 +40,7 @@ func request_PublicV1Service_DeepHealthCheck_0(ctx context.Context, marshaler ru
 		protoReq DeepHealthCheckRequest
 		metadata runtime.ServerMetadata
 	)
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.DeepHealthCheck(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
