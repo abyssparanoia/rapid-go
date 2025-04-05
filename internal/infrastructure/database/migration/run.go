@@ -34,7 +34,7 @@ func RunUp() {
 		panic(err)
 	}
 
-	logger := logger.New()
+	logger := logger.New(environment.MinLogLevelInfo)
 
 	logger.Info("start database schema migration")
 
@@ -59,7 +59,7 @@ func RunExtractSchema() {
 		panic(err)
 	}
 
-	logger := logger.New()
+	logger := logger.New(environment.MinLogLevelInfo)
 
 	logger.Info("start extracting database schema")
 
@@ -108,7 +108,7 @@ func RunSyncConstants() {
 	}
 	ctx := context.Background()
 
-	l := logger.New()
+	l := logger.New(environment.MinLogLevelInfo)
 	ctx = logger.ToContext(ctx, l)
 
 	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)

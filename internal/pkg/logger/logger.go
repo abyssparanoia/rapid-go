@@ -3,6 +3,7 @@ package logger
 import (
 	"context"
 
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	"github.com/blendle/zapdriver"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -21,8 +22,24 @@ var (
 )
 
 // New ... new logger.
-func New() *zap.Logger {
-	l, err := zapdriver.NewProduction()
+func New(env environment.MinLogLevel) *zap.Logger {
+	// Set log level based on environment
+	var level zapcore.Level
+	switch env {
+	case environment.MinLogLevelDebug:
+		level = zapcore.DebugLevel
+	case environment.MinLogLevelInfo:
+		level = zapcore.InfoLevel
+	case environment.MinLogLevelWarning:
+		level = zapcore.WarnLevel
+	default:
+		level = zapcore.InfoLevel
+	}
+
+	config := zapdriver.NewProductionConfig()
+	config.Level = zap.NewAtomicLevelAt(level)
+
+	l, err := config.Build(zapdriver.WrapCore())
 	if err != nil {
 		panic(err)
 	}

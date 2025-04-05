@@ -25,7 +25,7 @@ func main() {
 		panic(err)
 	}
 
-	l := logger.New()
+	l := logger.New(e.MinLogLevel)
 	ctx = logger.ToContext(ctx, l)
 
 	spannerCli := spanner.NewClient(
