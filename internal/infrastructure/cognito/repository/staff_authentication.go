@@ -16,7 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/lestrrat-go/jwx/v2/jwk"
+	"github.com/lestrrat-go/jwx/v3/jwk"
 )
 
 type staffAuthentication struct {
@@ -65,7 +65,7 @@ func (r *staffAuthentication) VerifyIDToken(
 			return nil, errors.InvalidIDTokenErr.New().WithDetail(fmt.Sprintf("key %v not found", kid))
 		}
 		var tokenKey interface{}
-		if err := key.Raw(&tokenKey); err != nil {
+		if err := jwk.Export(key, &tokenKey); err != nil {
 			return nil, errors.InvalidIDTokenErr.New().WithDetail("failed to create token key")
 		}
 
