@@ -7,7 +7,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
-	"github.com/lestrrat-go/jwx/v2/jwk"
+	"github.com/lestrrat-go/jwx/v3/jwk"
 )
 
 func NewClient(cfg aws.Config, localhost string) *cognitoidentityprovider.Client {
