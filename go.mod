@@ -42,7 +42,7 @@ require (
 	github.com/volatiletech/sqlboiler/v4 v4.18.0
 	github.com/volatiletech/strmangle v0.0.8
 	go.mercari.io/yo v0.5.7
-	go.uber.org/mock v0.5.0
+	go.uber.org/mock v0.5.1
 	go.uber.org/zap v1.27.0
 	golang.org/x/tools v0.31.0
 	google.golang.org/api v0.228.0
