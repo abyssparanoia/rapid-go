@@ -2779,6 +2779,7 @@ modernc.org/token v1.0.1/go.mod h1:UGzOrNV1mAFSEB63lOFHIpNRUVMvYTc6yu1SMY/XTDM=
 modernc.org/z v1.5.1/go.mod h1:eWFB510QWW5Th9YGZT81s+LwvaAs3Q2yr4sP0rmLkv8=
 mvdan.cc/gofumpt v0.7.0 h1:bg91ttqXmi9y2xawvkuMXyvAA/1ZGJqYAEGjXuP0JXU=
 mvdan.cc/gofumpt v0.7.0/go.mod h1:txVFJy/Sc/mvaycET54pV8SW8gWxTlUuGHVEcncmNUo=
+mvdan.cc/gofumpt v0.8.0/go.mod h1:vEYnSzyGPmjvFkqJWtXkh79UwPWP9/HMxQdGEXZHjpg=
 mvdan.cc/unparam v0.0.0-20250301125049-0df0534333a4 h1:WjUu4yQoT5BHT1w8Zu56SP8367OuBV5jvo+4Ulppyf8=
 mvdan.cc/unparam v0.0.0-20250301125049-0df0534333a4/go.mod h1:rthT7OuvRbaGcd5ginj6dA2oLE7YNlta9qhBNNdCaLE=
 pluginrpc.com/pluginrpc v0.5.0 h1:tOQj2D35hOmvHyPu8e7ohW2/QvAnEtKscy2IJYWQ2yo=
