@@ -13,7 +13,7 @@ require (
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.51.4
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.52.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.79.2
 	github.com/blendle/zapdriver v1.3.1
 	github.com/bufbuild/buf v1.52.1
