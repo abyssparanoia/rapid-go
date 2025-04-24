@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	cloud.google.com/go v0.120.1
-	cloud.google.com/go/spanner v1.79.0
+	cloud.google.com/go/spanner v1.80.0
 	cloud.google.com/go/storage v1.52.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/goerr v0.10.0
