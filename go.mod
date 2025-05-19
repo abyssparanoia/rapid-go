@@ -3,7 +3,7 @@ module github.com/abyssparanoia/rapid-go
 go 1.24.0
 
 require (
-	cloud.google.com/go v0.121.0
+	cloud.google.com/go v0.121.1
 	cloud.google.com/go/spanner v1.81.0
 	cloud.google.com/go/storage v1.53.0
 	firebase.google.com/go v3.13.0+incompatible
@@ -45,7 +45,7 @@ require (
 	go.uber.org/mock v0.5.2
 	go.uber.org/zap v1.27.0
 	golang.org/x/tools v0.32.0
-	google.golang.org/api v0.231.0
+	google.golang.org/api v0.232.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250512202823-5a2f75b736a9
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250512202823-5a2f75b736a9
 	google.golang.org/grpc v1.72.0
