@@ -592,6 +592,8 @@ cloud.google.com/go/storage v1.52.0 h1:ROpzMW/IwipKtatA69ikxibdzQSiXJrY9f6IgBa9A
 cloud.google.com/go/storage v1.52.0/go.mod h1:4wrBAbAYUvYkbrf19ahGm4I5kDQhESSqN3CGEkMGvOY=
 cloud.google.com/go/storage v1.53.0 h1:gg0ERZwL17pJ+Cz3cD2qS60w1WMDnwcm5YPAIQBHUAw=
 cloud.google.com/go/storage v1.53.0/go.mod h1:7/eO2a/srr9ImZW9k5uufcNahT2+fPb8w5it1i5boaA=
+cloud.google.com/go/storage v1.54.0 h1:Du3XEyliAiftfyW0bwfdppm2MMLdpVAfiIg4T2nAI+0=
+cloud.google.com/go/storage v1.54.0/go.mod h1:hIi9Boe8cHxTyaeqh7KMMwKg088VblFK46C2x/BWaZE=
 cloud.google.com/go/storagetransfer v1.5.0/go.mod h1:dxNzUopWy7RQevYFHewchb29POFv3/AaBgnhqzqiK0w=
 cloud.google.com/go/storagetransfer v1.6.0/go.mod h1:y77xm4CQV/ZhFZH75PLEXY0ROiS7Gh6pSKrM8dJyg6I=
 cloud.google.com/go/storagetransfer v1.7.0/go.mod h1:8Giuj1QNb1kfLAiWM1bN6dHzfdlDAVC9rv9abHot2W4=
