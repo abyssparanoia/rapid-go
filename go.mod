@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	cloud.google.com/go v0.121.2
 	cloud.google.com/go/spanner v1.82.0
-	cloud.google.com/go/storage v1.53.0
+	cloud.google.com/go/storage v1.54.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/goerr v0.10.0
 	github.com/abyssparanoia/memeduck v1.0.3
