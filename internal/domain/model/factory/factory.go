@@ -36,7 +36,11 @@ func NewFactory() struct {
 		panic(err)
 	}
 	user.TenantID = tenant.ID
-	user.Tenant = tenant
+	user.ReadonlyReference = &struct {
+		Tenant *model.Tenant
+	}{
+		Tenant: tenant,
+	}
 	user.CreatedAt = n
 	user.UpdatedAt = n
 
