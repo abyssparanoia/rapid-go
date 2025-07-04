@@ -7,8 +7,8 @@ output = "internal/infrastructure/database/internal/dbmodel"
 pkgname = "dbmodel"
 wipe = true
 templates = [
-  "{{GOPATH}}/pkg/mod/github.com/volatiletech/sqlboiler/v4@v4.16.2/templates/main",
-  "{{GOPATH}}/pkg/mod/github.com/volatiletech/sqlboiler/v4@v4.16.2/templates/test",
+  "{{GOPATH}}/pkg/mod/github.com/volatiletech/sqlboiler/v4@v4.19.1/templates/main",
+  "{{GOPATH}}/pkg/mod/github.com/volatiletech/sqlboiler/v4@v4.19.1/templates/test",
   "db/main/templates",
 ]
 
