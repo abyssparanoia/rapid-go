@@ -13,6 +13,7 @@ import (
 type adminStaffInteractor struct {
 	transactable     repository.Transactable
 	tenantRepository repository.Tenant
+	staffRepository  repository.Staff
 	staffService     service.Staff
 	assetService     service.Asset
 }
@@ -20,12 +21,14 @@ type adminStaffInteractor struct {
 func NewAdminStaffInteractor(
 	transactable repository.Transactable,
 	tenantRepository repository.Tenant,
+	staffRepository repository.Staff,
 	staffService service.Staff,
 	assetService service.Asset,
 ) AdminStaffInteractor {
 	return &adminStaffInteractor{
 		transactable,
 		tenantRepository,
+		staffRepository,
 		staffService,
 		assetService,
 	}
@@ -75,10 +78,20 @@ func (i *adminStaffInteractor) Create(
 			return err
 		}
 
-		staff.Tenant = tenant
-
 		return nil
 	}); err != nil {
+		return nil, err
+	}
+
+	// 表示用に再取得する
+	staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
+		ID: null.StringFrom(staff.ID),
+		BaseGetOptions: repository.BaseGetOptions{
+			OrFail:  true,
+			Preload: true,
+		},
+	})
+	if err != nil {
 		return nil, err
 	}
 
