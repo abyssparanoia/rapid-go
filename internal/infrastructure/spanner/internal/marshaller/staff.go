@@ -18,8 +18,8 @@ func StaffToModel(e *dbmodel.Staff) *model.Staff {
 		CreatedAt:   e.CreatedAt,
 		UpdatedAt:   e.UpdatedAt,
 
-		ImageURL: null.String{},
-		Tenant:   nil,
+		ImageURL:          null.String{},
+		ReadonlyReference: nil,
 	}
 
 	return m

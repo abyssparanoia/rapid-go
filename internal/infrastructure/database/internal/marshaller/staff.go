@@ -18,12 +18,23 @@ func StaffToModel(e *dbmodel.Staff) *model.Staff {
 		CreatedAt:   e.CreatedAt,
 		UpdatedAt:   e.UpdatedAt,
 
-		ImageURL: null.String{},
-		Tenant:   nil,
+		ImageURL:          null.String{},
+		ReadonlyReference: nil,
 	}
 
-	if e.R != nil && e.R.Tenant != nil {
-		m.Tenant = TenantToModel(e.R.Tenant)
+	if e.R != nil {
+		var tenant *model.Tenant
+		if e.R.Tenant != nil {
+			tenant = TenantToModel(e.R.Tenant)
+		}
+		if tenant == nil {
+			return m
+		}
+		m.ReadonlyReference = &struct {
+			Tenant *model.Tenant
+		}{
+			Tenant: tenant,
+		}
 	}
 
 	return m

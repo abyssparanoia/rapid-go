@@ -10,7 +10,13 @@ func StaffToPB(m *model.Staff) *admin_apiv1.Staff {
 	if m == nil {
 		return nil
 	}
-	dst := &admin_apiv1.Staff{
+
+	var tenant *admin_apiv1.Tenant
+	if m.ReadonlyReference != nil {
+		tenant = TenantToPB(m.ReadonlyReference.Tenant)
+	}
+
+	return &admin_apiv1.Staff{
 		Id:          m.ID,
 		TenantId:    m.TenantID,
 		Role:        StaffRoleToPB(m.Role),
@@ -21,10 +27,6 @@ func StaffToPB(m *model.Staff) *admin_apiv1.Staff {
 		CreatedAt:   timestamppb.New(m.CreatedAt),
 		UpdatedAt:   timestamppb.New(m.UpdatedAt),
 
-		Tenant: nil,
+		Tenant: tenant,
 	}
-	if m.Tenant != nil {
-		dst.Tenant = TenantToPB(m.Tenant)
-	}
-	return dst
 }
