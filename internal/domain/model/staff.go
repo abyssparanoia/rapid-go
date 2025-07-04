@@ -18,8 +18,11 @@ type Staff struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 
+	ReadonlyReference *struct {
+		Tenant *Tenant
+	}
+
 	ImageURL null.String
-	Tenant   *Tenant
 }
 
 type Staffs []*Staff
@@ -44,8 +47,9 @@ func NewStaff(
 		CreatedAt:   t,
 		UpdatedAt:   t,
 
+		ReadonlyReference: nil,
+
 		ImageURL: null.String{},
-		Tenant:   nil,
 	}
 }
 
