@@ -52,7 +52,7 @@ func TestStaffService_Create(t *testing.T) {
 			staff := testdata.Staff
 			staff.ID = mockID
 			staff.ImageURL = null.String{}
-			staff.Tenant = nil
+			staff.ReadonlyReference = nil
 
 			claims := model.NewStaffClaims(
 				staff.AuthUID,
