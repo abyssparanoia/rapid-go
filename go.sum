@@ -654,6 +654,7 @@ connectrpc.com/otelconnect v0.7.2 h1:WlnwFzaW64dN06JXU+hREPUGeEzpz3Acz2ACOmN8cMI
 connectrpc.com/otelconnect v0.7.2/go.mod h1:JS7XUKfuJs2adhCnXhNHPHLz6oAaZniCJdSF00OZSew=
 dario.cat/mergo v1.0.1 h1:Ra4+bf83h2ztPIQYNP99R6m+Y7KfnARDfID+a+vLl4s=
 dario.cat/mergo v1.0.1/go.mod h1:uNxQE+84aUszobStD9th8a29P2fMDhsBdgRYvZOxGmk=
+dario.cat/mergo v1.0.2/go.mod h1:E/hbnu0NxMFBjpMIE34DRGLWqDy0g5FuKDhCb31ngxA=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
@@ -720,6 +721,7 @@ github.com/abyssparanoia/memeduck v1.0.3 h1:P8tiupAACEPGOZhlGIpAZ8QsvWtjWjPNSBjU
 github.com/abyssparanoia/memeduck v1.0.3/go.mod h1:6dWEqPe+Xxk9bWWAkbV+mTON6EppzbkLPa8PEmODebc=
 github.com/air-verse/air v1.61.7 h1:MtOZs6wYoYYXm+S4e+ORjkq9BjvyEamKJsHcvko8LrQ=
 github.com/air-verse/air v1.61.7/go.mod h1:QW4HkIASdtSnwaYof1zgJCSxd41ebvix10t5ubtm9cg=
+github.com/air-verse/air v1.62.0/go.mod h1:EO+jWuetL10tS9raffwg8WEV0t0KUeucRRaf9ii86dA=
 github.com/ajstarks/deck v0.0.0-20200831202436-30c9fc6549a9/go.mod h1:JynElWSGnm/4RlzPXRlREEwqTHAN3T56Bv2ITsFT3gY=
 github.com/ajstarks/deck/generate v0.0.0-20210309230005-c3f852c02e19/go.mod h1:T13YZdzov6OU0A1+RfKZiZN9ca6VeKdBdyDV+BY97Tk=
 github.com/ajstarks/svgo v0.0.0-20180226025133-644b8db467af/go.mod h1:K08gAheRH3/J6wwsYMMT4xOr94bZjxIelGM0+d/wbFw=
@@ -805,6 +807,7 @@ github.com/bep/goat v0.5.0 h1:S8jLXHCVy/EHIoCY+btKkmcxcXFd34a0Q63/0D4TKeA=
 github.com/bep/goat v0.5.0/go.mod h1:Md9x7gRxiWKs85yHlVTvHQw9rg86Bm+Y4SuYE8CTH7c=
 github.com/bep/godartsass/v2 v2.3.2 h1:meuc76J1C1soSCAnlnJRdGqJ5S4m6/GW+8hmOe9tOog=
 github.com/bep/godartsass/v2 v2.3.2/go.mod h1:Qe5WOS9nVJy7G0jHssXPd3c+Pqk/f7+Tm6k/vahbVgs=
+github.com/bep/godartsass/v2 v2.5.0/go.mod h1:rjsi1YSXAl/UbsGL85RLDEjRKdIKUlMQHr6ChUNYOFU=
 github.com/bep/golibsass v1.2.0 h1:nyZUkKP/0psr8nT6GR2cnmt99xS93Ji82ZD9AgOK6VI=
 github.com/bep/golibsass v1.2.0/go.mod h1:DL87K8Un/+pWUS75ggYv41bliGiolxzDKWJAq3eJ1MA=
 github.com/bep/gowebp v0.4.0 h1:QihuVnvIKbRoeBNQkN0JPMM8ClLmD6V2jMftTFwSK3Q=
@@ -912,6 +915,7 @@ github.com/cpuguy83/go-md2man/v2 v2.0.7/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6N
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/creack/pty v1.1.23 h1:4M6+isWdcStXEf15G/RbrMPOQj1dZ7HPZCGwE4kOeP0=
 github.com/creack/pty v1.1.23/go.mod h1:08sCNb52WyoAwi2QDyzUCTgcvVFhUzewun7wtTfvcwE=
+github.com/creack/pty v1.1.24/go.mod h1:08sCNb52WyoAwi2QDyzUCTgcvVFhUzewun7wtTfvcwE=
 github.com/curioswitch/go-reassign v0.3.0 h1:dh3kpQHuADL3cobV/sSGETA8DOv457dwl+fbBAhrQPs=
 github.com/curioswitch/go-reassign v0.3.0/go.mod h1:nApPCCTtqLJN/s8HfItCcKV0jIPwluBOvZP+dsJGA88=
 github.com/daixiang0/gci v0.13.6 h1:RKuEOSkGpSadkGbvZ6hJ4ddItT3cVZ9Vn9Rybk6xjl8=
@@ -991,6 +995,7 @@ github.com/friendsofgo/errors v0.9.2 h1:X6NYxef4efCBdwI7BgS820zFaN7Cphrmb+Pljdzj
 github.com/friendsofgo/errors v0.9.2/go.mod h1:yCvFW5AkDIL9qn7suHVLiI/gH228n7PC4Pn44IGoTOI=
 github.com/fsnotify/fsnotify v1.8.0 h1:dAwr6QBTBZIkG8roQaJjGof0pp0EeF+tNV7YBP3F/8M=
 github.com/fsnotify/fsnotify v1.8.0/go.mod h1:8jBTzvmWwFyi3Pb8djgCCO5IBqzKJ/Jwo8TRcHyHii0=
+github.com/fsnotify/fsnotify v1.9.0/go.mod h1:8jBTzvmWwFyi3Pb8djgCCO5IBqzKJ/Jwo8TRcHyHii0=
 github.com/fzipp/gocyclo v0.6.0 h1:lsblElZG7d3ALtGMx9fmxeTKZaLLpU8mET09yN4BBLo=
 github.com/fzipp/gocyclo v0.6.0/go.mod h1:rXPyn8fnlpa0R2csP/31uerbiVBugk5whMdlyaLkLoA=
 github.com/gabriel-vasile/mimetype v1.4.8 h1:FfZ3gj38NjllZIeJAmMhr+qKL8Wu+nOoI3GqacKw1NM=
@@ -1095,6 +1100,7 @@ github.com/gohugoio/httpcache v0.7.0 h1:ukPnn04Rgvx48JIinZvZetBfHaWE7I01JR2Q2RrQ
 github.com/gohugoio/httpcache v0.7.0/go.mod h1:fMlPrdY/vVJhAriLZnrF5QpN3BNAcoBClgAyQd+lGFI=
 github.com/gohugoio/hugo v0.139.4 h1:KvHVT234Kyd3WrjZ83TWuFT3VEf95k2ahqeTV+Z635c=
 github.com/gohugoio/hugo v0.139.4/go.mod h1:GPiZJZy5jCGiJ6Jtg0KdhE1JdpBTqhgtsbhpc1n8d5s=
+github.com/gohugoio/hugo v0.147.6/go.mod h1:Sb2COQPDPYG+tRSpePtzKytiuVDqkBivEhgIew1QbNo=
 github.com/gohugoio/hugo-goldmark-extensions/extras v0.2.0 h1:MNdY6hYCTQEekY0oAfsxWZU1CDt6iH+tMLgyMJQh/sg=
 github.com/gohugoio/hugo-goldmark-extensions/extras v0.2.0/go.mod h1:oBdBVuiZ0fv9xd8xflUgt53QxW5jOCb1S+xntcN4SKo=
 github.com/gohugoio/hugo-goldmark-extensions/passthrough v0.3.0 h1:7PY5PIJ2mck7v6R52yCFvvYHvsPMEbulgRviw3I9lP4=
@@ -1497,6 +1503,7 @@ github.com/pelletier/go-toml v1.9.5 h1:4yBQzkHv+7BHq2PQUZF3Mx0IYxG7LsP222s7Agd3v
 github.com/pelletier/go-toml v1.9.5/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pelletier/go-toml/v2 v2.2.3 h1:YmeHyLY8mFWbdkNWwpr+qIL2bEqT0o95WSdkNHvL12M=
 github.com/pelletier/go-toml/v2 v2.2.3/go.mod h1:MfCQTFTvCcUyyvvwm1+G6H/jORL20Xlb6rzQu9GuUkc=
+github.com/pelletier/go-toml/v2 v2.2.4/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/perimeterx/marshmallow v1.1.5 h1:a2LALqQ1BlHM8PZblsDdidgv1mWi1DgC2UmX50IvK2s=
 github.com/perimeterx/marshmallow v1.1.5/go.mod h1:dsXbUu8CRzfYP5a87xpp0xq9S3u0Vchtcl8we9tYaXw=
 github.com/phpdave11/gofpdf v1.4.2/go.mod h1:zpO6xFn9yxo3YLyMvW8HcKWVdbNqgIfOOp2dXMnm1mY=
@@ -1609,9 +1616,12 @@ github.com/spf13/afero v1.6.0/go.mod h1:Ai8FlHk4v/PARR026UzYexafAt9roJ7LcLMAmO6Z
 github.com/spf13/afero v1.9.2/go.mod h1:iUV7ddyEEZPO5gA3zD4fJt6iStLlL+Lg4m2cihcDf8Y=
 github.com/spf13/afero v1.12.0 h1:UcOPyRBYczmFn6yvphxkn9ZEOY65cpwGKb5mL36mrqs=
 github.com/spf13/afero v1.12.0/go.mod h1:ZTlWwG4/ahT8W7T0WQ5uYmjI9duaLQGy3Q2OAl4sk/4=
+github.com/spf13/afero v1.14.0/go.mod h1:acJQ8t0ohCGuMN3O+Pv0V0hgMxNYDlvdk+VTfyZmbYo=
 github.com/spf13/cast v1.3.1/go.mod h1:Qx5cxh0v+4UWYiBimWS+eyWzqEqokIECu5etghLkUJE=
 github.com/spf13/cast v1.7.0 h1:ntdiHjuueXFgm5nzDRdOS4yfT43P5Fnud6DH50rz/7w=
 github.com/spf13/cast v1.7.0/go.mod h1:ancEpBxwJDODSW/UG4rDrAqiKolqNNh2DX3mk86cAdo=
+github.com/spf13/cast v1.8.0 h1:gEN9K4b8Xws4EX0+a0reLmhq8moKn7ntRlQYgjPeCDk=
+github.com/spf13/cast v1.8.0/go.mod h1:ancEpBxwJDODSW/UG4rDrAqiKolqNNh2DX3mk86cAdo=
 github.com/spf13/cobra v1.9.1 h1:CXSaggrXdbHK9CF+8ywj8Amf7PBRmPCOJugH954Nnlo=
 github.com/spf13/cobra v1.9.1/go.mod h1:nDyEzZ8ogv936Cinf6g1RU9MRY64Ir93oCnqb9wxYW0=
 github.com/spf13/jwalterweatherman v1.1.0 h1:ue6voC5bR5F8YxI5S67j9i582FU4Qvo2bmqnqMYADFk=
@@ -1655,9 +1665,11 @@ github.com/tdewolff/minify/v2 v2.20.37 h1:Q97cx4STXCh1dlWDlNHZniE8BJ2EBL0+2b0n92
 github.com/tdewolff/minify/v2 v2.20.37/go.mod h1:L1VYef/jwKw6Wwyk5A+T0mBjjn3mMPgmjjA688RNsxU=
 github.com/tdewolff/parse/v2 v2.7.15 h1:hysDXtdGZIRF5UZXwpfn3ZWRbm+ru4l53/ajBRGpCTw=
 github.com/tdewolff/parse/v2 v2.7.15/go.mod h1:3FbJWZp3XT9OWVN3Hmfp0p/a08v4h8J9W1aghka0soA=
+github.com/tdewolff/parse/v2 v2.8.1/go.mod h1:Hwlni2tiVNKyzR1o6nUs4FOF07URA+JLBLd6dlIXYqo=
 github.com/tdewolff/test v1.0.11-0.20231101010635-f1265d231d52/go.mod h1:6DAvZliBAAnD7rhVgwaM7DE5/d9NMOAJ09SqYqeK4QE=
 github.com/tdewolff/test v1.0.11-0.20240106005702-7de5f7df4739 h1:IkjBCtQOOjIn03u/dMQK9g+Iw9ewps4mCl1nB8Sscbo=
 github.com/tdewolff/test v1.0.11-0.20240106005702-7de5f7df4739/go.mod h1:XPuWBzvdUzhCuxWO1ojpXsyzsA5bFoS3tO/Q3kFuTG8=
+github.com/tdewolff/test v1.0.11/go.mod h1:XPuWBzvdUzhCuxWO1ojpXsyzsA5bFoS3tO/Q3kFuTG8=
 github.com/tenntenn/modver v1.0.1 h1:2klLppGhDgzJrScMpkj9Ujy3rXPUspSjAcev9tSEBgA=
 github.com/tenntenn/modver v1.0.1/go.mod h1:bePIyQPb7UeioSRkw3Q0XeMhYZSMx9B8ePqg6SAMGH0=
 github.com/tenntenn/text/transform v0.0.0-20200319021203-7eef512accb3 h1:f+jULpRQGxTSkNYKJ51yaw6ChIqO+Je8UqsTKN/cDag=
