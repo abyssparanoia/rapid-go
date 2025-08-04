@@ -954,7 +954,7 @@ func (o *AssetType) Upsert(ctx context.Context, exec boil.ContextExecutor, updat
 	var err error
 
 	if !cached {
-		insert, ret := insertColumns.InsertColumnSet(
+		insert, _ := insertColumns.InsertColumnSet(
 			assetTypeAllColumns,
 			assetTypeColumnsWithDefault,
 			assetTypeColumnsWithoutDefault,
@@ -970,7 +970,8 @@ func (o *AssetType) Upsert(ctx context.Context, exec boil.ContextExecutor, updat
 			return errors.New("dbmodel: unable to upsert asset_types, could not build update column list")
 		}
 
-		ret = strmangle.SetComplement(ret, nzUniques)
+		ret := strmangle.SetComplement(assetTypeAllColumns, strmangle.SetIntersect(insert, update))
+
 		cache.query = buildUpsertQueryMySQL(dialect, "`asset_types`", update, insert)
 		cache.retQuery = fmt.Sprintf(
 			"SELECT %s FROM `asset_types` WHERE %s",
