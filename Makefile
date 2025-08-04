@@ -28,8 +28,11 @@ generate.buf:
 
 .PHONY: generate.sqlboiler
 generate.sqlboiler:
+	@echo "Installing sqlboiler-mysql to temporary directory..."
+	@mkdir -p ./.bin/go/bin
+	@GOPATH=$(PWD)/.bin/go go install github.com/aarondl/sqlboiler/v4/drivers/sqlboiler-mysql@latest
 	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/main/sqlboiler.toml.tpl > ./db/main/sqlboiler.toml
-	go tool github.com/aarondl/sqlboiler/v4 --config=./db/main/sqlboiler.toml mysql
+	@GOPATH=$(PWD)/.bin/go go tool github.com/aarondl/sqlboiler/v4 --config=./db/main/sqlboiler.toml mysql
 	@rm ./db/main/sqlboiler.toml
 	$(call format)
 
