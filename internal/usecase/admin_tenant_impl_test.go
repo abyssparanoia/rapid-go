@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
@@ -14,7 +15,6 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 	"github.com/stretchr/testify/require"
-	"github.com/volatiletech/null/v8"
 	"go.uber.org/mock/gomock"
 )
 

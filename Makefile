@@ -29,7 +29,7 @@ generate.buf:
 .PHONY: generate.sqlboiler
 generate.sqlboiler:
 	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/main/sqlboiler.toml.tpl > ./db/main/sqlboiler.toml
-	@go run github.com/volatiletech/sqlboiler/v4 --config=./db/main/sqlboiler.toml mysql
+	@go run github.com/aarondl/sqlboiler/v4 --config=./db/main/sqlboiler.toml mysql
 	@rm ./db/main/sqlboiler.toml
 	$(call format)
 

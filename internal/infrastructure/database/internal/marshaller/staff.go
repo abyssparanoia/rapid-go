@@ -1,9 +1,9 @@
 package marshaller
 
 import (
+	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/dbmodel"
-	"github.com/volatiletech/null/v8"
 )
 
 func StaffToModel(e *dbmodel.Staff) *model.Staff {
