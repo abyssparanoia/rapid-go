@@ -3,13 +3,13 @@ module github.com/abyssparanoia/rapid-go
 go 1.24.0
 
 tool (
+	github.com/aarondl/sqlboiler/v4
+	github.com/aarondl/sqlboiler/v4/drivers/sqlboiler-mysql
 	github.com/air-verse/air
 	github.com/bufbuild/buf/cmd/buf
 	github.com/cloudspannerecosystem/wrench
 	github.com/golangci/golangci-lint/cmd/golangci-lint
 	github.com/kauche/splanter
-	github.com/volatiletech/sqlboiler/v4
-	github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql
 	go.mercari.io/yo
 	go.uber.org/mock/mockgen
 	golang.org/x/tools/cmd/goimports
@@ -50,7 +50,6 @@ require (
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
-	go.mercari.io/yo v0.5.7
 	go.uber.org/mock v0.5.2
 	go.uber.org/zap v1.27.0
 	google.golang.org/api v0.241.0
