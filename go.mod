@@ -47,7 +47,7 @@ require (
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
-	github.com/volatiletech/null/v8 v8.1.2
+	github.com/volatiletech/null/v8 v8.1.3
 	github.com/volatiletech/sqlboiler/v4 v4.19.1
 	github.com/volatiletech/strmangle v0.0.8
 	go.uber.org/mock v0.5.2
