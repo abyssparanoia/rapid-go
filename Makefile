@@ -11,7 +11,7 @@ test:
 
 .PHONY: http.dev
 http.dev:
-	@go run github.com/air-verse/air -c .air.toml
+	go tool github.com/air-verse/air -c .air.toml
 
 .PHONY: generate.mock
 generate.mock:
@@ -21,7 +21,7 @@ generate.mock:
 .PHONY: generate.buf
 generate.buf:
 	rm -rf ./internal/infrastructure/grpc/pb
-	@go run github.com/bufbuild/buf/cmd/buf generate
+	go tool github.com/bufbuild/buf/cmd/buf generate
 	find ./schema/openapi/rapid/admin_api/v1 -type f ! -name 'api.swagger.json' -delete
 	find ./schema/openapi/rapid/public_api/v1 -type f ! -name 'api.swagger.json' -delete
 	$(call format)
@@ -29,13 +29,13 @@ generate.buf:
 .PHONY: generate.sqlboiler
 generate.sqlboiler:
 	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/main/sqlboiler.toml.tpl > ./db/main/sqlboiler.toml
-	@go run github.com/aarondl/sqlboiler/v4 --config=./db/main/sqlboiler.toml mysql
+	go tool github.com/aarondl/sqlboiler/v4 --config=./db/main/sqlboiler.toml mysql
 	@rm ./db/main/sqlboiler.toml
 	$(call format)
 
 .PHONY: generate.yo
 generate.yo:
-	@go run go.mercari.io/yo \
+	go tool go.mercari.io/yo \
 		$(SPANNER_PROJECT_ID) \
 		$(SPANNER_INSTANCE_ID) \
 		$(SPANNER_DATABASE_ID) \
@@ -48,17 +48,17 @@ generate.yo:
 
 .PHONY: lint.go
 lint.go:
-	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run
+	go tool github.com/golangci/golangci-lint/cmd/golangci-lint run
 	$(call format)
 
 .PHONY: lint.go.fix
 lint.go.fix:
-	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run --fix
+	go tool github.com/golangci/golangci-lint/cmd/golangci-lint run --fix
 	$(call format)
 
 .PHONY: lint.proto
 lint.proto:
-	@go run github.com/bufbuild/buf/cmd/buf lint
+	go tool github.com/bufbuild/buf/cmd/buf lint
 	$(call format)
 
 .PHONY: migrate.create
@@ -94,9 +94,9 @@ migrate.up:
 
 .PHONY: migrate.spanner.up
 migrate.spanner.up:
-	@go run github.com/cloudspannerecosystem/wrench migrate up --directory ./db/spanner
-	@go run github.com/cloudspannerecosystem/wrench load --directory ./db/spanner
-	@go run github.com/kauche/splanter \
+	go tool github.com/cloudspannerecosystem/wrench migrate up --directory ./db/spanner
+	go tool github.com/cloudspannerecosystem/wrench load --directory ./db/spanner
+	go tool github.com/kauche/splanter \
 		--project $(SPANNER_PROJECT_ID) \
 		--instance $(SPANNER_INSTANCE_ID) \
 		--database $(SPANNER_DATABASE_ID) \
@@ -112,8 +112,8 @@ init.local.cognito:
 
 define format
 	@go fmt ./... 
-	@go run github.com/bufbuild/buf/cmd/buf format -w
-	@go run golang.org/x/tools/cmd/goimports -w ./ 
-	@go run mvdan.cc/gofumpt -l -w .
+	go tool github.com/bufbuild/buf/cmd/buf format -w
+	go tool golang.org/x/tools/cmd/goimports -w ./ 
+	go tool mvdan.cc/gofumpt -l -w .
 	@go mod tidy
 endef
