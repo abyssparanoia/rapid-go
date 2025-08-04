@@ -3,13 +3,13 @@ module github.com/abyssparanoia/rapid-go
 go 1.24.0
 
 tool (
+	github.com/aarondl/sqlboiler/v4
+	github.com/aarondl/sqlboiler/v4/drivers/sqlboiler-mysql
 	github.com/air-verse/air
 	github.com/bufbuild/buf/cmd/buf
 	github.com/cloudspannerecosystem/wrench
 	github.com/golangci/golangci-lint/cmd/golangci-lint
 	github.com/kauche/splanter
-	github.com/volatiletech/sqlboiler/v4
-	github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql
 	go.mercari.io/yo
 	go.uber.org/mock/mockgen
 	golang.org/x/tools/cmd/goimports
@@ -21,6 +21,9 @@ require (
 	cloud.google.com/go/spanner v1.83.0
 	cloud.google.com/go/storage v1.55.0
 	firebase.google.com/go v3.13.0+incompatible
+	github.com/aarondl/null/v8 v8.1.3
+	github.com/aarondl/sqlboiler/v4 v4.19.5
+	github.com/aarondl/strmangle v0.0.9
 	github.com/abyssparanoia/goerr v0.10.0
 	github.com/abyssparanoia/memeduck v1.0.3
 	github.com/avast/retry-go v3.0.0+incompatible
@@ -47,9 +50,6 @@ require (
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
-	github.com/volatiletech/null/v8 v8.1.2
-	github.com/volatiletech/sqlboiler/v4 v4.19.1
-	github.com/volatiletech/strmangle v0.0.8
 	go.uber.org/mock v0.5.2
 	go.uber.org/zap v1.27.0
 	google.golang.org/api v0.241.0
@@ -106,6 +106,8 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.2 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/OpenPeeDeeP/depguard/v2 v2.2.1 // indirect
+	github.com/aarondl/inflect v0.0.2 // indirect
+	github.com/aarondl/randomize v0.0.2 // indirect
 	github.com/air-verse/air v1.62.0 // indirect
 	github.com/alecthomas/go-check-sumtype v0.3.1 // indirect
 	github.com/alexkohler/nakedret/v2 v2.0.5 // indirect
@@ -355,8 +357,6 @@ require (
 	github.com/uudashr/gocognit v1.2.0 // indirect
 	github.com/uudashr/iface v1.3.1 // indirect
 	github.com/vbatts/tar-split v0.12.1 // indirect
-	github.com/volatiletech/inflect v0.0.1 // indirect
-	github.com/volatiletech/randomize v0.0.1 // indirect
 	github.com/xen0n/gosmopolitan v1.3.0 // indirect
 	github.com/yagipy/maintidx v1.0.0 // indirect
 	github.com/yeya24/promlinter v0.3.0 // indirect
