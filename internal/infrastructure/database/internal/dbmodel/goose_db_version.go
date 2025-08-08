@@ -816,7 +816,7 @@ func (o *GooseDBVersion) Upsert(ctx context.Context, exec boil.ContextExecutor, 
 	var err error
 
 	if !cached {
-		insert, ret := insertColumns.InsertColumnSet(
+		insert, _ := insertColumns.InsertColumnSet(
 			gooseDBVersionAllColumns,
 			gooseDBVersionColumnsWithDefault,
 			gooseDBVersionColumnsWithoutDefault,
@@ -832,7 +832,8 @@ func (o *GooseDBVersion) Upsert(ctx context.Context, exec boil.ContextExecutor, 
 			return errors.New("dbmodel: unable to upsert goose_db_version, could not build update column list")
 		}
 
-		ret = strmangle.SetComplement(ret, nzUniques)
+		ret := strmangle.SetComplement(gooseDBVersionAllColumns, strmangle.SetIntersect(insert, update))
+
 		cache.query = buildUpsertQueryMySQL(dialect, "`goose_db_version`", update, insert)
 		cache.retQuery = fmt.Sprintf(
 			"SELECT %s FROM `goose_db_version` WHERE %s",
