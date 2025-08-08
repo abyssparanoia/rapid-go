@@ -48,12 +48,12 @@ generate.yo:
 
 .PHONY: lint.go
 lint.go:
-	go tool github.com/golangci/golangci-lint/cmd/golangci-lint run
+	go tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint run
 	$(call format)
 
 .PHONY: lint.go.fix
 lint.go.fix:
-	go tool github.com/golangci/golangci-lint/cmd/golangci-lint run --fix
+	go tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint run --fix
 	$(call format)
 
 .PHONY: lint.proto
