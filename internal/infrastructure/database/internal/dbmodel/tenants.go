@@ -953,7 +953,7 @@ func (o *Tenant) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCo
 	var err error
 
 	if !cached {
-		insert, ret := insertColumns.InsertColumnSet(
+		insert, _ := insertColumns.InsertColumnSet(
 			tenantAllColumns,
 			tenantColumnsWithDefault,
 			tenantColumnsWithoutDefault,
@@ -969,7 +969,8 @@ func (o *Tenant) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCo
 			return errors.New("dbmodel: unable to upsert tenants, could not build update column list")
 		}
 
-		ret = strmangle.SetComplement(ret, nzUniques)
+		ret := strmangle.SetComplement(tenantAllColumns, strmangle.SetIntersect(insert, update))
+
 		cache.query = buildUpsertQueryMySQL(dialect, "`tenants`", update, insert)
 		cache.retQuery = fmt.Sprintf(
 			"SELECT %s FROM `tenants` WHERE %s",
