@@ -52,7 +52,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.8
 	go.uber.org/mock v0.5.2
 	go.uber.org/zap v1.27.0
-	google.golang.org/api v0.243.0
+	google.golang.org/api v0.246.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250804133106-a7a43d27e69b
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250804133106-a7a43d27e69b
 	google.golang.org/grpc v1.74.2
