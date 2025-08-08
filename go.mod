@@ -19,7 +19,7 @@ tool (
 require (
 	cloud.google.com/go v0.121.4
 	cloud.google.com/go/spanner v1.83.0
-	cloud.google.com/go/storage v1.55.0
+	cloud.google.com/go/storage v1.56.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/goerr v0.10.0
 	github.com/abyssparanoia/memeduck v1.0.3
@@ -52,10 +52,10 @@ require (
 	github.com/volatiletech/strmangle v0.0.8
 	go.uber.org/mock v0.5.2
 	go.uber.org/zap v1.27.0
-	google.golang.org/api v0.241.0
+	google.golang.org/api v0.243.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250804133106-a7a43d27e69b
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250804133106-a7a43d27e69b
-	google.golang.org/grpc v1.73.0
+	google.golang.org/grpc v1.74.2
 	google.golang.org/protobuf v1.36.6
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -76,7 +76,7 @@ require (
 	buf.build/go/spdx v0.2.0 // indirect
 	buf.build/go/standard v0.1.0 // indirect
 	cel.dev/expr v0.24.0 // indirect
-	cloud.google.com/go/auth v0.16.2 // indirect
+	cloud.google.com/go/auth v0.16.3 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.7.0 // indirect
 	cloud.google.com/go/firestore v1.18.0 // indirect
@@ -99,8 +99,8 @@ require (
 	github.com/GaijinEntertainment/go-exhaustruct/v3 v3.3.1 // indirect
 	github.com/GoogleCloudPlatform/grpc-gcp-go/grpcgcp v1.5.3 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.27.0 // indirect
-	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.51.0 // indirect
-	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.51.0 // indirect
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.53.0 // indirect
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.53.0 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.3.1 // indirect
 	github.com/Masterminds/sprig/v3 v3.2.2 // indirect
@@ -151,7 +151,7 @@ require (
 	github.com/ckaznocha/intrange v0.3.1 // indirect
 	github.com/cloudspannerecosystem/memefish v0.0.0-20231128072053-0a1141e8eb65 // indirect
 	github.com/cloudspannerecosystem/wrench v1.10.1 // indirect
-	github.com/cncf/xds/go v0.0.0-20250326154945-ae57f3c0d45f // indirect
+	github.com/cncf/xds/go v0.0.0-20250501225837-2ac532fd4443 // indirect
 	github.com/containerd/errdefs v1.0.0 // indirect
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.17.0 // indirect
@@ -159,7 +159,7 @@ require (
 	github.com/creack/pty v1.1.24 // indirect
 	github.com/curioswitch/go-reassign v0.3.0 // indirect
 	github.com/daixiang0/gci v0.13.6 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
 	github.com/denis-tingaikin/go-header v0.5.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -297,7 +297,7 @@ require (
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/polyfloyd/go-errorlint v1.7.1 // indirect
 	github.com/prometheus/client_golang v1.20.2 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
