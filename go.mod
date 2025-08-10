@@ -18,7 +18,7 @@ tool (
 
 require (
 	cloud.google.com/go v0.121.4
-	cloud.google.com/go/spanner v1.83.0
+	cloud.google.com/go/spanner v1.84.1
 	cloud.google.com/go/storage v1.56.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/abyssparanoia/goerr v0.10.0
