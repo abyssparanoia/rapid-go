@@ -44,7 +44,7 @@ require (
 	github.com/lestrrat-go/jwx/v3 v3.0.10
 	github.com/lucsky/cuid v1.2.1
 	github.com/pressly/goose/v3 v3.24.3
-	github.com/redis/go-redis/v9 v9.12.0
+	github.com/redis/go-redis/v9 v9.12.1
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
 	github.com/volatiletech/null/v8 v8.1.2
