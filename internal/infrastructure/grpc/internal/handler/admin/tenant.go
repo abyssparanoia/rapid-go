@@ -3,11 +3,11 @@ package admin
 import (
 	"context"
 
+	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/admin/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/request_interceptor"
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
-	"github.com/volatiletech/null/v8"
 )
 
 func (h *AdminHandler) GetTenant(ctx context.Context, req *admin_apiv1.GetTenantRequest) (*admin_apiv1.GetTenantResponse, error) {
