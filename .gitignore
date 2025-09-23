@@ -15,7 +15,7 @@ schema/openapi/generated
 .terraform
 localstack/data
 localstack/cognito/.cognito
-db/main/erd/src
+db/mysql/erd/src
 db/redis/dump.rdb
 sqlboiler.toml
 test-script/test-run/*
