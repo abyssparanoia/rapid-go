@@ -75,7 +75,7 @@ linters:
         - github.com/abyssparanoia/rapid-go/internal/domain/model.*
         - github.com/abyssparanoia/rapid-go/internal/usecase/input.*
         - github.com/abyssparanoia/rapid-go/internal/usecase/output.*
-        - github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/dbmodel.*
+        - github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/internal/dbmodel.*
         - github.com/abyssparanoia/rapid-go/internal/infrastructure/spanner/internal/dbmodel.*
         - github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1.*
     forbidigo:
