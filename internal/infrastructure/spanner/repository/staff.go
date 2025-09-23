@@ -69,6 +69,20 @@ func (r *staff) Get(
 	return marshaller.StaffToModel(&dst), nil
 }
 
+func (r *staff) List(
+	ctx context.Context,
+	query repository.ListStaffQuery,
+) (model.Staffs, error) {
+	return nil, errors.InternalErr.Errorf("not implemented")
+}
+
+func (r *staff) Count(
+	ctx context.Context,
+	query repository.ListStaffQuery,
+) (uint64, error) {
+	return 0, errors.InternalErr.Errorf("not implemented")
+}
+
 func (r *staff) Create(
 	ctx context.Context,
 	staff *model.Staff,
@@ -77,4 +91,25 @@ func (r *staff) Create(
 		return errors.InternalErr.Wrap(err)
 	}
 	return nil
+}
+
+func (r *staff) BatchCreate(
+	ctx context.Context,
+	staffs model.Staffs,
+) error {
+	return errors.InternalErr.Errorf("not implemented")
+}
+
+func (r *staff) Update(
+	ctx context.Context,
+	staff *model.Staff,
+) error {
+	return errors.InternalErr.Errorf("not implemented")
+}
+
+func (r *staff) Delete(
+	ctx context.Context,
+	id string,
+) error {
+	return errors.InternalErr.Errorf("not implemented")
 }

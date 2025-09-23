@@ -64,3 +64,11 @@ func StaffToDBModel(m *model.Staff) *dbmodel.Staff {
 		L: struct{}{},
 	}
 }
+
+func StaffsToDBModel(m model.Staffs) dbmodel.StaffSlice {
+	dsts := make(dbmodel.StaffSlice, len(m))
+	for idx, e := range m {
+		dsts[idx] = StaffToDBModel(e)
+	}
+	return dsts
+}
