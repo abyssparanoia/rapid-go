@@ -7,7 +7,7 @@ import (
 	"github.com/volatiletech/null/v8"
 )
 
-//go:generate go run go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
+//go:generate go tool go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
 type StaffAuthentication interface {
 	VerifyIDToken(
 		ctx context.Context,
