@@ -142,7 +142,7 @@ func (r *staff) Delete(
 	ctx context.Context,
 	id string,
 ) error {
-	dst := marshaller.StaffToDBModel(&model.Staff{ID: id})
+	dst := marshaller.StaffToDBModel(&model.Staff{ID: id}) //nolint:exhaustruct
 	if _, err := dst.Delete(ctx, transactable.GetContextExecutor(ctx)); err != nil {
 		return errors.InternalErr.Wrap(err)
 	}
