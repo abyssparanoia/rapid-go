@@ -38,7 +38,7 @@
 ## db migration
 
 ```bash
-# create new migration files in internal/infrastructure/database/migration/files
+# create new migration files in internal/infrastructure/mysql/migration/files
 > make migrate.create
 
 # migrate up

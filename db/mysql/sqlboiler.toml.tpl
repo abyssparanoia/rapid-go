@@ -3,13 +3,13 @@ add-panic-variants = true
 no-tests = true
 no-auto-timestamps = true
 no-hooks = true
-output = "internal/infrastructure/database/internal/dbmodel"
+output = "internal/infrastructure/mysql/internal/dbmodel"
 pkgname = "dbmodel"
 wipe = true
 templates = [
   "{{GOPATH}}/pkg/mod/github.com/volatiletech/sqlboiler/v4@v4.19.1/templates/main",
   "{{GOPATH}}/pkg/mod/github.com/volatiletech/sqlboiler/v4@v4.19.1/templates/test",
-  "db/main/templates",
+  "db/mysql/templates",
 ]
 
 [struct-tag-cases]
@@ -35,7 +35,7 @@ boil = "snake"
     type = "custom_types.Date"
 
  [types.imports]
-    third_party = ['"github.com/abyssparanoia/rapid-go/db/main/custom_types"']
+    third_party = ['"github.com/abyssparanoia/rapid-go/db/mysql/custom_types"']
 
 [[types]]
  [types.match]
@@ -46,4 +46,4 @@ boil = "snake"
     type = "custom_types.NullDate"
 
  [types.imports]
-    third_party = ['"github.com/abyssparanoia/rapid-go/db/main/custom_types"']
+    third_party = ['"github.com/abyssparanoia/rapid-go/db/mysql/custom_types"']

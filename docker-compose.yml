@@ -1,9 +1,9 @@
 services:
   main-db:
-    build: ./db/main
+    build: ./db/mysql
     volumes:
-      - ./db/main/initdb.d:/docker-entrypoint-initdb.d
-      - ./db/main/data:/var/lib/mysql
+      - ./db/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/mysql/data:/var/lib/mysql
     ports:
       - "3306:3306"
     environment:

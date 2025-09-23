@@ -2,7 +2,7 @@ package marshaller
 
 import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database/internal/dbmodel"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/internal/dbmodel"
 )
 
 func AssetToModel(e *dbmodel.Asset) *model.Asset {
