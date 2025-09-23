@@ -6,11 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
-	constant_files "github.com/abyssparanoia/rapid-go/db/main/constants"
-	migration_files "github.com/abyssparanoia/rapid-go/db/main/migrations"
+	constant_files "github.com/abyssparanoia/rapid-go/db/mysql/constants"
+	migration_files "github.com/abyssparanoia/rapid-go/db/mysql/migrations"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/database"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger/logger_field"
 	"github.com/caarlos0/env/v11"
@@ -23,7 +23,7 @@ func RunNewFile(fileName string) {
 	if err != nil {
 		panic(err)
 	}
-	if err := goose.Create(nil, filepath.Join(dir, "internal/infrastructure/database/migration/files"), fileName, "sql"); err != nil {
+	if err := goose.Create(nil, filepath.Join(dir, "internal/infrastructure/mysql/migration/files"), fileName, "sql"); err != nil {
 		panic(err)
 	}
 }
@@ -38,7 +38,7 @@ func RunUp() {
 
 	logger.Info("start database schema migration")
 
-	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
+	databaseCli := mysql.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
 
 	goose.SetBaseFS(migration_files.EmbedMigrations)
 
@@ -63,7 +63,7 @@ func RunExtractSchema() {
 
 	logger.Info("start extracting database schema")
 
-	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
+	databaseCli := mysql.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
 
 	//nolint:execinquery
 	tables, err := databaseCli.DB.Query("SHOW TABLES") //nolint:rowserrcheck
@@ -72,7 +72,7 @@ func RunExtractSchema() {
 	}
 	defer tables.Close()
 
-	file, err := os.Create("./db/main/schema.sql")
+	file, err := os.Create("./db/mysql/schema.sql")
 	if err != nil {
 		panic(err)
 	}
@@ -111,13 +111,13 @@ func RunSyncConstants() {
 	l := logger.New(environment.MinLogLevelInfo)
 	ctx = logger.ToContext(ctx, l)
 
-	databaseCli := database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
+	databaseCli := mysql.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
 	runSyncConstantsWithContext(ctx, databaseCli)
 }
 
 func runSyncConstantsWithContext( //nolint:gocognit
 	ctx context.Context,
-	databaseCli *database.Client,
+	databaseCli *mysql.Client,
 ) {
 	logger.L(ctx).Info("start sync constants")
 
