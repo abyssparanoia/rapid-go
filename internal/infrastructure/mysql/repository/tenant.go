@@ -28,9 +28,7 @@ func (r *tenant) Get(
 	if query.ID.Valid {
 		mods = append(mods, dbmodel.TenantWhere.ID.EQ(query.ID.String))
 	}
-	if query.ForUpdate {
-		mods = append(mods, qm.For("UPDATE"))
-	}
+	mods = addForUpdateFromBaseGetOptions(mods, query.BaseGetOptions)
 	dbTenant, err := dbmodel.Tenants(
 		mods...,
 	).One(ctx, transactable.GetContextExecutor(ctx))
@@ -58,6 +56,7 @@ func (r *tenant) List(
 			qm.Offset(int(query.Limit.Uint64*(query.Page.Uint64-1))),
 		)
 	}
+	mods = addForUpdateFromBaseListOptions(mods, query.BaseListOptions)
 	dbTenants, err := dbmodel.Tenants(
 		mods...,
 	).All(ctx, transactable.GetContextExecutor(ctx))

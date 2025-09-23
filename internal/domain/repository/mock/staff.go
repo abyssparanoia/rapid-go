@@ -42,6 +42,35 @@ func (m *MockStaff) EXPECT() *MockStaffMockRecorder {
 	return m.recorder
 }
 
+// BatchCreate mocks base method.
+func (m *MockStaff) BatchCreate(ctx context.Context, staffs model.Staffs) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BatchCreate", ctx, staffs)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// BatchCreate indicates an expected call of BatchCreate.
+func (mr *MockStaffMockRecorder) BatchCreate(ctx, staffs any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchCreate", reflect.TypeOf((*MockStaff)(nil).BatchCreate), ctx, staffs)
+}
+
+// Count mocks base method.
+func (m *MockStaff) Count(ctx context.Context, query repository.ListStaffQuery) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, query)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockStaffMockRecorder) Count(ctx, query any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockStaff)(nil).Count), ctx, query)
+}
+
 // Create mocks base method.
 func (m *MockStaff) Create(ctx context.Context, staff *model.Staff) error {
 	m.ctrl.T.Helper()
@@ -54,6 +83,20 @@ func (m *MockStaff) Create(ctx context.Context, staff *model.Staff) error {
 func (mr *MockStaffMockRecorder) Create(ctx, staff any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockStaff)(nil).Create), ctx, staff)
+}
+
+// Delete mocks base method.
+func (m *MockStaff) Delete(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockStaffMockRecorder) Delete(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockStaff)(nil).Delete), ctx, id)
 }
 
 // Get mocks base method.
@@ -69,4 +112,33 @@ func (m *MockStaff) Get(ctx context.Context, query repository.GetStaffQuery) (*m
 func (mr *MockStaffMockRecorder) Get(ctx, query any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockStaff)(nil).Get), ctx, query)
+}
+
+// List mocks base method.
+func (m *MockStaff) List(ctx context.Context, query repository.ListStaffQuery) (model.Staffs, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "List", ctx, query)
+	ret0, _ := ret[0].(model.Staffs)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockStaffMockRecorder) List(ctx, query any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockStaff)(nil).List), ctx, query)
+}
+
+// Update mocks base method.
+func (m *MockStaff) Update(ctx context.Context, staff *model.Staff) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, staff)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockStaffMockRecorder) Update(ctx, staff any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockStaff)(nil).Update), ctx, staff)
 }
