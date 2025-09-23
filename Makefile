@@ -28,9 +28,9 @@ generate.buf:
 
 .PHONY: generate.sqlboiler
 generate.sqlboiler:
-	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/main/sqlboiler.toml.tpl > ./db/main/sqlboiler.toml
-	go tool github.com/volatiletech/sqlboiler/v4 --config=./db/main/sqlboiler.toml mysql
-	@rm ./db/main/sqlboiler.toml
+	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/mysql/sqlboiler.toml.tpl > ./db/mysql/sqlboiler.toml
+	go tool github.com/volatiletech/sqlboiler/v4 --config=./db/mysql/sqlboiler.toml mysql
+	@rm ./db/mysql/sqlboiler.toml
 	$(call format)
 
 .PHONY: generate.yo
@@ -88,8 +88,8 @@ migrate.up:
 		--command script \
 		--script-language python \
 		--script mermaid.py \
-		--output-file share/db/main/mermaid.mmd
-	docker run --rm -v $(PWD):/data:z ghcr.io/mermaid-js/mermaid-cli/mermaid-cli -i db/main/mermaid.mmd -o db/main/mermaid.svg
+		--output-file share/db/mysql/mermaid.mmd
+	docker run --rm -v $(PWD):/data:z ghcr.io/mermaid-js/mermaid-cli/mermaid-cli -i db/mysql/mermaid.mmd -o db/mysql/mermaid.svg
 	make generate.sqlboiler
 
 .PHONY: migrate.spanner.up
