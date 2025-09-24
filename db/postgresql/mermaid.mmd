@@ -1,0 +1,54 @@
+erDiagram
+
+  publicasset_types {
+    varchar id PK
+  }
+
+  publiccontent_types {
+    varchar id PK
+  }
+
+  publicgoose_db_version {
+    int4 id PK
+    int8 version_id
+    bool is_applied
+    timestamp tstamp
+  }
+
+  publicstaff_roles {
+    varchar id PK
+  }
+
+  publictenants {
+    varchar id PK
+    varchar name
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  publicassets {
+    varchar id PK
+    varchar content_type FK
+    varchar type FK
+    text path
+    timestamptz expires_at
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  publicstaffs {
+    varchar id PK
+    varchar tenant_id FK
+    varchar role FK
+    varchar auth_uid UK
+    varchar display_name
+    varchar image_path
+    varchar email UK
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  publicasset_types ||--o{ publicassets : "foreign key"
+  publiccontent_types ||--o{ publicassets : "foreign key"
+  publicstaff_roles ||--o{ publicstaffs : "foreign key"
+  publictenants ||--o{ publicstaffs : "foreign key"

@@ -23,24 +23,15 @@ import (
 
 // Staff is an object representing the database table.
 type Staff struct {
-	// id
-	ID string `boil:"id" json:"id" toml:"id" yaml:"id"`
-	// tenant_id
-	TenantID string `boil:"tenant_id" json:"tenant_id" toml:"tenant_id" yaml:"tenant_id"`
-	// role
-	Role string `boil:"role" json:"role" toml:"role" yaml:"role"`
-	// auth_uid
-	AuthUID string `boil:"auth_uid" json:"auth_uid" toml:"auth_uid" yaml:"auth_uid"`
-	// display_name
-	DisplayName string `boil:"display_name" json:"display_name" toml:"display_name" yaml:"display_name"`
-	// image_path
-	ImagePath string `boil:"image_path" json:"image_path" toml:"image_path" yaml:"image_path"`
-	// email
-	Email string `boil:"email" json:"email" toml:"email" yaml:"email"`
-	// created date
-	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	// update date
-	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	TenantID    string    `boil:"tenant_id" json:"tenant_id" toml:"tenant_id" yaml:"tenant_id"`
+	Role        string    `boil:"role" json:"role" toml:"role" yaml:"role"`
+	AuthUID     string    `boil:"auth_uid" json:"auth_uid" toml:"auth_uid" yaml:"auth_uid"`
+	DisplayName string    `boil:"display_name" json:"display_name" toml:"display_name" yaml:"display_name"`
+	ImagePath   string    `boil:"image_path" json:"image_path" toml:"image_path" yaml:"image_path"`
+	Email       string    `boil:"email" json:"email" toml:"email" yaml:"email"`
+	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt   time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
 	R *staffR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L staffL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -103,15 +94,15 @@ var StaffWhere = struct {
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpertime_Time
 }{
-	ID:          whereHelperstring{field: "`staffs`.`id`"},
-	TenantID:    whereHelperstring{field: "`staffs`.`tenant_id`"},
-	Role:        whereHelperstring{field: "`staffs`.`role`"},
-	AuthUID:     whereHelperstring{field: "`staffs`.`auth_uid`"},
-	DisplayName: whereHelperstring{field: "`staffs`.`display_name`"},
-	ImagePath:   whereHelperstring{field: "`staffs`.`image_path`"},
-	Email:       whereHelperstring{field: "`staffs`.`email`"},
-	CreatedAt:   whereHelpertime_Time{field: "`staffs`.`created_at`"},
-	UpdatedAt:   whereHelpertime_Time{field: "`staffs`.`updated_at`"},
+	ID:          whereHelperstring{field: "\"staffs\".\"id\""},
+	TenantID:    whereHelperstring{field: "\"staffs\".\"tenant_id\""},
+	Role:        whereHelperstring{field: "\"staffs\".\"role\""},
+	AuthUID:     whereHelperstring{field: "\"staffs\".\"auth_uid\""},
+	DisplayName: whereHelperstring{field: "\"staffs\".\"display_name\""},
+	ImagePath:   whereHelperstring{field: "\"staffs\".\"image_path\""},
+	Email:       whereHelperstring{field: "\"staffs\".\"email\""},
+	CreatedAt:   whereHelpertime_Time{field: "\"staffs\".\"created_at\""},
+	UpdatedAt:   whereHelpertime_Time{field: "\"staffs\".\"updated_at\""},
 }
 
 // StaffRels is where relationship names are stored.
@@ -352,7 +343,7 @@ func (q staffQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool
 // Tenant pointed to by the foreign key.
 func (o *Staff) Tenant(mods ...qm.QueryMod) tenantQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("`id` = ?", o.TenantID),
+		qm.Where("\"id\" = ?", o.TenantID),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -512,9 +503,9 @@ func (o *Staff) SetTenant(ctx context.Context, exec boil.ContextExecutor, insert
 	}
 
 	updateQuery := fmt.Sprintf(
-		"UPDATE `staffs` SET %s WHERE %s",
-		strmangle.SetParamNames("`", "`", 0, []string{"tenant_id"}),
-		strmangle.WhereClause("`", "`", 0, staffPrimaryKeyColumns),
+		"UPDATE \"staffs\" SET %s WHERE %s",
+		strmangle.SetParamNames("\"", "\"", 1, []string{"tenant_id"}),
+		strmangle.WhereClause("\"", "\"", 2, staffPrimaryKeyColumns),
 	)
 	values := []interface{}{related.ID, o.ID}
 
@@ -549,10 +540,10 @@ func (o *Staff) SetTenant(ctx context.Context, exec boil.ContextExecutor, insert
 
 // Staffs retrieves all the records using an executor.
 func Staffs(mods ...qm.QueryMod) staffQuery {
-	mods = append(mods, qm.From("`staffs`"))
+	mods = append(mods, qm.From("\"staffs\""))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"`staffs`.*"})
+		queries.SetSelect(q, []string{"\"staffs\".*"})
 	}
 
 	return staffQuery{q}
@@ -593,7 +584,7 @@ func FindStaff(ctx context.Context, exec boil.ContextExecutor, iD string, select
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `staffs` where `id`=?", sel,
+		"select %s from \"staffs\" where \"id\"=$1", sel,
 	)
 
 	q := queries.Raw(query, iD)
@@ -663,15 +654,15 @@ func (o *Staff) Insert(ctx context.Context, exec boil.ContextExecutor, columns b
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO `staffs` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO \"staffs\" (\"%s\") %%sVALUES (%s)%%s", strings.Join(wl, "\",\""), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO `staffs` () VALUES ()%s%s"
+			cache.query = "INSERT INTO \"staffs\" %sDEFAULT VALUES%s"
 		}
 
 		var queryOutput, queryReturning string
 
 		if len(cache.retMapping) != 0 {
-			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `staffs` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, staffPrimaryKeyColumns))
+			queryReturning = fmt.Sprintf(" RETURNING \"%s\"", strings.Join(returnColumns, "\",\""))
 		}
 
 		cache.query = fmt.Sprintf(cache.query, queryOutput, queryReturning)
@@ -685,33 +676,17 @@ func (o *Staff) Insert(ctx context.Context, exec boil.ContextExecutor, columns b
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	_, err = exec.ExecContext(ctx, cache.query, vals...)
+
+	if len(cache.retMapping) != 0 {
+		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
+	} else {
+		_, err = exec.ExecContext(ctx, cache.query, vals...)
+	}
 
 	if err != nil {
 		return errors.Wrap(err, "dbmodel: unable to insert into staffs")
 	}
 
-	var identifierCols []interface{}
-
-	if len(cache.retMapping) == 0 {
-		goto CacheNoHooks
-	}
-
-	identifierCols = []interface{}{
-		o.ID,
-	}
-
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, cache.retQuery)
-		fmt.Fprintln(writer, identifierCols...)
-	}
-	err = exec.QueryRowContext(ctx, cache.retQuery, identifierCols...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
-	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to populate default values for staffs")
-	}
-
-CacheNoHooks:
 	if !cached {
 		staffInsertCacheMut.Lock()
 		staffInsertCache[key] = cache
@@ -768,9 +743,9 @@ func (o *Staff) Update(ctx context.Context, exec boil.ContextExecutor, columns b
 			return 0, errors.New("dbmodel: unable to update staffs, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE `staffs` SET %s WHERE %s",
-			strmangle.SetParamNames("`", "`", 0, wl),
-			strmangle.WhereClause("`", "`", 0, staffPrimaryKeyColumns),
+		cache.query = fmt.Sprintf("UPDATE \"staffs\" SET %s WHERE %s",
+			strmangle.SetParamNames("\"", "\"", 1, wl),
+			strmangle.WhereClause("\"", "\"", len(wl)+1, staffPrimaryKeyColumns),
 		)
 		cache.valueMapping, err = queries.BindMapping(staffType, staffMapping, append(wl, staffPrimaryKeyColumns...))
 		if err != nil {
@@ -899,9 +874,9 @@ func (o StaffSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, co
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE `staffs` SET %s WHERE %s",
-		strmangle.SetParamNames("`", "`", 0, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, staffPrimaryKeyColumns, len(o)))
+	sql := fmt.Sprintf("UPDATE \"staffs\" SET %s WHERE %s",
+		strmangle.SetParamNames("\"", "\"", 1, colNames),
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), len(colNames)+1, staffPrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -921,47 +896,46 @@ func (o StaffSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, co
 }
 
 // UpsertG attempts an insert, and does an update or ignore on conflict.
-func (o *Staff) UpsertG(ctx context.Context, updateColumns, insertColumns boil.Columns) error {
-	return o.Upsert(ctx, boil.GetContextDB(), updateColumns, insertColumns)
+func (o *Staff) UpsertG(ctx context.Context, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
+	return o.Upsert(ctx, boil.GetContextDB(), updateOnConflict, conflictColumns, updateColumns, insertColumns, opts...)
 }
 
 // UpsertGP attempts an insert, and does an update or ignore on conflict. Panics on error.
-func (o *Staff) UpsertGP(ctx context.Context, updateColumns, insertColumns boil.Columns) {
-	if err := o.Upsert(ctx, boil.GetContextDB(), updateColumns, insertColumns); err != nil {
+func (o *Staff) UpsertGP(ctx context.Context, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) {
+	if err := o.Upsert(ctx, boil.GetContextDB(), updateOnConflict, conflictColumns, updateColumns, insertColumns, opts...); err != nil {
 		panic(boil.WrapErr(err))
 	}
 }
 
 // UpsertP attempts an insert using an executor, and does an update or ignore on conflict.
 // UpsertP panics on error.
-func (o *Staff) UpsertP(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) {
-	if err := o.Upsert(ctx, exec, updateColumns, insertColumns); err != nil {
+func (o *Staff) UpsertP(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) {
+	if err := o.Upsert(ctx, exec, updateOnConflict, conflictColumns, updateColumns, insertColumns, opts...); err != nil {
 		panic(boil.WrapErr(err))
 	}
 }
 
-var mySQLStaffUniqueColumns = []string{
-	"id",
-	"auth_uid",
-	"email",
-}
-
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *Staff) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
+func (o *Staff) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
 	if o == nil {
 		return errors.New("dbmodel: no staffs provided for upsert")
 	}
 
 	nzDefaults := queries.NonZeroDefaultSet(staffColumnsWithDefault, o)
-	nzUniques := queries.NonZeroDefaultSet(mySQLStaffUniqueColumns, o)
-
-	if len(nzUniques) == 0 {
-		return errors.New("cannot upsert with a table that cannot conflict on a unique column")
-	}
 
 	// Build cache key in-line uglily - mysql vs psql problems
 	buf := strmangle.GetBuffer()
+	if updateOnConflict {
+		buf.WriteByte('t')
+	} else {
+		buf.WriteByte('f')
+	}
+	buf.WriteByte('.')
+	for _, c := range conflictColumns {
+		buf.WriteString(c)
+	}
+	buf.WriteByte('.')
 	buf.WriteString(strconv.Itoa(updateColumns.Kind))
 	for _, c := range updateColumns.Cols {
 		buf.WriteString(c)
@@ -973,10 +947,6 @@ func (o *Staff) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCol
 	}
 	buf.WriteByte('.')
 	for _, c := range nzDefaults {
-		buf.WriteString(c)
-	}
-	buf.WriteByte('.')
-	for _, c := range nzUniques {
 		buf.WriteString(c)
 	}
 	key := buf.String()
@@ -1001,18 +971,22 @@ func (o *Staff) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCol
 			staffPrimaryKeyColumns,
 		)
 
-		if !updateColumns.IsNone() && len(update) == 0 {
+		if updateOnConflict && len(update) == 0 {
 			return errors.New("dbmodel: unable to upsert staffs, could not build update column list")
 		}
 
 		ret := strmangle.SetComplement(staffAllColumns, strmangle.SetIntersect(insert, update))
 
-		cache.query = buildUpsertQueryMySQL(dialect, "`staffs`", update, insert)
-		cache.retQuery = fmt.Sprintf(
-			"SELECT %s FROM `staffs` WHERE %s",
-			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, ret), ","),
-			strmangle.WhereClause("`", "`", 0, nzUniques),
-		)
+		conflict := conflictColumns
+		if len(conflict) == 0 && updateOnConflict && len(update) != 0 {
+			if len(staffPrimaryKeyColumns) == 0 {
+				return errors.New("dbmodel: unable to upsert staffs, could not build conflict column list")
+			}
+
+			conflict = make([]string, len(staffPrimaryKeyColumns))
+			copy(conflict, staffPrimaryKeyColumns)
+		}
+		cache.query = buildUpsertQueryPostgres(dialect, "\"staffs\"", updateOnConflict, ret, update, conflict, insert, opts...)
 
 		cache.valueMapping, err = queries.BindMapping(staffType, staffMapping, insert)
 		if err != nil {
@@ -1038,36 +1012,18 @@ func (o *Staff) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCol
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	_, err = exec.ExecContext(ctx, cache.query, vals...)
-
+	if len(cache.retMapping) != 0 {
+		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(returns...)
+		if errors.Is(err, sql.ErrNoRows) {
+			err = nil // Postgres doesn't return anything when there's no update
+		}
+	} else {
+		_, err = exec.ExecContext(ctx, cache.query, vals...)
+	}
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to upsert for staffs")
+		return errors.Wrap(err, "dbmodel: unable to upsert staffs")
 	}
 
-	var uniqueMap []uint64
-	var nzUniqueCols []interface{}
-
-	if len(cache.retMapping) == 0 {
-		goto CacheNoHooks
-	}
-
-	uniqueMap, err = queries.BindMapping(staffType, staffMapping, nzUniques)
-	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to retrieve unique values for staffs")
-	}
-	nzUniqueCols = queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uniqueMap)
-
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, cache.retQuery)
-		fmt.Fprintln(writer, nzUniqueCols...)
-	}
-	err = exec.QueryRowContext(ctx, cache.retQuery, nzUniqueCols...).Scan(returns...)
-	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to populate default values for staffs")
-	}
-
-CacheNoHooks:
 	if !cached {
 		staffUpsertCacheMut.Lock()
 		staffUpsertCache[key] = cache
@@ -1115,7 +1071,7 @@ func (o *Staff) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, e
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), staffPrimaryKeyMapping)
-	sql := "DELETE FROM `staffs` WHERE `id`=?"
+	sql := "DELETE FROM \"staffs\" WHERE \"id\"=$1"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1217,8 +1173,8 @@ func (o StaffSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (i
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM `staffs` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, staffPrimaryKeyColumns, len(o))
+	sql := "DELETE FROM \"staffs\" WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, staffPrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1315,8 +1271,8 @@ func (o *StaffSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) e
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT `staffs`.* FROM `staffs` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, staffPrimaryKeyColumns, len(*o))
+	sql := "SELECT \"staffs\".* FROM \"staffs\" WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, staffPrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
@@ -1358,7 +1314,7 @@ func StaffExistsGP(ctx context.Context, iD string) bool {
 // StaffExists checks if the Staff row exists.
 func StaffExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `staffs` where `id`=? limit 1)"
+	sql := "select exists(select 1 from \"staffs\" where \"id\"=$1 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1415,7 +1371,7 @@ func (o StaffSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor, co
 	for i, row := range o {
 
 		if i == 0 {
-			sql = "INSERT INTO `staffs` " + "(`" + strings.Join(wl, "`,`") + "`)" + " VALUES "
+			sql = "INSERT INTO \"staffs\" " + "(\"" + strings.Join(wl, "\",\"") + "\")" + " VALUES "
 		}
 		sql += strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), len(vals)+1, len(wl))
 		if i != len(o)-1 {
@@ -1465,8 +1421,8 @@ func (o StaffSlice) UpsertAll(ctx context.Context, exec boil.ContextExecutor, up
 
 // upsertAllOnConflictColumns upserts multiple rows with passing custom conflict columns to allow bypassing
 // single column conflict check (see bug https://github.com/volatiletech/sqlboiler/issues/328).
-// SQLBoiler only checks column conflict on single column only which is not correct as MySQL PK or UNIQUE index
-// can include multiple columns.
+// SQLBoiler only checks column conflict on a single column which is insufficient when a UNIQUE index
+// spans multiple columns.
 // This function allows passing multiple conflict columns, but it cannot check whether they are correct or not.
 // So use it at your own risk.
 func (o StaffSlice) UpsertAllOnConflictColumns(ctx context.Context, exec boil.ContextExecutor, conflictColumns []string, updateColumns, insertColumns boil.Columns) (int64, error) {
@@ -1478,31 +1434,9 @@ func (o StaffSlice) upsertAllOnConflictColumns(ctx context.Context, exec boil.Co
 		return 0, nil
 	}
 
-	checkNZUniques := len(conflictColumns) == 0
-	if len(conflictColumns) > 0 {
-		mapConflictColumns := make(map[string]struct{}, len(conflictColumns))
-		for _, col := range conflictColumns {
-			for _, existCol := range staffAllColumns {
-				if col == existCol {
-					mapConflictColumns[col] = struct{}{}
-					break
-				}
-			}
-		}
-		if len(mapConflictColumns) <= 1 {
-			return 0, errors.New("custom conflict columns must be 2 columns or more")
-		}
-	}
-
 	// Calculate the widest columns from all rows need to upsert
 	insertCols := make(map[string]struct{}, 10)
 	for _, row := range o {
-		if checkNZUniques {
-			nzUniques := queries.NonZeroDefaultSet(mySQLStaffUniqueColumns, row)
-			if len(nzUniques) == 0 {
-				return 0, errors.New("cannot upsert with a table that cannot conflict on a unique column")
-			}
-		}
 		insert, _ := insertColumns.InsertColumnSet(
 			staffAllColumns,
 			staffColumnsWithDefault,
@@ -1522,42 +1456,63 @@ func (o StaffSlice) upsertAllOnConflictColumns(ctx context.Context, exec boil.Co
 			insert = append(insert, col)
 		}
 	}
+	if len(insert) == 0 {
+		return 0, errors.New("dbmodel: unable to upsert staffs, could not build insert column list")
+	}
 
 	update := updateColumns.UpdateColumnSet(
 		staffAllColumns,
 		staffPrimaryKeyColumns,
 	)
+
+	updateRequired := !updateColumns.IsNone() && len(update) != 0
 	if !updateColumns.IsNone() && len(update) == 0 {
 		return 0, errors.New("dbmodel: unable to upsert staffs, could not build update column list")
 	}
 
+	conflict := conflictColumns
+	if len(conflict) == 0 && updateRequired {
+		conflict = make([]string, len(staffPrimaryKeyColumns))
+		copy(conflict, staffPrimaryKeyColumns)
+	}
+	if updateRequired && len(conflict) == 0 {
+		return 0, errors.New("dbmodel: unable to upsert staffs, could not build conflict column list")
+	}
+
+	quotedInsert := strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert)
+	placeholders := strmangle.Placeholders(dialect.UseIndexPlaceholders, len(insert)*len(o), 1, len(insert))
+
 	buf := strmangle.GetBuffer()
 	defer strmangle.PutBuffer(buf)
 
-	if len(update) == 0 {
-		fmt.Fprintf(
-			buf,
-			"INSERT IGNORE INTO `staffs`(%s) VALUES %s",
-			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert), ","),
-			strmangle.Placeholders(false, len(insert)*len(o), 1, len(insert)),
-		)
-	} else {
-		fmt.Fprintf(
-			buf,
-			"INSERT INTO `staffs`(%s) VALUES %s ON DUPLICATE KEY UPDATE ",
-			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert), ","),
-			strmangle.Placeholders(false, len(insert)*len(o), 1, len(insert)),
-		)
+	fmt.Fprintf(
+		buf,
+		"INSERT INTO \"staffs\"(%s) VALUES %s",
+		strings.Join(quotedInsert, ","),
+		placeholders,
+	)
 
-		for i, v := range update {
+	buf.WriteString(" ON CONFLICT")
+	if len(conflict) != 0 {
+		quotedConflict := strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, conflict)
+		buf.WriteString(" (")
+		buf.WriteString(strings.Join(quotedConflict, ","))
+		buf.WriteString(")")
+	}
+	buf.WriteByte(' ')
+
+	if !updateRequired {
+		buf.WriteString("DO NOTHING")
+	} else {
+		buf.WriteString("DO UPDATE SET ")
+		for i, col := range update {
 			if i != 0 {
 				buf.WriteByte(',')
 			}
-			quoted := strmangle.IdentQuote(dialect.LQ, dialect.RQ, v)
+			quoted := strmangle.IdentQuote(dialect.LQ, dialect.RQ, col)
 			buf.WriteString(quoted)
-			buf.WriteString(" = VALUES(")
+			buf.WriteString(" = EXCLUDED.")
 			buf.WriteString(quoted)
-			buf.WriteByte(')')
 		}
 	}
 

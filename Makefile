@@ -26,11 +26,18 @@ generate.buf:
 	find ./schema/openapi/rapid/public_api/v1 -type f ! -name 'api.swagger.json' -delete
 	$(call format)
 
-.PHONY: generate.sqlboiler
-generate.sqlboiler:
+.PHONY: generate.sqlboiler.mysql
+generate.sqlboiler.mysql:
 	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/mysql/sqlboiler.toml.tpl > ./db/mysql/sqlboiler.toml
 	go tool github.com/volatiletech/sqlboiler/v4 --config=./db/mysql/sqlboiler.toml mysql
 	@rm ./db/mysql/sqlboiler.toml
+	$(call format)
+
+.PHONY: generate.sqlboiler.postgresql
+generate.sqlboiler.postgresql:
+	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/postgresql/sqlboiler.toml.tpl > ./db/postgresql/sqlboiler.toml
+	go tool github.com/volatiletech/sqlboiler/v4 --config=./db/postgresql/sqlboiler.toml psql
+	@rm ./db/postgresql/sqlboiler.toml
 	$(call format)
 
 .PHONY: generate.yo
@@ -72,25 +79,10 @@ migrate.up:
 	.bin/app-cli schema-migration database up
 	.bin/app-cli schema-migration database sync-constants
 	.bin/app-cli schema-migration database extract-schema
-	docker run \
-		--mount type=bind,source=$(PWD),target=/home/schcrwlr/share \
-		--rm -it \
-		--network rapid-go_rapid-go-network \
-		schemacrawler/schemacrawler \
-		/opt/schemacrawler/bin/schemacrawler.sh \
-		--server mysql \
-		--host main-db \
-		--port 3306 \
-		--user root \
-		--password=password \
-		--database maindb \
-		--info-level standard \
-		--command script \
-		--script-language python \
-		--script mermaid.py \
-		--output-file share/db/mysql/mermaid.mmd
-	docker run --rm -v $(PWD):/data:z ghcr.io/mermaid-js/mermaid-cli/mermaid-cli -i db/mysql/mermaid.mmd -o db/mysql/mermaid.svg
-	make generate.sqlboiler
+	make generate.mermaid.mysql
+	make generate.sqlboiler.mysql
+	# make generate.mermaid.postgresql
+	# make generate.sqlboiler.postgresql
 
 .PHONY: migrate.spanner.up
 migrate.spanner.up:
@@ -101,6 +93,48 @@ migrate.spanner.up:
 		--instance $(SPANNER_INSTANCE_ID) \
 		--database $(SPANNER_DATABASE_ID) \
 		--directory ./db/spanner/masterdata
+
+.PHONY: generate.mermaid.mysql
+generate.mermaid.mysql:
+	docker run \
+		--mount type=bind,source=$(PWD),target=/home/schcrwlr/share \
+		--rm -it \
+		--network rapid-go_rapid-go-network \
+		schemacrawler/schemacrawler \
+		/opt/schemacrawler/bin/schemacrawler.sh \
+		--server mysql \
+		--host mysql \
+		--port 3306 \
+		--user root \
+		--password=password \
+		--database maindb \
+		--info-level standard \
+		--command script \
+		--script-language python \
+		--script mermaid.py \
+		--output-file share/db/mysql/mermaid.mmd
+	docker run --rm -v $(PWD):/data:z ghcr.io/mermaid-js/mermaid-cli/mermaid-cli -i db/mysql/mermaid.mmd -o db/mysql/mermaid.svg
+
+.PHONY: generate.mermaid.postgresql
+generate.mermaid.postgresql:
+	docker run \
+		--mount type=bind,source=$(PWD),target=/home/schcrwlr/share \
+		--rm -it \
+		--network rapid-go_rapid-go-network \
+		schemacrawler/schemacrawler \
+		/opt/schemacrawler/bin/schemacrawler.sh \
+		--server postgresql \
+		--host postgresql \
+		--port 5432 \
+		--user postgres \
+		--password=postgres \
+		--database maindb \
+		--info-level standard \
+		--command script \
+		--script-language python \
+		--script mermaid.py \
+		--output-file share/db/postgresql/mermaid.mmd
+	docker run --rm -v $(PWD):/data:z ghcr.io/mermaid-js/mermaid-cli/mermaid-cli -i db/postgresql/mermaid.mmd -o db/postgresql/mermaid.svg
 
 .PHONY: format
 format:

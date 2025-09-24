@@ -3,12 +3,5 @@
 
 package dbmodel
 
-var TableNames = struct {
-	Assets  string
-	Staffs  string
-	Tenants string
-}{
-	Assets:  "assets",
-	Staffs:  "staffs",
-	Tenants: "tenants",
-}
+var ViewNames = struct {
+}{}

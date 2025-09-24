@@ -23,20 +23,13 @@ import (
 
 // Asset is an object representing the database table.
 type Asset struct {
-	// id
-	ID string `boil:"id" json:"id" toml:"id" yaml:"id"`
-	// content_type
-	ContentType string `boil:"content_type" json:"content_type" toml:"content_type" yaml:"content_type"`
-	// type
-	Type string `boil:"type" json:"type" toml:"type" yaml:"type"`
-	// path
-	Path string `boil:"path" json:"path" toml:"path" yaml:"path"`
-	// expires_at
-	ExpiresAt time.Time `boil:"expires_at" json:"expires_at" toml:"expires_at" yaml:"expires_at"`
-	// created date
-	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	// update date
-	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	ContentType string    `boil:"content_type" json:"content_type" toml:"content_type" yaml:"content_type"`
+	Type        string    `boil:"type" json:"type" toml:"type" yaml:"type"`
+	Path        string    `boil:"path" json:"path" toml:"path" yaml:"path"`
+	ExpiresAt   time.Time `boil:"expires_at" json:"expires_at" toml:"expires_at" yaml:"expires_at"`
+	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt   time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
 	R *assetR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L assetL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -82,14 +75,20 @@ var AssetTableColumns = struct {
 
 type whereHelperstring struct{ field string }
 
-func (w whereHelperstring) EQ(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperstring) NEQ(x string) qm.QueryMod   { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperstring) LT(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperstring) LTE(x string) qm.QueryMod   { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperstring) GT(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperstring) GTE(x string) qm.QueryMod   { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperstring) LIKE(x string) qm.QueryMod  { return qm.Where(w.field+" LIKE ?", x) }
-func (w whereHelperstring) NLIKE(x string) qm.QueryMod { return qm.Where(w.field+" NOT LIKE ?", x) }
+func (w whereHelperstring) EQ(x string) qm.QueryMod      { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperstring) NEQ(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperstring) LT(x string) qm.QueryMod      { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperstring) LTE(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperstring) GT(x string) qm.QueryMod      { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperstring) GTE(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+func (w whereHelperstring) LIKE(x string) qm.QueryMod    { return qm.Where(w.field+" LIKE ?", x) }
+func (w whereHelperstring) NLIKE(x string) qm.QueryMod   { return qm.Where(w.field+" NOT LIKE ?", x) }
+func (w whereHelperstring) ILIKE(x string) qm.QueryMod   { return qm.Where(w.field+" ILIKE ?", x) }
+func (w whereHelperstring) NILIKE(x string) qm.QueryMod  { return qm.Where(w.field+" NOT ILIKE ?", x) }
+func (w whereHelperstring) SIMILAR(x string) qm.QueryMod { return qm.Where(w.field+" SIMILAR TO ?", x) }
+func (w whereHelperstring) NSIMILAR(x string) qm.QueryMod {
+	return qm.Where(w.field+" NOT SIMILAR TO ?", x)
+}
 func (w whereHelperstring) IN(slice []string) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
@@ -135,13 +134,13 @@ var AssetWhere = struct {
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpertime_Time
 }{
-	ID:          whereHelperstring{field: "`assets`.`id`"},
-	ContentType: whereHelperstring{field: "`assets`.`content_type`"},
-	Type:        whereHelperstring{field: "`assets`.`type`"},
-	Path:        whereHelperstring{field: "`assets`.`path`"},
-	ExpiresAt:   whereHelpertime_Time{field: "`assets`.`expires_at`"},
-	CreatedAt:   whereHelpertime_Time{field: "`assets`.`created_at`"},
-	UpdatedAt:   whereHelpertime_Time{field: "`assets`.`updated_at`"},
+	ID:          whereHelperstring{field: "\"assets\".\"id\""},
+	ContentType: whereHelperstring{field: "\"assets\".\"content_type\""},
+	Type:        whereHelperstring{field: "\"assets\".\"type\""},
+	Path:        whereHelperstring{field: "\"assets\".\"path\""},
+	ExpiresAt:   whereHelpertime_Time{field: "\"assets\".\"expires_at\""},
+	CreatedAt:   whereHelpertime_Time{field: "\"assets\".\"created_at\""},
+	UpdatedAt:   whereHelpertime_Time{field: "\"assets\".\"updated_at\""},
 }
 
 // AssetRels is where relationship names are stored.
@@ -361,10 +360,10 @@ func (q assetQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool
 
 // Assets retrieves all the records using an executor.
 func Assets(mods ...qm.QueryMod) assetQuery {
-	mods = append(mods, qm.From("`assets`"))
+	mods = append(mods, qm.From("\"assets\""))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"`assets`.*"})
+		queries.SetSelect(q, []string{"\"assets\".*"})
 	}
 
 	return assetQuery{q}
@@ -405,7 +404,7 @@ func FindAsset(ctx context.Context, exec boil.ContextExecutor, iD string, select
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `assets` where `id`=?", sel,
+		"select %s from \"assets\" where \"id\"=$1", sel,
 	)
 
 	q := queries.Raw(query, iD)
@@ -475,15 +474,15 @@ func (o *Asset) Insert(ctx context.Context, exec boil.ContextExecutor, columns b
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO `assets` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO \"assets\" (\"%s\") %%sVALUES (%s)%%s", strings.Join(wl, "\",\""), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO `assets` () VALUES ()%s%s"
+			cache.query = "INSERT INTO \"assets\" %sDEFAULT VALUES%s"
 		}
 
 		var queryOutput, queryReturning string
 
 		if len(cache.retMapping) != 0 {
-			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `assets` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, assetPrimaryKeyColumns))
+			queryReturning = fmt.Sprintf(" RETURNING \"%s\"", strings.Join(returnColumns, "\",\""))
 		}
 
 		cache.query = fmt.Sprintf(cache.query, queryOutput, queryReturning)
@@ -497,33 +496,17 @@ func (o *Asset) Insert(ctx context.Context, exec boil.ContextExecutor, columns b
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	_, err = exec.ExecContext(ctx, cache.query, vals...)
+
+	if len(cache.retMapping) != 0 {
+		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
+	} else {
+		_, err = exec.ExecContext(ctx, cache.query, vals...)
+	}
 
 	if err != nil {
 		return errors.Wrap(err, "dbmodel: unable to insert into assets")
 	}
 
-	var identifierCols []interface{}
-
-	if len(cache.retMapping) == 0 {
-		goto CacheNoHooks
-	}
-
-	identifierCols = []interface{}{
-		o.ID,
-	}
-
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, cache.retQuery)
-		fmt.Fprintln(writer, identifierCols...)
-	}
-	err = exec.QueryRowContext(ctx, cache.retQuery, identifierCols...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
-	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to populate default values for assets")
-	}
-
-CacheNoHooks:
 	if !cached {
 		assetInsertCacheMut.Lock()
 		assetInsertCache[key] = cache
@@ -580,9 +563,9 @@ func (o *Asset) Update(ctx context.Context, exec boil.ContextExecutor, columns b
 			return 0, errors.New("dbmodel: unable to update assets, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE `assets` SET %s WHERE %s",
-			strmangle.SetParamNames("`", "`", 0, wl),
-			strmangle.WhereClause("`", "`", 0, assetPrimaryKeyColumns),
+		cache.query = fmt.Sprintf("UPDATE \"assets\" SET %s WHERE %s",
+			strmangle.SetParamNames("\"", "\"", 1, wl),
+			strmangle.WhereClause("\"", "\"", len(wl)+1, assetPrimaryKeyColumns),
 		)
 		cache.valueMapping, err = queries.BindMapping(assetType, assetMapping, append(wl, assetPrimaryKeyColumns...))
 		if err != nil {
@@ -711,9 +694,9 @@ func (o AssetSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, co
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE `assets` SET %s WHERE %s",
-		strmangle.SetParamNames("`", "`", 0, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, assetPrimaryKeyColumns, len(o)))
+	sql := fmt.Sprintf("UPDATE \"assets\" SET %s WHERE %s",
+		strmangle.SetParamNames("\"", "\"", 1, colNames),
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), len(colNames)+1, assetPrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -733,45 +716,46 @@ func (o AssetSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, co
 }
 
 // UpsertG attempts an insert, and does an update or ignore on conflict.
-func (o *Asset) UpsertG(ctx context.Context, updateColumns, insertColumns boil.Columns) error {
-	return o.Upsert(ctx, boil.GetContextDB(), updateColumns, insertColumns)
+func (o *Asset) UpsertG(ctx context.Context, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
+	return o.Upsert(ctx, boil.GetContextDB(), updateOnConflict, conflictColumns, updateColumns, insertColumns, opts...)
 }
 
 // UpsertGP attempts an insert, and does an update or ignore on conflict. Panics on error.
-func (o *Asset) UpsertGP(ctx context.Context, updateColumns, insertColumns boil.Columns) {
-	if err := o.Upsert(ctx, boil.GetContextDB(), updateColumns, insertColumns); err != nil {
+func (o *Asset) UpsertGP(ctx context.Context, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) {
+	if err := o.Upsert(ctx, boil.GetContextDB(), updateOnConflict, conflictColumns, updateColumns, insertColumns, opts...); err != nil {
 		panic(boil.WrapErr(err))
 	}
 }
 
 // UpsertP attempts an insert using an executor, and does an update or ignore on conflict.
 // UpsertP panics on error.
-func (o *Asset) UpsertP(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) {
-	if err := o.Upsert(ctx, exec, updateColumns, insertColumns); err != nil {
+func (o *Asset) UpsertP(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) {
+	if err := o.Upsert(ctx, exec, updateOnConflict, conflictColumns, updateColumns, insertColumns, opts...); err != nil {
 		panic(boil.WrapErr(err))
 	}
 }
 
-var mySQLAssetUniqueColumns = []string{
-	"id",
-}
-
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *Asset) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
+func (o *Asset) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
 	if o == nil {
 		return errors.New("dbmodel: no assets provided for upsert")
 	}
 
 	nzDefaults := queries.NonZeroDefaultSet(assetColumnsWithDefault, o)
-	nzUniques := queries.NonZeroDefaultSet(mySQLAssetUniqueColumns, o)
-
-	if len(nzUniques) == 0 {
-		return errors.New("cannot upsert with a table that cannot conflict on a unique column")
-	}
 
 	// Build cache key in-line uglily - mysql vs psql problems
 	buf := strmangle.GetBuffer()
+	if updateOnConflict {
+		buf.WriteByte('t')
+	} else {
+		buf.WriteByte('f')
+	}
+	buf.WriteByte('.')
+	for _, c := range conflictColumns {
+		buf.WriteString(c)
+	}
+	buf.WriteByte('.')
 	buf.WriteString(strconv.Itoa(updateColumns.Kind))
 	for _, c := range updateColumns.Cols {
 		buf.WriteString(c)
@@ -783,10 +767,6 @@ func (o *Asset) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCol
 	}
 	buf.WriteByte('.')
 	for _, c := range nzDefaults {
-		buf.WriteString(c)
-	}
-	buf.WriteByte('.')
-	for _, c := range nzUniques {
 		buf.WriteString(c)
 	}
 	key := buf.String()
@@ -811,18 +791,22 @@ func (o *Asset) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCol
 			assetPrimaryKeyColumns,
 		)
 
-		if !updateColumns.IsNone() && len(update) == 0 {
+		if updateOnConflict && len(update) == 0 {
 			return errors.New("dbmodel: unable to upsert assets, could not build update column list")
 		}
 
 		ret := strmangle.SetComplement(assetAllColumns, strmangle.SetIntersect(insert, update))
 
-		cache.query = buildUpsertQueryMySQL(dialect, "`assets`", update, insert)
-		cache.retQuery = fmt.Sprintf(
-			"SELECT %s FROM `assets` WHERE %s",
-			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, ret), ","),
-			strmangle.WhereClause("`", "`", 0, nzUniques),
-		)
+		conflict := conflictColumns
+		if len(conflict) == 0 && updateOnConflict && len(update) != 0 {
+			if len(assetPrimaryKeyColumns) == 0 {
+				return errors.New("dbmodel: unable to upsert assets, could not build conflict column list")
+			}
+
+			conflict = make([]string, len(assetPrimaryKeyColumns))
+			copy(conflict, assetPrimaryKeyColumns)
+		}
+		cache.query = buildUpsertQueryPostgres(dialect, "\"assets\"", updateOnConflict, ret, update, conflict, insert, opts...)
 
 		cache.valueMapping, err = queries.BindMapping(assetType, assetMapping, insert)
 		if err != nil {
@@ -848,36 +832,18 @@ func (o *Asset) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCol
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	_, err = exec.ExecContext(ctx, cache.query, vals...)
-
+	if len(cache.retMapping) != 0 {
+		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(returns...)
+		if errors.Is(err, sql.ErrNoRows) {
+			err = nil // Postgres doesn't return anything when there's no update
+		}
+	} else {
+		_, err = exec.ExecContext(ctx, cache.query, vals...)
+	}
 	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to upsert for assets")
+		return errors.Wrap(err, "dbmodel: unable to upsert assets")
 	}
 
-	var uniqueMap []uint64
-	var nzUniqueCols []interface{}
-
-	if len(cache.retMapping) == 0 {
-		goto CacheNoHooks
-	}
-
-	uniqueMap, err = queries.BindMapping(assetType, assetMapping, nzUniques)
-	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to retrieve unique values for assets")
-	}
-	nzUniqueCols = queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uniqueMap)
-
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, cache.retQuery)
-		fmt.Fprintln(writer, nzUniqueCols...)
-	}
-	err = exec.QueryRowContext(ctx, cache.retQuery, nzUniqueCols...).Scan(returns...)
-	if err != nil {
-		return errors.Wrap(err, "dbmodel: unable to populate default values for assets")
-	}
-
-CacheNoHooks:
 	if !cached {
 		assetUpsertCacheMut.Lock()
 		assetUpsertCache[key] = cache
@@ -925,7 +891,7 @@ func (o *Asset) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, e
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), assetPrimaryKeyMapping)
-	sql := "DELETE FROM `assets` WHERE `id`=?"
+	sql := "DELETE FROM \"assets\" WHERE \"id\"=$1"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1027,8 +993,8 @@ func (o AssetSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (i
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM `assets` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, assetPrimaryKeyColumns, len(o))
+	sql := "DELETE FROM \"assets\" WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, assetPrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1125,8 +1091,8 @@ func (o *AssetSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) e
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT `assets`.* FROM `assets` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, assetPrimaryKeyColumns, len(*o))
+	sql := "SELECT \"assets\".* FROM \"assets\" WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, assetPrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
@@ -1168,7 +1134,7 @@ func AssetExistsGP(ctx context.Context, iD string) bool {
 // AssetExists checks if the Asset row exists.
 func AssetExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `assets` where `id`=? limit 1)"
+	sql := "select exists(select 1 from \"assets\" where \"id\"=$1 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1225,7 +1191,7 @@ func (o AssetSlice) InsertAll(ctx context.Context, exec boil.ContextExecutor, co
 	for i, row := range o {
 
 		if i == 0 {
-			sql = "INSERT INTO `assets` " + "(`" + strings.Join(wl, "`,`") + "`)" + " VALUES "
+			sql = "INSERT INTO \"assets\" " + "(\"" + strings.Join(wl, "\",\"") + "\")" + " VALUES "
 		}
 		sql += strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), len(vals)+1, len(wl))
 		if i != len(o)-1 {
@@ -1275,8 +1241,8 @@ func (o AssetSlice) UpsertAll(ctx context.Context, exec boil.ContextExecutor, up
 
 // upsertAllOnConflictColumns upserts multiple rows with passing custom conflict columns to allow bypassing
 // single column conflict check (see bug https://github.com/volatiletech/sqlboiler/issues/328).
-// SQLBoiler only checks column conflict on single column only which is not correct as MySQL PK or UNIQUE index
-// can include multiple columns.
+// SQLBoiler only checks column conflict on a single column which is insufficient when a UNIQUE index
+// spans multiple columns.
 // This function allows passing multiple conflict columns, but it cannot check whether they are correct or not.
 // So use it at your own risk.
 func (o AssetSlice) UpsertAllOnConflictColumns(ctx context.Context, exec boil.ContextExecutor, conflictColumns []string, updateColumns, insertColumns boil.Columns) (int64, error) {
@@ -1288,31 +1254,9 @@ func (o AssetSlice) upsertAllOnConflictColumns(ctx context.Context, exec boil.Co
 		return 0, nil
 	}
 
-	checkNZUniques := len(conflictColumns) == 0
-	if len(conflictColumns) > 0 {
-		mapConflictColumns := make(map[string]struct{}, len(conflictColumns))
-		for _, col := range conflictColumns {
-			for _, existCol := range assetAllColumns {
-				if col == existCol {
-					mapConflictColumns[col] = struct{}{}
-					break
-				}
-			}
-		}
-		if len(mapConflictColumns) <= 1 {
-			return 0, errors.New("custom conflict columns must be 2 columns or more")
-		}
-	}
-
 	// Calculate the widest columns from all rows need to upsert
 	insertCols := make(map[string]struct{}, 10)
 	for _, row := range o {
-		if checkNZUniques {
-			nzUniques := queries.NonZeroDefaultSet(mySQLAssetUniqueColumns, row)
-			if len(nzUniques) == 0 {
-				return 0, errors.New("cannot upsert with a table that cannot conflict on a unique column")
-			}
-		}
 		insert, _ := insertColumns.InsertColumnSet(
 			assetAllColumns,
 			assetColumnsWithDefault,
@@ -1332,42 +1276,63 @@ func (o AssetSlice) upsertAllOnConflictColumns(ctx context.Context, exec boil.Co
 			insert = append(insert, col)
 		}
 	}
+	if len(insert) == 0 {
+		return 0, errors.New("dbmodel: unable to upsert assets, could not build insert column list")
+	}
 
 	update := updateColumns.UpdateColumnSet(
 		assetAllColumns,
 		assetPrimaryKeyColumns,
 	)
+
+	updateRequired := !updateColumns.IsNone() && len(update) != 0
 	if !updateColumns.IsNone() && len(update) == 0 {
 		return 0, errors.New("dbmodel: unable to upsert assets, could not build update column list")
 	}
 
+	conflict := conflictColumns
+	if len(conflict) == 0 && updateRequired {
+		conflict = make([]string, len(assetPrimaryKeyColumns))
+		copy(conflict, assetPrimaryKeyColumns)
+	}
+	if updateRequired && len(conflict) == 0 {
+		return 0, errors.New("dbmodel: unable to upsert assets, could not build conflict column list")
+	}
+
+	quotedInsert := strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert)
+	placeholders := strmangle.Placeholders(dialect.UseIndexPlaceholders, len(insert)*len(o), 1, len(insert))
+
 	buf := strmangle.GetBuffer()
 	defer strmangle.PutBuffer(buf)
 
-	if len(update) == 0 {
-		fmt.Fprintf(
-			buf,
-			"INSERT IGNORE INTO `assets`(%s) VALUES %s",
-			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert), ","),
-			strmangle.Placeholders(false, len(insert)*len(o), 1, len(insert)),
-		)
-	} else {
-		fmt.Fprintf(
-			buf,
-			"INSERT INTO `assets`(%s) VALUES %s ON DUPLICATE KEY UPDATE ",
-			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, insert), ","),
-			strmangle.Placeholders(false, len(insert)*len(o), 1, len(insert)),
-		)
+	fmt.Fprintf(
+		buf,
+		"INSERT INTO \"assets\"(%s) VALUES %s",
+		strings.Join(quotedInsert, ","),
+		placeholders,
+	)
 
-		for i, v := range update {
+	buf.WriteString(" ON CONFLICT")
+	if len(conflict) != 0 {
+		quotedConflict := strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, conflict)
+		buf.WriteString(" (")
+		buf.WriteString(strings.Join(quotedConflict, ","))
+		buf.WriteString(")")
+	}
+	buf.WriteByte(' ')
+
+	if !updateRequired {
+		buf.WriteString("DO NOTHING")
+	} else {
+		buf.WriteString("DO UPDATE SET ")
+		for i, col := range update {
 			if i != 0 {
 				buf.WriteByte(',')
 			}
-			quoted := strmangle.IdentQuote(dialect.LQ, dialect.RQ, v)
+			quoted := strmangle.IdentQuote(dialect.LQ, dialect.RQ, col)
 			buf.WriteString(quoted)
-			buf.WriteString(" = VALUES(")
+			buf.WriteString(" = EXCLUDED.")
 			buf.WriteString(quoted)
-			buf.WriteByte(')')
 		}
 	}
 

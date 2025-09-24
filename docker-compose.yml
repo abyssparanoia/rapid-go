@@ -1,5 +1,5 @@
 services:
-  main-db:
+  mysql:
     build: ./db/mysql
     volumes:
       - ./db/mysql/initdb.d:/docker-entrypoint-initdb.d
@@ -10,6 +10,19 @@ services:
       TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: maindb
+    networks:
+      - rapid-go-network
+
+  postgresql:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db/postgresql/data:/var/lib/postgresql/data
+      - ./db/postgresql/initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
     networks:
       - rapid-go-network
 
