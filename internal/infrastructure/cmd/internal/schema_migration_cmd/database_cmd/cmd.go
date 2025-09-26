@@ -1,7 +1,8 @@
 package database_cmd
 
 import (
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/migration"
+	migration "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/migration"
+	// migration "github.com/abyssparanoia/rapid-go/internal/infrastructure/postgresql/migration"
 	"github.com/spf13/cobra"
 )
 

@@ -1,0 +1,17 @@
+- table: content_types
+  values:
+    - image/jpeg
+    - image/png
+    - image/gif
+    - application/pdf
+    - application/zip
+    - text/csv
+
+- table: asset_types
+  values:
+    - private/user_images
+
+- table: staff_roles
+  values:
+    - normal
+    - admin

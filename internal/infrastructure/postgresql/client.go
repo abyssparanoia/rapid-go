@@ -1,11 +1,11 @@
-package mysql
+package postgresql
 
 import (
 	"database/sql"
 	"fmt"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -20,7 +20,7 @@ type Client struct {
 	DB *sql.DB
 }
 
-// NewClient ... get mysql client.
+// NewClient ... get postgresql client.
 func NewClient(
 	host,
 	user,
@@ -28,12 +28,12 @@ func NewClient(
 	database string,
 	logEnable bool,
 ) *Client {
-	dbs := fmt.Sprintf("%s:%s@%s/%s?parseTime=true&charset=utf8mb4",
+	dbs := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
 		user,
 		password,
 		host,
 		database)
-	db, err := sql.Open("mysql", dbs)
+	db, err := sql.Open("postgres", dbs)
 	if err != nil {
 		panic(err)
 	}

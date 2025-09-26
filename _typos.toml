@@ -1,6 +1,7 @@
 [files]
 extend-exclude = [
     "internal/infrastructure/mysql/internal/dbmodel/*.go",
+    "internal/infrastructure/postgresql/internal/dbmodel/*.go",
     "go.mod",
     "go.sum",
 ]
