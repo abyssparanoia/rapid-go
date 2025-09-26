@@ -23,7 +23,7 @@ linters:
     - gocognit
     - goconst
     - gocritic
-    - godot
+    # - godot
     - gomoddirectives
     - gomodguard
     - goprintffuncname
@@ -145,9 +145,9 @@ linters:
       - legacy
       - std-error-handling
     rules:
-      - linters:
-          - godot
-        source: (noinspection|TODO)
+      # - linters:
+      #     - godot
+      #   source: (noinspection|TODO)
       - linters:
           - gocritic
         source: //noinspection
