@@ -40,7 +40,7 @@ func NewClient(
 	db.SetMaxOpenConns(maxOpenConns)
 	db.SetMaxIdleConns(maxIdleConns)
 	db.SetConnMaxLifetime(maxLifeTime)
-	if err := db.Ping(); err != nil {
+	if err := db.Ping(); err != nil { //nolint:noctx
 		panic(err)
 	}
 	boil.SetLocation(time.Local)

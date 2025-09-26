@@ -28,12 +28,6 @@ func NewClient(
 	database string,
 	logEnable bool,
 ) *Client {
-	dsnParts := []string{host}
-	dsnParts = append(dsnParts,
-		fmt.Sprintf("user=%s", user),
-		fmt.Sprintf("password=%s", password),
-		fmt.Sprintf("dbname=%s", database),
-	)
 	dbs := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
 		user,
 		password,
@@ -46,7 +40,7 @@ func NewClient(
 	db.SetMaxOpenConns(maxOpenConns)
 	db.SetMaxIdleConns(maxIdleConns)
 	db.SetConnMaxLifetime(maxLifeTime)
-	if err := db.Ping(); err != nil {
+	if err := db.Ping(); err != nil { //nolint:noctx
 		panic(err)
 	}
 	boil.SetLocation(time.Local)

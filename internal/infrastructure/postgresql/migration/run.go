@@ -149,7 +149,7 @@ func runSyncConstantsWithContext( //nolint:gocognit
 		for _, dst := range data {
 			// Fetch current IDs from the database
 			query := fmt.Sprintf("SELECT id FROM %s", dst.Table) //nolint:gosec
-			rows, err := tx.Query(query)                         //nolint:rowserrcheck
+			rows, err := tx.QueryContext(ctx, query)             //nolint:rowserrcheck
 			if err != nil {
 				return errors.InternalErr.Wrap(err)
 			}
@@ -188,7 +188,7 @@ func runSyncConstantsWithContext( //nolint:gocognit
 			if len(toInsert) > 0 {
 				for _, id := range toInsert {
 					insertQuery := fmt.Sprintf("INSERT INTO %s (id) VALUES ('%s');", dst.Table, id) //nolint:gosec
-					if _, err := tx.Exec(insertQuery); err != nil {
+					if _, err := tx.ExecContext(ctx, insertQuery); err != nil {
 						return errors.InternalErr.Wrap(err)
 					}
 				}
@@ -198,7 +198,7 @@ func runSyncConstantsWithContext( //nolint:gocognit
 			if len(toDelete) > 0 {
 				for _, id := range toDelete {
 					deleteQuery := fmt.Sprintf("DELETE FROM %s WHERE id = '%s';", dst.Table, id) //nolint:gosec
-					if _, err := tx.Exec(deleteQuery); err != nil {
+					if _, err := tx.ExecContext(ctx, deleteQuery); err != nil {
 						return errors.InternalErr.Wrap(err)
 					}
 				}
