@@ -45,7 +45,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/lucsky/cuid v1.2.1
 	github.com/pressly/goose/v3 v3.25.0
-	github.com/redis/go-redis/v9 v9.12.1
+	github.com/redis/go-redis/v9 v9.14.0
 	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.11.1
 	github.com/volatiletech/null/v8 v8.1.2
