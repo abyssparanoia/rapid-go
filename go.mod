@@ -40,7 +40,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/googleapis/gax-go/v2 v2.15.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.2
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.2
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.3
 	github.com/lestrrat-go/jwx/v3 v3.0.11
 	github.com/lib/pq v1.10.9
 	github.com/lucsky/cuid v1.2.1
