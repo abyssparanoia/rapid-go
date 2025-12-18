@@ -14,7 +14,7 @@ the boilerplate for monorepo application (support only http protocol)
 
 ## Apps
 
-| Package                                     | Localhost             | Prodction |
+| Package                                     | Localhost             | Production |
 | :------------------------------------------ | :-------------------- | :-------- |
 | **[[REST] api server](./cmd/app/http_server_cmd.go)** | http://localhost:8080 | api.\*    |
 
