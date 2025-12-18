@@ -265,6 +265,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 			tenant := testdata.Tenant
 			mockID := id.Mock()
 			tenant.ID = mockID
+			tenant.Tags = model.TenantTags{}
 
 			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 			mockTenantRepo.EXPECT().

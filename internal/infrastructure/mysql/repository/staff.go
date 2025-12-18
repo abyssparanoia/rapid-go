@@ -31,9 +31,7 @@ func (r *staff) Get(
 	if query.AuthUID.Valid {
 		mods = append(mods, dbmodel.StaffWhere.AuthUID.EQ(query.AuthUID.String))
 	}
-	if query.Preload {
-		mods = append(mods, r.buildPreload(mods)...)
-	}
+	mods = append(mods, r.buildPreload(query.Preload)...)
 	mods = addForUpdateFromBaseGetOptions(mods, query.BaseGetOptions)
 	dbStaff, err := dbmodel.Staffs(
 		mods...,
@@ -63,9 +61,7 @@ func (r *staff) List(
 			qm.Offset(int(query.Limit.Uint64*(query.Page.Uint64-1))),
 		)
 	}
-	if query.Preload {
-		mods = append(mods, r.buildPreload(mods)...)
-	}
+	mods = append(mods, r.buildPreload(query.Preload)...)
 	mods = addForUpdateFromBaseListOptions(mods, query.BaseListOptions)
 	dbStaffs, err := dbmodel.Staffs(
 		mods...,
@@ -99,10 +95,13 @@ func (r *staff) buildListQuery(query repository.ListStaffQuery) []qm.QueryMod {
 	return mods
 }
 
-func (r *staff) buildPreload(mods []qm.QueryMod) []qm.QueryMod {
-	return append(mods,
+func (r *staff) buildPreload(preload bool) []qm.QueryMod {
+	if !preload {
+		return nil
+	}
+	return []qm.QueryMod{
 		qm.Load(dbmodel.StaffRels.Tenant),
-	)
+	}
 }
 
 func (r *staff) Create(
