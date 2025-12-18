@@ -25,9 +25,17 @@ type Tenant interface {
 		ctx context.Context,
 		tenant *model.Tenant,
 	) error
+	BatchCreate(
+		ctx context.Context,
+		tenants model.Tenants,
+	) error
 	Update(
 		ctx context.Context,
 		tenant *model.Tenant,
+	) error
+	BatchUpdate(
+		ctx context.Context,
+		tenants model.Tenants,
 	) error
 	Delete(
 		ctx context.Context,
