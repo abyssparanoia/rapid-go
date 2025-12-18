@@ -74,7 +74,7 @@ func (i *adminTenantInteractor) List(
 	if err != nil {
 		return nil, err
 	}
-	if err := i.assetService.BatchSetTenantURLs(ctx, tenants); err != nil {
+	if err = i.assetService.BatchSetTenantURLs(ctx, tenants); err != nil {
 		return nil, err
 	}
 	ttl, err := i.tenantRepository.Count(
