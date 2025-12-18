@@ -34,6 +34,25 @@ CREATE TABLE `tenants` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 COMMENT "tenant";
 
+CREATE TABLE `tenant_tag_types` (
+  `id`                       VARCHAR(256) NOT NULL COMMENT "id",
+  CONSTRAINT `tenant_tag_types_pkey` PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT "tenant_tag_type";
+
+CREATE TABLE `tenant_tags` (
+  `id`                       VARCHAR(64)  NOT NULL COMMENT "id",
+  `tenant_id`                VARCHAR(64)  NOT NULL COMMENT "tenant_id",
+  `type`                     VARCHAR(256) NOT NULL COMMENT "type",
+  `created_at`               DATETIME     NOT NULL COMMENT "created date",
+  `updated_at`               DATETIME     NOT NULL COMMENT "update date",
+  CONSTRAINT `tenant_tags_pkey` PRIMARY KEY (`id`),
+  UNIQUE `tenant_tags_unique_tenant_id_type` (`tenant_id`, `type`),
+  CONSTRAINT `tenant_tags_fkey_tenant_id` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`),
+  CONSTRAINT `tenant_tags_fkey_type` FOREIGN KEY (`type`) REFERENCES `tenant_tag_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT "tenant_tag";
+
 CREATE TABLE `staff_roles` (
   `id`                       VARCHAR(32)    NOT NULL COMMENT "id",
   CONSTRAINT `staff_roles_pkey` PRIMARY KEY (`id`)
@@ -61,6 +80,8 @@ COMMENT "staff";
 -- +goose Down
 DROP TABLE staffs;
 DROP TABLE staff_roles;
+DROP TABLE tenant_tags;
+DROP TABLE tenant_tag_types;
 DROP TABLE tenants;
 DROP TABLE assets;
 DROP TABLE asset_types;

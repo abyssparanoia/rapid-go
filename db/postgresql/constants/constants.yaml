@@ -11,6 +11,13 @@
   values:
     - private/user_images
 
+- table: tenant_tag_types
+  values:
+    - entertainment
+    - education
+    - business
+    - other
+
 - table: staff_roles
   values:
     - normal
