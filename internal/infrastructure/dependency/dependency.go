@@ -93,6 +93,7 @@ func (d *Dependency) Inject(
 	d.AdminTenantInteractor = usecase.NewAdminTenantInteractor(
 		transactable,
 		tenantRepository,
+		assetService,
 	)
 	d.AdminStaffInteractor = usecase.NewAdminStaffInteractor(
 		transactable,

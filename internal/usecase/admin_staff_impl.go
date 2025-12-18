@@ -95,5 +95,9 @@ func (i *adminStaffInteractor) Create(
 		return nil, err
 	}
 
+	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}); err != nil {
+		return nil, err
+	}
+
 	return staff, nil
 }

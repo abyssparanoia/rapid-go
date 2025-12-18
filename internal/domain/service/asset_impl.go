@@ -86,6 +86,35 @@ func (s *assetService) BatchSetStaffURLs(
 			return err
 		}
 		staff.SetImageURL(imageURL)
+
+		if staff.ReadonlyReference != nil && staff.ReadonlyReference.Tenant != nil {
+			if err := s.BatchSetTenantURLs(ctx, model.Tenants{staff.ReadonlyReference.Tenant}); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (s *assetService) BatchSetTenantURLs(
+	ctx context.Context,
+	tenants model.Tenants,
+) error {
+	for _, tenant := range tenants {
+		// no URLs to set for tenant yet
+		if err := s.BatchSetTenantTagURLs(ctx, tenant.Tags); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *assetService) BatchSetTenantTagURLs(
+	ctx context.Context,
+	tenantTags model.TenantTags,
+) error {
+	for range tenantTags {
+		// no URLs to set for tenant tag yet
 	}
 	return nil
 }
