@@ -58,6 +58,31 @@ func RunUp() {
 	logger.Info("complete database schema migration")
 }
 
+func RunDown() {
+	e := &environment.DatabaseEnvironment{}
+	if err := env.Parse(e); err != nil {
+		panic(err)
+	}
+
+	logger := logger.New(environment.MinLogLevelInfo)
+
+	logger.Info("start database schema down")
+
+	databaseCli := postgresql.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)
+
+	goose.SetBaseFS(migration_files.EmbedMigrations)
+
+	if err := goose.SetDialect("postgres"); err != nil {
+		panic(err)
+	}
+
+	if err := goose.Down(databaseCli.DB, "."); err != nil {
+		panic(err)
+	}
+
+	logger.Info("complete database schema down")
+}
+
 func RunExtractSchema() {
 	e := &environment.DatabaseEnvironment{}
 	if err := env.Parse(e); err != nil {
