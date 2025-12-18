@@ -153,12 +153,36 @@ func (r *tenant) Create(
 	return nil
 }
 
+func (r *tenant) BatchCreate(
+	ctx context.Context,
+	tenants model.Tenants,
+) error {
+	for _, tenant := range tenants {
+		if err := marshaller.TenantToDBModel(tenant).Insert(ctx); err != nil {
+			return errors.InternalErr.Wrap(err)
+		}
+	}
+	return nil
+}
+
 func (r *tenant) Update(
 	ctx context.Context,
 	tenant *model.Tenant,
 ) error {
 	if err := marshaller.TenantToDBModel(tenant).Update(ctx); err != nil {
 		return errors.InternalErr.Wrap(err)
+	}
+	return nil
+}
+
+func (r *tenant) BatchUpdate(
+	ctx context.Context,
+	tenants model.Tenants,
+) error {
+	for _, tenant := range tenants {
+		if err := marshaller.TenantToDBModel(tenant).Update(ctx); err != nil {
+			return errors.InternalErr.Wrap(err)
+		}
 	}
 	return nil
 }
