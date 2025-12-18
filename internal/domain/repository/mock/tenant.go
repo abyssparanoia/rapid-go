@@ -42,6 +42,34 @@ func (m *MockTenant) EXPECT() *MockTenantMockRecorder {
 	return m.recorder
 }
 
+// BatchCreate mocks base method.
+func (m *MockTenant) BatchCreate(ctx context.Context, tenants model.Tenants) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BatchCreate", ctx, tenants)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// BatchCreate indicates an expected call of BatchCreate.
+func (mr *MockTenantMockRecorder) BatchCreate(ctx, tenants any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchCreate", reflect.TypeOf((*MockTenant)(nil).BatchCreate), ctx, tenants)
+}
+
+// BatchUpdate mocks base method.
+func (m *MockTenant) BatchUpdate(ctx context.Context, tenants model.Tenants) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BatchUpdate", ctx, tenants)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// BatchUpdate indicates an expected call of BatchUpdate.
+func (mr *MockTenantMockRecorder) BatchUpdate(ctx, tenants any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchUpdate", reflect.TypeOf((*MockTenant)(nil).BatchUpdate), ctx, tenants)
+}
+
 // Count mocks base method.
 func (m *MockTenant) Count(ctx context.Context, query repository.ListTenantsQuery) (uint64, error) {
 	m.ctrl.T.Helper()

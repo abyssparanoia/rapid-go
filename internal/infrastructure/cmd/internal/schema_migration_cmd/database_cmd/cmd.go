@@ -39,6 +39,13 @@ func NewDatabaseCmd() *cobra.Command {
 		},
 	})
 	cmd.AddCommand(&cobra.Command{
+		Use:   "down",
+		Short: "migrate down (one step)",
+		Run: func(cmd *cobra.Command, args []string) {
+			migration.RunDown()
+		},
+	})
+	cmd.AddCommand(&cobra.Command{
 		Use:   "extract-schema",
 		Short: "extract schema",
 		Run: func(cmd *cobra.Command, args []string) {

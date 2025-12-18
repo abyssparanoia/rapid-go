@@ -9,6 +9,7 @@ func TenantToModel(e *dbmodel.Tenant) *model.Tenant {
 	m := &model.Tenant{
 		ID:        e.TenantID,
 		Name:      e.Name,
+		Tags:      make(model.TenantTags, 0),
 		CreatedAt: e.CreatedAt,
 		UpdatedAt: e.UpdatedAt,
 	}

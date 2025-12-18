@@ -28,6 +28,7 @@ func (r *tenant) Get(
 	if query.ID.Valid {
 		mods = append(mods, dbmodel.TenantWhere.ID.EQ(query.ID.String))
 	}
+	mods = append(mods, r.buildPreload(query.Preload)...)
 	mods = addForUpdateFromBaseGetOptions(mods, query.BaseGetOptions)
 	dbTenant, err := dbmodel.Tenants(
 		mods...,
@@ -56,6 +57,7 @@ func (r *tenant) List(
 			qm.Offset(int(query.Limit.Uint64*(query.Page.Uint64-1))),
 		)
 	}
+	mods = append(mods, r.buildPreload(query.Preload)...)
 	mods = addForUpdateFromBaseListOptions(mods, query.BaseListOptions)
 	dbTenants, err := dbmodel.Tenants(
 		mods...,
@@ -80,14 +82,56 @@ func (r *tenant) Count(
 	return uint64(ttl), nil
 }
 
+func (r *tenant) buildPreload(_ bool) []qm.QueryMod {
+	return []qm.QueryMod{
+		qm.Load(dbmodel.TenantRels.TenantTags),
+	}
+}
+
 func (r *tenant) Create(
 	ctx context.Context,
 	tenant *model.Tenant,
 ) error {
-	dst := marshaller.TenantsToDBModel(tenant)
+	dst := marshaller.TenantToDBModel(tenant)
 	if err := dst.Insert(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
 		return errors.InternalErr.Wrap(err)
 	}
+
+	if len(tenant.Tags) > 0 {
+		tags := marshaller.TenantTagsToDBModel(tenant.Tags, tenant.ID)
+		if _, err := tags.InsertAll(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
+			return errors.InternalErr.Wrap(err)
+		}
+	}
+
+	return nil
+}
+
+func (r *tenant) BatchCreate(
+	ctx context.Context,
+	tenants model.Tenants,
+) error {
+	dstTenants := marshaller.TenantsToDBModel(tenants)
+	exec := transactable.GetContextExecutor(ctx)
+
+	if _, err := dstTenants.InsertAll(ctx, exec, boil.Infer()); err != nil {
+		return errors.InternalErr.Wrap(err)
+	}
+
+	tagSlice := dbmodel.TenantTagSlice{}
+	for _, t := range tenants {
+		if len(t.Tags) == 0 {
+			continue
+		}
+		tagSlice = append(tagSlice, marshaller.TenantTagsToDBModel(t.Tags, t.ID)...)
+	}
+
+	if len(tagSlice) > 0 {
+		if _, err := tagSlice.InsertAll(ctx, exec, boil.Infer()); err != nil {
+			return errors.InternalErr.Wrap(err)
+		}
+	}
+
 	return nil
 }
 
@@ -95,10 +139,52 @@ func (r *tenant) Update(
 	ctx context.Context,
 	tenant *model.Tenant,
 ) error {
-	dst := marshaller.TenantsToDBModel(tenant)
+	dst := marshaller.TenantToDBModel(tenant)
 	if _, err := dst.Update(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
 		return errors.InternalErr.Wrap(err)
 	}
+
+	if _, err := dbmodel.TenantTags(
+		dbmodel.TenantTagWhere.TenantID.EQ(tenant.ID),
+	).DeleteAll(ctx, transactable.GetContextExecutor(ctx)); err != nil {
+		return errors.InternalErr.Wrap(err)
+	}
+
+	if len(tenant.Tags) > 0 {
+		tags := marshaller.TenantTagsToDBModel(tenant.Tags, tenant.ID)
+		if _, err := tags.InsertAll(ctx, transactable.GetContextExecutor(ctx), boil.Infer()); err != nil {
+			return errors.InternalErr.Wrap(err)
+		}
+	}
+
+	return nil
+}
+
+func (r *tenant) BatchUpdate(
+	ctx context.Context,
+	tenants model.Tenants,
+) error {
+	exec := transactable.GetContextExecutor(ctx)
+
+	for _, tenant := range tenants {
+		if _, err := marshaller.TenantToDBModel(tenant).Update(ctx, exec, boil.Infer()); err != nil {
+			return errors.InternalErr.Wrap(err)
+		}
+
+		if _, err := dbmodel.TenantTags(
+			dbmodel.TenantTagWhere.TenantID.EQ(tenant.ID),
+		).DeleteAll(ctx, exec); err != nil {
+			return errors.InternalErr.Wrap(err)
+		}
+
+		if len(tenant.Tags) > 0 {
+			tags := marshaller.TenantTagsToDBModel(tenant.Tags, tenant.ID)
+			if _, err := tags.InsertAll(ctx, exec, boil.Infer()); err != nil {
+				return errors.InternalErr.Wrap(err)
+			}
+		}
+	}
+
 	return nil
 }
 

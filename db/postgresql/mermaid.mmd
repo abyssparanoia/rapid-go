@@ -19,6 +19,10 @@ erDiagram
     varchar id PK
   }
 
+  publictenant_tag_types {
+    varchar id PK
+  }
+
   publictenants {
     varchar id PK
     varchar name
@@ -48,7 +52,17 @@ erDiagram
     timestamptz updated_at
   }
 
+  publictenant_tags {
+    varchar id PK
+    varchar tenant_id FK
+    varchar type FK
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
   publicasset_types ||--o{ publicassets : "foreign key"
   publiccontent_types ||--o{ publicassets : "foreign key"
   publicstaff_roles ||--o{ publicstaffs : "foreign key"
+  publictenant_tag_types ||--o{ publictenant_tags : "foreign key"
   publictenants ||--o{ publicstaffs : "foreign key"
+  publictenants ||--o{ publictenant_tags : "foreign key"
