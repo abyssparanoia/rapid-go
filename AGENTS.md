@@ -1,4 +1,4 @@
-# AGENTS Guide for livedx-oshipo-server
+# AGENTS Guide for rapid-go
 
 ## High-Level Overview
 
