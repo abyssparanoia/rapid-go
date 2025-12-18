@@ -95,6 +95,7 @@
 - Leverage services (asset, staff, question, etc.) instead of duplicating logic; they encapsulate cross-repository coordination.
 - For usecases, always set `Preload` to `true` on repository `Get`/`List` options so readonly relations are hydrated, and after `Create`/`Update` flows, issue a final `Get` to build the response payload.
 - Even when no URLs need to be populated today, implement and invoke the appropriate `assetService.BatchXXX` helper from usecases to keep response shaping consistent.
+- For assets: every resource returned from usecases/handlers must pass through `assetService.BatchSetXXX` just before returning; if a resource has no URLs/readonly references, still iterate and leave a comment-only no-op. `BatchSetTenantURLs` is responsible for cascading into tenant tags, and `BatchSetStaffURLs` must also set URLs on any readonly tenant references.
 - Respect generated code ownership: Protobuf/SQLBoiler outputs and embedded assets should be regenerated via Make targets, not edited manually.
 - Attach new dependencies in `internal/infrastructure/dependency.Inject` and update relevant handlers/interactors; keep constructor signature order consistent for readability.
 - For new gRPC endpoints, extend protobufs under `schema/proto`, regenerate stubs, implement handler functions in infrastructure, and delegate to usecase interactors for business logic.
