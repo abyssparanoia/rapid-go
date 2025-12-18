@@ -29,6 +29,24 @@ CREATE TABLE tenants (
     "updated_at"  TIMESTAMPTZ   NOT NULL
 );
 
+CREATE TABLE tenant_tag_types (
+    "id" VARCHAR(256) PRIMARY KEY
+);
+
+CREATE TABLE tenant_tags (
+    "id"          VARCHAR(64)   PRIMARY KEY,
+    "tenant_id"   VARCHAR(64)   NOT NULL,
+    "type"        VARCHAR(256)  NOT NULL,
+    "created_at"  TIMESTAMPTZ   NOT NULL,
+    "updated_at"  TIMESTAMPTZ   NOT NULL,
+    CONSTRAINT "tenant_tags_unique_tenant_id_type" UNIQUE ("tenant_id", "type"),
+    CONSTRAINT "tenant_tags_fkey_tenant_id" FOREIGN KEY ("tenant_id") REFERENCES "tenants" ("id"),
+    CONSTRAINT "tenant_tags_fkey_type" FOREIGN KEY ("type") REFERENCES "tenant_tag_types" ("id")
+);
+
+CREATE INDEX "tenant_tags_idx_tenant_id" ON "tenant_tags" ("tenant_id");
+CREATE INDEX "tenant_tags_idx_type" ON "tenant_tags" ("type");
+
 CREATE TABLE staff_roles (
     "id" VARCHAR(32) PRIMARY KEY
 );
@@ -55,6 +73,8 @@ CREATE INDEX "staffs_idx_role" ON "staffs" ("role");
 -- +goose Down
 DROP TABLE IF EXISTS staffs;
 DROP TABLE IF EXISTS staff_roles;
+DROP TABLE IF EXISTS tenant_tags;
+DROP TABLE IF EXISTS tenant_tag_types;
 DROP TABLE IF EXISTS tenants;
 DROP TABLE IF EXISTS assets;
 DROP TABLE IF EXISTS asset_types;

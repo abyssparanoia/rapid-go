@@ -55,6 +55,24 @@ CREATE TABLE `staffs` (
   CONSTRAINT `staffs_fkey_tenant_id` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='staff';
 
+CREATE TABLE `tenant_tag_types` (
+  `id` varchar(256) NOT NULL COMMENT 'id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='tenant_tag_type';
+
+CREATE TABLE `tenant_tags` (
+  `id` varchar(64) NOT NULL COMMENT 'id',
+  `tenant_id` varchar(64) NOT NULL COMMENT 'tenant_id',
+  `type` varchar(256) NOT NULL COMMENT 'type',
+  `created_at` datetime NOT NULL COMMENT 'created date',
+  `updated_at` datetime NOT NULL COMMENT 'update date',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tenant_tags_unique_tenant_id_type` (`tenant_id`,`type`),
+  KEY `tenant_tags_fkey_type` (`type`),
+  CONSTRAINT `tenant_tags_fkey_tenant_id` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`),
+  CONSTRAINT `tenant_tags_fkey_type` FOREIGN KEY (`type`) REFERENCES `tenant_tag_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='tenant_tag';
+
 CREATE TABLE `tenants` (
   `id` varchar(64) NOT NULL COMMENT 'id',
   `name` varchar(256) NOT NULL COMMENT 'name',

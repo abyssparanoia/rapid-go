@@ -76,14 +76,17 @@ var TenantWhere = struct {
 
 // TenantRels is where relationship names are stored.
 var TenantRels = struct {
-	Staffs string
+	Staffs     string
+	TenantTags string
 }{
-	Staffs: "Staffs",
+	Staffs:     "Staffs",
+	TenantTags: "TenantTags",
 }
 
 // tenantR is where relationships are stored.
 type tenantR struct {
-	Staffs StaffSlice `boil:"Staffs" json:"Staffs" toml:"Staffs" yaml:"Staffs"`
+	Staffs     StaffSlice     `boil:"Staffs" json:"Staffs" toml:"Staffs" yaml:"Staffs"`
+	TenantTags TenantTagSlice `boil:"TenantTags" json:"TenantTags" toml:"TenantTags" yaml:"TenantTags"`
 }
 
 // NewStruct creates a new relationship struct
@@ -105,6 +108,22 @@ func (r *tenantR) GetStaffs() StaffSlice {
 	}
 
 	return r.Staffs
+}
+
+func (o *Tenant) GetTenantTags() TenantTagSlice {
+	if o == nil {
+		return nil
+	}
+
+	return o.R.GetTenantTags()
+}
+
+func (r *tenantR) GetTenantTags() TenantTagSlice {
+	if r == nil {
+		return nil
+	}
+
+	return r.TenantTags
 }
 
 // tenantL is where Load methods for each relationship are stored.
@@ -323,6 +342,20 @@ func (o *Tenant) Staffs(mods ...qm.QueryMod) staffQuery {
 	return Staffs(queryMods...)
 }
 
+// TenantTags retrieves all the tenant_tag's TenantTags with an executor.
+func (o *Tenant) TenantTags(mods ...qm.QueryMod) tenantTagQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("`tenant_tags`.`tenant_id`=?", o.ID),
+	)
+
+	return TenantTags(queryMods...)
+}
+
 // LoadStaffs allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
 func (tenantL) LoadStaffs(ctx context.Context, e boil.ContextExecutor, singular bool, maybeTenant interface{}, mods queries.Applicator) error {
@@ -429,6 +462,112 @@ func (tenantL) LoadStaffs(ctx context.Context, e boil.ContextExecutor, singular 
 	return nil
 }
 
+// LoadTenantTags allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (tenantL) LoadTenantTags(ctx context.Context, e boil.ContextExecutor, singular bool, maybeTenant interface{}, mods queries.Applicator) error {
+	var slice []*Tenant
+	var object *Tenant
+
+	if singular {
+		var ok bool
+		object, ok = maybeTenant.(*Tenant)
+		if !ok {
+			object = new(Tenant)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeTenant)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeTenant))
+			}
+		}
+	} else {
+		s, ok := maybeTenant.(*[]*Tenant)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeTenant)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeTenant))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &tenantR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &tenantR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`tenant_tags`),
+		qm.WhereIn(`tenant_tags.tenant_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load tenant_tags")
+	}
+
+	var resultSlice []*TenantTag
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice tenant_tags")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on tenant_tags")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for tenant_tags")
+	}
+
+	if singular {
+		object.R.TenantTags = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &tenantTagR{}
+			}
+			foreign.R.Tenant = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.TenantID {
+				local.R.TenantTags = append(local.R.TenantTags, foreign)
+				if foreign.R == nil {
+					foreign.R = &tenantTagR{}
+				}
+				foreign.R.Tenant = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
 // AddStaffsG adds the given related objects to the existing relationships
 // of the tenant, optionally inserting them as new records.
 // Appends related to o.R.Staffs.
@@ -504,6 +643,90 @@ func (o *Tenant) AddStaffs(ctx context.Context, exec boil.ContextExecutor, inser
 	for _, rel := range related {
 		if rel.R == nil {
 			rel.R = &staffR{
+				Tenant: o,
+			}
+		} else {
+			rel.R.Tenant = o
+		}
+	}
+	return nil
+}
+
+// AddTenantTagsG adds the given related objects to the existing relationships
+// of the tenant, optionally inserting them as new records.
+// Appends related to o.R.TenantTags.
+// Sets related.R.Tenant appropriately.
+// Uses the global database handle.
+func (o *Tenant) AddTenantTagsG(ctx context.Context, insert bool, related ...*TenantTag) error {
+	return o.AddTenantTags(ctx, boil.GetContextDB(), insert, related...)
+}
+
+// AddTenantTagsP adds the given related objects to the existing relationships
+// of the tenant, optionally inserting them as new records.
+// Appends related to o.R.TenantTags.
+// Sets related.R.Tenant appropriately.
+// Panics on error.
+func (o *Tenant) AddTenantTagsP(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*TenantTag) {
+	if err := o.AddTenantTags(ctx, exec, insert, related...); err != nil {
+		panic(boil.WrapErr(err))
+	}
+}
+
+// AddTenantTagsGP adds the given related objects to the existing relationships
+// of the tenant, optionally inserting them as new records.
+// Appends related to o.R.TenantTags.
+// Sets related.R.Tenant appropriately.
+// Uses the global database handle and panics on error.
+func (o *Tenant) AddTenantTagsGP(ctx context.Context, insert bool, related ...*TenantTag) {
+	if err := o.AddTenantTags(ctx, boil.GetContextDB(), insert, related...); err != nil {
+		panic(boil.WrapErr(err))
+	}
+}
+
+// AddTenantTags adds the given related objects to the existing relationships
+// of the tenant, optionally inserting them as new records.
+// Appends related to o.R.TenantTags.
+// Sets related.R.Tenant appropriately.
+func (o *Tenant) AddTenantTags(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*TenantTag) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.TenantID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE `tenant_tags` SET %s WHERE %s",
+				strmangle.SetParamNames("`", "`", 0, []string{"tenant_id"}),
+				strmangle.WhereClause("`", "`", 0, tenantTagPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.TenantID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &tenantR{
+			TenantTags: related,
+		}
+	} else {
+		o.R.TenantTags = append(o.R.TenantTags, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &tenantTagR{
 				Tenant: o,
 			}
 		} else {

@@ -10,6 +10,7 @@ import (
 type Tenant struct {
 	ID        string
 	Name      string
+	Tags      TenantTags
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -23,6 +24,28 @@ func NewTenant(
 	return &Tenant{
 		ID:        id.New(),
 		Name:      name,
+		Tags:      make(TenantTags, 0),
+		CreatedAt: t,
+		UpdatedAt: t,
+	}
+}
+
+type TenantTag struct {
+	ID        string
+	Type      TenantTagType
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type TenantTags []*TenantTag
+
+func NewTenantTag(
+	tagType TenantTagType,
+	t time.Time,
+) *TenantTag {
+	return &TenantTag{
+		ID:        id.New(),
+		Type:      tagType,
 		CreatedAt: t,
 		UpdatedAt: t,
 	}

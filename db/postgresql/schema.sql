@@ -59,6 +59,27 @@ CREATE INDEX staffs_idx_role ON staffs USING btree (role);
 
 CREATE INDEX staffs_idx_tenant_id ON staffs USING btree (tenant_id);
 
+CREATE TABLE "public"."tenant_tag_types" (
+    "id" character varying(256) NOT NULL,
+    CONSTRAINT "tenant_tag_types_pkey" PRIMARY KEY (id)
+);
+
+CREATE TABLE "public"."tenant_tags" (
+    "id" character varying(64) NOT NULL,
+    "tenant_id" character varying(64) NOT NULL,
+    "type" character varying(256) NOT NULL,
+    "created_at" timestamp with time zone NOT NULL,
+    "updated_at" timestamp with time zone NOT NULL,
+    CONSTRAINT "tenant_tags_fkey_tenant_id" FOREIGN KEY (tenant_id) REFERENCES tenants(id),
+    CONSTRAINT "tenant_tags_fkey_type" FOREIGN KEY (type) REFERENCES tenant_tag_types(id),
+    CONSTRAINT "tenant_tags_pkey" PRIMARY KEY (id),
+    CONSTRAINT "tenant_tags_unique_tenant_id_type" UNIQUE (tenant_id, type)
+);
+
+CREATE INDEX tenant_tags_idx_tenant_id ON tenant_tags USING btree (tenant_id);
+
+CREATE INDEX tenant_tags_idx_type ON tenant_tags USING btree (type);
+
 CREATE TABLE "public"."tenants" (
     "id" character varying(64) NOT NULL,
     "name" character varying(256) NOT NULL,

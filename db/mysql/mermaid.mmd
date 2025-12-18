@@ -19,6 +19,10 @@ erDiagram
     VARCHAR id PK "id"
   }
 
+  maindbtenant_tag_types {
+    VARCHAR id PK "id"
+  }
+
   maindbtenants {
     VARCHAR id PK "id"
     VARCHAR name "name"
@@ -48,7 +52,17 @@ erDiagram
     DATETIME updated_at "update date"
   }
 
+  maindbtenant_tags {
+    VARCHAR id PK "id"
+    VARCHAR tenant_id FK "tenant_id"
+    VARCHAR type FK "type"
+    DATETIME created_at "created date"
+    DATETIME updated_at "update date"
+  }
+
   maindbasset_types ||--o{ maindbassets : "foreign key"
   maindbcontent_types ||--o{ maindbassets : "foreign key"
   maindbstaff_roles ||--o{ maindbstaffs : "foreign key"
+  maindbtenant_tag_types ||--o{ maindbtenant_tags : "foreign key"
   maindbtenants ||--o{ maindbstaffs : "foreign key"
+  maindbtenants ||--o{ maindbtenant_tags : "foreign key"

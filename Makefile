@@ -84,6 +84,17 @@ migrate.up:
 	# make generate.mermaid.postgresql
 	# make generate.sqlboiler.postgresql
 
+.PHONY: migrate.up.ci
+migrate.up.ci:
+	make build
+	.bin/app-cli schema-migration database up
+	.bin/app-cli schema-migration database sync-constants
+
+.PHONY: migrate.down
+migrate.down:
+	make build
+	.bin/app-cli schema-migration database down
+
 .PHONY: migrate.spanner.up
 migrate.spanner.up:
 	go tool github.com/cloudspannerecosystem/wrench migrate up --directory ./db/spanner
