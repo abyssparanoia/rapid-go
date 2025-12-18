@@ -20,6 +20,14 @@ type Asset interface {
 		assetType model.AssetType,
 		assetID string,
 	) (string, error)
+	BatchSetTenantURLs(
+		ctx context.Context,
+		tenants model.Tenants,
+	) error
+	BatchSetTenantTagURLs(
+		ctx context.Context,
+		tenantTags model.TenantTags,
+	) error
 	BatchSetStaffURLs(
 		ctx context.Context,
 		staffs model.Staffs,

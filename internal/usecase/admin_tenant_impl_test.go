@@ -10,6 +10,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
+	mock_service "github.com/abyssparanoia/rapid-go/internal/domain/service/mock"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
@@ -41,10 +42,12 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 	tests := map[string]testcaseFunc{
 		"invalid argument": func(ctx context.Context, ctrl *gomock.Controller) testcase {
 			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			mockAssetService := mock_service.NewMockAsset(ctrl)
 			return testcase{
 				args: args{},
 				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
+					assetService:     mockAssetService,
 				},
 				want: want{
 					expectedResult: errors.RequestInvalidArgumentErr,
@@ -67,6 +70,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 						},
 					}).
 				Return(nil, errors.TenantNotFoundErr)
+			mockAssetService := mock_service.NewMockAsset(ctrl)
 
 			return testcase{
 				args: args{
@@ -74,6 +78,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 				},
 				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
+					assetService:     mockAssetService,
 				},
 				want: want{
 					expectedResult: errors.TenantNotFoundErr,
@@ -96,6 +101,10 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 						},
 					}).
 				Return(tenant, nil)
+			mockAssetService := mock_service.NewMockAsset(ctrl)
+			mockAssetService.EXPECT().
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
+				Return(nil)
 
 			return testcase{
 				args: args{
@@ -103,6 +112,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 				},
 				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
+					assetService:     mockAssetService,
 				},
 				want: want{
 					tenant: tenant,
@@ -182,6 +192,10 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 					},
 				).
 				Return(uint64(60), nil)
+			mockAssetService := mock_service.NewMockAsset(ctrl)
+			mockAssetService.EXPECT().
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
+				Return(nil)
 
 			return testcase{
 				args: args{
@@ -190,6 +204,7 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 				},
 				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
+					assetService:     mockAssetService,
 				},
 				want: want{
 					output: output.NewAdminListTenants(
@@ -271,6 +286,10 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 			mockTenantRepo.EXPECT().
 				Create(gomock.Any(), tenant).
 				Return(nil)
+			mockAssetService := mock_service.NewMockAsset(ctrl)
+			mockAssetService.EXPECT().
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
+				Return(nil)
 
 			return testcase{
 				args: args{
@@ -279,6 +298,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 				},
 				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
+					assetService:     mockAssetService,
 				},
 				want: want{
 					tenant: tenant,
@@ -362,6 +382,10 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 			mockTenantRepo.EXPECT().
 				Update(gomock.Any(), tenant).
 				Return(nil)
+			mockAssetService := mock_service.NewMockAsset(ctrl)
+			mockAssetService.EXPECT().
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
+				Return(nil)
 
 			return testcase{
 				args: args{
@@ -372,6 +396,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 				usecase: &adminTenantInteractor{
 					transactable:     mock_repository.TestMockTransactable(),
 					tenantRepository: mockTenantRepo,
+					assetService:     mockAssetService,
 				},
 				want: want{
 					tenant: tenant,
@@ -442,6 +467,7 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 			mockTenantRepo.EXPECT().
 				Delete(gomock.Any(), tenant.ID).
 				Return(nil)
+			mockAssetService := mock_service.NewMockAsset(ctrl)
 
 			return testcase{
 				args: args{
@@ -449,6 +475,7 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 				},
 				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
+					assetService:     mockAssetService,
 				},
 				want: want{},
 			}

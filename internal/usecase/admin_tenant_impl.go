@@ -5,6 +5,7 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
+	"github.com/abyssparanoia/rapid-go/internal/domain/service"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 	"github.com/volatiletech/null/v8"
@@ -13,15 +14,18 @@ import (
 type adminTenantInteractor struct {
 	transactable     repository.Transactable
 	tenantRepository repository.Tenant
+	assetService     service.Asset
 }
 
 func NewAdminTenantInteractor(
 	transactable repository.Transactable,
 	tenantRepository repository.Tenant,
+	assetService service.Asset,
 ) AdminTenantInteractor {
 	return &adminTenantInteractor{
 		transactable,
 		tenantRepository,
+		assetService,
 	}
 }
 
@@ -32,7 +36,7 @@ func (i *adminTenantInteractor) Get(
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
-	return i.tenantRepository.Get(
+	tenant, err := i.tenantRepository.Get(
 		ctx,
 		repository.GetTenantQuery{
 			ID: null.StringFrom(param.TenantID),
@@ -41,6 +45,13 @@ func (i *adminTenantInteractor) Get(
 			},
 		},
 	)
+	if err != nil {
+		return nil, err
+	}
+	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}); err != nil {
+		return nil, err
+	}
+	return tenant, nil
 }
 
 func (i *adminTenantInteractor) List(
@@ -61,6 +72,9 @@ func (i *adminTenantInteractor) List(
 		query,
 	)
 	if err != nil {
+		return nil, err
+	}
+	if err = i.assetService.BatchSetTenantURLs(ctx, tenants); err != nil {
 		return nil, err
 	}
 	ttl, err := i.tenantRepository.Count(
@@ -89,6 +103,9 @@ func (i *adminTenantInteractor) Create(
 	}
 	tenant := model.NewTenant(param.Name, param.RequestTime)
 	if err := i.tenantRepository.Create(ctx, tenant); err != nil {
+		return nil, err
+	}
+	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}); err != nil {
 		return nil, err
 	}
 	return tenant, nil
@@ -126,6 +143,9 @@ func (i *adminTenantInteractor) Update(
 		}
 		return nil
 	}); err != nil {
+		return nil, err
+	}
+	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}); err != nil {
 		return nil, err
 	}
 	return tenant, nil
