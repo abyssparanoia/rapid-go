@@ -9,15 +9,15 @@ import (
 func StaffClaimsToModel(authUID string, customClaim map[string]interface{}) *model.StaffClaims {
 	var tenantID null.String
 	if _tenantID, ok := customClaim["tenant_id"]; ok {
-		tenantID = null.StringFrom(_tenantID.(string))
+		tenantID = null.StringFrom(_tenantID.(string)) //nolint:errcheck
 	}
 	var staffID null.String
 	if _staffID, ok := customClaim["staff_id"]; ok {
-		staffID = null.StringFrom(_staffID.(string))
+		staffID = null.StringFrom(_staffID.(string)) //nolint:errcheck
 	}
 	var staffRole nullable.Type[model.StaffRole]
 	if _staffRole, ok := customClaim["staff_role"]; ok {
-		staffRole = nullable.TypeFrom(model.NewStaffRole(_staffRole.(string)))
+		staffRole = nullable.TypeFrom(model.NewStaffRole(_staffRole.(string))) //nolint:errcheck
 	}
 
 	claims := model.NewStaffClaims(

@@ -28,7 +28,7 @@ func (r *tenant) Get(
 	if query.ID.Valid {
 		mods = append(mods, dbmodel.TenantWhere.ID.EQ(query.ID.String))
 	}
-	mods = append(mods, r.buildPreload(true)...)
+	mods = append(mods, r.buildPreload(query.Preload)...)
 	mods = addForUpdateFromBaseGetOptions(mods, query.BaseGetOptions)
 	dbTenant, err := dbmodel.Tenants(
 		mods...,
@@ -57,7 +57,7 @@ func (r *tenant) List(
 			qm.Offset(int(query.Limit.Uint64*(query.Page.Uint64-1))),
 		)
 	}
-	mods = append(mods, r.buildPreload(true)...)
+	mods = append(mods, r.buildPreload(query.Preload)...)
 	mods = addForUpdateFromBaseListOptions(mods, query.BaseListOptions)
 	dbTenants, err := dbmodel.Tenants(
 		mods...,
@@ -80,6 +80,12 @@ func (r *tenant) Count(
 		return 0, errors.InternalErr.Wrap(err)
 	}
 	return uint64(ttl), nil
+}
+
+func (r *tenant) buildPreload(_ bool) []qm.QueryMod {
+	return []qm.QueryMod{
+		qm.Load(dbmodel.TenantRels.TenantTags),
+	}
 }
 
 func (r *tenant) Create(
@@ -137,10 +143,4 @@ func (r *tenant) Delete(
 		return errors.InternalErr.Wrap(err)
 	}
 	return nil
-}
-
-func (r *tenant) buildPreload(preload bool) []qm.QueryMod {
-	return []qm.QueryMod{
-		qm.Load(dbmodel.TenantRels.TenantTags),
-	}
 }
