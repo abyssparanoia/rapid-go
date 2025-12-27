@@ -39,16 +39,19 @@ package usecase
 type adminExampleInteractor struct {
     transactable      repository.Transactable
     exampleRepository repository.Example
+    assetService      service.Asset  // Always include this dependency
     // Add other dependencies
 }
 
 func NewAdminExampleInteractor(
     transactable repository.Transactable,
     exampleRepository repository.Example,
+    assetService service.Asset,
 ) AdminExampleInteractor {
     return &adminExampleInteractor{
         transactable:      transactable,
         exampleRepository: exampleRepository,
+        assetService:      assetService,
     }
 }
 ```
@@ -142,14 +145,24 @@ func (i *adminExampleInteractor) Create(
         return nil, err
     }
 
-    // 4. Return with relations loaded
-    return i.exampleRepository.Get(ctx, repository.GetExampleQuery{
+    // 4. Return with relations loaded (Preload: true is required)
+    example, err := i.exampleRepository.Get(ctx, repository.GetExampleQuery{
         ID: null.StringFrom(example.ID),
         BaseGetOptions: repository.BaseGetOptions{
             OrFail:  true,
             Preload: true,
         },
     })
+    if err != nil {
+        return nil, err
+    }
+
+    // 5. Apply asset URL processing (call even if no assets exist)
+    if err := i.assetService.BatchSetExampleURLs(ctx, model.Examples{example}, param.RequestTime); err != nil {
+        return nil, err
+    }
+
+    return example, nil
 }
 ```
 
@@ -164,7 +177,7 @@ func (i *adminExampleInteractor) Get(
         return nil, err
     }
 
-    return i.exampleRepository.Get(ctx, repository.GetExampleQuery{
+    example, err := i.exampleRepository.Get(ctx, repository.GetExampleQuery{
         ID:       null.StringFrom(param.ExampleID),
         TenantID: null.StringFrom(param.TenantID),  // Scope to tenant
         BaseGetOptions: repository.BaseGetOptions{
@@ -172,6 +185,16 @@ func (i *adminExampleInteractor) Get(
             Preload: true,
         },
     })
+    if err != nil {
+        return nil, err
+    }
+
+    // Apply asset URL processing (call even if no assets exist)
+    if err := i.assetService.BatchSetExampleURLs(ctx, model.Examples{example}, param.RequestTime); err != nil {
+        return nil, err
+    }
+
+    return example, nil
 }
 ```
 
@@ -299,37 +322,104 @@ func (i *adminExampleInteractor) Delete(
 - Transaction boundary is always in the usecase layer
 - Domain services assume transaction is already active
 
-## Return Pattern Best Practices
+## Return Pattern Best Practices (Defensive Programming)
+
+**IMPORTANT**: When returning entities, apply the following patterns **even if there are currently no targets**. This is defensive programming to prevent omissions when relations or asset fields are added later.
 
 ### Always Enable Preload for Returned Entities
 
-When returning domain entities from interactor methods, always set `Preload: true` in the repository query, even if there are currently no related entities:
+**Always** set `Preload: true`. Always set it even if ReadonlyReference is currently empty.
 
 ```go
-// Good - Always enable preload for returned entities
+// Good - Set Preload: true even if no relations exist currently
 return i.exampleRepository.Get(ctx, repository.GetExampleQuery{
     ID: null.StringFrom(example.ID),
     BaseGetOptions: repository.BaseGetOptions{
         OrFail:  true,
-        Preload: true,  // Always true for returned entities
+        Preload: true,  // Always true - prepare for future relation additions
+    },
+})
+
+// Same applies to List
+examples, err := i.exampleRepository.List(ctx, repository.ListExamplesQuery{
+    TenantID: null.StringFrom(param.TenantID),
+    BaseListOptions: repository.BaseListOptions{
+        Page:    null.Uint64From(param.Page),
+        Limit:   null.Uint64From(param.Limit),
+        Preload: true,  // Always true
     },
 })
 ```
 
-**Rationale**: When relations are added later, existing code will automatically include them. This prevents missing relation loading when the domain model evolves.
+**Rationale**: When relations are added later, existing code will automatically include them. This prevents missed updates as the domain model evolves.
 
-### Apply Asset Service Processing
+### Always Apply Asset Service Processing
 
-When entities have asset URLs (images, files), apply the asset service batch processing before returning:
+**Always** call `BatchSet{Entity}URLs`. Always call it even if the entity currently has no asset fields (such as profile images).
 
 ```go
-// After fetching entities, apply asset URL processing
-if err := i.assetService.BatchSetExampleURLs(ctx, examples, param.RequestTime); err != nil {
-    return nil, err
+// Good - Call BatchSet even if no asset fields exist
+func (i *adminExampleInteractor) Get(
+    ctx context.Context,
+    param *input.AdminGetExample,
+) (*model.Example, error) {
+    // ...
+    example, err := i.exampleRepository.Get(ctx, repository.GetExampleQuery{
+        ID: null.StringFrom(param.ExampleID),
+        BaseGetOptions: repository.BaseGetOptions{
+            OrFail:  true,
+            Preload: true,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    // Wrap single entity in model.Examples when calling
+    if err := i.assetService.BatchSetExampleURLs(ctx, model.Examples{example}, param.RequestTime); err != nil {
+        return nil, err
+    }
+
+    return example, nil
+}
+
+// For List operations
+func (i *adminExampleInteractor) List(
+    ctx context.Context,
+    param *input.AdminListExamples,
+) (*output.AdminListExamples, error) {
+    // ...
+    examples, err := i.exampleRepository.List(ctx, query)
+    if err != nil {
+        return nil, err
+    }
+
+    // Pass the slice directly
+    if err := i.assetService.BatchSetExampleURLs(ctx, examples, param.RequestTime); err != nil {
+        return nil, err
+    }
+
+    return &output.AdminListExamples{Examples: examples, TotalCount: totalCount}, nil
 }
 ```
 
-**Rationale**: Same principle - ensures future asset fields are automatically processed.
+**Rationale**: When asset fields (such as image URLs) are added later, existing code will automatically set the URLs. Additionally, since `BatchSet` recursively sets URLs for related entities in ReadonlyReference, it also handles asset additions to related entities.
+
+### Anti-Pattern: Conditional Processing
+
+```go
+// Bad - Only call when assets exist
+if len(example.ProfileImagePath) > 0 {
+    if err := i.assetService.BatchSetExampleURLs(...); err != nil { ... }
+}
+
+// Bad - Only set Preload when relations are needed
+if needsRelations {
+    query.BaseGetOptions.Preload = true
+}
+```
+
+Avoid these patterns as they cause missed updates during future expansions.
 
 ## External Service Integration
 
