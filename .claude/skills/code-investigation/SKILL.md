@@ -1,84 +1,86 @@
 ---
 name: code-investigation
-description: Efficient codebase investigation in Cursor. ALWAYS use this skill BEFORE modifying existing code, fixing bugs, or adding features to existing modules. Required for understanding code structure, tracing data flow, and impact analysis.
+description: Efficient codebase investigation for rapid-go. Use when understanding existing code before modifications, tracing request flows from API to database, finding where functionality is implemented, or analyzing impact before changes. ALWAYS use before modifying existing code, fixing bugs, or adding features.
 ---
 
 # Code Investigation Guide
 
-This skill describes a fast, low-noise way to understand the codebase using tools available in Cursor:
-- `grep` (exact text / regex)
-- `codebase_search` (semantic search)
-- `glob_file_search` / `list_dir` (find files and explore structure)
-- `read_file` (read only what you need)
+## Quick Start
 
-## Tool Selection Strategy
+```
+Proto (API contract) -> Handler -> Usecase -> Repository -> DB
+```
 
-- If you **know the exact string/symbol** → use `grep`
-- If you **know what it does but not where** → use `codebase_search`
-- If you **only know the filename pattern** → use `glob_file_search`
-- Once you have the file → use `read_file` (prefer partial reads for big files)
+Use this flow to trace any feature. Start from what you know.
 
-## Rapid-go: Key Places to Look
+## Key Locations
 
-### API contract (proto)
+| What | Where |
+|------|-------|
+| API contracts | `schema/proto/rapid/{admin_api,public_api,debug_api}/v1/` |
+| Handlers | `internal/infrastructure/grpc/internal/handler/{admin,public,debug}/` |
+| Usecases | `internal/usecase/*_impl.go` |
+| Domain models | `internal/domain/model/` |
+| Repository interfaces | `internal/domain/repository/` |
+| Repository implementations | `internal/infrastructure/{mysql,postgresql,spanner}/repository/` |
+| DI wiring | `internal/infrastructure/dependency/dependency.go` |
+| Auth interceptors | `internal/infrastructure/grpc/internal/interceptor/` |
 
-`schema/proto/rapid/{admin_api|public_api|debug_api}/v1/*.proto`
+## Investigation Patterns
 
-### gRPC handlers & interceptors
+### Find an API endpoint
 
-`internal/infrastructure/grpc/internal/handler/{admin|public|debug}/`
+```bash
+# Find by HTTP path
+grep "/admin/v1/tenants" schema/proto/rapid/
 
-`internal/infrastructure/grpc/internal/interceptor/`
-- `session_interceptor`: staff session context
-- `authorization_interceptor`: access control for admin API
-- `request_interceptor`: request time, error mapping helpers
+# Find by RPC name
+grep "CreateTenant" internal/infrastructure/grpc/internal/handler/admin/
+```
 
-### Usecases
+### Trace request flow
 
-`internal/usecase/*_impl.go`, `internal/usecase/input/*`
+1. Find RPC in `schema/proto/rapid/**/api.proto`
+2. Find handler in `internal/infrastructure/grpc/internal/handler/{actor}/`
+3. Find interactor in `internal/usecase/*_impl.go`
+4. Find repository in `internal/domain/repository/` (interface) and `internal/infrastructure/*/repository/` (impl)
 
-### DB implementations (multiple backends)
+### Find all usages of a type
 
-`internal/infrastructure/{mysql|postgresql|spanner}/`
-- `internal/dbmodel/` (generated for mysql/postgresql; yo for spanner)
-- `internal/marshaller/`
-- `repository/`
-- `transactable/`
+```bash
+# Find usages of a domain model
+grep "model.Staff" internal/
 
-## Investigation Workflows
+# Find usages of a repository method
+grep "staffRepository.Get" internal/usecase/
+```
 
-### Workflow A: “How does an HTTP request become a DB write?”
+### Check authorization logic
 
-1. **Find the RPC / HTTP path** in proto (`schema/proto/rapid/**`):
-   - `grep` for `option (google.api.http)` or the specific path (e.g. `/admin/v1/tenants`)
+- Session extraction: `internal/infrastructure/grpc/internal/interceptor/session_interceptor/`
+- Access control: `internal/infrastructure/grpc/internal/interceptor/authorization_interceptor/`
+- Role checks in usecase: look for `param.AdminRole.IsRoot()` patterns
 
-2. **Find the handler method**:
-   - `grep` for the RPC name in `internal/infrastructure/grpc/internal/handler/`
+### Impact analysis before changes
 
-3. **Trace into the usecase interactor**:
-   - the handler will call a usecase interactor (e.g. `AdminTenantInteractor`)
+1. Find interface definition in `internal/domain/repository/`
+2. Find all implementations in `internal/infrastructure/*/repository/`
+3. Find all callers in `internal/usecase/`
+4. Check mock generation: `internal/domain/repository/mock/`
 
-4. **Trace into repositories**:
-   - usecase calls domain repositories (`internal/domain/repository/**`)
-   - implementations live under `internal/infrastructure/{mysql|postgresql|spanner}/repository/`
+## Common Search Patterns
 
-### Workflow B: “Where is auth/authorization checked?”
-
-1. Search for interceptors:
-   - `list_dir internal/infrastructure/grpc/internal/interceptor/`
-
-2. Identify session creation and authorization:
-   - `session_interceptor/*` (extracts and stores staff claims)
-   - `authorization_interceptor/*` (e.g. Admin API gating)
-
-### Workflow C: Impact analysis before changing a type
-
-1. `grep` the type name (e.g. `StaffClaims`, `BaseGetOptions`) in `internal/`
-2. Check callers first (usecases/handlers), then implementations (repositories)
-3. For interface changes: also check mock generation targets and tests
+| Goal | Search |
+|------|--------|
+| Find entity by name | `grep "type Staff struct" internal/domain/model/` |
+| Find error definition | `grep "StaffNotFoundErr" internal/domain/errors/` |
+| Find input validation | `grep "type AdminCreateStaff" internal/usecase/input/` |
+| Find marshaller | `grep "StaffToModel\|StaffToPb" internal/` |
+| Find DI registration | `grep "AdminStaffInteractor" internal/infrastructure/dependency/` |
 
 ## Tips
 
-- Prefer starting with **proto → handler → usecase → repository** for request flows.
-- When you see a misleading doc path, verify it exists with `list_dir` before trusting it.
-
+- Start from proto for API-related investigation
+- Start from domain model for business logic investigation
+- Check `dependency.go` to understand how components are wired
+- Marshallers exist in two places: repository (DB<->domain) and handler (domain<->proto)
