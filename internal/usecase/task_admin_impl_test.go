@@ -10,9 +10,9 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
+	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
-	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 	"github.com/stretchr/testify/require"
@@ -105,7 +105,7 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 			authUID := "test-auth-uid"
 			email := "test@example.com"
 			displayName := "Test Admin"
-			mockID := id.Mock()  // Mock ID generation
+			mockID := id.Mock() // Mock ID generation
 
 			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
 			mockAdminAuthRepo.EXPECT().
@@ -126,7 +126,7 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 				displayName,
 				requestTime,
 			)
-			admin.ID = mockID  // Set to mock ID
+			admin.ID = mockID // Set to mock ID
 
 			mockAdminRepo := mock_repository.NewMockAdmin(ctrl)
 			mockAdminRepo.EXPECT().
@@ -156,7 +156,7 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 			authUID := "test-auth-uid"
 			email := "test@example.com"
 			displayName := "Test Admin"
-			mockID := id.Mock()  // Mock ID generation
+			mockID := id.Mock() // Mock ID generation
 
 			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
 			mockAdminAuthRepo.EXPECT().
@@ -177,7 +177,7 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 				displayName,
 				requestTime,
 			)
-			admin.ID = mockID  // Set to mock ID
+			admin.ID = mockID // Set to mock ID
 
 			// Create expected claims object
 			claims := model.NewAdminClaims(
@@ -220,7 +220,7 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 			email := "test@example.com"
 			displayName := "Test Admin"
 			password := "password123"
-			mockID := id.Mock()  // Mock ID generation
+			mockID := id.Mock() // Mock ID generation
 
 			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
 			mockAdminAuthRepo.EXPECT().
@@ -241,7 +241,7 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 				displayName,
 				requestTime,
 			)
-			admin.ID = mockID  // Set to mock ID
+			admin.ID = mockID // Set to mock ID
 
 			// Create expected claims object
 			claims := model.NewAdminClaims(
