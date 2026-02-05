@@ -368,6 +368,10 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 			testdata := factory.NewFactory()
 			requestTime := testdata.RequestTime
 			tenant := testdata.Tenant
+			updatedName := "Updated Name"
+			updatedTenant := &model.Tenant{} //nolint:exhaustruct
+			factory.CloneValue(tenant, updatedTenant)
+			updatedTenant.Name = updatedName
 
 			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 			mockTenantRepo.EXPECT().
@@ -381,17 +385,17 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 					}).
 				Return(tenant, nil)
 			mockTenantRepo.EXPECT().
-				Update(gomock.Any(), tenant).
+				Update(gomock.Any(), updatedTenant).
 				Return(nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{updatedTenant}).
 				Return(nil)
 
 			return testcase{
 				args: args{
 					tenantID:    tenant.ID,
-					name:        null.StringFrom(tenant.Name),
+					name:        null.StringFrom(updatedName),
 					requestTime: requestTime,
 				},
 				usecase: &adminTenantInteractor{
@@ -400,7 +404,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 					assetService:     mockAssetService,
 				},
 				want: want{
-					tenant: tenant,
+					tenant: updatedTenant,
 				},
 			}
 		},
