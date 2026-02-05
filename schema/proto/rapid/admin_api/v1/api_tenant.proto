@@ -29,6 +29,16 @@ message GetTenantResponse {
 message ListTenantsRequest {
   uint64 page = 1;
   uint64 limit = 2;
+
+  enum ListTenantsSortKey {
+    LIST_TENANTS_SORT_KEY_UNSPECIFIED = 0;
+    LIST_TENANTS_SORT_KEY_CREATED_AT_DESC = 1;
+    LIST_TENANTS_SORT_KEY_CREATED_AT_ASC = 2;
+    LIST_TENANTS_SORT_KEY_NAME_ASC = 3;
+    LIST_TENANTS_SORT_KEY_NAME_DESC = 4;
+  }
+
+  optional ListTenantsSortKey sort_key = 3;
 }
 
 message ListTenantsResponse {

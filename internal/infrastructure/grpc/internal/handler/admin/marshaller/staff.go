@@ -65,3 +65,37 @@ func StaffsPartialToPB(slice model.Staffs) []*admin_apiv1.StaffPartial {
 	}
 	return dsts
 }
+
+func StaffSortKeyToPB(s model.StaffSortKey) admin_apiv1.ListStaffsRequest_ListStaffsSortKey {
+	switch s {
+	case model.StaffSortKeyCreatedAtDesc:
+		return admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_CREATED_AT_DESC
+	case model.StaffSortKeyCreatedAtAsc:
+		return admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_CREATED_AT_ASC
+	case model.StaffSortKeyDisplayNameAsc:
+		return admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_DISPLAY_NAME_ASC
+	case model.StaffSortKeyDisplayNameDesc:
+		return admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC
+	case model.StaffSortKeyUnknown:
+		return admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_UNSPECIFIED
+	default:
+		return admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_UNSPECIFIED
+	}
+}
+
+func StaffSortKeyToModel(s admin_apiv1.ListStaffsRequest_ListStaffsSortKey) model.StaffSortKey {
+	switch s {
+	case admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_CREATED_AT_DESC:
+		return model.StaffSortKeyCreatedAtDesc
+	case admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_CREATED_AT_ASC:
+		return model.StaffSortKeyCreatedAtAsc
+	case admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_DISPLAY_NAME_ASC:
+		return model.StaffSortKeyDisplayNameAsc
+	case admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC:
+		return model.StaffSortKeyDisplayNameDesc
+	case admin_apiv1.ListStaffsRequest_LIST_STAFFS_SORT_KEY_UNSPECIFIED:
+		return model.StaffSortKeyUnknown
+	default:
+		return model.StaffSortKeyUnknown
+	}
+}

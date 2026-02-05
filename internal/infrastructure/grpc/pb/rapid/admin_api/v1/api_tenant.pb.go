@@ -23,6 +23,61 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type ListTenantsRequest_ListTenantsSortKey int32
+
+const (
+	ListTenantsRequest_LIST_TENANTS_SORT_KEY_UNSPECIFIED     ListTenantsRequest_ListTenantsSortKey = 0
+	ListTenantsRequest_LIST_TENANTS_SORT_KEY_CREATED_AT_DESC ListTenantsRequest_ListTenantsSortKey = 1
+	ListTenantsRequest_LIST_TENANTS_SORT_KEY_CREATED_AT_ASC  ListTenantsRequest_ListTenantsSortKey = 2
+	ListTenantsRequest_LIST_TENANTS_SORT_KEY_NAME_ASC        ListTenantsRequest_ListTenantsSortKey = 3
+	ListTenantsRequest_LIST_TENANTS_SORT_KEY_NAME_DESC       ListTenantsRequest_ListTenantsSortKey = 4
+)
+
+// Enum value maps for ListTenantsRequest_ListTenantsSortKey.
+var (
+	ListTenantsRequest_ListTenantsSortKey_name = map[int32]string{
+		0: "LIST_TENANTS_SORT_KEY_UNSPECIFIED",
+		1: "LIST_TENANTS_SORT_KEY_CREATED_AT_DESC",
+		2: "LIST_TENANTS_SORT_KEY_CREATED_AT_ASC",
+		3: "LIST_TENANTS_SORT_KEY_NAME_ASC",
+		4: "LIST_TENANTS_SORT_KEY_NAME_DESC",
+	}
+	ListTenantsRequest_ListTenantsSortKey_value = map[string]int32{
+		"LIST_TENANTS_SORT_KEY_UNSPECIFIED":     0,
+		"LIST_TENANTS_SORT_KEY_CREATED_AT_DESC": 1,
+		"LIST_TENANTS_SORT_KEY_CREATED_AT_ASC":  2,
+		"LIST_TENANTS_SORT_KEY_NAME_ASC":        3,
+		"LIST_TENANTS_SORT_KEY_NAME_DESC":       4,
+	}
+)
+
+func (x ListTenantsRequest_ListTenantsSortKey) Enum() *ListTenantsRequest_ListTenantsSortKey {
+	p := new(ListTenantsRequest_ListTenantsSortKey)
+	*p = x
+	return p
+}
+
+func (x ListTenantsRequest_ListTenantsSortKey) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ListTenantsRequest_ListTenantsSortKey) Descriptor() protoreflect.EnumDescriptor {
+	return file_rapid_admin_api_v1_api_tenant_proto_enumTypes[0].Descriptor()
+}
+
+func (ListTenantsRequest_ListTenantsSortKey) Type() protoreflect.EnumType {
+	return &file_rapid_admin_api_v1_api_tenant_proto_enumTypes[0]
+}
+
+func (x ListTenantsRequest_ListTenantsSortKey) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ListTenantsRequest_ListTenantsSortKey.Descriptor instead.
+func (ListTenantsRequest_ListTenantsSortKey) EnumDescriptor() ([]byte, []int) {
+	return file_rapid_admin_api_v1_api_tenant_proto_rawDescGZIP(), []int{2, 0}
+}
+
 type GetTenantRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	TenantId      string                 `protobuf:"bytes,1,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
@@ -112,9 +167,10 @@ func (x *GetTenantResponse) GetTenant() *Tenant {
 }
 
 type ListTenantsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Page          uint64                 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
-	Limit         uint64                 `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	state         protoimpl.MessageState                 `protogen:"open.v1"`
+	Page          uint64                                 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Limit         uint64                                 `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	SortKey       *ListTenantsRequest_ListTenantsSortKey `protobuf:"varint,3,opt,name=sort_key,json=sortKey,proto3,enum=rapid.admin_api.v1.ListTenantsRequest_ListTenantsSortKey,oneof" json:"sort_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -161,6 +217,13 @@ func (x *ListTenantsRequest) GetLimit() uint64 {
 		return x.Limit
 	}
 	return 0
+}
+
+func (x *ListTenantsRequest) GetSortKey() ListTenantsRequest_ListTenantsSortKey {
+	if x != nil && x.SortKey != nil {
+		return *x.SortKey
+	}
+	return ListTenantsRequest_LIST_TENANTS_SORT_KEY_UNSPECIFIED
 }
 
 type ListTenantsResponse struct {
@@ -489,10 +552,18 @@ const file_rapid_admin_api_v1_api_tenant_proto_rawDesc = "" +
 	"\f\xd2\x01\ttenant_id\"W\n" +
 	"\x11GetTenantResponse\x122\n" +
 	"\x06tenant\x18\x01 \x01(\v2\x1a.rapid.admin_api.v1.TenantR\x06tenant:\x0e\x92A\v\n" +
-	"\t\xd2\x01\x06tenant\">\n" +
+	"\t\xd2\x01\x06tenant\"\x82\x03\n" +
 	"\x12ListTenantsRequest\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x04R\x04page\x12\x14\n" +
-	"\x05limit\x18\x02 \x01(\x04R\x05limit\"\xa9\x01\n" +
+	"\x05limit\x18\x02 \x01(\x04R\x05limit\x12Y\n" +
+	"\bsort_key\x18\x03 \x01(\x0e29.rapid.admin_api.v1.ListTenantsRequest.ListTenantsSortKeyH\x00R\asortKey\x88\x01\x01\"\xd9\x01\n" +
+	"\x12ListTenantsSortKey\x12%\n" +
+	"!LIST_TENANTS_SORT_KEY_UNSPECIFIED\x10\x00\x12)\n" +
+	"%LIST_TENANTS_SORT_KEY_CREATED_AT_DESC\x10\x01\x12(\n" +
+	"$LIST_TENANTS_SORT_KEY_CREATED_AT_ASC\x10\x02\x12\"\n" +
+	"\x1eLIST_TENANTS_SORT_KEY_NAME_ASC\x10\x03\x12#\n" +
+	"\x1fLIST_TENANTS_SORT_KEY_NAME_DESC\x10\x04B\v\n" +
+	"\t_sort_key\"\xa9\x01\n" +
 	"\x13ListTenantsResponse\x124\n" +
 	"\atenants\x18\x01 \x03(\v2\x1a.rapid.admin_api.v1.TenantR\atenants\x12>\n" +
 	"\n" +
@@ -532,32 +603,35 @@ func file_rapid_admin_api_v1_api_tenant_proto_rawDescGZIP() []byte {
 	return file_rapid_admin_api_v1_api_tenant_proto_rawDescData
 }
 
+var file_rapid_admin_api_v1_api_tenant_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_rapid_admin_api_v1_api_tenant_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_rapid_admin_api_v1_api_tenant_proto_goTypes = []any{
-	(*GetTenantRequest)(nil),     // 0: rapid.admin_api.v1.GetTenantRequest
-	(*GetTenantResponse)(nil),    // 1: rapid.admin_api.v1.GetTenantResponse
-	(*ListTenantsRequest)(nil),   // 2: rapid.admin_api.v1.ListTenantsRequest
-	(*ListTenantsResponse)(nil),  // 3: rapid.admin_api.v1.ListTenantsResponse
-	(*CreateTenantRequest)(nil),  // 4: rapid.admin_api.v1.CreateTenantRequest
-	(*CreateTenantResponse)(nil), // 5: rapid.admin_api.v1.CreateTenantResponse
-	(*UpdateTenantRequest)(nil),  // 6: rapid.admin_api.v1.UpdateTenantRequest
-	(*UpdateTenantResponse)(nil), // 7: rapid.admin_api.v1.UpdateTenantResponse
-	(*DeleteTenantRequest)(nil),  // 8: rapid.admin_api.v1.DeleteTenantRequest
-	(*DeleteTenantResponse)(nil), // 9: rapid.admin_api.v1.DeleteTenantResponse
-	(*Tenant)(nil),               // 10: rapid.admin_api.v1.Tenant
-	(*Pagination)(nil),           // 11: rapid.admin_api.v1.Pagination
+	(ListTenantsRequest_ListTenantsSortKey)(0), // 0: rapid.admin_api.v1.ListTenantsRequest.ListTenantsSortKey
+	(*GetTenantRequest)(nil),                   // 1: rapid.admin_api.v1.GetTenantRequest
+	(*GetTenantResponse)(nil),                  // 2: rapid.admin_api.v1.GetTenantResponse
+	(*ListTenantsRequest)(nil),                 // 3: rapid.admin_api.v1.ListTenantsRequest
+	(*ListTenantsResponse)(nil),                // 4: rapid.admin_api.v1.ListTenantsResponse
+	(*CreateTenantRequest)(nil),                // 5: rapid.admin_api.v1.CreateTenantRequest
+	(*CreateTenantResponse)(nil),               // 6: rapid.admin_api.v1.CreateTenantResponse
+	(*UpdateTenantRequest)(nil),                // 7: rapid.admin_api.v1.UpdateTenantRequest
+	(*UpdateTenantResponse)(nil),               // 8: rapid.admin_api.v1.UpdateTenantResponse
+	(*DeleteTenantRequest)(nil),                // 9: rapid.admin_api.v1.DeleteTenantRequest
+	(*DeleteTenantResponse)(nil),               // 10: rapid.admin_api.v1.DeleteTenantResponse
+	(*Tenant)(nil),                             // 11: rapid.admin_api.v1.Tenant
+	(*Pagination)(nil),                         // 12: rapid.admin_api.v1.Pagination
 }
 var file_rapid_admin_api_v1_api_tenant_proto_depIdxs = []int32{
-	10, // 0: rapid.admin_api.v1.GetTenantResponse.tenant:type_name -> rapid.admin_api.v1.Tenant
-	10, // 1: rapid.admin_api.v1.ListTenantsResponse.tenants:type_name -> rapid.admin_api.v1.Tenant
-	11, // 2: rapid.admin_api.v1.ListTenantsResponse.pagination:type_name -> rapid.admin_api.v1.Pagination
-	10, // 3: rapid.admin_api.v1.CreateTenantResponse.tenant:type_name -> rapid.admin_api.v1.Tenant
-	10, // 4: rapid.admin_api.v1.UpdateTenantResponse.tenant:type_name -> rapid.admin_api.v1.Tenant
-	5,  // [5:5] is the sub-list for method output_type
-	5,  // [5:5] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	11, // 0: rapid.admin_api.v1.GetTenantResponse.tenant:type_name -> rapid.admin_api.v1.Tenant
+	0,  // 1: rapid.admin_api.v1.ListTenantsRequest.sort_key:type_name -> rapid.admin_api.v1.ListTenantsRequest.ListTenantsSortKey
+	11, // 2: rapid.admin_api.v1.ListTenantsResponse.tenants:type_name -> rapid.admin_api.v1.Tenant
+	12, // 3: rapid.admin_api.v1.ListTenantsResponse.pagination:type_name -> rapid.admin_api.v1.Pagination
+	11, // 4: rapid.admin_api.v1.CreateTenantResponse.tenant:type_name -> rapid.admin_api.v1.Tenant
+	11, // 5: rapid.admin_api.v1.UpdateTenantResponse.tenant:type_name -> rapid.admin_api.v1.Tenant
+	6,  // [6:6] is the sub-list for method output_type
+	6,  // [6:6] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_rapid_admin_api_v1_api_tenant_proto_init() }
@@ -567,19 +641,21 @@ func file_rapid_admin_api_v1_api_tenant_proto_init() {
 	}
 	file_rapid_admin_api_v1_model_pagination_proto_init()
 	file_rapid_admin_api_v1_model_tenant_proto_init()
+	file_rapid_admin_api_v1_api_tenant_proto_msgTypes[2].OneofWrappers = []any{}
 	file_rapid_admin_api_v1_api_tenant_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rapid_admin_api_v1_api_tenant_proto_rawDesc), len(file_rapid_admin_api_v1_api_tenant_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_rapid_admin_api_v1_api_tenant_proto_goTypes,
 		DependencyIndexes: file_rapid_admin_api_v1_api_tenant_proto_depIdxs,
+		EnumInfos:         file_rapid_admin_api_v1_api_tenant_proto_enumTypes,
 		MessageInfos:      file_rapid_admin_api_v1_api_tenant_proto_msgTypes,
 	}.Build()
 	File_rapid_admin_api_v1_api_tenant_proto = out.File

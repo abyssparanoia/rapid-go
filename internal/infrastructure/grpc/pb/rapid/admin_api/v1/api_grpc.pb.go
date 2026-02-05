@@ -26,7 +26,10 @@ const (
 	AdminV1Service_CreateTenant_FullMethodName            = "/rapid.admin_api.v1.AdminV1Service/CreateTenant"
 	AdminV1Service_UpdateTenant_FullMethodName            = "/rapid.admin_api.v1.AdminV1Service/UpdateTenant"
 	AdminV1Service_DeleteTenant_FullMethodName            = "/rapid.admin_api.v1.AdminV1Service/DeleteTenant"
+	AdminV1Service_GetStaff_FullMethodName                = "/rapid.admin_api.v1.AdminV1Service/GetStaff"
+	AdminV1Service_ListStaffs_FullMethodName              = "/rapid.admin_api.v1.AdminV1Service/ListStaffs"
 	AdminV1Service_CreateStaff_FullMethodName             = "/rapid.admin_api.v1.AdminV1Service/CreateStaff"
+	AdminV1Service_UpdateStaff_FullMethodName             = "/rapid.admin_api.v1.AdminV1Service/UpdateStaff"
 )
 
 // AdminV1ServiceClient is the client API for AdminV1Service service.
@@ -39,7 +42,10 @@ type AdminV1ServiceClient interface {
 	CreateTenant(ctx context.Context, in *CreateTenantRequest, opts ...grpc.CallOption) (*CreateTenantResponse, error)
 	UpdateTenant(ctx context.Context, in *UpdateTenantRequest, opts ...grpc.CallOption) (*UpdateTenantResponse, error)
 	DeleteTenant(ctx context.Context, in *DeleteTenantRequest, opts ...grpc.CallOption) (*DeleteTenantResponse, error)
+	GetStaff(ctx context.Context, in *GetStaffRequest, opts ...grpc.CallOption) (*GetStaffResponse, error)
+	ListStaffs(ctx context.Context, in *ListStaffsRequest, opts ...grpc.CallOption) (*ListStaffsResponse, error)
 	CreateStaff(ctx context.Context, in *CreateStaffRequest, opts ...grpc.CallOption) (*CreateStaffResponse, error)
+	UpdateStaff(ctx context.Context, in *UpdateStaffRequest, opts ...grpc.CallOption) (*UpdateStaffResponse, error)
 }
 
 type adminV1ServiceClient struct {
@@ -110,10 +116,40 @@ func (c *adminV1ServiceClient) DeleteTenant(ctx context.Context, in *DeleteTenan
 	return out, nil
 }
 
+func (c *adminV1ServiceClient) GetStaff(ctx context.Context, in *GetStaffRequest, opts ...grpc.CallOption) (*GetStaffResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetStaffResponse)
+	err := c.cc.Invoke(ctx, AdminV1Service_GetStaff_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminV1ServiceClient) ListStaffs(ctx context.Context, in *ListStaffsRequest, opts ...grpc.CallOption) (*ListStaffsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListStaffsResponse)
+	err := c.cc.Invoke(ctx, AdminV1Service_ListStaffs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *adminV1ServiceClient) CreateStaff(ctx context.Context, in *CreateStaffRequest, opts ...grpc.CallOption) (*CreateStaffResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateStaffResponse)
 	err := c.cc.Invoke(ctx, AdminV1Service_CreateStaff_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminV1ServiceClient) UpdateStaff(ctx context.Context, in *UpdateStaffRequest, opts ...grpc.CallOption) (*UpdateStaffResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateStaffResponse)
+	err := c.cc.Invoke(ctx, AdminV1Service_UpdateStaff_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +166,10 @@ type AdminV1ServiceServer interface {
 	CreateTenant(context.Context, *CreateTenantRequest) (*CreateTenantResponse, error)
 	UpdateTenant(context.Context, *UpdateTenantRequest) (*UpdateTenantResponse, error)
 	DeleteTenant(context.Context, *DeleteTenantRequest) (*DeleteTenantResponse, error)
+	GetStaff(context.Context, *GetStaffRequest) (*GetStaffResponse, error)
+	ListStaffs(context.Context, *ListStaffsRequest) (*ListStaffsResponse, error)
 	CreateStaff(context.Context, *CreateStaffRequest) (*CreateStaffResponse, error)
+	UpdateStaff(context.Context, *UpdateStaffRequest) (*UpdateStaffResponse, error)
 }
 
 // UnimplementedAdminV1ServiceServer should be embedded to have
@@ -158,8 +197,17 @@ func (UnimplementedAdminV1ServiceServer) UpdateTenant(context.Context, *UpdateTe
 func (UnimplementedAdminV1ServiceServer) DeleteTenant(context.Context, *DeleteTenantRequest) (*DeleteTenantResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteTenant not implemented")
 }
+func (UnimplementedAdminV1ServiceServer) GetStaff(context.Context, *GetStaffRequest) (*GetStaffResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetStaff not implemented")
+}
+func (UnimplementedAdminV1ServiceServer) ListStaffs(context.Context, *ListStaffsRequest) (*ListStaffsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListStaffs not implemented")
+}
 func (UnimplementedAdminV1ServiceServer) CreateStaff(context.Context, *CreateStaffRequest) (*CreateStaffResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateStaff not implemented")
+}
+func (UnimplementedAdminV1ServiceServer) UpdateStaff(context.Context, *UpdateStaffRequest) (*UpdateStaffResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateStaff not implemented")
 }
 func (UnimplementedAdminV1ServiceServer) testEmbeddedByValue() {}
 
@@ -289,6 +337,42 @@ func _AdminV1Service_DeleteTenant_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminV1Service_GetStaff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStaffRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminV1ServiceServer).GetStaff(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminV1Service_GetStaff_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminV1ServiceServer).GetStaff(ctx, req.(*GetStaffRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminV1Service_ListStaffs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListStaffsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminV1ServiceServer).ListStaffs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminV1Service_ListStaffs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminV1ServiceServer).ListStaffs(ctx, req.(*ListStaffsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AdminV1Service_CreateStaff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateStaffRequest)
 	if err := dec(in); err != nil {
@@ -303,6 +387,24 @@ func _AdminV1Service_CreateStaff_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminV1ServiceServer).CreateStaff(ctx, req.(*CreateStaffRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminV1Service_UpdateStaff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateStaffRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminV1ServiceServer).UpdateStaff(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminV1Service_UpdateStaff_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminV1ServiceServer).UpdateStaff(ctx, req.(*UpdateStaffRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -339,8 +441,20 @@ var AdminV1Service_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminV1Service_DeleteTenant_Handler,
 		},
 		{
+			MethodName: "GetStaff",
+			Handler:    _AdminV1Service_GetStaff_Handler,
+		},
+		{
+			MethodName: "ListStaffs",
+			Handler:    _AdminV1Service_ListStaffs_Handler,
+		},
+		{
 			MethodName: "CreateStaff",
 			Handler:    _AdminV1Service_CreateStaff_Handler,
+		},
+		{
+			MethodName: "UpdateStaff",
+			Handler:    _AdminV1Service_UpdateStaff_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

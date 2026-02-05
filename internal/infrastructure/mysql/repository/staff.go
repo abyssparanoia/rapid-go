@@ -55,6 +55,24 @@ func (r *staff) List(
 ) (model.Staffs, error) {
 	mods := []qm.QueryMod{}
 	mods = append(mods, r.buildListQuery(query)...)
+
+	// Sorting (BEFORE pagination)
+	if query.SortKey.Valid && query.SortKey.Value().Valid() {
+		switch query.SortKey.Value() {
+		case model.StaffSortKeyCreatedAtDesc:
+			mods = append(mods, qm.OrderBy("`created_at` DESC"))
+		case model.StaffSortKeyCreatedAtAsc:
+			mods = append(mods, qm.OrderBy("`created_at` ASC"))
+		case model.StaffSortKeyDisplayNameAsc:
+			mods = append(mods, qm.OrderBy("`display_name` ASC"))
+		case model.StaffSortKeyDisplayNameDesc:
+			mods = append(mods, qm.OrderBy("`display_name` DESC"))
+		case model.StaffSortKeyUnknown:
+			return nil, errors.InternalErr.Errorf("invalid sort key: %s", query.SortKey.Value())
+		}
+	}
+
+	// Pagination
 	if query.Page.Valid && query.Limit.Valid {
 		mods = append(mods,
 			qm.Limit(int(query.Limit.Uint64)),

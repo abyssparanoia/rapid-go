@@ -7,6 +7,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/domain/service"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 )
@@ -66,6 +67,7 @@ func (i *adminTenantInteractor) List(
 			Page:  null.Uint64From(param.Page),
 			Limit: null.Uint64From(param.Limit),
 		},
+		SortKey: nullable.TypeFrom(param.SortKey),
 	}
 	tenants, err := i.tenantRepository.List(
 		ctx,

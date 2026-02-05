@@ -27,6 +27,45 @@ internal/infrastructure/grpc/
 └── pb/                        # Generated protobuf code
 ```
 
+## Handler Method Ordering
+
+**All handler methods must be implemented in the following order:**
+
+1. **Get methods** - Single resource retrieval
+2. **List methods** - Collection retrieval with pagination
+3. **Create methods** - Resource creation
+4. **Custom operations (no ID)** - Special operations without resource ID
+5. **Update methods** - Resource modification
+6. **Custom operations (with ID)** - Special operations with resource ID
+7. **Delete methods** - Resource deletion
+
+**Example ordering in handler file:**
+
+```go
+// Get
+func (h *AdminHandler) GetStaff(ctx context.Context, req *pb.GetStaffRequest) (*pb.GetStaffResponse, error) {...}
+
+// List
+func (h *AdminHandler) ListStaffs(ctx context.Context, req *pb.ListStaffsRequest) (*pb.ListStaffsResponse, error) {...}
+
+// Create
+func (h *AdminHandler) CreateStaff(ctx context.Context, req *pb.CreateStaffRequest) (*pb.CreateStaffResponse, error) {...}
+
+// Custom (no ID)
+func (h *AdminHandler) SendStaffNotifications(ctx context.Context, req *pb.SendStaffNotificationsRequest) (*pb.SendStaffNotificationsResponse, error) {...}
+
+// Update
+func (h *AdminHandler) UpdateStaff(ctx context.Context, req *pb.UpdateStaffRequest) (*pb.UpdateStaffResponse, error) {...}
+
+// Custom (with ID)
+func (h *AdminHandler) SendStaffNotification(ctx context.Context, req *pb.SendStaffNotificationRequest) (*pb.SendStaffNotificationResponse, error) {...}
+
+// Delete
+func (h *AdminHandler) DeleteStaff(ctx context.Context, req *pb.DeleteStaffRequest) (*pb.DeleteStaffResponse, error) {...}
+```
+
+**Important**: This ordering ensures consistency with proto definitions and usecase interfaces.
+
 ## Handler Structure
 
 Location: `internal/infrastructure/grpc/internal/handler/{admin|public|debug}/handler.go`

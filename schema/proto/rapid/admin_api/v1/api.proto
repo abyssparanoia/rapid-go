@@ -35,9 +35,21 @@ service AdminV1Service {
   rpc DeleteTenant(DeleteTenantRequest) returns (DeleteTenantResponse) {
     option (google.api.http) = {delete: "/admin/v1/tenants/{tenant_id}"};
   }
+  rpc GetStaff(GetStaffRequest) returns (GetStaffResponse) {
+    option (google.api.http) = {get: "/admin/v1/staffs/{staff_id}"};
+  }
+  rpc ListStaffs(ListStaffsRequest) returns (ListStaffsResponse) {
+    option (google.api.http) = {get: "/admin/v1/staffs"};
+  }
   rpc CreateStaff(CreateStaffRequest) returns (CreateStaffResponse) {
     option (google.api.http) = {
       post: "/admin/v1/staffs"
+      body: "*"
+    };
+  }
+  rpc UpdateStaff(UpdateStaffRequest) returns (UpdateStaffResponse) {
+    option (google.api.http) = {
+      patch: "/admin/v1/staffs/{staff_id}"
       body: "*"
     };
   }

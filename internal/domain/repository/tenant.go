@@ -5,6 +5,7 @@ import (
 
 	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 )
 
 //go:generate go tool go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
@@ -50,4 +51,5 @@ type GetTenantQuery struct {
 
 type ListTenantsQuery struct {
 	BaseListOptions
+	SortKey nullable.Type[model.TenantSortKey]
 }

@@ -4,9 +4,11 @@ import (
 	"context"
 
 	"github.com/aarondl/null/v8"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/admin/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/request_interceptor"
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
@@ -26,11 +28,17 @@ func (h *AdminHandler) GetTenant(ctx context.Context, req *admin_apiv1.GetTenant
 }
 
 func (h *AdminHandler) ListTenants(ctx context.Context, req *admin_apiv1.ListTenantsRequest) (*admin_apiv1.ListTenantsResponse, error) {
+	var sortKey nullable.Type[model.TenantSortKey]
+	if req.SortKey != nil {
+		sortKey = nullable.TypeFrom(marshaller.TenantSortKeyToModel(*req.SortKey))
+	}
+
 	got, err := h.tenantInteractor.List(
 		ctx,
 		input.NewAdminListTenants(
 			req.GetPage(),
 			req.GetLimit(),
+			sortKey,
 		),
 	)
 	if err != nil {

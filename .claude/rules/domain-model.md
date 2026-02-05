@@ -295,19 +295,52 @@ func (m AssetType) IsPublic() bool {
 
 ## Sort Key Types
 
+All List operations have a corresponding SortKey type for ordering results. This is a **unified specification** across the codebase.
+
+### Pattern
+
 ```go
 type ExampleSortKey string
 
 const (
     ExampleSortKeyUnknown       ExampleSortKey = "unknown"
     ExampleSortKeyCreatedAtDesc ExampleSortKey = "created_at_desc"
+    ExampleSortKeyCreatedAtAsc  ExampleSortKey = "created_at_asc"
     ExampleSortKeyNameAsc       ExampleSortKey = "name_asc"
+    ExampleSortKeyNameDesc      ExampleSortKey = "name_desc"
 )
+
+func NewExampleSortKey(s string) ExampleSortKey {
+    switch s {
+    case ExampleSortKeyCreatedAtDesc.String(),
+        ExampleSortKeyCreatedAtAsc.String(),
+        ExampleSortKeyNameAsc.String(),
+        ExampleSortKeyNameDesc.String():
+        return ExampleSortKey(s)
+    default:
+        return ExampleSortKeyUnknown
+    }
+}
+
+func (k ExampleSortKey) String() string {
+    return string(k)
+}
 
 func (k ExampleSortKey) Valid() bool {
     return k != ExampleSortKeyUnknown && k != ""
 }
 ```
+
+### Naming Convention
+
+- Type: `{Entity}SortKey`
+- Constants: `{Entity}SortKey{Field}{Direction}` (e.g., `StaffSortKeyCreatedAtDesc`)
+- Always include `Unknown` constant
+- Common fields: `CreatedAt`, `UpdatedAt`, entity-specific fields
+
+### Default Value
+
+The default sort key is **always** `CreatedAtDesc`. This default is applied in the input layer constructor, not in the domain model.
 
 ## State Change Methods (Domain Logic First)
 

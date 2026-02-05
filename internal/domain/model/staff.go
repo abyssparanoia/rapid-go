@@ -5,6 +5,7 @@ import (
 
 	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 )
 
 type Staff struct {
@@ -61,4 +62,22 @@ func (m *Staff) SetImageURL(
 	imageURL string,
 ) {
 	m.ImageURL = null.StringFrom(imageURL)
+}
+
+func (m *Staff) Update(
+	displayName null.String,
+	role nullable.Type[StaffRole],
+	imagePath null.String,
+	t time.Time,
+) {
+	if displayName.Valid {
+		m.DisplayName = displayName.String
+	}
+	if role.Valid {
+		m.Role = role.Value()
+	}
+	if imagePath.Valid {
+		m.ImagePath = imagePath.String
+	}
+	m.UpdatedAt = t
 }

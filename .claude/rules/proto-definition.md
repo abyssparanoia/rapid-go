@@ -36,6 +36,47 @@ schema/proto/rapid/
 - `rapid.public_api.v1`
 - `rapid.debug_api.v1`
 
+## RPC Method Ordering
+
+**All RPC methods must be defined in the following order across all proto files:**
+
+1. **Get methods** - Single resource retrieval (e.g., `GetStaff`)
+2. **List methods** - Collection retrieval with pagination (e.g., `ListStaffs`)
+3. **Create methods** - Resource creation (e.g., `CreateStaff`)
+4. **Custom operations (no ID)** - Special operations without resource ID (e.g., `rpc SendNotifications` with path `/staffs:send-notifications`)
+5. **Update methods** - Resource modification (e.g., `UpdateStaff`)
+6. **Custom operations (with ID)** - Special operations with resource ID (e.g., `rpc SendNotification` with path `/staffs/{staff_id}:send-notification`)
+7. **Delete methods** - Resource deletion (e.g., `DeleteStaff`)
+
+**Example ordering in api.proto:**
+
+```protobuf
+service AdminV1Service {
+  // Get
+  rpc GetStaff(GetStaffRequest) returns (GetStaffResponse) {...}
+
+  // List
+  rpc ListStaffs(ListStaffsRequest) returns (ListStaffsResponse) {...}
+
+  // Create
+  rpc CreateStaff(CreateStaffRequest) returns (CreateStaffResponse) {...}
+
+  // Custom (no ID)
+  rpc SendStaffNotifications(SendStaffNotificationsRequest) returns (SendStaffNotificationsResponse) {...}
+
+  // Update
+  rpc UpdateStaff(UpdateStaffRequest) returns (UpdateStaffResponse) {...}
+
+  // Custom (with ID)
+  rpc SendStaffNotification(SendStaffNotificationRequest) returns (SendStaffNotificationResponse) {...}
+
+  // Delete
+  rpc DeleteStaff(DeleteStaffRequest) returns (DeleteStaffResponse) {...}
+}
+```
+
+**Important**: This ordering applies to both `api.proto` service definitions and `api_{resource}.proto` message definitions.
+
 ## File Organization
 
 ### `api.proto` - Service Definition
@@ -338,6 +379,94 @@ Special endpoint patterns:
 ## Optional Fields
 
 - For partial updates (PATCH), use `optional` for fields that may be updated (e.g. `optional string name = 2;`).
+
+## List Request Patterns (Pagination & SortKey)
+
+All List operations follow a unified specification for pagination and sorting.
+
+### Required Fields in ListXXXRequest
+
+Only truly required fields (e.g., `tenant_id` for tenant-scoped lists) should be marked as required in OpenAPI schema. Pagination fields (`page`, `limit`) and `sort_key` are **optional** - defaults are applied in the input layer constructor.
+
+```protobuf
+message ListStaffsRequest {
+  string tenant_id = 1;
+  uint64 page = 2;
+  uint64 limit = 3;
+  optional ListStaffsSortKey sort_key = 4;
+
+  enum ListStaffsSortKey {
+    LIST_STAFFS_SORT_KEY_UNSPECIFIED = 0;
+    LIST_STAFFS_SORT_KEY_CREATED_AT_DESC = 1;
+    LIST_STAFFS_SORT_KEY_CREATED_AT_ASC = 2;
+    LIST_STAFFS_SORT_KEY_DISPLAY_NAME_ASC = 3;
+    LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC = 4;
+  }
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant_id"]  // Only tenant_id is required
+    }
+  };
+}
+```
+
+### SortKey Enum Naming Convention
+
+- **Enum name**: `List{Entity}sSortKey` (nested inside `List{Entity}sRequest`)
+- **Enum values**: `LIST_{ENTITY}S_SORT_KEY_{FIELD}_{DIRECTION}`
+  - Always include `UNSPECIFIED = 0` as first value
+  - Direction: `ASC` or `DESC`
+  - Common fields: `CREATED_AT`, `UPDATED_AT`, entity-specific fields (e.g., `NAME`, `DISPLAY_NAME`)
+
+### SortKey Enum Positioning
+
+**IMPORTANT**: The enum definition must appear **BEFORE** the field that uses it, not after.
+
+```protobuf
+message ListStaffsRequest {
+  string tenant_id = 1;
+  uint64 page = 2;
+  uint64 limit = 3;
+
+  // CORRECT - Enum defined BEFORE the field that uses it
+  enum ListStaffsSortKey {
+    LIST_STAFFS_SORT_KEY_UNSPECIFIED = 0;
+    LIST_STAFFS_SORT_KEY_CREATED_AT_DESC = 1;
+    LIST_STAFFS_SORT_KEY_CREATED_AT_ASC = 2;
+    LIST_STAFFS_SORT_KEY_DISPLAY_NAME_ASC = 3;
+    LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC = 4;
+  }
+
+  optional ListStaffsSortKey sort_key = 4;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant_id"]
+    }
+  };
+}
+```
+
+**Anti-pattern** (do not use):
+```protobuf
+message ListStaffsRequest {
+  // ...
+  optional ListStaffsSortKey sort_key = 4;  // Field declared first
+
+  enum ListStaffsSortKey {  // Enum defined after - WRONG
+    // ...
+  }
+}
+```
+
+### Default Values
+
+- **page**: Default `1` if unspecified (applied in input constructor)
+- **limit**: Default `30` if unspecified (applied in input constructor)
+- **sort_key**: Default `CreatedAtDesc` if unspecified (applied in input constructor)
+
+**Important**: Do NOT use proto3 default values or validation tags. Defaults are handled in the Go input layer constructor.
 
 ## OpenAPI (protoc-gen-openapiv2) Required
 
