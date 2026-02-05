@@ -29,14 +29,14 @@ generate.buf:
 .PHONY: generate.sqlboiler.mysql
 generate.sqlboiler.mysql:
 	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/mysql/sqlboiler.toml.tpl > ./db/mysql/sqlboiler.toml
-	go tool github.com/volatiletech/sqlboiler/v4 --config=./db/mysql/sqlboiler.toml mysql
+	go tool github.com/aarondl/sqlboiler/v4 --config=./db/mysql/sqlboiler.toml mysql
 	@rm ./db/mysql/sqlboiler.toml
 	$(call format)
 
 .PHONY: generate.sqlboiler.postgresql
 generate.sqlboiler.postgresql:
 	@sed -e $(SQLBOILER_SED_EXPRESSION) ./db/postgresql/sqlboiler.toml.tpl > ./db/postgresql/sqlboiler.toml
-	go tool github.com/volatiletech/sqlboiler/v4 --config=./db/postgresql/sqlboiler.toml psql
+	go tool github.com/aarondl/sqlboiler/v4 --config=./db/postgresql/sqlboiler.toml psql
 	@rm ./db/postgresql/sqlboiler.toml
 	$(call format)
 

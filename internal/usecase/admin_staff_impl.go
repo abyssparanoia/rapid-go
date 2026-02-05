@@ -3,11 +3,11 @@ package usecase
 import (
 	"context"
 
+	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/domain/service"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
-	"github.com/volatiletech/null/v8"
 )
 
 type adminStaffInteractor struct {

@@ -6,10 +6,10 @@ import (
 	std_errors "errors"
 	"time"
 
+	"github.com/aarondl/sqlboiler/v4/boil"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/avast/retry-go"
 	"github.com/lib/pq"
-	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 var ctxTxKey = struct{}{}

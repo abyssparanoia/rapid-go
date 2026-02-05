@@ -3,8 +3,8 @@ package model
 import (
 	"time"
 
+	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
-	"github.com/volatiletech/null/v8"
 )
 
 type Tenant struct {

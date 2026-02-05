@@ -16,7 +16,7 @@ package marshaller
 import (
     "github.com/abyssparanoia/rapid-go/internal/domain/model"
     "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/internal/dbmodel"
-    "github.com/volatiletech/null/v8"
+    "github.com/aarondl/null/v8"
 )
 
 func ExampleToModel(e *dbmodel.Example) *model.Example {
@@ -283,7 +283,7 @@ package marshaller
 import (
     "github.com/abyssparanoia/rapid-go/internal/domain/model"
     "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/internal/dbmodel"
-    "github.com/volatiletech/null/v8"
+    "github.com/aarondl/null/v8"
 )
 
 func StaffToModel(e *dbmodel.Staff) *model.Staff {

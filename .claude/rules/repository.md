@@ -23,7 +23,7 @@ import (
     "context"
 
     "github.com/abyssparanoia/rapid-go/internal/domain/model"
-    "github.com/volatiletech/null/v8"
+    "github.com/aarondl/null/v8"
 )
 
 //go:generate go tool go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
@@ -99,6 +99,7 @@ type ListExamplesQuery struct {
 ```
 
 **Why `nullable.Type[T]`:**
+
 - Consistent with codebase conventions
 - Provides `.Valid` and `.Value()` methods for safer access
 - Works seamlessly with validation patterns in repository implementations
@@ -116,7 +117,7 @@ type ListExamplesQuery struct {
 ```go
 package repository
 
-import "github.com/volatiletech/null/v8"
+import "github.com/aarondl/null/v8"
 
 type BaseGetOptions struct {
     OrFail     bool  // Return error if not found (vs nil)
@@ -301,6 +302,7 @@ func TenantToModel(s *dbmodel.Tenant) *model.Tenant {
 ```
 
 **Why no recursive ReadonlyReference:**
+
 - Prevents circular dependencies (A → B → A)
 - Reduces memory usage and query complexity
 - Related entities are for display purposes only, not for navigation
@@ -335,6 +337,7 @@ func InvitationToModel(i *dbmodel.Invitation) *model.Invitation {
 ```
 
 **Why var declaration:**
+
 - Ensures all fields are explicitly handled
 - Prevents accidentally omitting fields in struct literal
 - Makes nullable field handling visible and reviewable

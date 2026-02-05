@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/aarondl/sqlboiler/v4/boil"
 	_ "github.com/lib/pq"
-	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 const (

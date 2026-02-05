@@ -11,7 +11,7 @@ import (
     "time"
 
     "github.com/abyssparanoia/rapid-go/internal/pkg/id"
-    "github.com/volatiletech/null/v8"
+    "github.com/aarondl/null/v8"
 )
 
 type Example struct {
@@ -35,15 +35,15 @@ type Example struct {
 
 ### Field Guidelines
 
-| Field Type | Go Type | Notes |
-|------------|---------|-------|
-| ID | `string` | Use `id.New()` in constructor |
-| Foreign Key | `string` | Reference to parent entity |
-| Text | `string` | Short text, names |
-| Status/Enum | Custom type | See Status Types section |
-| Timestamp | `time.Time` | Always required |
-| Optional Timestamp | `null.Time` | For nullable DB columns |
-| Computed | `null.String` | Set by service layer, not persisted |
+| Field Type         | Go Type       | Notes                               |
+| ------------------ | ------------- | ----------------------------------- |
+| ID                 | `string`      | Use `id.New()` in constructor       |
+| Foreign Key        | `string`      | Reference to parent entity          |
+| Text               | `string`      | Short text, names                   |
+| Status/Enum        | Custom type   | See Status Types section            |
+| Timestamp          | `time.Time`   | Always required                     |
+| Optional Timestamp | `null.Time`   | For nullable DB columns             |
+| Computed           | `null.String` | Set by service layer, not persisted |
 
 ## Type Aliases
 
