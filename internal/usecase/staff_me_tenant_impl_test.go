@@ -118,7 +118,7 @@ func TestStaffMeTenantInteractor_Get(t *testing.T) {
 				Return(tenant, nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetTenantURLs(gomock.Any(), gomock.Any()).
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
 				Return(nil)
 
 			return testcase{
@@ -248,22 +248,43 @@ func TestStaffMeTenantInteractor_Update(t *testing.T) {
 		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
 			testdata := factory.NewFactory()
 			tenant := testdata.Tenant
+			updatedTenant := &model.Tenant{} //nolint:exhaustruct
+			factory.CloneValue(tenant, updatedTenant)
 			mockID := id.Mock()
 			tenant.ID = mockID
-			requestTime := time.Now()
+			updatedTenant.ID = mockID
+			updatedTenant.Name = "Updated Name"
+			requestTime := testdata.RequestTime
+			updatedTenant.UpdatedAt = requestTime
 
 			mockTransactable := mock_repository.TestMockTransactable()
 			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 			mockTenantRepo.EXPECT().
-				Get(gomock.Any(), gomock.Any()).
-				Times(2).
+				Get(gomock.Any(),
+					repository.GetTenantQuery{
+						ID: null.StringFrom(tenant.ID),
+						BaseGetOptions: repository.BaseGetOptions{
+							OrFail:    true,
+							ForUpdate: true,
+						},
+					}).
 				Return(tenant, nil)
 			mockTenantRepo.EXPECT().
-				Update(gomock.Any(), gomock.Any()).
+				Update(gomock.Any(), updatedTenant).
 				Return(nil)
+			mockTenantRepo.EXPECT().
+				Get(gomock.Any(),
+					repository.GetTenantQuery{
+						ID: null.StringFrom(tenant.ID),
+						BaseGetOptions: repository.BaseGetOptions{
+							OrFail:  true,
+							Preload: true,
+						},
+					}).
+				Return(updatedTenant, nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetTenantURLs(gomock.Any(), gomock.Any()).
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{updatedTenant}).
 				Return(nil)
 
 			return testcase{
@@ -279,7 +300,7 @@ func TestStaffMeTenantInteractor_Update(t *testing.T) {
 					assetService:     mockAssetService,
 				},
 				want: want{
-					tenant: tenant,
+					tenant: updatedTenant,
 				},
 			}
 		},

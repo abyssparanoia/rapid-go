@@ -115,6 +115,180 @@ func(t *testing.T) (args, usecase, want) {
 }
 ```
 
+## Strict Mock Expectations Pattern (gomock.Any() Rules)
+
+**CRITICAL RULE**: `gomock.Any()` is ONLY allowed for `context.Context` parameters (typically the first parameter). All other parameters MUST use exact object matching.
+
+### Reference Pattern
+
+See `internal/usecase/admin_tenant_impl_test.go` as the canonical correct example for this pattern.
+
+### Correct Patterns
+
+```go
+// Repository Get - Exact query struct
+mockTenantRepo.EXPECT().
+    Get(gomock.Any(),  // ONLY context uses gomock.Any()
+        repository.GetTenantQuery{  // EXACT struct matching
+            ID: null.StringFrom(tenant.ID),
+            BaseGetOptions: repository.BaseGetOptions{
+                OrFail:  true,
+                Preload: true,
+            },
+        }).
+    Return(tenant, nil)
+
+// Repository List - Exact query struct with all fields
+mockStaffRepo.EXPECT().
+    List(
+        gomock.Any(),  // ONLY context
+        repository.ListStaffQuery{
+            TenantID: null.StringFrom(tenant.ID),
+            BaseListOptions: repository.BaseListOptions{
+                Page:    null.Uint64From(2),
+                Limit:   null.Uint64From(30),
+                Preload: true,
+            },
+            SortKey: nullable.TypeFrom(model.StaffSortKeyCreatedAtDesc),
+        }).
+    Return(model.Staffs{staff}, nil)
+
+// Domain Service - Exact param struct
+mockStaffService.EXPECT().
+    Create(gomock.Any(),
+        service.StaffCreateParam{
+            TenantID:    tenant.ID,
+            Email:       staff.Email,
+            Password:    "random1234",
+            StaffRole:   staff.Role,
+            DisplayName: staff.DisplayName,
+            ImagePath:   staff.ImagePath,
+            RequestTime: requestTime,
+        }).
+    Return(staff, nil)
+
+// Asset Service - Exact model slice
+mockAssetService.EXPECT().
+    BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}).  // EXACT model slice
+    Return(nil)
+
+// Repository Create/Update - Exact domain object
+admin := model.NewAdmin(
+    model.AdminRoleRoot,
+    authUID,
+    email,
+    displayName,
+    requestTime,
+)
+mockAdminRepo.EXPECT().
+    Create(gomock.Any(), admin).  // Exact object, not gomock.Any()
+    Return(nil)
+
+// Authentication Repository - Exact claims object
+claims := model.NewAdminClaims(
+    authUID,
+    email,
+    null.StringFrom(admin.ID),
+    nullable.TypeFrom(admin.Role),
+)
+mockAdminAuthRepo.EXPECT().
+    StoreClaims(gomock.Any(), authUID, claims).  // Exact claims object
+    Return(nil)
+```
+
+### Anti-Patterns (PROHIBITED)
+
+```go
+// Bad - Using gomock.Any() for non-context parameters
+mockStaffRepo.EXPECT().
+    Get(gomock.Any(), gomock.Any()).  // WRONG - second param should be exact
+    Return(staff, nil)
+
+mockStaffService.EXPECT().
+    Create(gomock.Any(), gomock.Any()).  // WRONG - second param should be exact
+    Return(staff, nil)
+
+mockAssetService.EXPECT().
+    BatchSetStaffURLs(gomock.Any(), gomock.Any()).  // WRONG - second param should be exact
+    Return(nil)
+
+// Bad - Using DoAndReturn to avoid exact matching
+mockAdminRepo.EXPECT().
+    Create(gomock.Any(), gomock.Any()).DoAndReturn(  // WRONG - use exact object instead
+        func(ctx context.Context, admin *model.Admin) error {
+            return nil
+        },
+    )
+```
+
+### Why This Pattern
+
+1. **Explicit expectations**: Tests clearly show what data is expected
+2. **Catches bugs early**: Wrong field values cause test failures
+3. **Self-documenting**: Test expectations serve as documentation
+4. **Prevents false positives**: Tests verify actual behavior, not just that methods were called
+
+### Using Model Constructors
+
+Use domain model constructors to create exact expected objects:
+
+```go
+// Use NewAdmin constructor
+admin := model.NewAdmin(
+    model.AdminRoleRoot,
+    authUID,
+    email,
+    displayName,
+    requestTime,
+)
+mockAdminRepo.EXPECT().
+    Create(gomock.Any(), admin).
+    Return(nil)
+
+// Use NewAdminClaims constructor
+claims := model.NewAdminClaims(
+    authUID,
+    email,
+    null.StringFrom(admin.ID),
+    nullable.TypeFrom(admin.Role),
+)
+mockAdminAuthRepo.EXPECT().
+    StoreClaims(gomock.Any(), authUID, claims).
+    Return(nil)
+
+// Use NewStaffClaims constructor
+claims := model.NewStaffClaims(
+    authUID,
+    email,
+    null.StringFrom(tenant.ID),
+    null.StringFrom(staff.ID),
+    nullable.TypeFrom(model.StaffRoleAdmin),
+)
+```
+
+### Test Data Fixtures
+
+Use `factory.NewFactory()` and `id.Mock()` for deterministic test data:
+
+```go
+testdata := factory.NewFactory()
+staff := testdata.Staff
+mockID := id.Mock()
+staff.ID = mockID
+
+// Use exact IDs in expectations
+mockStaffRepo.EXPECT().
+    Get(gomock.Any(),
+        repository.GetStaffQuery{
+            ID: null.StringFrom(mockID),
+            BaseGetOptions: repository.BaseGetOptions{
+                OrFail:  true,
+                Preload: true,
+            },
+        }).
+    Return(staff, nil)
+```
+
 ## Transactable Mock Pattern
 
 ```go

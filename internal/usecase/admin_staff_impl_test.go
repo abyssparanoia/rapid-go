@@ -11,6 +11,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
+	"github.com/abyssparanoia/rapid-go/internal/domain/service"
 	mock_service "github.com/abyssparanoia/rapid-go/internal/domain/service/mock"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
@@ -345,7 +346,16 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 
 			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockStaffService.EXPECT().
-				Create(gomock.Any(), gomock.Any()).
+				Create(gomock.Any(),
+					service.StaffCreateParam{
+						TenantID:    tenant.ID,
+						Email:       staff.Email,
+						Password:    "random1234",
+						StaffRole:   staff.Role,
+						DisplayName: staff.DisplayName,
+						ImagePath:   staff.ImagePath,
+						RequestTime: requestTime,
+					}).
 				Return(staff, nil)
 
 			mockStaffRepo := mock_repository.NewMockStaff(ctrl)

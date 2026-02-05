@@ -11,6 +11,8 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 	"github.com/stretchr/testify/require"
@@ -101,27 +103,40 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 			testdata := factory.NewFactory()
 			requestTime := testdata.RequestTime
 			authUID := "test-auth-uid"
+			email := "test@example.com"
+			displayName := "Test Admin"
+			mockID := id.Mock() // Mock ID generation
 
 			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
 			mockAdminAuthRepo.EXPECT().
 				CreateUser(
 					gomock.Any(),
 					repository.AdminAuthenticationCreateUserParam{
-						Email:    "test@example.com",
+						Email:    email,
 						Password: null.StringFrom("password123"),
 					},
 				).
 				Return(authUID, nil)
 
+			// Create expected admin object with mock ID
+			admin := model.NewAdmin(
+				model.AdminRoleRoot,
+				authUID,
+				email,
+				displayName,
+				requestTime,
+			)
+			admin.ID = mockID // Set to mock ID
+
 			mockAdminRepo := mock_repository.NewMockAdmin(ctrl)
 			mockAdminRepo.EXPECT().
-				Create(gomock.Any(), gomock.Any()).
+				Create(gomock.Any(), admin).
 				Return(errors.InternalErr.New())
 
 			return testcase{
 				args: args{
-					email:       "test@example.com",
-					displayName: "Test Admin",
+					email:       email,
+					displayName: displayName,
 					password:    "password123",
 					requestTime: requestTime,
 				},
@@ -139,31 +154,52 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 			testdata := factory.NewFactory()
 			requestTime := testdata.RequestTime
 			authUID := "test-auth-uid"
+			email := "test@example.com"
+			displayName := "Test Admin"
+			mockID := id.Mock() // Mock ID generation
 
 			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
 			mockAdminAuthRepo.EXPECT().
 				CreateUser(
 					gomock.Any(),
 					repository.AdminAuthenticationCreateUserParam{
-						Email:    "test@example.com",
+						Email:    email,
 						Password: null.StringFrom("password123"),
 					},
 				).
 				Return(authUID, nil)
 
+			// Create expected admin object with mock ID
+			admin := model.NewAdmin(
+				model.AdminRoleRoot,
+				authUID,
+				email,
+				displayName,
+				requestTime,
+			)
+			admin.ID = mockID // Set to mock ID
+
+			// Create expected claims object
+			claims := model.NewAdminClaims(
+				authUID,
+				email,
+				null.StringFrom(admin.ID),
+				nullable.TypeFrom(admin.Role),
+			)
+
 			mockAdminAuthRepo.EXPECT().
-				StoreClaims(gomock.Any(), authUID, gomock.Any()).
+				StoreClaims(gomock.Any(), authUID, claims).
 				Return(errors.InternalErr.New())
 
 			mockAdminRepo := mock_repository.NewMockAdmin(ctrl)
 			mockAdminRepo.EXPECT().
-				Create(gomock.Any(), gomock.Any()).
+				Create(gomock.Any(), admin).
 				Return(nil)
 
 			return testcase{
 				args: args{
-					email:       "test@example.com",
-					displayName: "Test Admin",
+					email:       email,
+					displayName: displayName,
 					password:    "password123",
 					requestTime: requestTime,
 				},
@@ -184,6 +220,7 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 			email := "test@example.com"
 			displayName := "Test Admin"
 			password := "password123"
+			mockID := id.Mock() // Mock ID generation
 
 			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
 			mockAdminAuthRepo.EXPECT().
@@ -196,21 +233,32 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 				).
 				Return(authUID, nil)
 
+			// Create expected admin object with mock ID
+			admin := model.NewAdmin(
+				model.AdminRoleRoot,
+				authUID,
+				email,
+				displayName,
+				requestTime,
+			)
+			admin.ID = mockID // Set to mock ID
+
+			// Create expected claims object
+			claims := model.NewAdminClaims(
+				authUID,
+				email,
+				null.StringFrom(admin.ID),
+				nullable.TypeFrom(admin.Role),
+			)
+
 			mockAdminAuthRepo.EXPECT().
-				StoreClaims(gomock.Any(), authUID, gomock.Any()).
+				StoreClaims(gomock.Any(), authUID, claims).
 				Return(nil)
 
 			mockAdminRepo := mock_repository.NewMockAdmin(ctrl)
 			mockAdminRepo.EXPECT().
-				Create(gomock.Any(), gomock.Any()).
-				DoAndReturn(func(ctx context.Context, admin *model.Admin) error {
-					// Verify admin entity fields
-					require.Equal(t, model.AdminRoleRoot, admin.Role)
-					require.Equal(t, authUID, admin.AuthUID)
-					require.Equal(t, email, admin.Email)
-					require.Equal(t, displayName, admin.DisplayName)
-					return nil
-				})
+				Create(gomock.Any(), admin).
+				Return(nil)
 
 			return testcase{
 				args: args{
@@ -226,7 +274,7 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 				},
 				want: want{
 					result: &output.TaskCreateAdmin{
-						AdminID:  "",
+						AdminID:  admin.ID,
 						AuthUID:  authUID,
 						Password: password,
 					},
