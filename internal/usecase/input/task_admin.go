@@ -7,25 +7,28 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/validation"
 )
 
-type CreateRootStaff struct {
-	Email       string    `validate:"required"`
+type TaskCreateAdmin struct {
+	Email       string    `validate:"required,email"`
+	DisplayName string    `validate:"required"`
 	Password    string    `validate:"required"`
 	RequestTime time.Time `validate:"required"`
 }
 
-func NewCreateRootStaff(
+func NewTaskCreateAdmin(
 	email string,
+	displayName string,
 	password string,
 	t time.Time,
-) *CreateRootStaff {
-	return &CreateRootStaff{
+) *TaskCreateAdmin {
+	return &TaskCreateAdmin{
 		Email:       email,
+		DisplayName: displayName,
 		Password:    password,
 		RequestTime: t,
 	}
 }
 
-func (p *CreateRootStaff) Validate() error {
+func (p *TaskCreateAdmin) Validate() error {
 	if err := validation.Validate(p); err != nil {
 		return errors.RequestInvalidArgumentErr.Wrap(err)
 	}

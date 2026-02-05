@@ -1,4 +1,4 @@
-package create_root_staff_cmd
+package create_root_admin_cmd
 
 import (
 	"context"
@@ -10,10 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCreateRootStaffCmd() *cobra.Command {
+func NewCreateRootAdminCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-root-staff",
-		Short: "create root staff",
+		Use:   "create-root-admin",
+		Short: "create root admin",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := context.Background()
 
@@ -30,14 +30,14 @@ func NewCreateRootStaffCmd() *cobra.Command {
 
 			c := &CMD{
 				ctx,
-				d.StaffInteractor,
+				d.TaskAdminInteractor,
 			}
-			if err := c.CreateRootStaff(cmd); err != nil {
+			if err := c.CreateRootAdmin(cmd); err != nil {
 				panic(err)
 			}
 		},
 	}
 	cmd.Flags().StringP("email", "e", "", "email address")
-	cmd.Flags().StringP("password", "p", "", "password")
+	cmd.Flags().StringP("display-name", "d", "", "display name")
 	return cmd
 }

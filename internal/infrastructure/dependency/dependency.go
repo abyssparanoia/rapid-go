@@ -8,22 +8,16 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/aws"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
 	cognito_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/repository"
-	database "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql"
-	database_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/cache"
-	database_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/repository"
-	database_transactable "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/transactable"
-
-	// database "github.com/abyssparanoia/rapid-go/internal/infrastructure/postgresql"
-	// database_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/postgresql/cache"
-	// database_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/postgresql/repository"
-	// database_transactable "github.com/abyssparanoia/rapid-go/internal/infrastructure/postgresql/transactable"
-
 	// redis_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/redis/cache"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase"
 	firebase_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs"
 	gcs_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs/repository"
+	database "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql"
+	database_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/cache"
+	database_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/repository"
+	database_transactable "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/transactable"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/s3"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
@@ -43,10 +37,12 @@ type Dependency struct {
 	StaffAssetInteractor    usecase.StaffAssetInteractor
 
 	// Other
-	StaffInteractor               usecase.StaffInteractor
 	AuthenticationInteractor      usecase.AuthenticationInteractor
 	AdminAuthenticationInteractor usecase.AdminAuthenticationInteractor
 	DebugInteractor               usecase.DebugInteractor
+
+	// task
+	TaskAdminInteractor usecase.TaskAdminInteractor
 }
 
 func (d *Dependency) Inject(
@@ -93,6 +89,7 @@ func (d *Dependency) Inject(
 	)
 	tenantRepository := database_repository.NewTenant()
 	staffRepository := database_repository.NewStaff()
+	adminRepository := database_repository.NewAdmin()
 	assetRepository := gcs_repository.NewAsset(gcsBucketHandle)
 	// assetRepository := s3_repository.NewAsset(s3Client, e.AWSBucketName)
 
@@ -148,12 +145,6 @@ func (d *Dependency) Inject(
 		assetService,
 	)
 
-	d.StaffInteractor = usecase.NewStaffInteractor(
-		transactable,
-		tenantRepository,
-		staffService,
-	)
-
 	d.AuthenticationInteractor = usecase.NewAuthenticationInteractor(
 		staffAuthenticationRepository,
 	)
@@ -164,5 +155,11 @@ func (d *Dependency) Inject(
 
 	d.DebugInteractor = usecase.NewDebugInteractor(
 		staffAuthenticationRepository,
+	)
+
+	d.TaskAdminInteractor = usecase.NewTaskAdminInteractor(
+		transactable,
+		adminRepository,
+		adminAuthenticationRepository,
 	)
 }

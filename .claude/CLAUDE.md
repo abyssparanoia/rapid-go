@@ -104,6 +104,7 @@ Detailed coding rules are organized by theme in `.claude/rules/`:
 | `webhook-implementation.md` | `webhook/**`, `internal/infrastructure/http/internal/handler/webhook_*` | Webhook endpoint patterns (HTTP → gRPC routing) |
 | `job-system.md` | `job/**`, `cmd/app/internal/task_cmd/process_job_cmd/` | Async job queue patterns (SNS/SQS → AWS Batch) |
 | `worker-pattern.md` | `worker/**`, `cmd/app/internal/worker_cmd/` | Background worker patterns (SQS/Pub/Sub subscribers) |
+| `cli-command-pattern.md` | `cmd/app/internal/task_cmd/**`, `internal/usecase/task_*` | CLI command implementation patterns (`./app task` commands) |
 
 ## Skills
 
