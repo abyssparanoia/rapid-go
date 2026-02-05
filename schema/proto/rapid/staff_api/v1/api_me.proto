@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package rapid.staff_api.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "rapid/staff_api/v1/model_staff.proto";
+import "rapid/staff_api/v1/model_tenant.proto";
+
+// SignUp
+message SignUpRequest {
+  string tenant_name = 1;
+  string display_name = 2;
+  string image_asset_id = 3;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "tenant_name",
+        "display_name",
+        "image_asset_id"
+      ]
+    }
+  };
+}
+
+message SignUpResponse {
+  Staff staff = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["staff"]
+    }
+  };
+}
+
+// GetMe
+message GetMeRequest {}
+
+message GetMeResponse {
+  Staff staff = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["staff"]
+    }
+  };
+}
+
+// GetMeTenant
+message GetMeTenantRequest {}
+
+message GetMeTenantResponse {
+  Tenant tenant = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant"]
+    }
+  };
+}
+
+// UpdateMe
+message UpdateMeRequest {
+  optional string display_name = 1;
+  optional string image_asset_id = 2;
+}
+
+message UpdateMeResponse {
+  Staff staff = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["staff"]
+    }
+  };
+}
+
+// UpdateMeTenant
+message UpdateMeTenantRequest {
+  optional string name = 1;
+}
+
+message UpdateMeTenantResponse {
+  Tenant tenant = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant"]
+    }
+  };
+}

@@ -170,10 +170,9 @@ func (x *GetStaffResponse) GetStaff() *Staff {
 // List
 type ListStaffsRequest struct {
 	state         protoimpl.MessageState               `protogen:"open.v1"`
-	TenantId      string                               `protobuf:"bytes,1,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
-	Page          uint64                               `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
-	Limit         uint64                               `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
-	SortKey       *ListStaffsRequest_ListStaffsSortKey `protobuf:"varint,4,opt,name=sort_key,json=sortKey,proto3,enum=rapid.staff_api.v1.ListStaffsRequest_ListStaffsSortKey,oneof" json:"sort_key,omitempty"`
+	Page          uint64                               `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Limit         uint64                               `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	SortKey       *ListStaffsRequest_ListStaffsSortKey `protobuf:"varint,3,opt,name=sort_key,json=sortKey,proto3,enum=rapid.staff_api.v1.ListStaffsRequest_ListStaffsSortKey,oneof" json:"sort_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -206,13 +205,6 @@ func (x *ListStaffsRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ListStaffsRequest.ProtoReflect.Descriptor instead.
 func (*ListStaffsRequest) Descriptor() ([]byte, []int) {
 	return file_rapid_staff_api_v1_api_staff_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *ListStaffsRequest) GetTenantId() string {
-	if x != nil {
-		return x.TenantId
-	}
-	return ""
 }
 
 func (x *ListStaffsRequest) GetPage() uint64 {
@@ -288,240 +280,6 @@ func (x *ListStaffsResponse) GetPagination() *Pagination {
 	return nil
 }
 
-// Create
-type CreateStaffRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TenantId      string                 `protobuf:"bytes,1,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
-	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
-	DisplayName   string                 `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
-	Role          StaffRole              `protobuf:"varint,4,opt,name=role,proto3,enum=rapid.staff_api.v1.StaffRole" json:"role,omitempty"`
-	ImageAssetId  string                 `protobuf:"bytes,5,opt,name=image_asset_id,json=imageAssetId,proto3" json:"image_asset_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CreateStaffRequest) Reset() {
-	*x = CreateStaffRequest{}
-	mi := &file_rapid_staff_api_v1_api_staff_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateStaffRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateStaffRequest) ProtoMessage() {}
-
-func (x *CreateStaffRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rapid_staff_api_v1_api_staff_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateStaffRequest.ProtoReflect.Descriptor instead.
-func (*CreateStaffRequest) Descriptor() ([]byte, []int) {
-	return file_rapid_staff_api_v1_api_staff_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *CreateStaffRequest) GetTenantId() string {
-	if x != nil {
-		return x.TenantId
-	}
-	return ""
-}
-
-func (x *CreateStaffRequest) GetEmail() string {
-	if x != nil {
-		return x.Email
-	}
-	return ""
-}
-
-func (x *CreateStaffRequest) GetDisplayName() string {
-	if x != nil {
-		return x.DisplayName
-	}
-	return ""
-}
-
-func (x *CreateStaffRequest) GetRole() StaffRole {
-	if x != nil {
-		return x.Role
-	}
-	return StaffRole_STAFF_ROLE_UNSPECIFIED
-}
-
-func (x *CreateStaffRequest) GetImageAssetId() string {
-	if x != nil {
-		return x.ImageAssetId
-	}
-	return ""
-}
-
-type CreateStaffResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Staff         *Staff                 `protobuf:"bytes,1,opt,name=staff,proto3" json:"staff,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CreateStaffResponse) Reset() {
-	*x = CreateStaffResponse{}
-	mi := &file_rapid_staff_api_v1_api_staff_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateStaffResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateStaffResponse) ProtoMessage() {}
-
-func (x *CreateStaffResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rapid_staff_api_v1_api_staff_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateStaffResponse.ProtoReflect.Descriptor instead.
-func (*CreateStaffResponse) Descriptor() ([]byte, []int) {
-	return file_rapid_staff_api_v1_api_staff_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *CreateStaffResponse) GetStaff() *Staff {
-	if x != nil {
-		return x.Staff
-	}
-	return nil
-}
-
-// Update
-type UpdateStaffRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	StaffId       string                 `protobuf:"bytes,1,opt,name=staff_id,json=staffId,proto3" json:"staff_id,omitempty"`
-	DisplayName   *string                `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3,oneof" json:"display_name,omitempty"`
-	Role          *StaffRole             `protobuf:"varint,3,opt,name=role,proto3,enum=rapid.staff_api.v1.StaffRole,oneof" json:"role,omitempty"`
-	ImageAssetId  *string                `protobuf:"bytes,4,opt,name=image_asset_id,json=imageAssetId,proto3,oneof" json:"image_asset_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *UpdateStaffRequest) Reset() {
-	*x = UpdateStaffRequest{}
-	mi := &file_rapid_staff_api_v1_api_staff_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpdateStaffRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateStaffRequest) ProtoMessage() {}
-
-func (x *UpdateStaffRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rapid_staff_api_v1_api_staff_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpdateStaffRequest.ProtoReflect.Descriptor instead.
-func (*UpdateStaffRequest) Descriptor() ([]byte, []int) {
-	return file_rapid_staff_api_v1_api_staff_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *UpdateStaffRequest) GetStaffId() string {
-	if x != nil {
-		return x.StaffId
-	}
-	return ""
-}
-
-func (x *UpdateStaffRequest) GetDisplayName() string {
-	if x != nil && x.DisplayName != nil {
-		return *x.DisplayName
-	}
-	return ""
-}
-
-func (x *UpdateStaffRequest) GetRole() StaffRole {
-	if x != nil && x.Role != nil {
-		return *x.Role
-	}
-	return StaffRole_STAFF_ROLE_UNSPECIFIED
-}
-
-func (x *UpdateStaffRequest) GetImageAssetId() string {
-	if x != nil && x.ImageAssetId != nil {
-		return *x.ImageAssetId
-	}
-	return ""
-}
-
-type UpdateStaffResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Staff         *Staff                 `protobuf:"bytes,1,opt,name=staff,proto3" json:"staff,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *UpdateStaffResponse) Reset() {
-	*x = UpdateStaffResponse{}
-	mi := &file_rapid_staff_api_v1_api_staff_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpdateStaffResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateStaffResponse) ProtoMessage() {}
-
-func (x *UpdateStaffResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rapid_staff_api_v1_api_staff_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpdateStaffResponse.ProtoReflect.Descriptor instead.
-func (*UpdateStaffResponse) Descriptor() ([]byte, []int) {
-	return file_rapid_staff_api_v1_api_staff_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *UpdateStaffResponse) GetStaff() *Staff {
-	if x != nil {
-		return x.Staff
-	}
-	return nil
-}
-
 var File_rapid_staff_api_v1_api_staff_proto protoreflect.FileDescriptor
 
 const file_rapid_staff_api_v1_api_staff_proto_rawDesc = "" +
@@ -533,19 +291,17 @@ const file_rapid_staff_api_v1_api_staff_proto_rawDesc = "" +
 	"\x10GetStaffResponse\x12/\n" +
 	"\x05staff\x18\x01 \x01(\v2\x19.rapid.staff_api.v1.StaffR\x05staff:\r\x92A\n" +
 	"\n" +
-	"\b\xd2\x01\x05staff\"\xb9\x03\n" +
-	"\x11ListStaffsRequest\x12\x1b\n" +
-	"\ttenant_id\x18\x01 \x01(\tR\btenantId\x12\x12\n" +
-	"\x04page\x18\x02 \x01(\x04R\x04page\x12\x14\n" +
-	"\x05limit\x18\x03 \x01(\x04R\x05limit\x12W\n" +
-	"\bsort_key\x18\x04 \x01(\x0e27.rapid.staff_api.v1.ListStaffsRequest.ListStaffsSortKeyH\x00R\asortKey\x88\x01\x01\"\xe3\x01\n" +
+	"\b\xd2\x01\x05staff\"\x89\x03\n" +
+	"\x11ListStaffsRequest\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x04R\x04page\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\x04R\x05limit\x12W\n" +
+	"\bsort_key\x18\x03 \x01(\x0e27.rapid.staff_api.v1.ListStaffsRequest.ListStaffsSortKeyH\x00R\asortKey\x88\x01\x01\"\xe3\x01\n" +
 	"\x11ListStaffsSortKey\x12$\n" +
 	" LIST_STAFFS_SORT_KEY_UNSPECIFIED\x10\x00\x12(\n" +
 	"$LIST_STAFFS_SORT_KEY_CREATED_AT_DESC\x10\x01\x12'\n" +
 	"#LIST_STAFFS_SORT_KEY_CREATED_AT_ASC\x10\x02\x12)\n" +
 	"%LIST_STAFFS_SORT_KEY_DISPLAY_NAME_ASC\x10\x03\x12*\n" +
-	"&LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC\x10\x04:\x11\x92A\x0e\n" +
-	"\f\xd2\x01\ttenant_idB\v\n" +
+	"&LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC\x10\x04B\v\n" +
 	"\t_sort_key\"\xa4\x01\n" +
 	"\x12ListStaffsResponse\x121\n" +
 	"\x06staffs\x18\x01 \x03(\v2\x19.rapid.staff_api.v1.StaffR\x06staffs\x12>\n" +
@@ -553,31 +309,7 @@ const file_rapid_staff_api_v1_api_staff_proto_rawDesc = "" +
 	"pagination\x18\x02 \x01(\v2\x1e.rapid.staff_api.v1.PaginationR\n" +
 	"pagination:\x1b\x92A\x18\n" +
 	"\x16\xd2\x01\x06staffs\xd2\x01\n" +
-	"pagination\"\x85\x02\n" +
-	"\x12CreateStaffRequest\x12\x1b\n" +
-	"\ttenant_id\x18\x01 \x01(\tR\btenantId\x12\x14\n" +
-	"\x05email\x18\x02 \x01(\tR\x05email\x12!\n" +
-	"\fdisplay_name\x18\x03 \x01(\tR\vdisplayName\x121\n" +
-	"\x04role\x18\x04 \x01(\x0e2\x1d.rapid.staff_api.v1.StaffRoleR\x04role\x12$\n" +
-	"\x0eimage_asset_id\x18\x05 \x01(\tR\fimageAssetId:@\x92A=\n" +
-	";\xd2\x01\ttenant_id\xd2\x01\x05email\xd2\x01\fdisplay_name\xd2\x01\x04role\xd2\x01\x0eimage_asset_id\"U\n" +
-	"\x13CreateStaffResponse\x12/\n" +
-	"\x05staff\x18\x01 \x01(\v2\x19.rapid.staff_api.v1.StaffR\x05staff:\r\x92A\n" +
-	"\n" +
-	"\b\xd2\x01\x05staff\"\xf9\x01\n" +
-	"\x12UpdateStaffRequest\x12\x19\n" +
-	"\bstaff_id\x18\x01 \x01(\tR\astaffId\x12&\n" +
-	"\fdisplay_name\x18\x02 \x01(\tH\x00R\vdisplayName\x88\x01\x01\x126\n" +
-	"\x04role\x18\x03 \x01(\x0e2\x1d.rapid.staff_api.v1.StaffRoleH\x01R\x04role\x88\x01\x01\x12)\n" +
-	"\x0eimage_asset_id\x18\x04 \x01(\tH\x02R\fimageAssetId\x88\x01\x01:\x10\x92A\r\n" +
-	"\v\xd2\x01\bstaff_idB\x0f\n" +
-	"\r_display_nameB\a\n" +
-	"\x05_roleB\x11\n" +
-	"\x0f_image_asset_id\"U\n" +
-	"\x13UpdateStaffResponse\x12/\n" +
-	"\x05staff\x18\x01 \x01(\v2\x19.rapid.staff_api.v1.StaffR\x05staff:\r\x92A\n" +
-	"\n" +
-	"\b\xd2\x01\x05staffB\xef\x01\n" +
+	"paginationB\xef\x01\n" +
 	"\x16com.rapid.staff_api.v1B\rApiStaffProtoP\x01Z`github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/staff_api/v1;staff_apiv1\xa2\x02\x03RSX\xaa\x02\x11Rapid.StaffApi.V1\xca\x02\x11Rapid\\StaffApi\\V1\xe2\x02\x1dRapid\\StaffApi\\V1\\GPBMetadata\xea\x02\x13Rapid::StaffApi::V1b\x06proto3"
 
 var (
@@ -593,35 +325,26 @@ func file_rapid_staff_api_v1_api_staff_proto_rawDescGZIP() []byte {
 }
 
 var file_rapid_staff_api_v1_api_staff_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_rapid_staff_api_v1_api_staff_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_rapid_staff_api_v1_api_staff_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_rapid_staff_api_v1_api_staff_proto_goTypes = []any{
 	(ListStaffsRequest_ListStaffsSortKey)(0), // 0: rapid.staff_api.v1.ListStaffsRequest.ListStaffsSortKey
 	(*GetStaffRequest)(nil),                  // 1: rapid.staff_api.v1.GetStaffRequest
 	(*GetStaffResponse)(nil),                 // 2: rapid.staff_api.v1.GetStaffResponse
 	(*ListStaffsRequest)(nil),                // 3: rapid.staff_api.v1.ListStaffsRequest
 	(*ListStaffsResponse)(nil),               // 4: rapid.staff_api.v1.ListStaffsResponse
-	(*CreateStaffRequest)(nil),               // 5: rapid.staff_api.v1.CreateStaffRequest
-	(*CreateStaffResponse)(nil),              // 6: rapid.staff_api.v1.CreateStaffResponse
-	(*UpdateStaffRequest)(nil),               // 7: rapid.staff_api.v1.UpdateStaffRequest
-	(*UpdateStaffResponse)(nil),              // 8: rapid.staff_api.v1.UpdateStaffResponse
-	(*Staff)(nil),                            // 9: rapid.staff_api.v1.Staff
-	(*Pagination)(nil),                       // 10: rapid.staff_api.v1.Pagination
-	(StaffRole)(0),                           // 11: rapid.staff_api.v1.StaffRole
+	(*Staff)(nil),                            // 5: rapid.staff_api.v1.Staff
+	(*Pagination)(nil),                       // 6: rapid.staff_api.v1.Pagination
 }
 var file_rapid_staff_api_v1_api_staff_proto_depIdxs = []int32{
-	9,  // 0: rapid.staff_api.v1.GetStaffResponse.staff:type_name -> rapid.staff_api.v1.Staff
-	0,  // 1: rapid.staff_api.v1.ListStaffsRequest.sort_key:type_name -> rapid.staff_api.v1.ListStaffsRequest.ListStaffsSortKey
-	9,  // 2: rapid.staff_api.v1.ListStaffsResponse.staffs:type_name -> rapid.staff_api.v1.Staff
-	10, // 3: rapid.staff_api.v1.ListStaffsResponse.pagination:type_name -> rapid.staff_api.v1.Pagination
-	11, // 4: rapid.staff_api.v1.CreateStaffRequest.role:type_name -> rapid.staff_api.v1.StaffRole
-	9,  // 5: rapid.staff_api.v1.CreateStaffResponse.staff:type_name -> rapid.staff_api.v1.Staff
-	11, // 6: rapid.staff_api.v1.UpdateStaffRequest.role:type_name -> rapid.staff_api.v1.StaffRole
-	9,  // 7: rapid.staff_api.v1.UpdateStaffResponse.staff:type_name -> rapid.staff_api.v1.Staff
-	8,  // [8:8] is the sub-list for method output_type
-	8,  // [8:8] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	5, // 0: rapid.staff_api.v1.GetStaffResponse.staff:type_name -> rapid.staff_api.v1.Staff
+	0, // 1: rapid.staff_api.v1.ListStaffsRequest.sort_key:type_name -> rapid.staff_api.v1.ListStaffsRequest.ListStaffsSortKey
+	5, // 2: rapid.staff_api.v1.ListStaffsResponse.staffs:type_name -> rapid.staff_api.v1.Staff
+	6, // 3: rapid.staff_api.v1.ListStaffsResponse.pagination:type_name -> rapid.staff_api.v1.Pagination
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_rapid_staff_api_v1_api_staff_proto_init() }
@@ -632,14 +355,13 @@ func file_rapid_staff_api_v1_api_staff_proto_init() {
 	file_rapid_staff_api_v1_model_pagination_proto_init()
 	file_rapid_staff_api_v1_model_staff_proto_init()
 	file_rapid_staff_api_v1_api_staff_proto_msgTypes[2].OneofWrappers = []any{}
-	file_rapid_staff_api_v1_api_staff_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rapid_staff_api_v1_api_staff_proto_rawDesc), len(file_rapid_staff_api_v1_api_staff_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   8,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

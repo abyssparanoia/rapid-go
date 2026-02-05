@@ -139,7 +139,6 @@ func TestAdminStaffInteractor_Get(t *testing.T) {
 		},
 	}
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()
@@ -251,7 +250,6 @@ func TestAdminStaffInteractor_List(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()
@@ -390,7 +388,6 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()
@@ -514,7 +511,6 @@ func TestAdminStaffInteractor_Update(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()

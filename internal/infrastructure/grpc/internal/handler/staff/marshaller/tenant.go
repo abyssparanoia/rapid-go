@@ -35,37 +35,3 @@ func TenantsToPB(slice model.Tenants) []*staff_apiv1.Tenant {
 	}
 	return dsts
 }
-
-func TenantSortKeyToPB(s model.TenantSortKey) staff_apiv1.ListTenantsRequest_ListTenantsSortKey {
-	switch s {
-	case model.TenantSortKeyCreatedAtDesc:
-		return staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_CREATED_AT_DESC
-	case model.TenantSortKeyCreatedAtAsc:
-		return staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_CREATED_AT_ASC
-	case model.TenantSortKeyNameAsc:
-		return staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_NAME_ASC
-	case model.TenantSortKeyNameDesc:
-		return staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_NAME_DESC
-	case model.TenantSortKeyUnknown:
-		return staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_UNSPECIFIED
-	default:
-		return staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_UNSPECIFIED
-	}
-}
-
-func TenantSortKeyToModel(s staff_apiv1.ListTenantsRequest_ListTenantsSortKey) model.TenantSortKey {
-	switch s {
-	case staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_CREATED_AT_DESC:
-		return model.TenantSortKeyCreatedAtDesc
-	case staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_CREATED_AT_ASC:
-		return model.TenantSortKeyCreatedAtAsc
-	case staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_NAME_ASC:
-		return model.TenantSortKeyNameAsc
-	case staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_NAME_DESC:
-		return model.TenantSortKeyNameDesc
-	case staff_apiv1.ListTenantsRequest_LIST_TENANTS_SORT_KEY_UNSPECIFIED:
-		return model.TenantSortKeyUnknown
-	default:
-		return model.TenantSortKeyUnknown
-	}
-}

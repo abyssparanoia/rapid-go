@@ -3,7 +3,6 @@ package input
 import (
 	"time"
 
-	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
@@ -13,17 +12,20 @@ import (
 // StaffGetStaff represents input for getting a staff member
 type StaffGetStaff struct {
 	StaffID       string    `validate:"required"`
+	TenantID      string    `validate:"required"`
 	TargetStaffID string    `validate:"required"`
 	RequestTime   time.Time `validate:"required"`
 }
 
 func NewStaffGetStaff(
 	staffID string,
+	tenantID string,
 	targetStaffID string,
 	requestTime time.Time,
 ) *StaffGetStaff {
 	return &StaffGetStaff{
 		StaffID:       staffID,
+		TenantID:      tenantID,
 		TargetStaffID: targetStaffID,
 		RequestTime:   requestTime,
 	}
@@ -81,81 +83,6 @@ func NewStaffListStaffs(
 func (p *StaffListStaffs) Validate() error {
 	if err := validation.Validate(p); err != nil {
 		return errors.RequestInvalidArgumentErr.Wrap(err)
-	}
-	return nil
-}
-
-type StaffCreateStaff struct {
-	StaffID      string          `validate:"required"`
-	TenantID     string          `validate:"required"`
-	Email        string          `validate:"required"`
-	DisplayName  string          `validate:"required"`
-	Role         model.StaffRole `validate:"required"`
-	ImageAssetID string          `validate:"required"`
-	RequestTime  time.Time       `validate:"required"`
-}
-
-func NewStaffCreateStaff(
-	staffID,
-	tenantID,
-	email,
-	displayName string,
-	role model.StaffRole,
-	imageAssetID string,
-	requestTime time.Time,
-) *StaffCreateStaff {
-	return &StaffCreateStaff{
-		StaffID:      staffID,
-		TenantID:     tenantID,
-		Email:        email,
-		DisplayName:  displayName,
-		Role:         role,
-		ImageAssetID: imageAssetID,
-		RequestTime:  requestTime,
-	}
-}
-
-func (p *StaffCreateStaff) Validate() error {
-	if err := validation.Validate(p); err != nil {
-		return errors.RequestInvalidArgumentErr.Wrap(err)
-	}
-	return nil
-}
-
-// StaffUpdateStaff represents input for updating a staff member
-type StaffUpdateStaff struct {
-	StaffID       string `validate:"required"`
-	TargetStaffID string `validate:"required"`
-	DisplayName   null.String
-	Role          nullable.Type[model.StaffRole]
-	ImageAssetID  null.String
-	RequestTime   time.Time `validate:"required"`
-}
-
-func NewStaffUpdateStaff(
-	staffID string,
-	targetStaffID string,
-	displayName null.String,
-	role nullable.Type[model.StaffRole],
-	imageAssetID null.String,
-	requestTime time.Time,
-) *StaffUpdateStaff {
-	return &StaffUpdateStaff{
-		StaffID:       staffID,
-		TargetStaffID: targetStaffID,
-		DisplayName:   displayName,
-		Role:          role,
-		ImageAssetID:  imageAssetID,
-		RequestTime:   requestTime,
-	}
-}
-
-func (p *StaffUpdateStaff) Validate() error {
-	if err := validation.Validate(p); err != nil {
-		return errors.RequestInvalidArgumentErr.Wrap(err)
-	}
-	if p.Role.Valid && !p.Role.Value().Valid() {
-		return errors.RequestInvalidArgumentErr.Errorf("invalid role: %s", p.Role.Value())
 	}
 	return nil
 }

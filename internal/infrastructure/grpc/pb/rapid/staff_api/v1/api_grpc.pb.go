@@ -21,15 +21,13 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	StaffV1Service_CreateAssetPresignedURL_FullMethodName = "/rapid.staff_api.v1.StaffV1Service/CreateAssetPresignedURL"
-	StaffV1Service_GetTenant_FullMethodName               = "/rapid.staff_api.v1.StaffV1Service/GetTenant"
-	StaffV1Service_ListTenants_FullMethodName             = "/rapid.staff_api.v1.StaffV1Service/ListTenants"
-	StaffV1Service_CreateTenant_FullMethodName            = "/rapid.staff_api.v1.StaffV1Service/CreateTenant"
-	StaffV1Service_UpdateTenant_FullMethodName            = "/rapid.staff_api.v1.StaffV1Service/UpdateTenant"
-	StaffV1Service_DeleteTenant_FullMethodName            = "/rapid.staff_api.v1.StaffV1Service/DeleteTenant"
+	StaffV1Service_SignUp_FullMethodName                  = "/rapid.staff_api.v1.StaffV1Service/SignUp"
+	StaffV1Service_GetMe_FullMethodName                   = "/rapid.staff_api.v1.StaffV1Service/GetMe"
+	StaffV1Service_GetMeTenant_FullMethodName             = "/rapid.staff_api.v1.StaffV1Service/GetMeTenant"
+	StaffV1Service_UpdateMe_FullMethodName                = "/rapid.staff_api.v1.StaffV1Service/UpdateMe"
+	StaffV1Service_UpdateMeTenant_FullMethodName          = "/rapid.staff_api.v1.StaffV1Service/UpdateMeTenant"
 	StaffV1Service_GetStaff_FullMethodName                = "/rapid.staff_api.v1.StaffV1Service/GetStaff"
 	StaffV1Service_ListStaffs_FullMethodName              = "/rapid.staff_api.v1.StaffV1Service/ListStaffs"
-	StaffV1Service_CreateStaff_FullMethodName             = "/rapid.staff_api.v1.StaffV1Service/CreateStaff"
-	StaffV1Service_UpdateStaff_FullMethodName             = "/rapid.staff_api.v1.StaffV1Service/UpdateStaff"
 )
 
 // StaffV1ServiceClient is the client API for StaffV1Service service.
@@ -37,15 +35,13 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StaffV1ServiceClient interface {
 	CreateAssetPresignedURL(ctx context.Context, in *CreateAssetPresignedURLRequest, opts ...grpc.CallOption) (*CreateAssetPresignedURLResponse, error)
-	GetTenant(ctx context.Context, in *GetTenantRequest, opts ...grpc.CallOption) (*GetTenantResponse, error)
-	ListTenants(ctx context.Context, in *ListTenantsRequest, opts ...grpc.CallOption) (*ListTenantsResponse, error)
-	CreateTenant(ctx context.Context, in *CreateTenantRequest, opts ...grpc.CallOption) (*CreateTenantResponse, error)
-	UpdateTenant(ctx context.Context, in *UpdateTenantRequest, opts ...grpc.CallOption) (*UpdateTenantResponse, error)
-	DeleteTenant(ctx context.Context, in *DeleteTenantRequest, opts ...grpc.CallOption) (*DeleteTenantResponse, error)
+	SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*SignUpResponse, error)
+	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
+	GetMeTenant(ctx context.Context, in *GetMeTenantRequest, opts ...grpc.CallOption) (*GetMeTenantResponse, error)
+	UpdateMe(ctx context.Context, in *UpdateMeRequest, opts ...grpc.CallOption) (*UpdateMeResponse, error)
+	UpdateMeTenant(ctx context.Context, in *UpdateMeTenantRequest, opts ...grpc.CallOption) (*UpdateMeTenantResponse, error)
 	GetStaff(ctx context.Context, in *GetStaffRequest, opts ...grpc.CallOption) (*GetStaffResponse, error)
 	ListStaffs(ctx context.Context, in *ListStaffsRequest, opts ...grpc.CallOption) (*ListStaffsResponse, error)
-	CreateStaff(ctx context.Context, in *CreateStaffRequest, opts ...grpc.CallOption) (*CreateStaffResponse, error)
-	UpdateStaff(ctx context.Context, in *UpdateStaffRequest, opts ...grpc.CallOption) (*UpdateStaffResponse, error)
 }
 
 type staffV1ServiceClient struct {
@@ -66,50 +62,50 @@ func (c *staffV1ServiceClient) CreateAssetPresignedURL(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *staffV1ServiceClient) GetTenant(ctx context.Context, in *GetTenantRequest, opts ...grpc.CallOption) (*GetTenantResponse, error) {
+func (c *staffV1ServiceClient) SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*SignUpResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetTenantResponse)
-	err := c.cc.Invoke(ctx, StaffV1Service_GetTenant_FullMethodName, in, out, cOpts...)
+	out := new(SignUpResponse)
+	err := c.cc.Invoke(ctx, StaffV1Service_SignUp_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *staffV1ServiceClient) ListTenants(ctx context.Context, in *ListTenantsRequest, opts ...grpc.CallOption) (*ListTenantsResponse, error) {
+func (c *staffV1ServiceClient) GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListTenantsResponse)
-	err := c.cc.Invoke(ctx, StaffV1Service_ListTenants_FullMethodName, in, out, cOpts...)
+	out := new(GetMeResponse)
+	err := c.cc.Invoke(ctx, StaffV1Service_GetMe_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *staffV1ServiceClient) CreateTenant(ctx context.Context, in *CreateTenantRequest, opts ...grpc.CallOption) (*CreateTenantResponse, error) {
+func (c *staffV1ServiceClient) GetMeTenant(ctx context.Context, in *GetMeTenantRequest, opts ...grpc.CallOption) (*GetMeTenantResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateTenantResponse)
-	err := c.cc.Invoke(ctx, StaffV1Service_CreateTenant_FullMethodName, in, out, cOpts...)
+	out := new(GetMeTenantResponse)
+	err := c.cc.Invoke(ctx, StaffV1Service_GetMeTenant_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *staffV1ServiceClient) UpdateTenant(ctx context.Context, in *UpdateTenantRequest, opts ...grpc.CallOption) (*UpdateTenantResponse, error) {
+func (c *staffV1ServiceClient) UpdateMe(ctx context.Context, in *UpdateMeRequest, opts ...grpc.CallOption) (*UpdateMeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateTenantResponse)
-	err := c.cc.Invoke(ctx, StaffV1Service_UpdateTenant_FullMethodName, in, out, cOpts...)
+	out := new(UpdateMeResponse)
+	err := c.cc.Invoke(ctx, StaffV1Service_UpdateMe_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *staffV1ServiceClient) DeleteTenant(ctx context.Context, in *DeleteTenantRequest, opts ...grpc.CallOption) (*DeleteTenantResponse, error) {
+func (c *staffV1ServiceClient) UpdateMeTenant(ctx context.Context, in *UpdateMeTenantRequest, opts ...grpc.CallOption) (*UpdateMeTenantResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteTenantResponse)
-	err := c.cc.Invoke(ctx, StaffV1Service_DeleteTenant_FullMethodName, in, out, cOpts...)
+	out := new(UpdateMeTenantResponse)
+	err := c.cc.Invoke(ctx, StaffV1Service_UpdateMeTenant_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -136,40 +132,18 @@ func (c *staffV1ServiceClient) ListStaffs(ctx context.Context, in *ListStaffsReq
 	return out, nil
 }
 
-func (c *staffV1ServiceClient) CreateStaff(ctx context.Context, in *CreateStaffRequest, opts ...grpc.CallOption) (*CreateStaffResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateStaffResponse)
-	err := c.cc.Invoke(ctx, StaffV1Service_CreateStaff_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *staffV1ServiceClient) UpdateStaff(ctx context.Context, in *UpdateStaffRequest, opts ...grpc.CallOption) (*UpdateStaffResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateStaffResponse)
-	err := c.cc.Invoke(ctx, StaffV1Service_UpdateStaff_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // StaffV1ServiceServer is the server API for StaffV1Service service.
 // All implementations should embed UnimplementedStaffV1ServiceServer
 // for forward compatibility.
 type StaffV1ServiceServer interface {
 	CreateAssetPresignedURL(context.Context, *CreateAssetPresignedURLRequest) (*CreateAssetPresignedURLResponse, error)
-	GetTenant(context.Context, *GetTenantRequest) (*GetTenantResponse, error)
-	ListTenants(context.Context, *ListTenantsRequest) (*ListTenantsResponse, error)
-	CreateTenant(context.Context, *CreateTenantRequest) (*CreateTenantResponse, error)
-	UpdateTenant(context.Context, *UpdateTenantRequest) (*UpdateTenantResponse, error)
-	DeleteTenant(context.Context, *DeleteTenantRequest) (*DeleteTenantResponse, error)
+	SignUp(context.Context, *SignUpRequest) (*SignUpResponse, error)
+	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
+	GetMeTenant(context.Context, *GetMeTenantRequest) (*GetMeTenantResponse, error)
+	UpdateMe(context.Context, *UpdateMeRequest) (*UpdateMeResponse, error)
+	UpdateMeTenant(context.Context, *UpdateMeTenantRequest) (*UpdateMeTenantResponse, error)
 	GetStaff(context.Context, *GetStaffRequest) (*GetStaffResponse, error)
 	ListStaffs(context.Context, *ListStaffsRequest) (*ListStaffsResponse, error)
-	CreateStaff(context.Context, *CreateStaffRequest) (*CreateStaffResponse, error)
-	UpdateStaff(context.Context, *UpdateStaffRequest) (*UpdateStaffResponse, error)
 }
 
 // UnimplementedStaffV1ServiceServer should be embedded to have
@@ -182,32 +156,26 @@ type UnimplementedStaffV1ServiceServer struct{}
 func (UnimplementedStaffV1ServiceServer) CreateAssetPresignedURL(context.Context, *CreateAssetPresignedURLRequest) (*CreateAssetPresignedURLResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateAssetPresignedURL not implemented")
 }
-func (UnimplementedStaffV1ServiceServer) GetTenant(context.Context, *GetTenantRequest) (*GetTenantResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetTenant not implemented")
+func (UnimplementedStaffV1ServiceServer) SignUp(context.Context, *SignUpRequest) (*SignUpResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SignUp not implemented")
 }
-func (UnimplementedStaffV1ServiceServer) ListTenants(context.Context, *ListTenantsRequest) (*ListTenantsResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ListTenants not implemented")
+func (UnimplementedStaffV1ServiceServer) GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMe not implemented")
 }
-func (UnimplementedStaffV1ServiceServer) CreateTenant(context.Context, *CreateTenantRequest) (*CreateTenantResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method CreateTenant not implemented")
+func (UnimplementedStaffV1ServiceServer) GetMeTenant(context.Context, *GetMeTenantRequest) (*GetMeTenantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMeTenant not implemented")
 }
-func (UnimplementedStaffV1ServiceServer) UpdateTenant(context.Context, *UpdateTenantRequest) (*UpdateTenantResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method UpdateTenant not implemented")
+func (UnimplementedStaffV1ServiceServer) UpdateMe(context.Context, *UpdateMeRequest) (*UpdateMeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateMe not implemented")
 }
-func (UnimplementedStaffV1ServiceServer) DeleteTenant(context.Context, *DeleteTenantRequest) (*DeleteTenantResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method DeleteTenant not implemented")
+func (UnimplementedStaffV1ServiceServer) UpdateMeTenant(context.Context, *UpdateMeTenantRequest) (*UpdateMeTenantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateMeTenant not implemented")
 }
 func (UnimplementedStaffV1ServiceServer) GetStaff(context.Context, *GetStaffRequest) (*GetStaffResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetStaff not implemented")
 }
 func (UnimplementedStaffV1ServiceServer) ListStaffs(context.Context, *ListStaffsRequest) (*ListStaffsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListStaffs not implemented")
-}
-func (UnimplementedStaffV1ServiceServer) CreateStaff(context.Context, *CreateStaffRequest) (*CreateStaffResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method CreateStaff not implemented")
-}
-func (UnimplementedStaffV1ServiceServer) UpdateStaff(context.Context, *UpdateStaffRequest) (*UpdateStaffResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method UpdateStaff not implemented")
 }
 func (UnimplementedStaffV1ServiceServer) testEmbeddedByValue() {}
 
@@ -247,92 +215,92 @@ func _StaffV1Service_CreateAssetPresignedURL_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StaffV1Service_GetTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTenantRequest)
+func _StaffV1Service_SignUp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SignUpRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StaffV1ServiceServer).GetTenant(ctx, in)
+		return srv.(StaffV1ServiceServer).SignUp(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StaffV1Service_GetTenant_FullMethodName,
+		FullMethod: StaffV1Service_SignUp_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StaffV1ServiceServer).GetTenant(ctx, req.(*GetTenantRequest))
+		return srv.(StaffV1ServiceServer).SignUp(ctx, req.(*SignUpRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StaffV1Service_ListTenants_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListTenantsRequest)
+func _StaffV1Service_GetMe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StaffV1ServiceServer).ListTenants(ctx, in)
+		return srv.(StaffV1ServiceServer).GetMe(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StaffV1Service_ListTenants_FullMethodName,
+		FullMethod: StaffV1Service_GetMe_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StaffV1ServiceServer).ListTenants(ctx, req.(*ListTenantsRequest))
+		return srv.(StaffV1ServiceServer).GetMe(ctx, req.(*GetMeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StaffV1Service_CreateTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateTenantRequest)
+func _StaffV1Service_GetMeTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMeTenantRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StaffV1ServiceServer).CreateTenant(ctx, in)
+		return srv.(StaffV1ServiceServer).GetMeTenant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StaffV1Service_CreateTenant_FullMethodName,
+		FullMethod: StaffV1Service_GetMeTenant_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StaffV1ServiceServer).CreateTenant(ctx, req.(*CreateTenantRequest))
+		return srv.(StaffV1ServiceServer).GetMeTenant(ctx, req.(*GetMeTenantRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StaffV1Service_UpdateTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateTenantRequest)
+func _StaffV1Service_UpdateMe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateMeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StaffV1ServiceServer).UpdateTenant(ctx, in)
+		return srv.(StaffV1ServiceServer).UpdateMe(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StaffV1Service_UpdateTenant_FullMethodName,
+		FullMethod: StaffV1Service_UpdateMe_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StaffV1ServiceServer).UpdateTenant(ctx, req.(*UpdateTenantRequest))
+		return srv.(StaffV1ServiceServer).UpdateMe(ctx, req.(*UpdateMeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StaffV1Service_DeleteTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteTenantRequest)
+func _StaffV1Service_UpdateMeTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateMeTenantRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StaffV1ServiceServer).DeleteTenant(ctx, in)
+		return srv.(StaffV1ServiceServer).UpdateMeTenant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StaffV1Service_DeleteTenant_FullMethodName,
+		FullMethod: StaffV1Service_UpdateMeTenant_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StaffV1ServiceServer).DeleteTenant(ctx, req.(*DeleteTenantRequest))
+		return srv.(StaffV1ServiceServer).UpdateMeTenant(ctx, req.(*UpdateMeTenantRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -373,42 +341,6 @@ func _StaffV1Service_ListStaffs_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StaffV1Service_CreateStaff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateStaffRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StaffV1ServiceServer).CreateStaff(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StaffV1Service_CreateStaff_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StaffV1ServiceServer).CreateStaff(ctx, req.(*CreateStaffRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StaffV1Service_UpdateStaff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateStaffRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StaffV1ServiceServer).UpdateStaff(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StaffV1Service_UpdateStaff_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StaffV1ServiceServer).UpdateStaff(ctx, req.(*UpdateStaffRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // StaffV1Service_ServiceDesc is the grpc.ServiceDesc for StaffV1Service service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -421,24 +353,24 @@ var StaffV1Service_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _StaffV1Service_CreateAssetPresignedURL_Handler,
 		},
 		{
-			MethodName: "GetTenant",
-			Handler:    _StaffV1Service_GetTenant_Handler,
+			MethodName: "SignUp",
+			Handler:    _StaffV1Service_SignUp_Handler,
 		},
 		{
-			MethodName: "ListTenants",
-			Handler:    _StaffV1Service_ListTenants_Handler,
+			MethodName: "GetMe",
+			Handler:    _StaffV1Service_GetMe_Handler,
 		},
 		{
-			MethodName: "CreateTenant",
-			Handler:    _StaffV1Service_CreateTenant_Handler,
+			MethodName: "GetMeTenant",
+			Handler:    _StaffV1Service_GetMeTenant_Handler,
 		},
 		{
-			MethodName: "UpdateTenant",
-			Handler:    _StaffV1Service_UpdateTenant_Handler,
+			MethodName: "UpdateMe",
+			Handler:    _StaffV1Service_UpdateMe_Handler,
 		},
 		{
-			MethodName: "DeleteTenant",
-			Handler:    _StaffV1Service_DeleteTenant_Handler,
+			MethodName: "UpdateMeTenant",
+			Handler:    _StaffV1Service_UpdateMeTenant_Handler,
 		},
 		{
 			MethodName: "GetStaff",
@@ -447,14 +379,6 @@ var StaffV1Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListStaffs",
 			Handler:    _StaffV1Service_ListStaffs_Handler,
-		},
-		{
-			MethodName: "CreateStaff",
-			Handler:    _StaffV1Service_CreateStaff_Handler,
-		},
-		{
-			MethodName: "UpdateStaff",
-			Handler:    _StaffV1Service_UpdateStaff_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

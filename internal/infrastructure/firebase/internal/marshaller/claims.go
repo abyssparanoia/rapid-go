@@ -6,7 +6,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 )
 
-func StaffClaimsToModel(authUID string, customClaim map[string]interface{}) *model.StaffClaims {
+func StaffClaimsToModel(authUID string, email string, customClaim map[string]interface{}) *model.StaffClaims {
 	var tenantID null.String
 	if _tenantID, ok := customClaim["tenant_id"]; ok {
 		tenantID = null.StringFrom(_tenantID.(string)) //nolint:errcheck
@@ -22,6 +22,7 @@ func StaffClaimsToModel(authUID string, customClaim map[string]interface{}) *mod
 
 	claims := model.NewStaffClaims(
 		authUID,
+		email,
 		tenantID,
 		staffID,
 		staffRole,

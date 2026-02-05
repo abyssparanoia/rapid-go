@@ -29,9 +29,8 @@ message GetStaffResponse {
 
 // List
 message ListStaffsRequest {
-  string tenant_id = 1;
-  uint64 page = 2;
-  uint64 limit = 3;
+  uint64 page = 1;
+  uint64 limit = 2;
 
   enum ListStaffsSortKey {
     LIST_STAFFS_SORT_KEY_UNSPECIFIED = 0;
@@ -41,13 +40,7 @@ message ListStaffsRequest {
     LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC = 4;
   }
 
-  optional ListStaffsSortKey sort_key = 4;
-
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["tenant_id"]
-    }
-  };
+  optional ListStaffsSortKey sort_key = 3;
 }
 
 message ListStaffsResponse {
@@ -60,61 +53,6 @@ message ListStaffsResponse {
         "staffs",
         "pagination"
       ]
-    }
-  };
-}
-
-// Create
-message CreateStaffRequest {
-  string tenant_id = 1;
-  string email = 2;
-  string display_name = 3;
-  StaffRole role = 4;
-  string image_asset_id = 5;
-
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: [
-        "tenant_id",
-        "email",
-        "display_name",
-        "role",
-        "image_asset_id"
-      ]
-    }
-  };
-}
-
-message CreateStaffResponse {
-  Staff staff = 1;
-
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["staff"]
-    }
-  };
-}
-
-// Update
-message UpdateStaffRequest {
-  string staff_id = 1;
-  optional string display_name = 2;
-  optional StaffRole role = 3;
-  optional string image_asset_id = 4;
-
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["staff_id"]
-    }
-  };
-}
-
-message UpdateStaffResponse {
-  Staff staff = 1;
-
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["staff"]
     }
   };
 }

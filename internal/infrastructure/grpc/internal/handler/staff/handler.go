@@ -6,19 +6,22 @@ import (
 )
 
 type StaffHandler struct {
-	tenantInteractor usecase.StaffTenantInteractor
-	staffInteractor  usecase.StaffStaffInteractor
-	assetInteractor  usecase.StaffAssetInteractor
+	meInteractor       usecase.StaffMeInteractor
+	meTenantInteractor usecase.StaffMeTenantInteractor
+	staffInteractor    usecase.StaffStaffInteractor
+	assetInteractor    usecase.StaffAssetInteractor
 }
 
 func NewStaffHandler(
-	tenantInteractor usecase.StaffTenantInteractor,
+	meInteractor usecase.StaffMeInteractor,
+	meTenantInteractor usecase.StaffMeTenantInteractor,
 	staffInteractor usecase.StaffStaffInteractor,
 	assetInteractor usecase.StaffAssetInteractor,
 ) staff_apiv1.StaffV1ServiceServer {
 	return &StaffHandler{
-		tenantInteractor: tenantInteractor,
-		staffInteractor:  staffInteractor,
-		assetInteractor:  assetInteractor,
+		meInteractor:       meInteractor,
+		meTenantInteractor: meTenantInteractor,
+		staffInteractor:    staffInteractor,
+		assetInteractor:    assetInteractor,
 	}
 }

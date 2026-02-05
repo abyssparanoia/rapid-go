@@ -5,17 +5,16 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
-	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 )
 
 //go:generate go run go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_usecase
-type StaffStaffInteractor interface {
+type StaffMeTenantInteractor interface {
 	Get(
 		ctx context.Context,
-		param *input.StaffGetStaff,
-	) (*model.Staff, error)
-	List(
+		param *input.StaffGetMeTenant,
+	) (*model.Tenant, error)
+	Update(
 		ctx context.Context,
-		param *input.StaffListStaffs,
-	) (*output.ListStaffs, error)
+		param *input.StaffUpdateMeTenant,
+	) (*model.Tenant, error)
 }

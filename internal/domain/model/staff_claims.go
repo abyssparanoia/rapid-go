@@ -7,6 +7,7 @@ import (
 
 type StaffClaims struct {
 	AuthUID   string
+	Email     string
 	TenantID  null.String
 	StaffID   null.String
 	StaffRole nullable.Type[StaffRole]
@@ -14,12 +15,14 @@ type StaffClaims struct {
 
 func NewStaffClaims(
 	authUID string,
+	email string,
 	tenantID null.String,
 	staffID null.String,
 	staffRole nullable.Type[StaffRole],
 ) *StaffClaims {
 	return &StaffClaims{
 		AuthUID:   authUID,
+		Email:     email,
 		TenantID:  tenantID,
 		StaffID:   staffID,
 		StaffRole: staffRole,

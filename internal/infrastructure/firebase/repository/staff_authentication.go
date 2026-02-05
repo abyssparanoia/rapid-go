@@ -39,7 +39,12 @@ func (r *staffStaffAuthentication) VerifyIDToken(
 	if err != nil {
 		return nil, errors.InvalidIDTokenErr.Wrap(err)
 	}
-	return marshaller.StaffClaimsToModel(t.UID, t.Claims), nil
+	// Extract email from standard claims
+	email := ""
+	if emailVal, ok := t.Claims["email"]; ok {
+		email = emailVal.(string) //nolint:errcheck
+	}
+	return marshaller.StaffClaimsToModel(t.UID, email, t.Claims), nil
 }
 
 func (r *staffStaffAuthentication) GetUserByEmail(
@@ -57,7 +62,7 @@ func (r *staffStaffAuthentication) GetUserByEmail(
 	}
 	return &repository.StaffAuthenticationGetUserByEmailResult{
 		AuthUID:     user.UID,
-		StaffClaims: marshaller.StaffClaimsToModel(user.UID, user.CustomClaims),
+		StaffClaims: marshaller.StaffClaimsToModel(user.UID, user.Email, user.CustomClaims),
 		Exist:       true,
 	}, nil
 }
