@@ -55,6 +55,7 @@ app worker                           # Worker root command
 ```
 
 **Naming Pattern:**
+
 - Root command: `worker`
 - Subcommand: `{entity-name}` (kebab-case, e.g., `project-key-creation`, `user-notification`)
 
@@ -76,6 +77,7 @@ TaskProjectKeyCreationFailedErr = NewInternalError("E300003", "project key creat
 ```
 
 **Error Code Pattern:**
+
 - E3001xx - First worker entity
 - E3002xx - Second worker entity
 - E3003xx - Third worker entity (and so on)
@@ -118,6 +120,7 @@ func (p *TaskProcessProjectKeyCreation) Validate() error {
 ```
 
 **Naming Pattern:**
+
 - Input struct: `TaskProcess{Entity}`
 - Constructor: `NewTaskProcess{Entity}`
 
@@ -146,6 +149,7 @@ type TaskProjectKeyCreationInteractor interface {
 ```
 
 **Naming Pattern:**
+
 - Interface: `Task{Entity}Interactor`
 - Method: `Process`
 - Return: Domain model or error
@@ -163,7 +167,7 @@ import (
     "github.com/eaglys-platform/pandlock-api/internal/domain/model"
     "github.com/eaglys-platform/pandlock-api/internal/domain/repository"
     "github.com/eaglys-platform/pandlock-api/internal/usecase/input"
-    "github.com/volatiletech/null/v8"
+    "github.com/aarondl/null/v8"
 )
 
 type taskProjectKeyCreationInteractor struct {
@@ -220,6 +224,7 @@ func (i *taskProjectKeyCreationInteractor) Process(
 ```
 
 **Key Points:**
+
 - Use transaction with `ForUpdate: true` for data consistency
 - Validate input at the beginning
 - Return domain model after processing
@@ -335,6 +340,7 @@ func NewSubscriber(
 ```
 
 **Key Configuration:**
+
 - **Sequential Processing**: `MaxMessages: 1` (one message at a time)
 - **Parallel Processing**: `MaxMessages: 10` (up to 10 concurrent messages)
 - **Long Polling**: `WaitTimeSeconds: 20` (reduces empty responses)
@@ -405,6 +411,7 @@ func (h *ProjectKeyCreationHandler) Handle(ctx context.Context, message types.Me
 ```
 
 **Message Format:**
+
 ```json
 {
   "project_id": "xxx"
@@ -591,6 +598,7 @@ type AWSEnvironment struct {
 ```
 
 **Naming Convention:**
+
 - Prefix: `AWS_SQS_` for SQS queues
 - Prefix: `GCP_PUBSUB_` for Pub/Sub topics (future)
 - Pattern: `{PROVIDER}_{SERVICE}_{ENTITY}_{RESOURCE_TYPE}`
@@ -622,12 +630,12 @@ func NewCmdRoot() *cobra.Command {
 
 ### Message Acknowledgment
 
-| Error Type | Action | Reason |
-|------------|--------|--------|
-| Success | Delete message | Completed successfully |
-| Validation error | Delete message | Won't succeed on retry |
-| Not found error | Delete message | Entity doesn't exist |
-| Transient error | Keep visible | Will retry after timeout |
+| Error Type       | Action         | Reason                   |
+| ---------------- | -------------- | ------------------------ |
+| Success          | Delete message | Completed successfully   |
+| Validation error | Delete message | Won't succeed on retry   |
+| Not found error  | Delete message | Entity doesn't exist     |
+| Transient error  | Keep visible   | Will retry after timeout |
 
 ### Implementation
 
@@ -667,7 +675,7 @@ services:
   aws:
     build: ./localstack
     environment:
-      SERVICES: s3,sns,sqs  # Enable SQS service
+      SERVICES: s3,sns,sqs # Enable SQS service
       AWS_DEFAULT_REGION: ap-northeast-1
 ```
 
@@ -769,7 +777,7 @@ aws --endpoint-url=http://localhost:4566 sqs send-message \
 1. **Single Binary** - Use `cmd/app` with Cobra commands, not separate binaries
 2. **Hierarchical Commands** - Group workers under `worker` root command
 3. **Reuse Dependencies** - Use existing `Dependency` struct, don't create new DI files
-4. **Environment Naming** - Follow existing conventions with proper prefixes (AWS_, GCP_, etc.)
+4. **Environment Naming** - Follow existing conventions with proper prefixes (AWS*, GCP*, etc.)
 5. **Structured Logging** - Always use `logger.L(ctx)` with structured fields
 6. **Graceful Shutdown** - Handle SIGINT/SIGTERM signals properly
 7. **Transaction Safety** - Use `ForUpdate: true` when modifying entities

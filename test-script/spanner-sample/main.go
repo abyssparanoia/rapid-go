@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
@@ -13,7 +14,6 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
 	"github.com/caarlos0/env/v11"
-	"github.com/volatiletech/null/v8"
 	"go.uber.org/zap"
 )
 

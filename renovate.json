@@ -1,13 +1,4 @@
 {
   "extends": ["config:base"],
-  "packageRules": [
-    {
-      "matchPackageNames": [
-        "github.com/volatiletech/sqlboiler",
-        "github.com/volatiletech/strmangle",
-        "github.com/volatiletech/null"
-      ],
-      "enabled": false
-    }
-  ]
+  "packageRules": []
 }

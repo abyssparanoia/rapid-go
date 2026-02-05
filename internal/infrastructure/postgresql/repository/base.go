@@ -1,8 +1,8 @@
 package repository
 
 import (
+	"github.com/aarondl/sqlboiler/v4/queries/qm"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
-	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 func addForUpdateFromBaseGetOptions(mods []qm.QueryMod, query repository.BaseGetOptions) []qm.QueryMod {

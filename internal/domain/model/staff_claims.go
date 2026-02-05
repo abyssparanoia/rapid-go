@@ -1,8 +1,8 @@
 package model
 
 import (
+	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
-	"github.com/volatiletech/null/v8"
 )
 
 type StaffClaims struct {

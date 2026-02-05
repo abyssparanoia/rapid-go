@@ -1,9 +1,9 @@
 package dto
 
 import (
+	"github.com/aarondl/null/v8"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/volatiletech/null/v8"
 )
 
 type AWSCognitoStaffClaims struct {

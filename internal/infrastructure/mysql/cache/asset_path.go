@@ -3,14 +3,14 @@ package cache
 import (
 	"context"
 
+	"github.com/aarondl/sqlboiler/v4/boil"
+	"github.com/aarondl/sqlboiler/v4/queries/qm"
 	"github.com/abyssparanoia/rapid-go/internal/domain/cache"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/internal/dbmodel"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/internal/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/transactable"
-	"github.com/volatiletech/sqlboiler/v4/boil"
-	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 type assetPath struct{}

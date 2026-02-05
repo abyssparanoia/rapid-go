@@ -14,7 +14,7 @@ import (
 
     "github.com/abyssparanoia/rapid-go/internal/domain/model"
     "github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
-    "github.com/volatiletech/null/v8"
+    "github.com/aarondl/null/v8"
 )
 
 //go:generate go tool go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
@@ -73,11 +73,11 @@ type BatchGetExamplesQuery struct {
 
 ### Optional Field Types
 
-| Use Case | Type |
-|----------|------|
-| Optional string (ID, name) | `null.String` |
-| Optional number | `null.Uint64`, `null.Int64` |
-| Optional enum/custom type | `nullable.Type[T]` |
+| Use Case                   | Type                        |
+| -------------------------- | --------------------------- |
+| Optional string (ID, name) | `null.String`               |
+| Optional number            | `null.Uint64`, `null.Int64` |
+| Optional enum/custom type  | `nullable.Type[T]`          |
 
 ## Base Options (defined in base_options.go)
 
@@ -125,8 +125,8 @@ import (
     "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/internal/dbmodel"
     "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/internal/marshaller"
     "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/transactable"
-    "github.com/volatiletech/sqlboiler/v4/boil"
-    "github.com/volatiletech/sqlboiler/v4/queries/qm"
+    "github.com/aarondl/sqlboiler/v4/boil"
+    "github.com/aarondl/sqlboiler/v4/queries/qm"
 )
 
 type example struct{}
