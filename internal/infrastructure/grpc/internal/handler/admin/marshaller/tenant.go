@@ -18,6 +18,16 @@ func TenantToPB(m *model.Tenant) *admin_apiv1.Tenant {
 	}
 }
 
+func TenantPartialToPB(m *model.Tenant) *admin_apiv1.TenantPartial {
+	if m == nil {
+		return nil
+	}
+	return &admin_apiv1.TenantPartial{
+		Id:   m.ID,
+		Name: m.Name,
+	}
+}
+
 func TenantsToPB(slice model.Tenants) []*admin_apiv1.Tenant {
 	dsts := make([]*admin_apiv1.Tenant, len(slice))
 	for idx, m := range slice {

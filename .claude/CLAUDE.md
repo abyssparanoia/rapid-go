@@ -101,6 +101,9 @@ Detailed coding rules are organized by theme in `.claude/rules/`:
 | `dependency-injection.md` | `internal/infrastructure/dependency/**` | DI configuration |
 | `invitation-workflow.md` | `*invitation*` | Invitation/approval flow patterns |
 | `external-service-integration.md` | `cognito/**`, `firebase/**`, `*authentication*` | Auth (Cognito/Firebase) integration patterns |
+| `webhook-implementation.md` | `webhook/**`, `internal/infrastructure/http/internal/handler/webhook_*` | Webhook endpoint patterns (HTTP → gRPC routing) |
+| `job-system.md` | `job/**`, `cmd/app/internal/task_cmd/process_job_cmd/` | Async job queue patterns (SNS/SQS → AWS Batch) |
+| `worker-pattern.md` | `worker/**`, `cmd/app/internal/worker_cmd/` | Background worker patterns (SQS/Pub/Sub subscribers) |
 
 ## Skills
 

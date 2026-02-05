@@ -144,7 +144,7 @@ message UpdateTenantRequest {
 
 - Place resource messages and enums here.
 - If you use `google.protobuf.Timestamp`, import `google/protobuf/timestamp.proto`.
-- For **readonly relations** (e.g. `optional Tenant tenant = 101;` on `Staff`), allocate field numbers **from 101 onwards** (this repository's convention).
+- Each resource requires **both Full and Partial message definitions** (see Partial Pattern section below).
 
 Example (admin staff):
 
@@ -157,9 +157,10 @@ import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "rapid/admin_api/v1/model_tenant.proto";
 
+// Full - for direct CRUD responses (with timestamps)
 message Staff {
   string id = 1;
-  string tenant_id = 2;
+  TenantPartial tenant = 2;
   StaffRole role = 3;
   string auth_uid = 4;
   string display_name = 5;
@@ -168,8 +169,38 @@ message Staff {
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
 
-  // Readonly relation
-  optional Tenant tenant = 101;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "id",
+        "tenant",
+        "role",
+        "auth_uid",
+        "display_name",
+        "image_url",
+        "email",
+        "created_at",
+        "updated_at"
+      ]
+    }
+  };
+}
+
+// Partial - for embedding in other resources (no timestamps)
+message StaffPartial {
+  string id = 1;
+  TenantPartial tenant = 2;
+  StaffRole role = 3;
+  string auth_uid = 4;
+  string display_name = 5;
+  string image_url = 6;
+  string email = 7;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "tenant", "role", "auth_uid", "display_name", "image_url", "email"]
+    }
+  };
 }
 
 enum StaffRole {
@@ -178,6 +209,78 @@ enum StaffRole {
   STAFF_ROLE_ADMIN = 2;
 }
 ```
+
+## Partial Pattern
+
+全リソースに対して`XXXPartial`メッセージを定義する。
+
+### 定義ルール
+
+| Message Type | 用途 | Timestamps |
+|--------------|------|------------|
+| `{Entity}` | CRUD直接レスポンス | あり (created_at, updated_at) |
+| `{Entity}Partial` | 他リソースへの埋め込み | なし |
+
+### Partialの構造
+
+```protobuf
+// Full - CRUD直接レスポンス用（timestamps含む）
+message Example {
+  string id = 1;
+  TenantPartial tenant = 2;  // 親参照はPartial
+  string name = 3;
+  ExampleStatus status = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+// Partial - 他リソースへの埋め込み用（timestamps除外）
+message ExamplePartial {
+  string id = 1;
+  TenantPartial tenant = 2;  // 親参照もPartial
+  string name = 3;
+  ExampleStatus status = 4;
+  // created_at, updated_at は含まない
+}
+```
+
+### Request vs Response
+
+- **Response**: `{Parent}Partial`を使用（`{parent}_id`ではなく`{Parent}Partial {parent}`）
+- **Request**: 引き続き`string {parent}_id`を使用
+
+```protobuf
+// Response - TenantPartialを使用
+message Staff {
+  TenantPartial tenant = 2;  // string tenant_idではない
+}
+
+// Request - tenant_id stringを使用
+message CreateStaffRequest {
+  string tenant_id = 1;  // IDのまま
+}
+```
+
+### ネストしたPartial
+
+PartialがPartialを含む場合も同様にPartialを使用：
+
+```protobuf
+message StaffPartial {
+  string id = 1;
+  TenantPartial tenant = 2;  // PartialがPartialを含む
+  // ...
+}
+```
+
+### Field Number Convention（更新）
+
+| Range | Purpose |
+|-------|---------|
+| 1-99 | 通常フィールド（Partial埋め込み含む） |
+| 100+ | 予約（使用しない） |
+
+**Note**: Partialパターンでは`optional {Parent} {parent} = 101`は不要。親参照は常に field 1-99 の範囲で必須フィールドとして定義される。
 
 ## Naming Conventions
 

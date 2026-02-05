@@ -147,21 +147,50 @@ internal/infrastructure/grpc/internal/handler/{actor}/marshaller/
 
 ### Domain to Proto
 
+#### Partial Pattern Marshallers
+
+各エンティティに2つのmarshaller関数を定義：
+
 ```go
 package marshaller
 
+// CRUD直接レスポンス用（Fullメッセージ）
 func ExampleToPb(m *model.Example) *pb.Example {
     if m == nil {
         return nil
     }
+
+    var tenant *pb.TenantPartial
+    if m.ReadonlyReference != nil && m.ReadonlyReference.Tenant != nil {
+        tenant = TenantPartialToPb(m.ReadonlyReference.Tenant)
+    }
+
     return &pb.Example{
-        Id:          m.ID,
-        TenantId:    m.TenantID,
-        Name:        m.Name,
-        Description: m.Description,
-        Status:      ExampleStatusToPb(m.Status),
-        CreatedAt:   timestamppb.New(m.CreatedAt),
-        UpdatedAt:   timestamppb.New(m.UpdatedAt),
+        Id:        m.ID,
+        Tenant:    tenant,
+        Name:      m.Name,
+        Status:    ExampleStatusToPb(m.Status),
+        CreatedAt: timestamppb.New(m.CreatedAt),
+        UpdatedAt: timestamppb.New(m.UpdatedAt),
+    }
+}
+
+// 他リソースへの埋め込み用（Partialメッセージ）
+func ExamplePartialToPb(m *model.Example) *pb.ExamplePartial {
+    if m == nil {
+        return nil
+    }
+
+    var tenant *pb.TenantPartial
+    if m.ReadonlyReference != nil && m.ReadonlyReference.Tenant != nil {
+        tenant = TenantPartialToPb(m.ReadonlyReference.Tenant)
+    }
+
+    return &pb.ExamplePartial{
+        Id:     m.ID,
+        Tenant: tenant,
+        Name:   m.Name,
+        Status: ExampleStatusToPb(m.Status),
     }
 }
 
@@ -172,6 +201,29 @@ func ExamplesToPb(models model.Examples) []*pb.Example {
     }
     return result
 }
+
+func ExamplesPartialToPb(models model.Examples) []*pb.ExamplePartial {
+    result := make([]*pb.ExamplePartial, len(models))
+    for i, m := range models {
+        result[i] = ExamplePartialToPb(m)
+    }
+    return result
+}
+```
+
+#### Preload必須
+
+Partialパターンでは親参照が必須フィールド。レスポンス返却時は必ず`Preload: true`を指定：
+
+```go
+// REQUIRED - Preload must be true for responses
+example, err := i.exampleRepository.Get(ctx, repository.GetExampleQuery{
+    ID: null.StringFrom(param.ExampleID),
+    BaseGetOptions: repository.BaseGetOptions{
+        OrFail:  true,
+        Preload: true,  // Partialパターンでは必須
+    },
+})
 ```
 
 ### Enum Conversions

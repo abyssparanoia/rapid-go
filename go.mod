@@ -55,7 +55,7 @@ require (
 	go.uber.org/zap v1.27.1
 	google.golang.org/api v0.257.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260114163908-3f89685c29c3
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20251222181119-0a764e51fe1b
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260203192932-546029d2fa20
 	google.golang.org/grpc v1.78.0
 	google.golang.org/protobuf v1.36.11
 	gopkg.in/yaml.v3 v3.0.1
@@ -383,7 +383,6 @@ require (
 	github.com/yagipy/maintidx v1.0.0 // indirect
 	github.com/yeya24/promlinter v0.3.0 // indirect
 	github.com/ykadowak/zerologlint v0.1.5 // indirect
-	github.com/zeebo/errs v1.4.0 // indirect
 	gitlab.com/bosi/decorder v0.4.2 // indirect
 	go-simpler.org/musttag v0.14.0 // indirect
 	go-simpler.org/sloglint v0.11.1 // indirect
