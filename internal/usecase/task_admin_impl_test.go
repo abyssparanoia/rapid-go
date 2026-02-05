@@ -226,7 +226,7 @@ func TestTaskAdminInteractor_Create(t *testing.T) {
 				},
 				want: want{
 					result: &output.TaskCreateAdmin{
-						// AdminID will be generated, so we check it's not empty
+						AdminID:  "",
 						AuthUID:  authUID,
 						Password: password,
 					},

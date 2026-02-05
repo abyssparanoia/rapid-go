@@ -1,3 +1,4 @@
+//nolint:forbidigo
 package create_root_admin_cmd
 
 import (
@@ -73,7 +74,7 @@ func generatePassword(length int) (string, error) {
 
 	bytes := make([]byte, byteLength)
 	if _, err := rand.Read(bytes); err != nil {
-		return "", err
+		return "", errors.InternalErr.Wrap(err)
 	}
 
 	// Encode to base64 and truncate to desired length
