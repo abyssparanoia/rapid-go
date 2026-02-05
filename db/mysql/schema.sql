@@ -1,3 +1,23 @@
+CREATE TABLE `admin_roles` (
+  `id` varchar(32) NOT NULL COMMENT 'id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='admin role';
+
+CREATE TABLE `admins` (
+  `id` varchar(64) NOT NULL COMMENT 'id',
+  `role` varchar(32) NOT NULL COMMENT 'role',
+  `auth_uid` varchar(256) NOT NULL COMMENT 'auth uid',
+  `email` varchar(512) NOT NULL COMMENT 'email',
+  `display_name` varchar(256) NOT NULL COMMENT 'display name',
+  `created_at` datetime NOT NULL COMMENT 'created date',
+  `updated_at` datetime NOT NULL COMMENT 'update date',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `admins_unique_auth_uid` (`auth_uid`),
+  UNIQUE KEY `admins_unique_email` (`email`),
+  KEY `admins_fkey_role` (`role`),
+  CONSTRAINT `admins_fkey_role` FOREIGN KEY (`role`) REFERENCES `admin_roles` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='admin';
+
 CREATE TABLE `asset_types` (
   `id` varchar(256) NOT NULL COMMENT 'id',
   PRIMARY KEY (`id`)
@@ -29,7 +49,7 @@ CREATE TABLE `goose_db_version` (
   `is_applied` tinyint(1) NOT NULL,
   `tstamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 
 CREATE TABLE `staff_roles` (
   `id` varchar(32) NOT NULL COMMENT 'id',

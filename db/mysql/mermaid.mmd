@@ -1,5 +1,9 @@
 erDiagram
 
+  maindbadmin_roles {
+    VARCHAR id PK "id"
+  }
+
   maindbasset_types {
     VARCHAR id PK "id"
   }
@@ -26,6 +30,16 @@ erDiagram
   maindbtenants {
     VARCHAR id PK "id"
     VARCHAR name "name"
+    DATETIME created_at "created date"
+    DATETIME updated_at "update date"
+  }
+
+  maindbadmins {
+    VARCHAR id PK "id"
+    VARCHAR role FK "role"
+    VARCHAR auth_uid UK "auth uid"
+    VARCHAR email UK "email"
+    VARCHAR display_name "display name"
     DATETIME created_at "created date"
     DATETIME updated_at "update date"
   }
@@ -60,6 +74,7 @@ erDiagram
     DATETIME updated_at "update date"
   }
 
+  maindbadmin_roles ||--o{ maindbadmins : "foreign key"
   maindbasset_types ||--o{ maindbassets : "foreign key"
   maindbcontent_types ||--o{ maindbassets : "foreign key"
   maindbstaff_roles ||--o{ maindbstaffs : "foreign key"

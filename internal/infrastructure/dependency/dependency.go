@@ -36,10 +36,16 @@ type Dependency struct {
 	AdminStaffInteractor  usecase.AdminStaffInteractor
 	AdminAssetInteractor  usecase.AdminAssetInteractor
 
+	// staff
+	StaffTenantInteractor usecase.StaffTenantInteractor
+	StaffStaffInteractor  usecase.StaffStaffInteractor
+	StaffAssetInteractor  usecase.StaffAssetInteractor
+
 	// Other
-	StaffInteractor          usecase.StaffInteractor
-	AuthenticationInteractor usecase.AuthenticationInteractor
-	DebugInteractor          usecase.DebugInteractor
+	StaffInteractor               usecase.StaffInteractor
+	AuthenticationInteractor      usecase.AuthenticationInteractor
+	AdminAuthenticationInteractor usecase.AdminAuthenticationInteractor
+	DebugInteractor               usecase.DebugInteractor
 }
 
 func (d *Dependency) Inject(
@@ -64,11 +70,23 @@ func (d *Dependency) Inject(
 		firebaseCli,
 		e.FirebaseClientAPIKey,
 	)
+	_ = firebase_repository.NewAdminAuthentication(
+		firebaseCli,
+		e.FirebaseClientAPIKey,
+	)
 	staffAuthenticationRepository := cognito_repository.NewStaffAuthentication(
 		ctx,
 		cognitoCli,
 		e.AWSCognitoStaffUserPoolID,
 		e.AWSCognitoStaffClientID,
+		e.AWSCognitoEmulatorHost,
+		e.AWSRegion,
+	)
+	adminAuthenticationRepository := cognito_repository.NewAdminAuthentication(
+		ctx,
+		cognitoCli,
+		e.AWSCognitoAdminUserPoolID,
+		e.AWSCognitoAdminClientID,
 		e.AWSCognitoEmulatorHost,
 		e.AWSRegion,
 	)
@@ -106,6 +124,22 @@ func (d *Dependency) Inject(
 		assetService,
 	)
 
+	d.StaffTenantInteractor = usecase.NewStaffTenantInteractor(
+		transactable,
+		tenantRepository,
+		assetService,
+	)
+	d.StaffStaffInteractor = usecase.NewStaffStaffInteractor(
+		transactable,
+		tenantRepository,
+		staffRepository,
+		staffService,
+		assetService,
+	)
+	d.StaffAssetInteractor = usecase.NewStaffAssetInteractor(
+		assetService,
+	)
+
 	d.StaffInteractor = usecase.NewStaffInteractor(
 		transactable,
 		tenantRepository,
@@ -114,6 +148,10 @@ func (d *Dependency) Inject(
 
 	d.AuthenticationInteractor = usecase.NewAuthenticationInteractor(
 		staffAuthenticationRepository,
+	)
+
+	d.AdminAuthenticationInteractor = usecase.NewAdminAuthenticationInteractor(
+		adminAuthenticationRepository,
 	)
 
 	d.DebugInteractor = usecase.NewDebugInteractor(

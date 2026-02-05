@@ -11,14 +11,17 @@ import (
 )
 
 type Session struct {
-	authenticationInteractor usecase.AuthenticationInteractor
+	authenticationInteractor      usecase.AuthenticationInteractor
+	adminAuthenticationInteractor usecase.AdminAuthenticationInteractor
 }
 
 func NewSession(
 	authenticationInteractor usecase.AuthenticationInteractor,
+	adminAuthenticationInteractor usecase.AdminAuthenticationInteractor,
 ) *Session {
 	return &Session{
-		authenticationInteractor,
+		authenticationInteractor:      authenticationInteractor,
+		adminAuthenticationInteractor: adminAuthenticationInteractor,
 	}
 }
 
@@ -29,6 +32,13 @@ func (i *Session) Authenticate(ctx context.Context) (context.Context, error) {
 		return ctx, nil //nolint:nilerr // ignore
 	}
 	if strings.Contains(method, "AdminV1Service") {
+		claims, err := i.adminAuthenticationInteractor.VerifyAdminIDToken(ctx, input.NewVerifyIDToken(idToken))
+		if err != nil {
+			return ctx, err
+		}
+		ctx = SaveAdminSessionContext(ctx, claims)
+	}
+	if strings.Contains(method, "StaffV1Service") {
 		claims, err := i.authenticationInteractor.VerifyStaffIDToken(ctx, input.NewVerifyIDToken(idToken))
 		if err != nil {
 			return ctx, err

@@ -16,3 +16,13 @@ func NewAdminListStaffs(
 		Pagination: pagination,
 	}
 }
+
+func NewStaffListStaffs(
+	staffs model.Staffs,
+	pagination *model.Pagination,
+) *ListStaffs {
+	return &ListStaffs{
+		Staffs:     staffs,
+		Pagination: pagination,
+	}
+}

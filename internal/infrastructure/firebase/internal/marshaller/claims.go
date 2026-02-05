@@ -42,3 +42,33 @@ func StaffClaimsToMap(m *model.StaffClaims) map[string]interface{} {
 	}
 	return cmap
 }
+
+func AdminClaimsToModel(authUID string, email string, customClaim map[string]interface{}) *model.AdminClaims {
+	var adminID null.String
+	if _adminID, ok := customClaim["admin_id"]; ok {
+		adminID = null.StringFrom(_adminID.(string)) //nolint:errcheck
+	}
+	var adminRole nullable.Type[model.AdminRole]
+	if _adminRole, ok := customClaim["admin_role"]; ok {
+		adminRole = nullable.TypeFrom(model.NewAdminRole(_adminRole.(string))) //nolint:errcheck
+	}
+
+	claims := model.NewAdminClaims(
+		authUID,
+		email,
+		adminID,
+		adminRole,
+	)
+	return claims
+}
+
+func AdminClaimsToMap(m *model.AdminClaims) map[string]interface{} {
+	cmap := map[string]interface{}{}
+	if m.AdminID.Valid {
+		cmap["admin_id"] = m.AdminID.String
+	}
+	if m.AdminRole.Valid && m.AdminRole.Value().Valid() {
+		cmap["admin_role"] = m.AdminRole.Value().String()
+	}
+	return cmap
+}

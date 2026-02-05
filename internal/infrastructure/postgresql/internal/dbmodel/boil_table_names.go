@@ -4,12 +4,16 @@
 package dbmodel
 
 var TableNames = struct {
+	AdminRoles     string
+	Admins         string
 	Assets         string
 	Staffs         string
 	TenantTagTypes string
 	TenantTags     string
 	Tenants        string
 }{
+	AdminRoles:     "admin_roles",
+	Admins:         "admins",
 	Assets:         "assets",
 	Staffs:         "staffs",
 	TenantTagTypes: "tenant_tag_types",
