@@ -393,8 +393,8 @@
         "id": {
           "type": "string"
         },
-        "tenant_id": {
-          "type": "string"
+        "tenant": {
+          "$ref": "#/definitions/v1TenantPartial"
         },
         "role": {
           "$ref": "#/definitions/v1StaffRole"
@@ -418,14 +418,12 @@
         "updated_at": {
           "type": "string",
           "format": "date-time"
-        },
-        "tenant": {
-          "$ref": "#/definitions/v1Tenant"
         }
       },
+      "title": "Full - for direct CRUD responses (with timestamps)",
       "required": [
         "id",
-        "tenant_id",
+        "tenant",
         "role",
         "auth_uid",
         "display_name",
@@ -462,11 +460,28 @@
           "format": "date-time"
         }
       },
+      "title": "Full - for direct CRUD responses (with timestamps)",
       "required": [
         "id",
         "name",
         "created_at",
         "updated_at"
+      ]
+    },
+    "v1TenantPartial": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "title": "Partial - for embedding in other resources (no timestamps)",
+      "required": [
+        "id",
+        "name"
       ]
     },
     "v1UpdateTenantResponse": {

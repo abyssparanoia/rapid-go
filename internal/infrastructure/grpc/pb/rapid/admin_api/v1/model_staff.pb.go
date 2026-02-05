@@ -73,10 +73,11 @@ func (StaffRole) EnumDescriptor() ([]byte, []int) {
 	return file_rapid_admin_api_v1_model_staff_proto_rawDescGZIP(), []int{0}
 }
 
+// Full - for direct CRUD responses (with timestamps)
 type Staff struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	TenantId      string                 `protobuf:"bytes,2,opt,name=tenant_id,json=tenantId,proto3" json:"tenant_id,omitempty"`
+	Tenant        *TenantPartial         `protobuf:"bytes,2,opt,name=tenant,proto3" json:"tenant,omitempty"`
 	Role          StaffRole              `protobuf:"varint,3,opt,name=role,proto3,enum=rapid.admin_api.v1.StaffRole" json:"role,omitempty"`
 	AuthUid       string                 `protobuf:"bytes,4,opt,name=auth_uid,json=authUid,proto3" json:"auth_uid,omitempty"`
 	DisplayName   string                 `protobuf:"bytes,5,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
@@ -84,7 +85,6 @@ type Staff struct {
 	Email         string                 `protobuf:"bytes,7,opt,name=email,proto3" json:"email,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	Tenant        *Tenant                `protobuf:"bytes,101,opt,name=tenant,proto3,oneof" json:"tenant,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -126,11 +126,11 @@ func (x *Staff) GetId() string {
 	return ""
 }
 
-func (x *Staff) GetTenantId() string {
+func (x *Staff) GetTenant() *TenantPartial {
 	if x != nil {
-		return x.TenantId
+		return x.Tenant
 	}
-	return ""
+	return nil
 }
 
 func (x *Staff) GetRole() StaffRole {
@@ -182,21 +182,107 @@ func (x *Staff) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *Staff) GetTenant() *Tenant {
+// Partial - for embedding in other resources (no timestamps)
+type StaffPartial struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Tenant        *TenantPartial         `protobuf:"bytes,2,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	Role          StaffRole              `protobuf:"varint,3,opt,name=role,proto3,enum=rapid.admin_api.v1.StaffRole" json:"role,omitempty"`
+	AuthUid       string                 `protobuf:"bytes,4,opt,name=auth_uid,json=authUid,proto3" json:"auth_uid,omitempty"`
+	DisplayName   string                 `protobuf:"bytes,5,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	ImageUrl      string                 `protobuf:"bytes,6,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
+	Email         string                 `protobuf:"bytes,7,opt,name=email,proto3" json:"email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StaffPartial) Reset() {
+	*x = StaffPartial{}
+	mi := &file_rapid_admin_api_v1_model_staff_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StaffPartial) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StaffPartial) ProtoMessage() {}
+
+func (x *StaffPartial) ProtoReflect() protoreflect.Message {
+	mi := &file_rapid_admin_api_v1_model_staff_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StaffPartial.ProtoReflect.Descriptor instead.
+func (*StaffPartial) Descriptor() ([]byte, []int) {
+	return file_rapid_admin_api_v1_model_staff_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *StaffPartial) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *StaffPartial) GetTenant() *TenantPartial {
 	if x != nil {
 		return x.Tenant
 	}
 	return nil
 }
 
+func (x *StaffPartial) GetRole() StaffRole {
+	if x != nil {
+		return x.Role
+	}
+	return StaffRole_STAFF_ROLE_UNSPECIFIED
+}
+
+func (x *StaffPartial) GetAuthUid() string {
+	if x != nil {
+		return x.AuthUid
+	}
+	return ""
+}
+
+func (x *StaffPartial) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *StaffPartial) GetImageUrl() string {
+	if x != nil {
+		return x.ImageUrl
+	}
+	return ""
+}
+
+func (x *StaffPartial) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
 var File_rapid_admin_api_v1_model_staff_proto protoreflect.FileDescriptor
 
 const file_rapid_admin_api_v1_model_staff_proto_rawDesc = "" +
 	"\n" +
-	"$rapid/admin_api/v1/model_staff.proto\x12\x12rapid.admin_api.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a%rapid/admin_api/v1/model_tenant.proto\"\xf9\x03\n" +
+	"$rapid/admin_api/v1/model_staff.proto\x12\x12rapid.admin_api.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a%rapid/admin_api/v1/model_tenant.proto\"\xd0\x03\n" +
 	"\x05Staff\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
-	"\ttenant_id\x18\x02 \x01(\tR\btenantId\x121\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x129\n" +
+	"\x06tenant\x18\x02 \x01(\v2!.rapid.admin_api.v1.TenantPartialR\x06tenant\x121\n" +
 	"\x04role\x18\x03 \x01(\x0e2\x1d.rapid.admin_api.v1.StaffRoleR\x04role\x12\x19\n" +
 	"\bauth_uid\x18\x04 \x01(\tR\aauthUid\x12!\n" +
 	"\fdisplay_name\x18\x05 \x01(\tR\vdisplayName\x12\x1b\n" +
@@ -205,12 +291,19 @@ const file_rapid_admin_api_v1_model_staff_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x127\n" +
-	"\x06tenant\x18e \x01(\v2\x1a.rapid.admin_api.v1.TenantH\x00R\x06tenant\x88\x01\x01:e\x92Ab\n" +
-	"`\xd2\x01\x02id\xd2\x01\ttenant_id\xd2\x01\x04role\xd2\x01\bauth_uid\xd2\x01\fdisplay_name\xd2\x01\timage_url\xd2\x01\x05email\xd2\x01\n" +
+	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt:b\x92A_\n" +
+	"]\xd2\x01\x02id\xd2\x01\x06tenant\xd2\x01\x04role\xd2\x01\bauth_uid\xd2\x01\fdisplay_name\xd2\x01\timage_url\xd2\x01\x05email\xd2\x01\n" +
 	"created_at\xd2\x01\n" +
-	"updated_atB\t\n" +
-	"\a_tenant*T\n" +
+	"updated_at\"\xc7\x02\n" +
+	"\fStaffPartial\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x129\n" +
+	"\x06tenant\x18\x02 \x01(\v2!.rapid.admin_api.v1.TenantPartialR\x06tenant\x121\n" +
+	"\x04role\x18\x03 \x01(\x0e2\x1d.rapid.admin_api.v1.StaffRoleR\x04role\x12\x19\n" +
+	"\bauth_uid\x18\x04 \x01(\tR\aauthUid\x12!\n" +
+	"\fdisplay_name\x18\x05 \x01(\tR\vdisplayName\x12\x1b\n" +
+	"\timage_url\x18\x06 \x01(\tR\bimageUrl\x12\x14\n" +
+	"\x05email\x18\a \x01(\tR\x05email:H\x92AE\n" +
+	"C\xd2\x01\x02id\xd2\x01\x06tenant\xd2\x01\x04role\xd2\x01\bauth_uid\xd2\x01\fdisplay_name\xd2\x01\timage_url\xd2\x01\x05email*T\n" +
 	"\tStaffRole\x12\x1a\n" +
 	"\x16STAFF_ROLE_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11STAFF_ROLE_NORMAL\x10\x01\x12\x14\n" +
@@ -230,23 +323,26 @@ func file_rapid_admin_api_v1_model_staff_proto_rawDescGZIP() []byte {
 }
 
 var file_rapid_admin_api_v1_model_staff_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_rapid_admin_api_v1_model_staff_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_rapid_admin_api_v1_model_staff_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_rapid_admin_api_v1_model_staff_proto_goTypes = []any{
 	(StaffRole)(0),                // 0: rapid.admin_api.v1.StaffRole
 	(*Staff)(nil),                 // 1: rapid.admin_api.v1.Staff
-	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
-	(*Tenant)(nil),                // 3: rapid.admin_api.v1.Tenant
+	(*StaffPartial)(nil),          // 2: rapid.admin_api.v1.StaffPartial
+	(*TenantPartial)(nil),         // 3: rapid.admin_api.v1.TenantPartial
+	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_rapid_admin_api_v1_model_staff_proto_depIdxs = []int32{
-	0, // 0: rapid.admin_api.v1.Staff.role:type_name -> rapid.admin_api.v1.StaffRole
-	2, // 1: rapid.admin_api.v1.Staff.created_at:type_name -> google.protobuf.Timestamp
-	2, // 2: rapid.admin_api.v1.Staff.updated_at:type_name -> google.protobuf.Timestamp
-	3, // 3: rapid.admin_api.v1.Staff.tenant:type_name -> rapid.admin_api.v1.Tenant
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	3, // 0: rapid.admin_api.v1.Staff.tenant:type_name -> rapid.admin_api.v1.TenantPartial
+	0, // 1: rapid.admin_api.v1.Staff.role:type_name -> rapid.admin_api.v1.StaffRole
+	4, // 2: rapid.admin_api.v1.Staff.created_at:type_name -> google.protobuf.Timestamp
+	4, // 3: rapid.admin_api.v1.Staff.updated_at:type_name -> google.protobuf.Timestamp
+	3, // 4: rapid.admin_api.v1.StaffPartial.tenant:type_name -> rapid.admin_api.v1.TenantPartial
+	0, // 5: rapid.admin_api.v1.StaffPartial.role:type_name -> rapid.admin_api.v1.StaffRole
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_rapid_admin_api_v1_model_staff_proto_init() }
@@ -255,14 +351,13 @@ func file_rapid_admin_api_v1_model_staff_proto_init() {
 		return
 	}
 	file_rapid_admin_api_v1_model_tenant_proto_init()
-	file_rapid_admin_api_v1_model_staff_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rapid_admin_api_v1_model_staff_proto_rawDesc), len(file_rapid_admin_api_v1_model_staff_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
