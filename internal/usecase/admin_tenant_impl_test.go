@@ -122,7 +122,6 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 		},
 	}
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()
@@ -220,7 +219,6 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()
@@ -312,7 +310,6 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()
@@ -410,7 +407,6 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()
@@ -487,7 +483,6 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()

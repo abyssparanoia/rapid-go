@@ -85,7 +85,8 @@ func NewServer(ctx context.Context,
 	staff_apiv1.RegisterStaffV1ServiceServer(
 		server,
 		staff.NewStaffHandler(
-			dependency.StaffTenantInteractor,
+			dependency.StaffMeInteractor,
+			dependency.StaffMeTenantInteractor,
 			dependency.StaffStaffInteractor,
 			dependency.StaffAssetInteractor,
 		),

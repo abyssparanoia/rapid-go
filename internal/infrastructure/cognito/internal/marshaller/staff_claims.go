@@ -16,6 +16,7 @@ func StaffUserAttributesToModel(
 	}
 	claims := model.NewStaffClaims(
 		userAttribute.AuthUID,
+		userAttribute.Email,
 		userAttribute.TenantID,
 		userAttribute.StaffID,
 		staffRole,

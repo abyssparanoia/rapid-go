@@ -42,6 +42,112 @@
         ]
       }
     },
+    "/staff/v1/me": {
+      "get": {
+        "operationId": "GetMe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetMeResponse"
+            }
+          }
+        },
+        "tags": [
+          "StaffV1Service"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateMe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateMeResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateMeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StaffV1Service"
+        ]
+      }
+    },
+    "/staff/v1/me/tenant": {
+      "get": {
+        "operationId": "GetMeTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetMeTenantResponse"
+            }
+          }
+        },
+        "tags": [
+          "StaffV1Service"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateMeTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateMeTenantResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateMeTenantRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StaffV1Service"
+        ]
+      }
+    },
+    "/staff/v1/me:signup": {
+      "post": {
+        "operationId": "SignUp",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SignUpResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SignUpRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StaffV1Service"
+        ]
+      }
+    },
     "/staff/v1/staffs": {
       "get": {
         "operationId": "ListStaffs",
@@ -54,12 +160,6 @@
           }
         },
         "parameters": [
-          {
-            "name": "tenant_id",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "page",
             "in": "query",
@@ -92,30 +192,6 @@
         "tags": [
           "StaffV1Service"
         ]
-      },
-      "post": {
-        "operationId": "CreateStaff",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1CreateStaffResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1CreateStaffRequest"
-            }
-          }
-        ],
-        "tags": [
-          "StaffV1Service"
-        ]
       }
     },
     "/staff/v1/staffs/{staff_id}": {
@@ -140,182 +216,6 @@
         "tags": [
           "StaffV1Service"
         ]
-      },
-      "patch": {
-        "operationId": "UpdateStaff",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1UpdateStaffResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "staff_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1StaffV1ServiceUpdateStaffBody"
-            }
-          }
-        ],
-        "tags": [
-          "StaffV1Service"
-        ]
-      }
-    },
-    "/staff/v1/tenants": {
-      "get": {
-        "operationId": "ListTenants",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1ListTenantsResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "sort_key",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "enum": [
-              "LIST_TENANTS_SORT_KEY_UNSPECIFIED",
-              "LIST_TENANTS_SORT_KEY_CREATED_AT_DESC",
-              "LIST_TENANTS_SORT_KEY_CREATED_AT_ASC",
-              "LIST_TENANTS_SORT_KEY_NAME_ASC",
-              "LIST_TENANTS_SORT_KEY_NAME_DESC"
-            ],
-            "default": "LIST_TENANTS_SORT_KEY_UNSPECIFIED"
-          }
-        ],
-        "tags": [
-          "StaffV1Service"
-        ]
-      },
-      "post": {
-        "operationId": "CreateTenant",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1CreateTenantResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1CreateTenantRequest"
-            }
-          }
-        ],
-        "tags": [
-          "StaffV1Service"
-        ]
-      }
-    },
-    "/staff/v1/tenants/{tenant_id}": {
-      "get": {
-        "operationId": "GetTenant",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1GetTenantResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "tenant_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "StaffV1Service"
-        ]
-      },
-      "delete": {
-        "operationId": "DeleteTenant",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1DeleteTenantResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "tenant_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "StaffV1Service"
-        ]
-      },
-      "patch": {
-        "operationId": "UpdateTenant",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1UpdateTenantResponse"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "tenant_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1StaffV1ServiceUpdateTenantBody"
-            }
-          }
-        ],
-        "tags": [
-          "StaffV1Service"
-        ]
       }
     }
   },
@@ -330,17 +230,6 @@
         "LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC"
       ],
       "default": "LIST_STAFFS_SORT_KEY_UNSPECIFIED"
-    },
-    "ListTenantsRequestListTenantsSortKey": {
-      "type": "string",
-      "enum": [
-        "LIST_TENANTS_SORT_KEY_UNSPECIFIED",
-        "LIST_TENANTS_SORT_KEY_CREATED_AT_DESC",
-        "LIST_TENANTS_SORT_KEY_CREATED_AT_ASC",
-        "LIST_TENANTS_SORT_KEY_NAME_ASC",
-        "LIST_TENANTS_SORT_KEY_NAME_DESC"
-      ],
-      "default": "LIST_TENANTS_SORT_KEY_UNSPECIFIED"
     },
     "v1AssetType": {
       "type": "string",
@@ -392,35 +281,7 @@
         "presigned_url"
       ]
     },
-    "v1CreateStaffRequest": {
-      "type": "object",
-      "properties": {
-        "tenant_id": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "display_name": {
-          "type": "string"
-        },
-        "role": {
-          "$ref": "#/definitions/v1StaffRole"
-        },
-        "image_asset_id": {
-          "type": "string"
-        }
-      },
-      "title": "Create",
-      "required": [
-        "tenant_id",
-        "email",
-        "display_name",
-        "role",
-        "image_asset_id"
-      ]
-    },
-    "v1CreateStaffResponse": {
+    "v1GetMeResponse": {
       "type": "object",
       "properties": {
         "staff": {
@@ -431,18 +292,7 @@
         "staff"
       ]
     },
-    "v1CreateTenantRequest": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ]
-    },
-    "v1CreateTenantResponse": {
+    "v1GetMeTenantResponse": {
       "type": "object",
       "properties": {
         "tenant": {
@@ -452,9 +302,6 @@
       "required": [
         "tenant"
       ]
-    },
-    "v1DeleteTenantResponse": {
-      "type": "object"
     },
     "v1GetStaffResponse": {
       "type": "object",
@@ -465,17 +312,6 @@
       },
       "required": [
         "staff"
-      ]
-    },
-    "v1GetTenantResponse": {
-      "type": "object",
-      "properties": {
-        "tenant": {
-          "$ref": "#/definitions/v1Tenant"
-        }
-      },
-      "required": [
-        "tenant"
       ]
     },
     "v1ListStaffsResponse": {
@@ -494,25 +330,6 @@
       },
       "required": [
         "staffs",
-        "pagination"
-      ]
-    },
-    "v1ListTenantsResponse": {
-      "type": "object",
-      "properties": {
-        "tenants": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1Tenant"
-          }
-        },
-        "pagination": {
-          "$ref": "#/definitions/v1Pagination"
-        }
-      },
-      "required": [
-        "tenants",
         "pagination"
       ]
     },
@@ -548,6 +365,37 @@
         "total_page",
         "total_count",
         "has_next"
+      ]
+    },
+    "v1SignUpRequest": {
+      "type": "object",
+      "properties": {
+        "tenant_name": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "image_asset_id": {
+          "type": "string"
+        }
+      },
+      "title": "SignUp",
+      "required": [
+        "tenant_name",
+        "display_name",
+        "image_asset_id"
+      ]
+    },
+    "v1SignUpResponse": {
+      "type": "object",
+      "properties": {
+        "staff": {
+          "$ref": "#/definitions/v1Staff"
+        }
+      },
+      "required": [
+        "staff"
       ]
     },
     "v1Staff": {
@@ -605,29 +453,6 @@
       ],
       "default": "STAFF_ROLE_UNSPECIFIED"
     },
-    "v1StaffV1ServiceUpdateStaffBody": {
-      "type": "object",
-      "properties": {
-        "display_name": {
-          "type": "string"
-        },
-        "role": {
-          "$ref": "#/definitions/rapidStaff_apiV1StaffRole"
-        },
-        "image_asset_id": {
-          "type": "string"
-        }
-      },
-      "title": "Update"
-    },
-    "v1StaffV1ServiceUpdateTenantBody": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        }
-      }
-    },
     "v1Tenant": {
       "type": "object",
       "properties": {
@@ -670,7 +495,19 @@
         "name"
       ]
     },
-    "v1UpdateStaffResponse": {
+    "v1UpdateMeRequest": {
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "type": "string"
+        },
+        "image_asset_id": {
+          "type": "string"
+        }
+      },
+      "title": "UpdateMe"
+    },
+    "v1UpdateMeResponse": {
       "type": "object",
       "properties": {
         "staff": {
@@ -681,7 +518,16 @@
         "staff"
       ]
     },
-    "v1UpdateTenantResponse": {
+    "v1UpdateMeTenantRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "title": "UpdateMeTenant"
+    },
+    "v1UpdateMeTenantResponse": {
       "type": "object",
       "properties": {
         "tenant": {

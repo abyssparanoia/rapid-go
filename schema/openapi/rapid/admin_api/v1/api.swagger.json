@@ -99,7 +99,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidAdmin_apiV1CreateStaffResponse"
+              "$ref": "#/definitions/v1CreateStaffResponse"
             }
           }
         },
@@ -109,7 +109,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/rapidAdmin_apiV1CreateStaffRequest"
+              "$ref": "#/definitions/v1CreateStaffRequest"
             }
           }
         ],
@@ -147,7 +147,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidAdmin_apiV1UpdateStaffResponse"
+              "$ref": "#/definitions/v1UpdateStaffResponse"
             }
           }
         },
@@ -163,7 +163,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1AdminV1ServiceUpdateStaffBody"
+              "$ref": "#/definitions/AdminV1ServiceUpdateStaffBody"
             }
           }
         ],
@@ -179,7 +179,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidAdmin_apiV1ListTenantsResponse"
+              "$ref": "#/definitions/v1ListTenantsResponse"
             }
           }
         },
@@ -223,7 +223,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidAdmin_apiV1CreateTenantResponse"
+              "$ref": "#/definitions/v1CreateTenantResponse"
             }
           }
         },
@@ -233,7 +233,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/rapidAdmin_apiV1CreateTenantRequest"
+              "$ref": "#/definitions/v1CreateTenantRequest"
             }
           }
         ],
@@ -249,7 +249,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidAdmin_apiV1GetTenantResponse"
+              "$ref": "#/definitions/v1GetTenantResponse"
             }
           }
         },
@@ -271,7 +271,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidAdmin_apiV1DeleteTenantResponse"
+              "$ref": "#/definitions/v1DeleteTenantResponse"
             }
           }
         },
@@ -293,7 +293,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidAdmin_apiV1UpdateTenantResponse"
+              "$ref": "#/definitions/v1UpdateTenantResponse"
             }
           }
         },
@@ -309,7 +309,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1AdminV1ServiceUpdateTenantBody"
+              "$ref": "#/definitions/AdminV1ServiceUpdateTenantBody"
             }
           }
         ],
@@ -320,6 +320,29 @@
     }
   },
   "definitions": {
+    "AdminV1ServiceUpdateStaffBody": {
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/rapidAdmin_apiV1StaffRole"
+        },
+        "image_asset_id": {
+          "type": "string"
+        }
+      },
+      "title": "Update"
+    },
+    "AdminV1ServiceUpdateTenantBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "ListStaffsRequestListStaffsSortKey": {
       "type": "string",
       "enum": [
@@ -341,29 +364,6 @@
         "LIST_TENANTS_SORT_KEY_NAME_DESC"
       ],
       "default": "LIST_TENANTS_SORT_KEY_UNSPECIFIED"
-    },
-    "v1AdminV1ServiceUpdateStaffBody": {
-      "type": "object",
-      "properties": {
-        "display_name": {
-          "type": "string"
-        },
-        "role": {
-          "$ref": "#/definitions/rapidAdmin_apiV1StaffRole"
-        },
-        "image_asset_id": {
-          "type": "string"
-        }
-      },
-      "title": "Update"
-    },
-    "v1AdminV1ServiceUpdateTenantBody": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        }
-      }
     },
     "v1AssetType": {
       "type": "string",

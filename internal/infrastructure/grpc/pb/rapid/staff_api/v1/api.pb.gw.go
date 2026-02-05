@@ -62,83 +62,9 @@ func local_request_StaffV1Service_CreateAssetPresignedURL_0(ctx context.Context,
 	return msg, metadata, err
 }
 
-func request_StaffV1Service_GetTenant_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StaffV1Service_SignUp_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq GetTenantRequest
-		metadata runtime.ServerMetadata
-		err      error
-	)
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["tenant_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant_id")
-	}
-	protoReq.TenantId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
-	}
-	msg, err := client.GetTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-}
-
-func local_request_StaffV1Service_GetTenant_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq GetTenantRequest
-		metadata runtime.ServerMetadata
-		err      error
-	)
-	val, ok := pathParams["tenant_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant_id")
-	}
-	protoReq.TenantId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
-	}
-	msg, err := server.GetTenant(ctx, &protoReq)
-	return msg, metadata, err
-}
-
-var filter_StaffV1Service_ListTenants_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-
-func request_StaffV1Service_ListTenants_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ListTenantsRequest
-		metadata runtime.ServerMetadata
-	)
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_StaffV1Service_ListTenants_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	msg, err := client.ListTenants(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-}
-
-func local_request_StaffV1Service_ListTenants_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ListTenantsRequest
-		metadata runtime.ServerMetadata
-	)
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_StaffV1Service_ListTenants_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	msg, err := server.ListTenants(ctx, &protoReq)
-	return msg, metadata, err
-}
-
-func request_StaffV1Service_CreateTenant_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CreateTenantRequest
+		protoReq SignUpRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -147,27 +73,68 @@ func request_StaffV1Service_CreateTenant_0(ctx context.Context, marshaler runtim
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
-	msg, err := client.CreateTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.SignUp(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_StaffV1Service_CreateTenant_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StaffV1Service_SignUp_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq CreateTenantRequest
+		protoReq SignUpRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := server.CreateTenant(ctx, &protoReq)
+	msg, err := server.SignUp(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-func request_StaffV1Service_UpdateTenant_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StaffV1Service_GetMe_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq UpdateTenantRequest
+		protoReq GetMeRequest
 		metadata runtime.ServerMetadata
-		err      error
+	)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.GetMe(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_StaffV1Service_GetMe_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetMeRequest
+		metadata runtime.ServerMetadata
+	)
+	msg, err := server.GetMe(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_StaffV1Service_GetMeTenant_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetMeTenantRequest
+		metadata runtime.ServerMetadata
+	)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.GetMeTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_StaffV1Service_GetMeTenant_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetMeTenantRequest
+		metadata runtime.ServerMetadata
+	)
+	msg, err := server.GetMeTenant(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_StaffV1Service_UpdateMe_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq UpdateMeRequest
+		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -175,75 +142,46 @@ func request_StaffV1Service_UpdateTenant_0(ctx context.Context, marshaler runtim
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
-	val, ok := pathParams["tenant_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant_id")
-	}
-	protoReq.TenantId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
-	}
-	msg, err := client.UpdateTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateMe(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_StaffV1Service_UpdateTenant_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StaffV1Service_UpdateMe_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq UpdateTenantRequest
+		protoReq UpdateMeRequest
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	val, ok := pathParams["tenant_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant_id")
-	}
-	protoReq.TenantId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
-	}
-	msg, err := server.UpdateTenant(ctx, &protoReq)
+	msg, err := server.UpdateMe(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-func request_StaffV1Service_DeleteTenant_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StaffV1Service_UpdateMeTenant_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq DeleteTenantRequest
+		protoReq UpdateMeTenantRequest
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
-	val, ok := pathParams["tenant_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant_id")
-	}
-	protoReq.TenantId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
-	}
-	msg, err := client.DeleteTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateMeTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_StaffV1Service_DeleteTenant_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_StaffV1Service_UpdateMeTenant_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq DeleteTenantRequest
+		protoReq UpdateMeTenantRequest
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["tenant_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant_id")
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	protoReq.TenantId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant_id", err)
-	}
-	msg, err := server.DeleteTenant(ctx, &protoReq)
+	msg, err := server.UpdateMeTenant(ctx, &protoReq)
 	return msg, metadata, err
 }
 
@@ -321,78 +259,6 @@ func local_request_StaffV1Service_ListStaffs_0(ctx context.Context, marshaler ru
 	return msg, metadata, err
 }
 
-func request_StaffV1Service_CreateStaff_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CreateStaffRequest
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	msg, err := client.CreateStaff(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-}
-
-func local_request_StaffV1Service_CreateStaff_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CreateStaffRequest
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	msg, err := server.CreateStaff(ctx, &protoReq)
-	return msg, metadata, err
-}
-
-func request_StaffV1Service_UpdateStaff_0(ctx context.Context, marshaler runtime.Marshaler, client StaffV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq UpdateStaffRequest
-		metadata runtime.ServerMetadata
-		err      error
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["staff_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "staff_id")
-	}
-	protoReq.StaffId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "staff_id", err)
-	}
-	msg, err := client.UpdateStaff(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-}
-
-func local_request_StaffV1Service_UpdateStaff_0(ctx context.Context, marshaler runtime.Marshaler, server StaffV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq UpdateStaffRequest
-		metadata runtime.ServerMetadata
-		err      error
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["staff_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "staff_id")
-	}
-	protoReq.StaffId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "staff_id", err)
-	}
-	msg, err := server.UpdateStaff(ctx, &protoReq)
-	return msg, metadata, err
-}
-
 // RegisterStaffV1ServiceHandlerServer registers the http handlers for service StaffV1Service to "mux".
 // UnaryRPC     :call StaffV1ServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -419,105 +285,105 @@ func RegisterStaffV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 		forward_StaffV1Service_CreateAssetPresignedURL_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_StaffV1Service_GetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_StaffV1Service_SignUp_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/GetTenant", runtime.WithHTTPPathPattern("/staff/v1/tenants/{tenant_id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/SignUp", runtime.WithHTTPPathPattern("/staff/v1/me:signup"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StaffV1Service_GetTenant_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StaffV1Service_SignUp_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_GetTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_SignUp_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_StaffV1Service_ListTenants_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_StaffV1Service_GetMe_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/ListTenants", runtime.WithHTTPPathPattern("/staff/v1/tenants"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/GetMe", runtime.WithHTTPPathPattern("/staff/v1/me"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StaffV1Service_ListTenants_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StaffV1Service_GetMe_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_ListTenants_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_GetMe_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_StaffV1Service_CreateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_StaffV1Service_GetMeTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/CreateTenant", runtime.WithHTTPPathPattern("/staff/v1/tenants"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/GetMeTenant", runtime.WithHTTPPathPattern("/staff/v1/me/tenant"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StaffV1Service_CreateTenant_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StaffV1Service_GetMeTenant_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_CreateTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_GetMeTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPatch, pattern_StaffV1Service_UpdateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_StaffV1Service_UpdateMe_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/UpdateTenant", runtime.WithHTTPPathPattern("/staff/v1/tenants/{tenant_id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/UpdateMe", runtime.WithHTTPPathPattern("/staff/v1/me"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StaffV1Service_UpdateTenant_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StaffV1Service_UpdateMe_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_UpdateTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_UpdateMe_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_StaffV1Service_DeleteTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_StaffV1Service_UpdateMeTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/DeleteTenant", runtime.WithHTTPPathPattern("/staff/v1/tenants/{tenant_id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/UpdateMeTenant", runtime.WithHTTPPathPattern("/staff/v1/me/tenant"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StaffV1Service_DeleteTenant_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StaffV1Service_UpdateMeTenant_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_DeleteTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_UpdateMeTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 	mux.Handle(http.MethodGet, pattern_StaffV1Service_GetStaff_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -558,46 +424,6 @@ func RegisterStaffV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 		forward_StaffV1Service_ListStaffs_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
-	mux.Handle(http.MethodPost, pattern_StaffV1Service_CreateStaff_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/CreateStaff", runtime.WithHTTPPathPattern("/staff/v1/staffs"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_StaffV1Service_CreateStaff_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_StaffV1Service_CreateStaff_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
-	mux.Handle(http.MethodPatch, pattern_StaffV1Service_UpdateStaff_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/UpdateStaff", runtime.WithHTTPPathPattern("/staff/v1/staffs/{staff_id}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_StaffV1Service_UpdateStaff_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_StaffV1Service_UpdateStaff_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -656,90 +482,90 @@ func RegisterStaffV1ServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 		forward_StaffV1Service_CreateAssetPresignedURL_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_StaffV1Service_GetTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_StaffV1Service_SignUp_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/GetTenant", runtime.WithHTTPPathPattern("/staff/v1/tenants/{tenant_id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/SignUp", runtime.WithHTTPPathPattern("/staff/v1/me:signup"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StaffV1Service_GetTenant_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StaffV1Service_SignUp_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_GetTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_SignUp_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_StaffV1Service_ListTenants_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_StaffV1Service_GetMe_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/ListTenants", runtime.WithHTTPPathPattern("/staff/v1/tenants"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/GetMe", runtime.WithHTTPPathPattern("/staff/v1/me"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StaffV1Service_ListTenants_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StaffV1Service_GetMe_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_ListTenants_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_GetMe_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_StaffV1Service_CreateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_StaffV1Service_GetMeTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/CreateTenant", runtime.WithHTTPPathPattern("/staff/v1/tenants"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/GetMeTenant", runtime.WithHTTPPathPattern("/staff/v1/me/tenant"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StaffV1Service_CreateTenant_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StaffV1Service_GetMeTenant_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_CreateTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_GetMeTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPatch, pattern_StaffV1Service_UpdateTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_StaffV1Service_UpdateMe_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/UpdateTenant", runtime.WithHTTPPathPattern("/staff/v1/tenants/{tenant_id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/UpdateMe", runtime.WithHTTPPathPattern("/staff/v1/me"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StaffV1Service_UpdateTenant_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StaffV1Service_UpdateMe_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_UpdateTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_UpdateMe_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_StaffV1Service_DeleteTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_StaffV1Service_UpdateMeTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/DeleteTenant", runtime.WithHTTPPathPattern("/staff/v1/tenants/{tenant_id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/UpdateMeTenant", runtime.WithHTTPPathPattern("/staff/v1/me/tenant"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StaffV1Service_DeleteTenant_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StaffV1Service_UpdateMeTenant_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_StaffV1Service_DeleteTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StaffV1Service_UpdateMeTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 	mux.Handle(http.MethodGet, pattern_StaffV1Service_GetStaff_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -775,65 +601,27 @@ func RegisterStaffV1ServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 		forward_StaffV1Service_ListStaffs_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_StaffV1Service_CreateStaff_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/CreateStaff", runtime.WithHTTPPathPattern("/staff/v1/staffs"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_StaffV1Service_CreateStaff_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_StaffV1Service_CreateStaff_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
-	mux.Handle(http.MethodPatch, pattern_StaffV1Service_UpdateStaff_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.staff_api.v1.StaffV1Service/UpdateStaff", runtime.WithHTTPPathPattern("/staff/v1/staffs/{staff_id}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_StaffV1Service_UpdateStaff_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_StaffV1Service_UpdateStaff_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
 	return nil
 }
 
 var (
 	pattern_StaffV1Service_CreateAssetPresignedURL_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"staff", "v1", "assets", "-", "presigned_url"}, ""))
-	pattern_StaffV1Service_GetTenant_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"staff", "v1", "tenants", "tenant_id"}, ""))
-	pattern_StaffV1Service_ListTenants_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"staff", "v1", "tenants"}, ""))
-	pattern_StaffV1Service_CreateTenant_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"staff", "v1", "tenants"}, ""))
-	pattern_StaffV1Service_UpdateTenant_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"staff", "v1", "tenants", "tenant_id"}, ""))
-	pattern_StaffV1Service_DeleteTenant_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"staff", "v1", "tenants", "tenant_id"}, ""))
+	pattern_StaffV1Service_SignUp_0                  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"staff", "v1", "me"}, "signup"))
+	pattern_StaffV1Service_GetMe_0                   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"staff", "v1", "me"}, ""))
+	pattern_StaffV1Service_GetMeTenant_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"staff", "v1", "me", "tenant"}, ""))
+	pattern_StaffV1Service_UpdateMe_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"staff", "v1", "me"}, ""))
+	pattern_StaffV1Service_UpdateMeTenant_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"staff", "v1", "me", "tenant"}, ""))
 	pattern_StaffV1Service_GetStaff_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"staff", "v1", "staffs", "staff_id"}, ""))
 	pattern_StaffV1Service_ListStaffs_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"staff", "v1", "staffs"}, ""))
-	pattern_StaffV1Service_CreateStaff_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"staff", "v1", "staffs"}, ""))
-	pattern_StaffV1Service_UpdateStaff_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"staff", "v1", "staffs", "staff_id"}, ""))
 )
 
 var (
 	forward_StaffV1Service_CreateAssetPresignedURL_0 = runtime.ForwardResponseMessage
-	forward_StaffV1Service_GetTenant_0               = runtime.ForwardResponseMessage
-	forward_StaffV1Service_ListTenants_0             = runtime.ForwardResponseMessage
-	forward_StaffV1Service_CreateTenant_0            = runtime.ForwardResponseMessage
-	forward_StaffV1Service_UpdateTenant_0            = runtime.ForwardResponseMessage
-	forward_StaffV1Service_DeleteTenant_0            = runtime.ForwardResponseMessage
+	forward_StaffV1Service_SignUp_0                  = runtime.ForwardResponseMessage
+	forward_StaffV1Service_GetMe_0                   = runtime.ForwardResponseMessage
+	forward_StaffV1Service_GetMeTenant_0             = runtime.ForwardResponseMessage
+	forward_StaffV1Service_UpdateMe_0                = runtime.ForwardResponseMessage
+	forward_StaffV1Service_UpdateMeTenant_0          = runtime.ForwardResponseMessage
 	forward_StaffV1Service_GetStaff_0                = runtime.ForwardResponseMessage
 	forward_StaffV1Service_ListStaffs_0              = runtime.ForwardResponseMessage
-	forward_StaffV1Service_CreateStaff_0             = runtime.ForwardResponseMessage
-	forward_StaffV1Service_UpdateStaff_0             = runtime.ForwardResponseMessage
 )

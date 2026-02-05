@@ -43,21 +43,6 @@ func (m *MockStaffStaffInteractor) EXPECT() *MockStaffStaffInteractorMockRecorde
 	return m.recorder
 }
 
-// Create mocks base method.
-func (m *MockStaffStaffInteractor) Create(ctx context.Context, param *input.StaffCreateStaff) (*model.Staff, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, param)
-	ret0, _ := ret[0].(*model.Staff)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Create indicates an expected call of Create.
-func (mr *MockStaffStaffInteractorMockRecorder) Create(ctx, param any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockStaffStaffInteractor)(nil).Create), ctx, param)
-}
-
 // Get mocks base method.
 func (m *MockStaffStaffInteractor) Get(ctx context.Context, param *input.StaffGetStaff) (*model.Staff, error) {
 	m.ctrl.T.Helper()
@@ -86,19 +71,4 @@ func (m *MockStaffStaffInteractor) List(ctx context.Context, param *input.StaffL
 func (mr *MockStaffStaffInteractorMockRecorder) List(ctx, param any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockStaffStaffInteractor)(nil).List), ctx, param)
-}
-
-// Update mocks base method.
-func (m *MockStaffStaffInteractor) Update(ctx context.Context, param *input.StaffUpdateStaff) (*model.Staff, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, param)
-	ret0, _ := ret[0].(*model.Staff)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Update indicates an expected call of Update.
-func (mr *MockStaffStaffInteractorMockRecorder) Update(ctx, param any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockStaffStaffInteractor)(nil).Update), ctx, param)
 }

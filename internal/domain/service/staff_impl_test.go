@@ -56,6 +56,7 @@ func TestStaffService_Create(t *testing.T) {
 
 			claims := model.NewStaffClaims(
 				staff.AuthUID,
+				staff.Email,
 				null.StringFrom(tenant.ID),
 				null.StringFrom(staff.ID),
 				nullable.TypeFrom(staff.Role),
@@ -112,7 +113,6 @@ func TestStaffService_Create(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		tc := tc
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()

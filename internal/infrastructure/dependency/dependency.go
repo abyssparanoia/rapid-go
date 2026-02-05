@@ -37,9 +37,10 @@ type Dependency struct {
 	AdminAssetInteractor  usecase.AdminAssetInteractor
 
 	// staff
-	StaffTenantInteractor usecase.StaffTenantInteractor
-	StaffStaffInteractor  usecase.StaffStaffInteractor
-	StaffAssetInteractor  usecase.StaffAssetInteractor
+	StaffMeInteractor       usecase.StaffMeInteractor
+	StaffMeTenantInteractor usecase.StaffMeTenantInteractor
+	StaffStaffInteractor    usecase.StaffStaffInteractor
+	StaffAssetInteractor    usecase.StaffAssetInteractor
 
 	// Other
 	StaffInteractor               usecase.StaffInteractor
@@ -124,7 +125,14 @@ func (d *Dependency) Inject(
 		assetService,
 	)
 
-	d.StaffTenantInteractor = usecase.NewStaffTenantInteractor(
+	d.StaffMeInteractor = usecase.NewStaffMeInteractor(
+		transactable,
+		tenantRepository,
+		staffRepository,
+		staffService,
+		assetService,
+	)
+	d.StaffMeTenantInteractor = usecase.NewStaffMeTenantInteractor(
 		transactable,
 		tenantRepository,
 		assetService,

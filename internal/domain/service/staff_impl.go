@@ -65,6 +65,7 @@ func (s *staffService) Create(
 
 	claims := model.NewStaffClaims(
 		authUID,
+		param.Email,
 		null.StringFrom(param.TenantID),
 		null.StringFrom(staff.ID),
 		nullable.TypeFrom(staff.Role),
