@@ -55,7 +55,7 @@ func (i *staffStaffInteractor) Get(
 		return nil, err
 	}
 
-	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}); err != nil {
+	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}, param.RequestTime); err != nil {
 		return nil, err
 	}
 
@@ -85,7 +85,7 @@ func (i *staffStaffInteractor) List(
 		return nil, err
 	}
 
-	if err = i.assetService.BatchSetStaffURLs(ctx, staffs); err != nil {
+	if err = i.assetService.BatchSetStaffURLs(ctx, staffs, param.RequestTime); err != nil {
 		return nil, err
 	}
 

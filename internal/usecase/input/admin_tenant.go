@@ -11,14 +11,17 @@ import (
 )
 
 type AdminGetTenant struct {
-	TenantID string `validate:"required"`
+	TenantID    string    `validate:"required"`
+	RequestTime time.Time `validate:"required"`
 }
 
 func NewAdminGetTenant(
 	tenantID string,
+	requestTime time.Time,
 ) *AdminGetTenant {
 	return &AdminGetTenant{
-		TenantID: tenantID,
+		TenantID:    tenantID,
+		RequestTime: requestTime,
 	}
 }
 
@@ -30,15 +33,17 @@ func (p *AdminGetTenant) Validate() error {
 }
 
 type AdminListTenants struct {
-	Page    uint64
-	Limit   uint64              `validate:"gte=1,lte=100"`
-	SortKey model.TenantSortKey // NON-nullable field
+	Page        uint64
+	Limit       uint64              `validate:"gte=1,lte=100"`
+	SortKey     model.TenantSortKey // NON-nullable field
+	RequestTime time.Time           `validate:"required"`
 }
 
 func NewAdminListTenants(
 	page uint64,
 	limit uint64,
 	sortKey nullable.Type[model.TenantSortKey], // nullable param
+	requestTime time.Time,
 ) *AdminListTenants {
 	// Pagination defaults
 	if page == 0 {
@@ -55,9 +60,10 @@ func NewAdminListTenants(
 	}
 
 	return &AdminListTenants{
-		Page:    page,
-		Limit:   limit,
-		SortKey: resolvedSortKey,
+		Page:        page,
+		Limit:       limit,
+		SortKey:     resolvedSortKey,
+		RequestTime: requestTime,
 	}
 }
 

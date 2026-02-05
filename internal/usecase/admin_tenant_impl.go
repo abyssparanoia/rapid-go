@@ -49,7 +49,7 @@ func (i *adminTenantInteractor) Get(
 	if err != nil {
 		return nil, err
 	}
-	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}); err != nil {
+	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}, param.RequestTime); err != nil {
 		return nil, err
 	}
 	return tenant, nil
@@ -76,7 +76,7 @@ func (i *adminTenantInteractor) List(
 	if err != nil {
 		return nil, err
 	}
-	if err = i.assetService.BatchSetTenantURLs(ctx, tenants); err != nil {
+	if err = i.assetService.BatchSetTenantURLs(ctx, tenants, param.RequestTime); err != nil {
 		return nil, err
 	}
 	ttl, err := i.tenantRepository.Count(
@@ -107,7 +107,7 @@ func (i *adminTenantInteractor) Create(
 	if err := i.tenantRepository.Create(ctx, tenant); err != nil {
 		return nil, err
 	}
-	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}); err != nil {
+	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}, param.RequestTime); err != nil {
 		return nil, err
 	}
 	return tenant, nil
@@ -147,7 +147,7 @@ func (i *adminTenantInteractor) Update(
 	}); err != nil {
 		return nil, err
 	}
-	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}); err != nil {
+	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}, param.RequestTime); err != nil {
 		return nil, err
 	}
 	return tenant, nil

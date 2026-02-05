@@ -75,12 +75,13 @@ func (s *assetService) GetWithValidate(
 func (s *assetService) BatchSetStaffURLs(
 	ctx context.Context,
 	staffs model.Staffs,
+	requestTime time.Time,
 ) error {
 	for _, staff := range staffs {
-		imageURL, err := s.assetRepository.GenerateReadPresignedURL(
+		imageURL, err := s.assetRepository.GenerateReadURL(
 			ctx,
 			staff.ImagePath,
-			15*time.Minute,
+			requestTime,
 		)
 		if err != nil {
 			return err
@@ -88,7 +89,7 @@ func (s *assetService) BatchSetStaffURLs(
 		staff.SetImageURL(imageURL)
 
 		if staff.ReadonlyReference != nil && staff.ReadonlyReference.Tenant != nil {
-			if err := s.BatchSetTenantURLs(ctx, model.Tenants{staff.ReadonlyReference.Tenant}); err != nil {
+			if err := s.BatchSetTenantURLs(ctx, model.Tenants{staff.ReadonlyReference.Tenant}, requestTime); err != nil {
 				return err
 			}
 		}
@@ -99,10 +100,11 @@ func (s *assetService) BatchSetStaffURLs(
 func (s *assetService) BatchSetTenantURLs(
 	ctx context.Context,
 	tenants model.Tenants,
+	requestTime time.Time,
 ) error {
 	for _, tenant := range tenants {
 		// no URLs to set for tenant yet
-		if err := s.BatchSetTenantTagURLs(ctx, tenant.Tags); err != nil {
+		if err := s.BatchSetTenantTagURLs(ctx, tenant.Tags, requestTime); err != nil {
 			return err
 		}
 	}
@@ -112,6 +114,7 @@ func (s *assetService) BatchSetTenantURLs(
 func (s *assetService) BatchSetTenantTagURLs(
 	ctx context.Context,
 	tenantTags model.TenantTags,
+	requestTime time.Time,
 ) error {
 	for range tenantTags {
 		// no URLs to set for tenant tag yet

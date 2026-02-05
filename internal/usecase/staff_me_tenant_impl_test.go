@@ -118,7 +118,7 @@ func TestStaffMeTenantInteractor_Get(t *testing.T) {
 				Return(tenant, nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}, gomock.Any()).
 				Return(nil)
 
 			return testcase{
@@ -284,7 +284,7 @@ func TestStaffMeTenantInteractor_Update(t *testing.T) {
 				Return(updatedTenant, nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetTenantURLs(gomock.Any(), model.Tenants{updatedTenant}).
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{updatedTenant}, gomock.Any()).
 				Return(nil)
 
 			return testcase{

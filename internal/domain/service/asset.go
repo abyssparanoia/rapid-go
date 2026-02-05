@@ -23,14 +23,17 @@ type Asset interface {
 	BatchSetTenantURLs(
 		ctx context.Context,
 		tenants model.Tenants,
+		requestTime time.Time,
 	) error
 	BatchSetTenantTagURLs(
 		ctx context.Context,
 		tenantTags model.TenantTags,
+		requestTime time.Time,
 	) error
 	BatchSetStaffURLs(
 		ctx context.Context,
 		staffs model.Staffs,
+		requestTime time.Time,
 	) error
 }
 

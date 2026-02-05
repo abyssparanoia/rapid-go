@@ -130,7 +130,7 @@ func TestStaffStaffInteractor_Get(t *testing.T) {
 			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}).
+				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
 				Return(nil)
 
 			return testcase{
@@ -249,7 +249,7 @@ func TestStaffStaffInteractor_List(t *testing.T) {
 			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}).
+				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
 				Return(nil)
 
 			return testcase{

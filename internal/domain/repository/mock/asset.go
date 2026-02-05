@@ -42,19 +42,19 @@ func (m *MockAsset) EXPECT() *MockAssetMockRecorder {
 	return m.recorder
 }
 
-// GenerateReadPresignedURL mocks base method.
-func (m *MockAsset) GenerateReadPresignedURL(ctx context.Context, path string, expires time.Duration) (string, error) {
+// GenerateReadURL mocks base method.
+func (m *MockAsset) GenerateReadURL(ctx context.Context, path string, requestTime time.Time) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateReadPresignedURL", ctx, path, expires)
+	ret := m.ctrl.Call(m, "GenerateReadURL", ctx, path, requestTime)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GenerateReadPresignedURL indicates an expected call of GenerateReadPresignedURL.
-func (mr *MockAssetMockRecorder) GenerateReadPresignedURL(ctx, path, expires any) *gomock.Call {
+// GenerateReadURL indicates an expected call of GenerateReadURL.
+func (mr *MockAssetMockRecorder) GenerateReadURL(ctx, path, requestTime any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateReadPresignedURL", reflect.TypeOf((*MockAsset)(nil).GenerateReadPresignedURL), ctx, path, expires)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateReadURL", reflect.TypeOf((*MockAsset)(nil).GenerateReadURL), ctx, path, requestTime)
 }
 
 // GenerateWritePresignedURL mocks base method.

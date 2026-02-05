@@ -97,7 +97,7 @@ func (i *staffMeInteractor) SignUp(
 	}
 
 	// 5. Apply asset URL processing
-	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}); err != nil {
+	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}, param.RequestTime); err != nil {
 		return nil, err
 	}
 
@@ -124,7 +124,7 @@ func (i *staffMeInteractor) Get(
 	}
 
 	// Apply asset URL processing
-	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}); err != nil {
+	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}, param.RequestTime); err != nil {
 		return nil, err
 	}
 
@@ -184,7 +184,7 @@ func (i *staffMeInteractor) Update(
 	}
 
 	// Apply asset URL processing
-	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}); err != nil {
+	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}, param.RequestTime); err != nil {
 		return nil, err
 	}
 

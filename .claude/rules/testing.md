@@ -167,9 +167,9 @@ mockStaffService.EXPECT().
         }).
     Return(staff, nil)
 
-// Asset Service - Exact model slice
+// Asset Service - Exact model slice + gomock.Any() for requestTime
 mockAssetService.EXPECT().
-    BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}).  // EXACT model slice
+    BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).  // EXACT model slice, Any for time
     Return(nil)
 
 // Repository Create/Update - Exact domain object
@@ -209,7 +209,7 @@ mockStaffService.EXPECT().
     Return(staff, nil)
 
 mockAssetService.EXPECT().
-    BatchSetStaffURLs(gomock.Any(), gomock.Any()).  // WRONG - second param should be exact
+    BatchSetStaffURLs(gomock.Any(), gomock.Any(), gomock.Any()).  // WRONG - second param should be exact
     Return(nil)
 
 // Bad - Using DoAndReturn to avoid exact matching
