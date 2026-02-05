@@ -159,6 +159,171 @@ func (s *ExampleService) DoSomething(
 4. **Return domain errors** - Use errors from `domain/errors`
 5. **No infrastructure dependencies** - Only repository interfaces
 
+## Asset Service Pattern
+
+The Asset service is responsible for generating presigned URLs for assets (images, files, etc.) stored in external storage (GCS, S3).
+
+### Interface Method Naming Convention
+
+AssetService methods follow strict naming and signature conventions:
+
+```go
+type Asset interface {
+    CreatePresignedURL(
+        ctx context.Context,
+        assetType model.AssetType,
+        contentType model.ContentType,
+        requestTime time.Time,
+    ) (*AssetCreatePresignedURLResult, error)
+
+    GetWithValidate(
+        ctx context.Context,
+        assetType model.AssetType,
+        assetID string,
+    ) (string, error)
+
+    // BatchSet methods - Always use plural slice type
+    BatchSetTenantURLs(ctx context.Context, tenants model.Tenants) error
+    BatchSetStaffURLs(ctx context.Context, staffs model.Staffs) error
+    BatchSet{Entity}URLs(ctx context.Context, {entities} model.{Entity}s) error
+}
+```
+
+### Method Signature Rules
+
+**CRITICAL RULES - Must be followed for all new resource types:**
+
+1. **Method name**: `BatchSet{Entity}URLs` where `{Entity}` is singular form
+   - ✅ `BatchSetStaffURLs` (Staff → Staffs)
+   - ✅ `BatchSetTenantURLs` (Tenant → Tenants)
+   - ❌ NOT `BatchSetStaffURL` (missing 's' at end)
+
+2. **Parameter type**: ALWAYS use plural slice type `model.{Entity}s`
+   - ✅ `tenants model.Tenants` (type alias for `[]*Tenant`)
+   - ✅ `staffs model.Staffs` (type alias for `[]*Staff`)
+   - ❌ NOT `tenants []*model.Tenant` (use type alias)
+
+3. **Return type**: `error` only (modifies entities in-place)
+
+### Implementation Pattern
+
+```go
+func (s *assetService) BatchSetStaffURLs(
+    ctx context.Context,
+    staffs model.Staffs,
+) error {
+    // Generate URLs for each staff's ImagePath
+    for _, staff := range staffs {
+        if staff.ImagePath != "" {
+            url, err := s.assetRepository.GetPresignedURL(ctx, staff.ImagePath)
+            if err != nil {
+                return err
+            }
+            staff.ImageURL = null.StringFrom(url)
+        }
+
+        // Recursively set URLs for ReadonlyReference relations
+        if staff.ReadonlyReference != nil && staff.ReadonlyReference.Tenant != nil {
+            if err := s.BatchSetTenantURLs(ctx, model.Tenants{staff.ReadonlyReference.Tenant}); err != nil {
+                return err
+            }
+        }
+    }
+    return nil
+}
+```
+
+### Usage in Usecase Layer
+
+**ALWAYS call BatchSet methods when returning entities, even if no asset fields currently exist:**
+
+```go
+// Single entity - wrap in slice
+staff, err := i.staffRepository.Get(ctx, query)
+if err != nil {
+    return nil, err
+}
+// MUST call even if Staff has no image field yet (defensive programming)
+if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}); err != nil {
+    return nil, err
+}
+return staff, nil
+
+// Multiple entities - pass slice directly
+staffs, err := i.staffRepository.List(ctx, query)
+if err != nil {
+    return nil, err
+}
+// MUST call even if Staff has no image field yet (defensive programming)
+if err := i.assetService.BatchSetStaffURLs(ctx, staffs); err != nil {
+    return nil, err
+}
+return output.NewAdminListStaffs(staffs, pagination), nil
+```
+
+### When to Add New BatchSet Methods
+
+Add a new `BatchSet{Entity}URLs` method when:
+1. **New resource with asset field** - Entity has `ImagePath`, `FilePath`, etc.
+2. **Future-proofing** - Even if no asset field exists yet, add the method for defensive programming
+3. **ReadonlyReference contains assets** - Entity has relations that may contain assets
+
+### Adding New Resource Support
+
+When adding support for a new resource type (e.g., `Product`):
+
+**Step 1: Add interface method**
+```go
+type Asset interface {
+    // ... existing methods
+    BatchSetProductURLs(ctx context.Context, products model.Products) error
+}
+```
+
+**Step 2: Implement method**
+```go
+func (s *assetService) BatchSetProductURLs(
+    ctx context.Context,
+    products model.Products,
+) error {
+    for _, product := range products {
+        // Set URLs for product's asset fields
+        if product.ImagePath != "" {
+            url, err := s.assetRepository.GetPresignedURL(ctx, product.ImagePath)
+            if err != nil {
+                return err
+            }
+            product.ImageURL = null.StringFrom(url)
+        }
+
+        // Set URLs for ReadonlyReference relations
+        if product.ReadonlyReference != nil {
+            if product.ReadonlyReference.Category != nil {
+                if err := s.BatchSetCategoryURLs(ctx, model.Categories{product.ReadonlyReference.Category}); err != nil {
+                    return err
+                }
+            }
+        }
+    }
+    return nil
+}
+```
+
+**Step 3: Call in usecase**
+```go
+// Always call when returning Product entities
+if err := i.assetService.BatchSetProductURLs(ctx, model.Products{product}); err != nil {
+    return nil, err
+}
+```
+
+### Why This Pattern
+
+1. **Defensive Programming**: Adding BatchSet methods even when no assets exist prevents missed updates when asset fields are added later
+2. **Recursive URL Setting**: BatchSet methods automatically handle ReadonlyReference relations
+3. **Consistent Interface**: Uniform method signatures make the codebase predictable
+4. **Type Safety**: Using type aliases (`model.Staffs`) instead of raw slices provides better type checking
+
 ## Example: Publishing Workflow
 
 ```go

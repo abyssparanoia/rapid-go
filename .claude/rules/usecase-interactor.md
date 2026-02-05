@@ -11,6 +11,138 @@ globs:
 - Interface: `{Actor}{Resource}Interactor` (e.g., `AdminUserInteractor`)
 - Implementation: `{actor}{Resource}Interactor` (lowercase first letter)
 - File: `{actor}_{resource}.go` for interface, `{actor}_{resource}_impl.go` for implementation
+- Test file: `{actor}_{resource}_impl_test.go` for unit tests
+
+## Method Ordering
+
+**All interface methods must be defined in the following order:**
+
+1. **Get methods** - Single resource retrieval
+2. **List methods** - Collection retrieval with pagination
+3. **Create methods** - Resource creation
+4. **Custom operations (no ID)** - Special operations without resource ID
+5. **Update methods** - Resource modification
+6. **Custom operations (with ID)** - Special operations with resource ID
+7. **Delete methods** - Resource deletion
+
+**Example ordering:**
+
+```go
+type AdminStaffInteractor interface {
+    // Get
+    Get(ctx context.Context, param *input.AdminGetStaff) (*model.Staff, error)
+
+    // List
+    List(ctx context.Context, param *input.AdminListStaffs) (*output.ListStaffs, error)
+
+    // Create
+    Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error)
+
+    // Custom (no ID)
+    SendNotifications(ctx context.Context, param *input.AdminSendStaffNotifications) error
+
+    // Update
+    Update(ctx context.Context, param *input.AdminUpdateStaff) (*model.Staff, error)
+
+    // Custom (with ID)
+    SendNotification(ctx context.Context, param *input.AdminSendStaffNotification) error
+
+    // Delete
+    Delete(ctx context.Context, param *input.AdminDeleteStaff) error
+}
+```
+
+**Implementation file methods must follow the same order.**
+
+## Unit Testing Requirement
+
+**ALL usecase interactor implementations MUST have corresponding unit tests.**
+
+### Test File Structure
+
+- **Location**: Same directory as implementation (`internal/usecase/`)
+- **Naming**: `{actor}_{resource}_impl_test.go`
+- **Pattern**: Table-driven tests using `map[string]testcaseFunc`
+
+### Required Test Coverage
+
+For each method in the interactor, implement tests covering:
+- **invalid argument** - Validation error cases
+- **not found** - Entity doesn't exist (for Get/Update/Delete)
+- **success** - Happy path scenario
+
+### Test Pattern
+
+```go
+func TestAdminStaffInteractor_Get(t *testing.T) {
+    t.Parallel()
+
+    type args struct {
+        staffID string
+    }
+
+    type want struct {
+        staff          *model.Staff
+        expectedResult error
+    }
+
+    type testcase struct {
+        args    args
+        usecase AdminStaffInteractor
+        want    want
+    }
+
+    type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
+
+    tests := map[string]testcaseFunc{
+        "invalid argument": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+            // Setup test case with empty args
+        },
+        "not found": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+            // Setup test case with mocked repository returning NotFoundErr
+        },
+        "success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+            // Setup test case with mocked repository returning entity
+        },
+    }
+
+    for name, tc := range tests {
+        tc := tc
+        t.Run(name, func(t *testing.T) {
+            t.Parallel()
+            ctx := t.Context()
+            ctrl := gomock.NewController(t)
+            defer ctrl.Finish()
+
+            tc := tc(ctx, ctrl)
+
+            got, err := tc.usecase.Get(ctx, input.NewAdminGetStaff(tc.args.staffID))
+            if tc.want.expectedResult == nil {
+                require.NoError(t, err)
+                require.Equal(t, tc.want.staff, got)
+            } else {
+                require.ErrorContains(t, err, tc.want.expectedResult.Error())
+            }
+        })
+    }
+}
+```
+
+### Test Utilities
+
+- **Factory**: Use `factory.NewFactory()` to generate test data
+- **Mocks**: Use `mock_repository`, `mock_service` packages
+- **Test Transaction**: Use `mock_repository.TestMockTransactable()` for RWTx/ROTx
+- **Parallel Execution**: Always use `t.Parallel()` for independent tests
+
+### Verification
+
+Run tests with:
+```bash
+make test
+```
+
+Ensure 100% coverage of usecase methods with meaningful test cases.
 
 ## Interface Definition
 
@@ -198,7 +330,9 @@ func (i *adminExampleInteractor) Get(
 }
 ```
 
-### List with Pagination
+### List with Pagination & SortKey (Unified Specification)
+
+**IMPORTANT**: All List operations MUST include SortKey support. This is a unified specification across the codebase.
 
 ```go
 func (i *adminExampleInteractor) List(
@@ -216,6 +350,7 @@ func (i *adminExampleInteractor) List(
             Limit:   null.Uint64From(param.Limit),
             Preload: true,
         },
+        SortKey: nullable.TypeFrom(param.SortKey),  // REQUIRED - Always include
     }
 
     // Optional filters
@@ -239,6 +374,22 @@ func (i *adminExampleInteractor) List(
     }, nil
 }
 ```
+
+**Key Points for List Operations:**
+
+1. **SortKey is Mandatory**: Every List operation must accept and pass SortKey to repository
+   - Input struct field: `SortKey model.XXXSortKey` (NON-nullable)
+   - Repository query field: `SortKey nullable.TypeFrom(param.SortKey)`
+   - Default value (CreatedAtDesc) is applied in input constructor
+
+2. **Pagination Defaults**: Applied in input layer constructor, not validation
+   - `page == 0` → `page = 1`
+   - `limit == 0` → `limit = 30`
+
+3. **Preload Required**: Always set `Preload: true` for returned entities
+   - Ensures ReadonlyReference is populated for response marshalling
+
+4. **Count Query**: Use same query struct (including filters and SortKey) for consistency
 
 ### Update
 

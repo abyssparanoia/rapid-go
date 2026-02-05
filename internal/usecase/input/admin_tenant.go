@@ -5,6 +5,8 @@ import (
 
 	"github.com/aarondl/null/v8"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/validation"
 )
 
@@ -28,23 +30,34 @@ func (p *AdminGetTenant) Validate() error {
 }
 
 type AdminListTenants struct {
-	Page  uint64
-	Limit uint64 `validate:"gte=1,lte=100"`
+	Page    uint64
+	Limit   uint64              `validate:"gte=1,lte=100"`
+	SortKey model.TenantSortKey // NON-nullable field
 }
 
 func NewAdminListTenants(
 	page uint64,
 	limit uint64,
+	sortKey nullable.Type[model.TenantSortKey], // nullable param
 ) *AdminListTenants {
+	// Pagination defaults
 	if page == 0 {
 		page = 1
 	}
 	if limit == 0 {
 		limit = 30
 	}
+
+	// SortKey default: CreatedAtDesc
+	resolvedSortKey := model.TenantSortKeyCreatedAtDesc
+	if sortKey.Valid && sortKey.Value().Valid() {
+		resolvedSortKey = sortKey.Value()
+	}
+
 	return &AdminListTenants{
-		Page:  page,
-		Limit: limit,
+		Page:    page,
+		Limit:   limit,
+		SortKey: resolvedSortKey,
 	}
 }
 

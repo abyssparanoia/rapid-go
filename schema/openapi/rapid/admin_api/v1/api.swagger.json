@@ -43,6 +43,56 @@
       }
     },
     "/admin/v1/staffs": {
+      "get": {
+        "operationId": "ListStaffs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListStaffsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "sort_key",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "LIST_STAFFS_SORT_KEY_UNSPECIFIED",
+              "LIST_STAFFS_SORT_KEY_CREATED_AT_DESC",
+              "LIST_STAFFS_SORT_KEY_CREATED_AT_ASC",
+              "LIST_STAFFS_SORT_KEY_DISPLAY_NAME_ASC",
+              "LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC"
+            ],
+            "default": "LIST_STAFFS_SORT_KEY_UNSPECIFIED"
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      },
       "post": {
         "operationId": "CreateStaff",
         "responses": {
@@ -60,6 +110,60 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1CreateStaffRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      }
+    },
+    "/admin/v1/staffs/{staff_id}": {
+      "get": {
+        "operationId": "GetStaff",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetStaffResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "staff_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AdminV1Service"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateStaff",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateStaffResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "staff_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdminV1ServiceUpdateStaffBody"
             }
           }
         ],
@@ -93,6 +197,20 @@
             "required": false,
             "type": "string",
             "format": "uint64"
+          },
+          {
+            "name": "sort_key",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "LIST_TENANTS_SORT_KEY_UNSPECIFIED",
+              "LIST_TENANTS_SORT_KEY_CREATED_AT_DESC",
+              "LIST_TENANTS_SORT_KEY_CREATED_AT_ASC",
+              "LIST_TENANTS_SORT_KEY_NAME_ASC",
+              "LIST_TENANTS_SORT_KEY_NAME_DESC"
+            ],
+            "default": "LIST_TENANTS_SORT_KEY_UNSPECIFIED"
           }
         ],
         "tags": [
@@ -202,6 +320,21 @@
     }
   },
   "definitions": {
+    "AdminV1ServiceUpdateStaffBody": {
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/v1StaffRole"
+        },
+        "image_asset_id": {
+          "type": "string"
+        }
+      },
+      "title": "Update"
+    },
     "AdminV1ServiceUpdateTenantBody": {
       "type": "object",
       "properties": {
@@ -209,6 +342,28 @@
           "type": "string"
         }
       }
+    },
+    "ListStaffsRequestListStaffsSortKey": {
+      "type": "string",
+      "enum": [
+        "LIST_STAFFS_SORT_KEY_UNSPECIFIED",
+        "LIST_STAFFS_SORT_KEY_CREATED_AT_DESC",
+        "LIST_STAFFS_SORT_KEY_CREATED_AT_ASC",
+        "LIST_STAFFS_SORT_KEY_DISPLAY_NAME_ASC",
+        "LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC"
+      ],
+      "default": "LIST_STAFFS_SORT_KEY_UNSPECIFIED"
+    },
+    "ListTenantsRequestListTenantsSortKey": {
+      "type": "string",
+      "enum": [
+        "LIST_TENANTS_SORT_KEY_UNSPECIFIED",
+        "LIST_TENANTS_SORT_KEY_CREATED_AT_DESC",
+        "LIST_TENANTS_SORT_KEY_CREATED_AT_ASC",
+        "LIST_TENANTS_SORT_KEY_NAME_ASC",
+        "LIST_TENANTS_SORT_KEY_NAME_DESC"
+      ],
+      "default": "LIST_TENANTS_SORT_KEY_UNSPECIFIED"
     },
     "v1AssetType": {
       "type": "string",
@@ -279,6 +434,7 @@
           "type": "string"
         }
       },
+      "title": "Create",
       "required": [
         "tenant_id",
         "email",
@@ -323,6 +479,17 @@
     "v1DeleteTenantResponse": {
       "type": "object"
     },
+    "v1GetStaffResponse": {
+      "type": "object",
+      "properties": {
+        "staff": {
+          "$ref": "#/definitions/v1Staff"
+        }
+      },
+      "required": [
+        "staff"
+      ]
+    },
     "v1GetTenantResponse": {
       "type": "object",
       "properties": {
@@ -332,6 +499,25 @@
       },
       "required": [
         "tenant"
+      ]
+    },
+    "v1ListStaffsResponse": {
+      "type": "object",
+      "properties": {
+        "staffs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Staff"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1Pagination"
+        }
+      },
+      "required": [
+        "staffs",
+        "pagination"
       ]
     },
     "v1ListTenantsResponse": {
@@ -482,6 +668,17 @@
       "required": [
         "id",
         "name"
+      ]
+    },
+    "v1UpdateStaffResponse": {
+      "type": "object",
+      "properties": {
+        "staff": {
+          "$ref": "#/definitions/v1Staff"
+        }
+      },
+      "required": [
+        "staff"
       ]
     },
     "v1UpdateTenantResponse": {

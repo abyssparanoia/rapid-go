@@ -75,8 +75,31 @@ type GetStaffQuery struct {
 type ListStaffQuery struct {
     BaseListOptions
     TenantID null.String
+    SortKey  nullable.Type[model.StaffSortKey]
 }
 ```
+
+### SortKey in List Queries (Unified Specification)
+
+**All List queries must include a SortKey field** using `nullable.Type[model.XXXSortKey]`:
+
+```go
+type ListTenantsQuery struct {
+    BaseListOptions
+    SortKey nullable.Type[model.TenantSortKey]
+}
+
+type ListStaffsQuery struct {
+    BaseListOptions
+    TenantID null.String
+    SortKey  nullable.Type[model.StaffSortKey]
+}
+```
+
+**Key points:**
+- SortKey is **always** `nullable.Type[model.XXXSortKey]` in repository queries
+- Input layer resolves nullable to non-nullable with default (`CreatedAtDesc`)
+- Repository implementation checks `query.SortKey.Valid && query.SortKey.Value().Valid()` before applying sort
 
 ### Optional Fields: Use `nullable.Type[T]` Instead of Pointers
 
@@ -186,26 +209,36 @@ func (r *example) Get(ctx context.Context, query repository.GetExampleQuery) (*m
 
 ### List Method Pattern
 
+**IMPORTANT**: Sorting must be applied **BEFORE** pagination for correct SQL semantics.
+
+#### MySQL Implementation
+
 ```go
 func (r *example) List(ctx context.Context, query repository.ListExamplesQuery) (model.Examples, error) {
     mods := r.buildListQuery(query)
 
-    // Pagination
+    // Sorting (BEFORE pagination)
+    if query.SortKey.Valid && query.SortKey.Value().Valid() {
+        switch query.SortKey.Value() {
+        case model.ExampleSortKeyCreatedAtDesc:
+            mods = append(mods, qm.OrderBy("`created_at` DESC"))
+        case model.ExampleSortKeyCreatedAtAsc:
+            mods = append(mods, qm.OrderBy("`created_at` ASC"))
+        case model.ExampleSortKeyNameAsc:
+            mods = append(mods, qm.OrderBy("`name` ASC"))
+        case model.ExampleSortKeyNameDesc:
+            mods = append(mods, qm.OrderBy("`name` DESC"))
+        case model.ExampleSortKeyUnknown:
+            return nil, errors.InternalErr.Errorf("invalid sort key: %s", query.SortKey.Value())
+        }
+    }
+
+    // Pagination (AFTER sorting)
     if query.Page.Valid && query.Limit.Valid {
         mods = append(mods,
             qm.Limit(int(query.Limit.Uint64)),
             qm.Offset(int(query.Limit.Uint64*(query.Page.Uint64-1))),
         )
-    }
-
-    // Sorting
-    if query.SortKey.Valid && query.SortKey.Ptr().Valid() {
-        switch query.SortKey.Value() {
-        case model.ExampleSortKeyCreatedAtDesc:
-            mods = append(mods, qm.OrderBy("\"created_at\" DESC"))
-        case model.ExampleSortKeyNameAsc:
-            mods = append(mods, qm.OrderBy("\"name\" ASC"))
-        }
     }
 
     // Preload
@@ -230,6 +263,74 @@ func (r *example) buildListQuery(query repository.ListExamplesQuery) []qm.QueryM
     }
     return mods
 }
+```
+
+#### PostgreSQL Implementation
+
+PostgreSQL uses double quotes instead of backticks for identifiers:
+
+```go
+func (r *example) List(ctx context.Context, query repository.ListExamplesQuery) (model.Examples, error) {
+    mods := r.buildListQuery(query)
+
+    // Sorting (BEFORE pagination)
+    if query.SortKey.Valid && query.SortKey.Value().Valid() {
+        switch query.SortKey.Value() {
+        case model.ExampleSortKeyCreatedAtDesc:
+            mods = append(mods, qm.OrderBy("\"created_at\" DESC"))
+        case model.ExampleSortKeyCreatedAtAsc:
+            mods = append(mods, qm.OrderBy("\"created_at\" ASC"))
+        case model.ExampleSortKeyNameAsc:
+            mods = append(mods, qm.OrderBy("\"name\" ASC"))
+        case model.ExampleSortKeyNameDesc:
+            mods = append(mods, qm.OrderBy("\"name\" DESC"))
+        case model.ExampleSortKeyUnknown:
+            return nil, errors.InternalErr.Errorf("invalid sort key: %s", query.SortKey.Value())
+        }
+    }
+
+    // Pagination (AFTER sorting)
+    if query.Page.Valid && query.Limit.Valid {
+        mods = append(mods,
+            qm.Limit(int(query.Limit.Uint64)),
+            qm.Offset(int(query.Limit.Uint64*(query.Page.Uint64-1))),
+        )
+    }
+
+    // Preload
+    if query.Preload {
+        mods = r.addPreload(mods)
+    }
+
+    dbEntities, err := dbmodel.Examples(mods...).All(ctx, transactable.GetContextExecutor(ctx))
+    if err != nil {
+        return nil, errors.InternalErr.Wrap(err)
+    }
+    return marshaller.ExamplesToModel(dbEntities), nil
+}
+```
+
+#### Key Differences Between Databases
+
+| Database | Identifier Quoting | Example |
+|----------|-------------------|---------|
+| MySQL | Backticks | `` `created_at` DESC `` |
+| PostgreSQL | Double quotes | `"created_at" DESC` |
+| Spanner | Backticks | `` `created_at` DESC `` |
+
+#### Unknown SortKey Handling
+
+**IMPORTANT**: Always return an error for Unknown SortKey values. Do not silently skip sorting.
+
+```go
+case model.ExampleSortKeyUnknown:
+    return nil, errors.InternalErr.Errorf("invalid sort key: %s", query.SortKey.Value())
+```
+
+**Anti-pattern** (do not use):
+```go
+case model.ExampleSortKeyUnknown:
+    // No sorting applied for unknown  // WRONG - should return error
 ```
 
 ### Preload Helper

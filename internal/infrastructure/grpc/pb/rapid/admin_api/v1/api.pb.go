@@ -26,15 +26,20 @@ var File_rapid_admin_api_v1_api_proto protoreflect.FileDescriptor
 
 const file_rapid_admin_api_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"\x1crapid/admin_api/v1/api.proto\x12\x12rapid.admin_api.v1\x1a\x1cgoogle/api/annotations.proto\x1a\"rapid/admin_api/v1/api_asset.proto\x1a\"rapid/admin_api/v1/api_staff.proto\x1a#rapid/admin_api/v1/api_tenant.proto2\xd5\a\n" +
+	"\x1crapid/admin_api/v1/api.proto\x12\x12rapid.admin_api.v1\x1a\x1cgoogle/api/annotations.proto\x1a\"rapid/admin_api/v1/api_asset.proto\x1a\"rapid/admin_api/v1/api_staff.proto\x1a#rapid/admin_api/v1/api_tenant.proto2\xd1\n" +
+	"\n" +
 	"\x0eAdminV1Service\x12\xaf\x01\n" +
 	"\x17CreateAssetPresignedURL\x122.rapid.admin_api.v1.CreateAssetPresignedURLRequest\x1a3.rapid.admin_api.v1.CreateAssetPresignedURLResponse\"+\x82\xd3\xe4\x93\x02%:\x01*\" /admin/v1/assets/-/presigned_url\x12\x7f\n" +
 	"\tGetTenant\x12$.rapid.admin_api.v1.GetTenantRequest\x1a%.rapid.admin_api.v1.GetTenantResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/admin/v1/tenants/{tenant_id}\x12y\n" +
 	"\vListTenants\x12&.rapid.admin_api.v1.ListTenantsRequest\x1a'.rapid.admin_api.v1.ListTenantsResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/admin/v1/tenants\x12\x7f\n" +
 	"\fCreateTenant\x12'.rapid.admin_api.v1.CreateTenantRequest\x1a(.rapid.admin_api.v1.CreateTenantResponse\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/admin/v1/tenants\x12\x8b\x01\n" +
 	"\fUpdateTenant\x12'.rapid.admin_api.v1.UpdateTenantRequest\x1a(.rapid.admin_api.v1.UpdateTenantResponse\"(\x82\xd3\xe4\x93\x02\":\x01*2\x1d/admin/v1/tenants/{tenant_id}\x12\x88\x01\n" +
-	"\fDeleteTenant\x12'.rapid.admin_api.v1.DeleteTenantRequest\x1a(.rapid.admin_api.v1.DeleteTenantResponse\"%\x82\xd3\xe4\x93\x02\x1f*\x1d/admin/v1/tenants/{tenant_id}\x12{\n" +
-	"\vCreateStaff\x12&.rapid.admin_api.v1.CreateStaffRequest\x1a'.rapid.admin_api.v1.CreateStaffResponse\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/admin/v1/staffsB\xea\x01\n" +
+	"\fDeleteTenant\x12'.rapid.admin_api.v1.DeleteTenantRequest\x1a(.rapid.admin_api.v1.DeleteTenantResponse\"%\x82\xd3\xe4\x93\x02\x1f*\x1d/admin/v1/tenants/{tenant_id}\x12z\n" +
+	"\bGetStaff\x12#.rapid.admin_api.v1.GetStaffRequest\x1a$.rapid.admin_api.v1.GetStaffResponse\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/admin/v1/staffs/{staff_id}\x12u\n" +
+	"\n" +
+	"ListStaffs\x12%.rapid.admin_api.v1.ListStaffsRequest\x1a&.rapid.admin_api.v1.ListStaffsResponse\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/admin/v1/staffs\x12{\n" +
+	"\vCreateStaff\x12&.rapid.admin_api.v1.CreateStaffRequest\x1a'.rapid.admin_api.v1.CreateStaffResponse\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/admin/v1/staffs\x12\x86\x01\n" +
+	"\vUpdateStaff\x12&.rapid.admin_api.v1.UpdateStaffRequest\x1a'.rapid.admin_api.v1.UpdateStaffResponse\"&\x82\xd3\xe4\x93\x02 :\x01*2\x1b/admin/v1/staffs/{staff_id}B\xea\x01\n" +
 	"\x16com.rapid.admin_api.v1B\bApiProtoP\x01Z`github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1;admin_apiv1\xa2\x02\x03RAX\xaa\x02\x11Rapid.AdminApi.V1\xca\x02\x11Rapid\\AdminApi\\V1\xe2\x02\x1dRapid\\AdminApi\\V1\\GPBMetadata\xea\x02\x13Rapid::AdminApi::V1b\x06proto3"
 
 var file_rapid_admin_api_v1_api_proto_goTypes = []any{
@@ -44,14 +49,20 @@ var file_rapid_admin_api_v1_api_proto_goTypes = []any{
 	(*CreateTenantRequest)(nil),             // 3: rapid.admin_api.v1.CreateTenantRequest
 	(*UpdateTenantRequest)(nil),             // 4: rapid.admin_api.v1.UpdateTenantRequest
 	(*DeleteTenantRequest)(nil),             // 5: rapid.admin_api.v1.DeleteTenantRequest
-	(*CreateStaffRequest)(nil),              // 6: rapid.admin_api.v1.CreateStaffRequest
-	(*CreateAssetPresignedURLResponse)(nil), // 7: rapid.admin_api.v1.CreateAssetPresignedURLResponse
-	(*GetTenantResponse)(nil),               // 8: rapid.admin_api.v1.GetTenantResponse
-	(*ListTenantsResponse)(nil),             // 9: rapid.admin_api.v1.ListTenantsResponse
-	(*CreateTenantResponse)(nil),            // 10: rapid.admin_api.v1.CreateTenantResponse
-	(*UpdateTenantResponse)(nil),            // 11: rapid.admin_api.v1.UpdateTenantResponse
-	(*DeleteTenantResponse)(nil),            // 12: rapid.admin_api.v1.DeleteTenantResponse
-	(*CreateStaffResponse)(nil),             // 13: rapid.admin_api.v1.CreateStaffResponse
+	(*GetStaffRequest)(nil),                 // 6: rapid.admin_api.v1.GetStaffRequest
+	(*ListStaffsRequest)(nil),               // 7: rapid.admin_api.v1.ListStaffsRequest
+	(*CreateStaffRequest)(nil),              // 8: rapid.admin_api.v1.CreateStaffRequest
+	(*UpdateStaffRequest)(nil),              // 9: rapid.admin_api.v1.UpdateStaffRequest
+	(*CreateAssetPresignedURLResponse)(nil), // 10: rapid.admin_api.v1.CreateAssetPresignedURLResponse
+	(*GetTenantResponse)(nil),               // 11: rapid.admin_api.v1.GetTenantResponse
+	(*ListTenantsResponse)(nil),             // 12: rapid.admin_api.v1.ListTenantsResponse
+	(*CreateTenantResponse)(nil),            // 13: rapid.admin_api.v1.CreateTenantResponse
+	(*UpdateTenantResponse)(nil),            // 14: rapid.admin_api.v1.UpdateTenantResponse
+	(*DeleteTenantResponse)(nil),            // 15: rapid.admin_api.v1.DeleteTenantResponse
+	(*GetStaffResponse)(nil),                // 16: rapid.admin_api.v1.GetStaffResponse
+	(*ListStaffsResponse)(nil),              // 17: rapid.admin_api.v1.ListStaffsResponse
+	(*CreateStaffResponse)(nil),             // 18: rapid.admin_api.v1.CreateStaffResponse
+	(*UpdateStaffResponse)(nil),             // 19: rapid.admin_api.v1.UpdateStaffResponse
 }
 var file_rapid_admin_api_v1_api_proto_depIdxs = []int32{
 	0,  // 0: rapid.admin_api.v1.AdminV1Service.CreateAssetPresignedURL:input_type -> rapid.admin_api.v1.CreateAssetPresignedURLRequest
@@ -60,16 +71,22 @@ var file_rapid_admin_api_v1_api_proto_depIdxs = []int32{
 	3,  // 3: rapid.admin_api.v1.AdminV1Service.CreateTenant:input_type -> rapid.admin_api.v1.CreateTenantRequest
 	4,  // 4: rapid.admin_api.v1.AdminV1Service.UpdateTenant:input_type -> rapid.admin_api.v1.UpdateTenantRequest
 	5,  // 5: rapid.admin_api.v1.AdminV1Service.DeleteTenant:input_type -> rapid.admin_api.v1.DeleteTenantRequest
-	6,  // 6: rapid.admin_api.v1.AdminV1Service.CreateStaff:input_type -> rapid.admin_api.v1.CreateStaffRequest
-	7,  // 7: rapid.admin_api.v1.AdminV1Service.CreateAssetPresignedURL:output_type -> rapid.admin_api.v1.CreateAssetPresignedURLResponse
-	8,  // 8: rapid.admin_api.v1.AdminV1Service.GetTenant:output_type -> rapid.admin_api.v1.GetTenantResponse
-	9,  // 9: rapid.admin_api.v1.AdminV1Service.ListTenants:output_type -> rapid.admin_api.v1.ListTenantsResponse
-	10, // 10: rapid.admin_api.v1.AdminV1Service.CreateTenant:output_type -> rapid.admin_api.v1.CreateTenantResponse
-	11, // 11: rapid.admin_api.v1.AdminV1Service.UpdateTenant:output_type -> rapid.admin_api.v1.UpdateTenantResponse
-	12, // 12: rapid.admin_api.v1.AdminV1Service.DeleteTenant:output_type -> rapid.admin_api.v1.DeleteTenantResponse
-	13, // 13: rapid.admin_api.v1.AdminV1Service.CreateStaff:output_type -> rapid.admin_api.v1.CreateStaffResponse
-	7,  // [7:14] is the sub-list for method output_type
-	0,  // [0:7] is the sub-list for method input_type
+	6,  // 6: rapid.admin_api.v1.AdminV1Service.GetStaff:input_type -> rapid.admin_api.v1.GetStaffRequest
+	7,  // 7: rapid.admin_api.v1.AdminV1Service.ListStaffs:input_type -> rapid.admin_api.v1.ListStaffsRequest
+	8,  // 8: rapid.admin_api.v1.AdminV1Service.CreateStaff:input_type -> rapid.admin_api.v1.CreateStaffRequest
+	9,  // 9: rapid.admin_api.v1.AdminV1Service.UpdateStaff:input_type -> rapid.admin_api.v1.UpdateStaffRequest
+	10, // 10: rapid.admin_api.v1.AdminV1Service.CreateAssetPresignedURL:output_type -> rapid.admin_api.v1.CreateAssetPresignedURLResponse
+	11, // 11: rapid.admin_api.v1.AdminV1Service.GetTenant:output_type -> rapid.admin_api.v1.GetTenantResponse
+	12, // 12: rapid.admin_api.v1.AdminV1Service.ListTenants:output_type -> rapid.admin_api.v1.ListTenantsResponse
+	13, // 13: rapid.admin_api.v1.AdminV1Service.CreateTenant:output_type -> rapid.admin_api.v1.CreateTenantResponse
+	14, // 14: rapid.admin_api.v1.AdminV1Service.UpdateTenant:output_type -> rapid.admin_api.v1.UpdateTenantResponse
+	15, // 15: rapid.admin_api.v1.AdminV1Service.DeleteTenant:output_type -> rapid.admin_api.v1.DeleteTenantResponse
+	16, // 16: rapid.admin_api.v1.AdminV1Service.GetStaff:output_type -> rapid.admin_api.v1.GetStaffResponse
+	17, // 17: rapid.admin_api.v1.AdminV1Service.ListStaffs:output_type -> rapid.admin_api.v1.ListStaffsResponse
+	18, // 18: rapid.admin_api.v1.AdminV1Service.CreateStaff:output_type -> rapid.admin_api.v1.CreateStaffResponse
+	19, // 19: rapid.admin_api.v1.AdminV1Service.UpdateStaff:output_type -> rapid.admin_api.v1.UpdateStaffResponse
+	10, // [10:20] is the sub-list for method output_type
+	0,  // [0:10] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

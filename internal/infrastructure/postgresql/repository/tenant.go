@@ -51,6 +51,24 @@ func (r *tenant) List(
 	query repository.ListTenantsQuery,
 ) (model.Tenants, error) {
 	mods := []qm.QueryMod{}
+
+	// Sorting (BEFORE pagination)
+	if query.SortKey.Valid && query.SortKey.Value().Valid() {
+		switch query.SortKey.Value() {
+		case model.TenantSortKeyCreatedAtDesc:
+			mods = append(mods, qm.OrderBy("\"created_at\" DESC"))
+		case model.TenantSortKeyCreatedAtAsc:
+			mods = append(mods, qm.OrderBy("\"created_at\" ASC"))
+		case model.TenantSortKeyNameAsc:
+			mods = append(mods, qm.OrderBy("\"name\" ASC"))
+		case model.TenantSortKeyNameDesc:
+			mods = append(mods, qm.OrderBy("\"name\" DESC"))
+		case model.TenantSortKeyUnknown:
+			return nil, errors.InternalErr.Errorf("invalid sort key: %s", query.SortKey.Value())
+		}
+	}
+
+	// Pagination
 	if query.Page.Valid && query.Limit.Valid {
 		mods = append(mods,
 			qm.Limit(int(query.Limit.Uint64)),
