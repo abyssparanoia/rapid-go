@@ -129,6 +129,44 @@ example, _ := repo.Get(ctx, GetExampleQuery{
 // example.ReadonlyReference.Tenant != nil
 ```
 
+### ReadonlyReference と Proto Partial Pattern
+
+ドメインモデルの`ReadonlyReference`はprotoの`{Entity}Partial`にマッピング：
+
+| Domain Model | Proto Response |
+|--------------|----------------|
+| `TenantID string` | Protoには露出しない（内部用） |
+| `ReadonlyReference.Tenant` | `TenantPartial tenant`（必須フィールド） |
+
+**重要**:
+- Partialパターンでは`ReadonlyReference.Tenant`が常にロードされている必要があります
+- Repository queryで`Preload: true`を必ず指定してください
+- gRPC marshallerで`TenantPartialToPB(m.ReadonlyReference.Tenant)`を使用して変換
+
+```go
+// Usecase - Preload required for response
+staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
+    ID: null.StringFrom(param.StaffID),
+    BaseGetOptions: repository.BaseGetOptions{
+        OrFail:  true,
+        Preload: true,  // 必須 - Tenantをロード
+    },
+})
+
+// gRPC Marshaller - Convert to Partial
+func StaffToPB(m *model.Staff) *admin_apiv1.Staff {
+    var tenant *admin_apiv1.TenantPartial
+    if m.ReadonlyReference != nil && m.ReadonlyReference.Tenant != nil {
+        tenant = TenantPartialToPB(m.ReadonlyReference.Tenant)
+    }
+    return &admin_apiv1.Staff{
+        Id:     m.ID,
+        Tenant: tenant,  // TenantPartial (not TenantId string)
+        // ...
+    }
+}
+```
+
 ## Type Aliases
 
 ```go
