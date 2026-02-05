@@ -104,7 +104,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 				Return(tenant, nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}, gomock.Any()).
 				Return(nil)
 
 			return testcase{
@@ -132,6 +132,7 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 
 			got, err := tc.usecase.Get(ctx, input.NewAdminGetTenant(
 				tc.args.tenantID,
+				time.Now(),
 			))
 			if tc.want.expectedResult == nil {
 				require.NoError(t, err)
@@ -147,8 +148,9 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		page  uint64
-		limit uint64
+		page        uint64
+		limit       uint64
+		requestTime time.Time
 	}
 
 	type want struct {
@@ -196,13 +198,14 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 				Return(uint64(60), nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}, gomock.Any()).
 				Return(nil)
 
 			return testcase{
 				args: args{
-					page:  2,
-					limit: 30,
+					page:        2,
+					limit:       30,
+					requestTime: testdata.RequestTime,
 				},
 				usecase: &adminTenantInteractor{
 					tenantRepository: mockTenantRepo,
@@ -231,6 +234,7 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 				tc.args.page,
 				tc.args.limit,
 				nullable.Type[model.TenantSortKey]{}, // Use empty nullable for default
+				tc.args.requestTime,
 			))
 			if tc.want.expectedResult == nil {
 				require.NoError(t, err)
@@ -290,7 +294,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 				Return(nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}).
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}, gomock.Any()).
 				Return(nil)
 
 			return testcase{
@@ -389,7 +393,7 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 				Return(nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetTenantURLs(gomock.Any(), model.Tenants{updatedTenant}).
+				BatchSetTenantURLs(gomock.Any(), model.Tenants{updatedTenant}, gomock.Any()).
 				Return(nil)
 
 			return testcase{

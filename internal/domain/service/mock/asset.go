@@ -44,45 +44,45 @@ func (m *MockAsset) EXPECT() *MockAssetMockRecorder {
 }
 
 // BatchSetStaffURLs mocks base method.
-func (m *MockAsset) BatchSetStaffURLs(ctx context.Context, staffs model.Staffs) error {
+func (m *MockAsset) BatchSetStaffURLs(ctx context.Context, staffs model.Staffs, requestTime time.Time) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BatchSetStaffURLs", ctx, staffs)
+	ret := m.ctrl.Call(m, "BatchSetStaffURLs", ctx, staffs, requestTime)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // BatchSetStaffURLs indicates an expected call of BatchSetStaffURLs.
-func (mr *MockAssetMockRecorder) BatchSetStaffURLs(ctx, staffs any) *gomock.Call {
+func (mr *MockAssetMockRecorder) BatchSetStaffURLs(ctx, staffs, requestTime any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchSetStaffURLs", reflect.TypeOf((*MockAsset)(nil).BatchSetStaffURLs), ctx, staffs)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchSetStaffURLs", reflect.TypeOf((*MockAsset)(nil).BatchSetStaffURLs), ctx, staffs, requestTime)
 }
 
 // BatchSetTenantTagURLs mocks base method.
-func (m *MockAsset) BatchSetTenantTagURLs(ctx context.Context, tenantTags model.TenantTags) error {
+func (m *MockAsset) BatchSetTenantTagURLs(ctx context.Context, tenantTags model.TenantTags, requestTime time.Time) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BatchSetTenantTagURLs", ctx, tenantTags)
+	ret := m.ctrl.Call(m, "BatchSetTenantTagURLs", ctx, tenantTags, requestTime)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // BatchSetTenantTagURLs indicates an expected call of BatchSetTenantTagURLs.
-func (mr *MockAssetMockRecorder) BatchSetTenantTagURLs(ctx, tenantTags any) *gomock.Call {
+func (mr *MockAssetMockRecorder) BatchSetTenantTagURLs(ctx, tenantTags, requestTime any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchSetTenantTagURLs", reflect.TypeOf((*MockAsset)(nil).BatchSetTenantTagURLs), ctx, tenantTags)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchSetTenantTagURLs", reflect.TypeOf((*MockAsset)(nil).BatchSetTenantTagURLs), ctx, tenantTags, requestTime)
 }
 
 // BatchSetTenantURLs mocks base method.
-func (m *MockAsset) BatchSetTenantURLs(ctx context.Context, tenants model.Tenants) error {
+func (m *MockAsset) BatchSetTenantURLs(ctx context.Context, tenants model.Tenants, requestTime time.Time) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BatchSetTenantURLs", ctx, tenants)
+	ret := m.ctrl.Call(m, "BatchSetTenantURLs", ctx, tenants, requestTime)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // BatchSetTenantURLs indicates an expected call of BatchSetTenantURLs.
-func (mr *MockAssetMockRecorder) BatchSetTenantURLs(ctx, tenants any) *gomock.Call {
+func (mr *MockAssetMockRecorder) BatchSetTenantURLs(ctx, tenants, requestTime any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchSetTenantURLs", reflect.TypeOf((*MockAsset)(nil).BatchSetTenantURLs), ctx, tenants)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchSetTenantURLs", reflect.TypeOf((*MockAsset)(nil).BatchSetTenantURLs), ctx, tenants, requestTime)
 }
 
 // CreatePresignedURL mocks base method.

@@ -48,7 +48,7 @@ func (i *staffMeTenantInteractor) Get(
 	}
 
 	// Apply asset URL processing
-	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}); err != nil {
+	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}, param.RequestTime); err != nil {
 		return nil, err
 	}
 
@@ -98,7 +98,7 @@ func (i *staffMeTenantInteractor) Update(
 	}
 
 	// Apply asset URL processing
-	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}); err != nil {
+	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}, param.RequestTime); err != nil {
 		return nil, err
 	}
 

@@ -17,6 +17,7 @@ func (h *AdminHandler) GetTenant(ctx context.Context, req *admin_apiv1.GetTenant
 		ctx,
 		input.NewAdminGetTenant(
 			req.GetTenantId(),
+			request_interceptor.GetRequestTime(ctx),
 		),
 	)
 	if err != nil {
@@ -39,6 +40,7 @@ func (h *AdminHandler) ListTenants(ctx context.Context, req *admin_apiv1.ListTen
 			req.GetPage(),
 			req.GetLimit(),
 			sortKey,
+			request_interceptor.GetRequestTime(ctx),
 		),
 	)
 	if err != nil {

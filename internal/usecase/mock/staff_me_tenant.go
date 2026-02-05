@@ -42,6 +42,21 @@ func (m *MockStaffMeTenantInteractor) EXPECT() *MockStaffMeTenantInteractorMockR
 	return m.recorder
 }
 
+// Get mocks base method.
+func (m *MockStaffMeTenantInteractor) Get(ctx context.Context, param *input.StaffGetMeTenant) (*model.Tenant, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", ctx, param)
+	ret0, _ := ret[0].(*model.Tenant)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockStaffMeTenantInteractorMockRecorder) Get(ctx, param any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockStaffMeTenantInteractor)(nil).Get), ctx, param)
+}
+
 // Update mocks base method.
 func (m *MockStaffMeTenantInteractor) Update(ctx context.Context, param *input.StaffUpdateMeTenant) (*model.Tenant, error) {
 	m.ctrl.T.Helper()

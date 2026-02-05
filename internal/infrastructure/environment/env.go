@@ -49,16 +49,20 @@ type RedisEnvironment struct {
 }
 
 type GCPEnvironment struct {
-	GCPProjectID         string `env:"GCP_PROJECT_ID,required"`
-	FirebaseClientAPIKey string `env:"FIREBASE_CLIENT_API_KEY"`
-	GCPBucketName        string `env:"GCP_BUCKET_NAME,required"`
+	GCPProjectID          string `env:"GCP_PROJECT_ID,required"`
+	FirebaseClientAPIKey  string `env:"FIREBASE_CLIENT_API_KEY"`
+	GCPPrivateBucketName  string `env:"GCP_PRIVATE_BUCKET_NAME,required"`
+	GCPPublicBucketName   string `env:"GCP_PUBLIC_BUCKET_NAME,required"`
+	GCPPublicAssetBaseURL string `env:"GCP_PUBLIC_ASSET_BASE_URL,required"`
 }
 
 type AWSEnvironment struct {
 	AWSRegion                 string `env:"AWS_REGION,required"`
 	AWSEmulatorHost           string `env:"AWS_EMULATOR_HOST"`
 	AWSCognitoEmulatorHost    string `env:"AWS_COGNITO_EMULATOR_HOST"`
-	AWSBucketName             string `env:"AWS_BUCKET_NAME,required"`
+	AWSPrivateBucketName      string `env:"AWS_PRIVATE_BUCKET_NAME,required"`
+	AWSPublicBucketName       string `env:"AWS_PUBLIC_BUCKET_NAME,required"`
+	AWSPublicAssetBaseURL     string `env:"AWS_PUBLIC_ASSET_BASE_URL,required"`
 	AWSCognitoStaffUserPoolID string `env:"AWS_COGNITO_STAFF_USER_POOL_ID,required"`
 	AWSCognitoStaffClientID   string `env:"AWS_COGNITO_STAFF_CLIENT_ID,required"`
 	AWSCognitoAdminUserPoolID string `env:"AWS_COGNITO_ADMIN_USER_POOL_ID,required"`

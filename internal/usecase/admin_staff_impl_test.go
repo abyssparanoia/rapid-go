@@ -119,7 +119,7 @@ func TestAdminStaffInteractor_Get(t *testing.T) {
 			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}).
+				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
 				Return(nil)
 
 			return testcase{
@@ -224,7 +224,7 @@ func TestAdminStaffInteractor_List(t *testing.T) {
 			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}).
+				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
 				Return(nil)
 
 			return testcase{
@@ -371,7 +371,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 				Return(staff, nil)
 
 			mockAssetService.EXPECT().
-				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}).
+				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
 				Return(nil)
 
 			return testcase{
@@ -495,7 +495,7 @@ func TestAdminStaffInteractor_Update(t *testing.T) {
 				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, staff.ImagePath).
 				Return(staff.ImagePath, nil)
 			mockAssetService.EXPECT().
-				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}).
+				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
 				Return(nil)
 
 			return testcase{

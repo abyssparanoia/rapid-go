@@ -2,25 +2,37 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
+)
+
+const (
+	// urlRoundingDuration is the time rounding unit for presigned URL cache optimization
+	urlRoundingDuration = 5 * time.Minute
 )
 
 type asset struct {
-	bucketHandle *storage.BucketHandle
+	privateBucketHandle *storage.BucketHandle
+	publicBucketHandle  *storage.BucketHandle
+	publicAssetBaseURL  string
 }
 
 func NewAsset(
-	bucketHandle *storage.BucketHandle,
+	privateBucketHandle *storage.BucketHandle,
+	publicBucketHandle *storage.BucketHandle,
+	publicAssetBaseURL string,
 ) repository.Asset {
 	return &asset{
-		bucketHandle,
+		privateBucketHandle: privateBucketHandle,
+		publicBucketHandle:  publicBucketHandle,
+		publicAssetBaseURL:  strings.TrimSuffix(publicAssetBaseURL, "/"),
 	}
 }
 
@@ -30,32 +42,47 @@ func (r *asset) GenerateWritePresignedURL(
 	path string,
 	expires time.Duration,
 ) (string, error) {
-	now := now.Now()
+	// Select bucket based on path prefix
+	bucketHandle := r.privateBucketHandle
+	if strings.HasPrefix(path, "public/") {
+		bucketHandle = r.publicBucketHandle
+	}
+
 	opts := &storage.SignedURLOptions{
-		Expires:     now.Add(expires),
+		Expires:     time.Now().Add(expires),
 		Method:      http.MethodPut,
 		ContentType: contentType.String(),
 	}
-	singedURL, err := r.bucketHandle.SignedURL(path, opts)
+	signedURL, err := bucketHandle.SignedURL(path, opts)
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}
-	return singedURL, nil
+	return signedURL, nil
 }
 
-func (r *asset) GenerateReadPresignedURL(
+func (r *asset) GenerateReadURL(
 	ctx context.Context,
 	path string,
-	expires time.Duration,
+	requestTime time.Time,
 ) (string, error) {
-	now := now.Now()
+	// Public: return base URL + path (no signing)
+	if strings.HasPrefix(path, "public/") {
+		return fmt.Sprintf("%s/%s", r.publicAssetBaseURL, path), nil
+	}
+
+	// Private: generate presigned URL with rounded expiration for cache optimization
+	// Round request time to 5-minute intervals so same URL is generated within window
+	roundedTime := requestTime.Truncate(urlRoundingDuration)
+	// Expiration: rounded time + 2 * rounding duration (ensures URL valid for full window)
+	expiresAt := roundedTime.Add(urlRoundingDuration * 2)
+
 	opts := &storage.SignedURLOptions{
-		Expires: now.Add(expires),
+		Expires: expiresAt,
 		Method:  http.MethodGet,
 	}
-	singedURL, err := r.bucketHandle.SignedURL(path, opts)
+	signedURL, err := r.privateBucketHandle.SignedURL(path, opts)
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}
-	return singedURL, nil
+	return signedURL, nil
 }
