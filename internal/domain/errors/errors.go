@@ -9,10 +9,14 @@ var (
 	AssetInvalidErr            = NewBadRequestError("E100006", "Asset is invalid")
 	AssetNotFoundErr           = NewNotFoundError("E100007", "Asset not found")
 	CanceledErr                = NewCanceledError("E100008", "Canceled")
+	RequireAdminSessionErr     = NewUnauthorizedError("E100009", "Require admin session")
 
 	// tenant error.
 	TenantNotFoundErr = NewNotFoundError("E200101", "Tenant not found")
 
 	// staff error.
 	StaffNotFoundErr = NewNotFoundError("E200201", "Staff not found")
+
+	// admin error.
+	AdminNotFoundErr = NewNotFoundError("E200301", "Admin not found")
 )

@@ -11,12 +11,14 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/admin"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/debug"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/public"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/staff"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/authorization_interceptor"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/request_interceptor"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/session_interceptor"
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1"
 	debug_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/debug_api/v1"
 	public_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/public_api/v1"
+	staff_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/staff_api/v1"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"go.uber.org/zap"
@@ -40,7 +42,10 @@ func NewServer(ctx context.Context,
 	dependency *dependency.Dependency,
 ) *grpc.Server {
 	requestLogInterceptor := request_interceptor.NewRequestLog(logger)
-	authFunc := session_interceptor.NewSession(dependency.AuthenticationInteractor)
+	authFunc := session_interceptor.NewSession(
+		dependency.AuthenticationInteractor,
+		dependency.AdminAuthenticationInteractor,
+	)
 	authorizationInterceptor := authorization_interceptor.NewAuthorization()
 
 	server := grpc.NewServer(
@@ -75,6 +80,14 @@ func NewServer(ctx context.Context,
 			dependency.AdminTenantInteractor,
 			dependency.AdminStaffInteractor,
 			dependency.AdminAssetInteractor,
+		),
+	)
+	staff_apiv1.RegisterStaffV1ServiceServer(
+		server,
+		staff.NewStaffHandler(
+			dependency.StaffTenantInteractor,
+			dependency.StaffStaffInteractor,
+			dependency.StaffAssetInteractor,
 		),
 	)
 	public_apiv1.RegisterPublicV1ServiceServer(

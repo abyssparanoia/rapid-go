@@ -1,5 +1,9 @@
 erDiagram
 
+  publicadmin_roles {
+    varchar id PK
+  }
+
   publicasset_types {
     varchar id PK
   }
@@ -26,6 +30,16 @@ erDiagram
   publictenants {
     varchar id PK
     varchar name
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  publicadmins {
+    varchar id PK
+    varchar role FK
+    varchar auth_uid UK
+    varchar email UK
+    varchar display_name
     timestamptz created_at
     timestamptz updated_at
   }
@@ -60,6 +74,7 @@ erDiagram
     timestamptz updated_at
   }
 
+  publicadmin_roles ||--o{ publicadmins : "foreign key"
   publicasset_types ||--o{ publicassets : "foreign key"
   publiccontent_types ||--o{ publicassets : "foreign key"
   publicstaff_roles ||--o{ publicstaffs : "foreign key"

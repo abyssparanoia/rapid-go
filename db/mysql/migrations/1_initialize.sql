@@ -25,6 +25,27 @@ CREATE TABLE `assets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 COMMENT "asset";
 
+CREATE TABLE `admin_roles` (
+  `id` VARCHAR(32) NOT NULL COMMENT "id",
+  CONSTRAINT `admin_roles_pkey` PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT "admin role";
+
+CREATE TABLE `admins` (
+  `id`           VARCHAR(64)   NOT NULL COMMENT "id",
+  `role`         VARCHAR(32)   NOT NULL COMMENT "role",
+  `auth_uid`     VARCHAR(256)  NOT NULL COMMENT "auth uid",
+  `email`        VARCHAR(512)  NOT NULL COMMENT "email",
+  `display_name` VARCHAR(256)  NOT NULL COMMENT "display name",
+  `created_at`   DATETIME      NOT NULL COMMENT "created date",
+  `updated_at`   DATETIME      NOT NULL COMMENT "update date",
+  CONSTRAINT `admins_pkey` PRIMARY KEY (`id`),
+  UNIQUE `admins_unique_auth_uid` (`auth_uid`),
+  UNIQUE `admins_unique_email` (`email`),
+  CONSTRAINT `admins_fkey_role` FOREIGN KEY (`role`) REFERENCES `admin_roles` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COMMENT "admin";
+
 CREATE TABLE `tenants` (
   `id`                       VARCHAR(64)  NOT NULL COMMENT "id",
   `name`                     VARCHAR(256) NOT NULL COMMENT "name",
@@ -83,6 +104,8 @@ DROP TABLE staff_roles;
 DROP TABLE tenant_tags;
 DROP TABLE tenant_tag_types;
 DROP TABLE tenants;
+DROP TABLE admins;
+DROP TABLE admin_roles;
 DROP TABLE assets;
 DROP TABLE asset_types;
 DROP TABLE content_types;

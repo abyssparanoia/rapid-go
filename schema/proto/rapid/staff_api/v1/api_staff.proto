@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+package rapid.staff_api.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "rapid/staff_api/v1/model_pagination.proto";
+import "rapid/staff_api/v1/model_staff.proto";
+
+// Get
+message GetStaffRequest {
+  string staff_id = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["staff_id"]
+    }
+  };
+}
+
+message GetStaffResponse {
+  Staff staff = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["staff"]
+    }
+  };
+}
+
+// List
+message ListStaffsRequest {
+  string tenant_id = 1;
+  uint64 page = 2;
+  uint64 limit = 3;
+
+  enum ListStaffsSortKey {
+    LIST_STAFFS_SORT_KEY_UNSPECIFIED = 0;
+    LIST_STAFFS_SORT_KEY_CREATED_AT_DESC = 1;
+    LIST_STAFFS_SORT_KEY_CREATED_AT_ASC = 2;
+    LIST_STAFFS_SORT_KEY_DISPLAY_NAME_ASC = 3;
+    LIST_STAFFS_SORT_KEY_DISPLAY_NAME_DESC = 4;
+  }
+
+  optional ListStaffsSortKey sort_key = 4;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tenant_id"]
+    }
+  };
+}
+
+message ListStaffsResponse {
+  repeated Staff staffs = 1;
+  Pagination pagination = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "staffs",
+        "pagination"
+      ]
+    }
+  };
+}
+
+// Create
+message CreateStaffRequest {
+  string tenant_id = 1;
+  string email = 2;
+  string display_name = 3;
+  StaffRole role = 4;
+  string image_asset_id = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "tenant_id",
+        "email",
+        "display_name",
+        "role",
+        "image_asset_id"
+      ]
+    }
+  };
+}
+
+message CreateStaffResponse {
+  Staff staff = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["staff"]
+    }
+  };
+}
+
+// Update
+message UpdateStaffRequest {
+  string staff_id = 1;
+  optional string display_name = 2;
+  optional StaffRole role = 3;
+  optional string image_asset_id = 4;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["staff_id"]
+    }
+  };
+}
+
+message UpdateStaffResponse {
+  Staff staff = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["staff"]
+    }
+  };
+}

@@ -16,3 +16,13 @@ func NewAdminListTenants(
 		Pagination: pagination,
 	}
 }
+
+func NewStaffListTenants(
+	tenants model.Tenants,
+	pagination *model.Pagination,
+) *ListTenants {
+	return &ListTenants{
+		Tenants:    tenants,
+		Pagination: pagination,
+	}
+}

@@ -61,6 +61,8 @@ type AWSEnvironment struct {
 	AWSBucketName             string `env:"AWS_BUCKET_NAME,required"`
 	AWSCognitoStaffUserPoolID string `env:"AWS_COGNITO_STAFF_USER_POOL_ID,required"`
 	AWSCognitoStaffClientID   string `env:"AWS_COGNITO_STAFF_CLIENT_ID,required"`
+	AWSCognitoAdminUserPoolID string `env:"AWS_COGNITO_ADMIN_USER_POOL_ID,required"`
+	AWSCognitoAdminClientID   string `env:"AWS_COGNITO_ADMIN_CLIENT_ID,required"`
 }
 
 type SpannerEnvironment struct {

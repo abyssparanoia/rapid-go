@@ -1,3 +1,24 @@
+CREATE TABLE "public"."admin_roles" (
+    "id" character varying(32) NOT NULL,
+    CONSTRAINT "admin_roles_pkey" PRIMARY KEY (id)
+);
+
+CREATE TABLE "public"."admins" (
+    "id" character varying(64) NOT NULL,
+    "role" character varying(32) NOT NULL,
+    "auth_uid" character varying(256) NOT NULL,
+    "email" character varying(512) NOT NULL,
+    "display_name" character varying(256) NOT NULL,
+    "created_at" timestamp with time zone NOT NULL,
+    "updated_at" timestamp with time zone NOT NULL,
+    CONSTRAINT "admins_fkey_role" FOREIGN KEY (role) REFERENCES admin_roles(id),
+    CONSTRAINT "admins_pkey" PRIMARY KEY (id),
+    CONSTRAINT "admins_unique_auth_uid" UNIQUE (auth_uid),
+    CONSTRAINT "admins_unique_email" UNIQUE (email)
+);
+
+CREATE INDEX admins_idx_role ON admins USING btree (role);
+
 CREATE TABLE "public"."asset_types" (
     "id" character varying(256) NOT NULL,
     CONSTRAINT "asset_types_pkey" PRIMARY KEY (id)

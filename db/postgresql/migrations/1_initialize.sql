@@ -22,6 +22,25 @@ CREATE TABLE assets (
 CREATE INDEX "assets_idx_type" ON "assets" ("type");
 CREATE INDEX "assets_idx_content_type" ON "assets" ("content_type");
 
+CREATE TABLE admin_roles (
+    "id" VARCHAR(32) PRIMARY KEY
+);
+
+CREATE TABLE admins (
+    "id"           VARCHAR(64)   PRIMARY KEY,
+    "role"         VARCHAR(32)   NOT NULL,
+    "auth_uid"     VARCHAR(256)  NOT NULL,
+    "email"        VARCHAR(512)  NOT NULL,
+    "display_name" VARCHAR(256)  NOT NULL,
+    "created_at"   TIMESTAMPTZ   NOT NULL,
+    "updated_at"   TIMESTAMPTZ   NOT NULL,
+    CONSTRAINT "admins_unique_auth_uid" UNIQUE ("auth_uid"),
+    CONSTRAINT "admins_unique_email" UNIQUE ("email"),
+    CONSTRAINT "admins_fkey_role" FOREIGN KEY ("role") REFERENCES "admin_roles" ("id")
+);
+
+CREATE INDEX "admins_idx_role" ON "admins" ("role");
+
 CREATE TABLE tenants (
     "id"          VARCHAR(64)   PRIMARY KEY,
     "name"        VARCHAR(256)  NOT NULL,
@@ -76,6 +95,8 @@ DROP TABLE IF EXISTS staff_roles;
 DROP TABLE IF EXISTS tenant_tags;
 DROP TABLE IF EXISTS tenant_tag_types;
 DROP TABLE IF EXISTS tenants;
+DROP TABLE IF EXISTS admins;
+DROP TABLE IF EXISTS admin_roles;
 DROP TABLE IF EXISTS assets;
 DROP TABLE IF EXISTS asset_types;
 DROP TABLE IF EXISTS content_types;

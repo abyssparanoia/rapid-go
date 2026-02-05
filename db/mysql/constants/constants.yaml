@@ -22,3 +22,8 @@
   values:
     - normal
     - admin
+
+- table: admin_roles
+  values:
+    - root
+    - normal
