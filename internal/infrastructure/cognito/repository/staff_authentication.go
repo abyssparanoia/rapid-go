@@ -130,7 +130,11 @@ func (r *staffAuthentication) CreateUser(
 		Name:  aws.String(string(types.UsernameAttributeTypeEmail)),
 		Value: aws.String(param.Email),
 	}
-	attrs := []types.AttributeType{*emailAttr}
+	emailVerifiedAttr := &types.AttributeType{
+		Name:  aws.String("email_verified"),
+		Value: aws.String("true"),
+	}
+	attrs := []types.AttributeType{*emailAttr, *emailVerifiedAttr}
 	req := &cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:             aws.String(r.userPoolID),
 		Username:               aws.String(authUID),

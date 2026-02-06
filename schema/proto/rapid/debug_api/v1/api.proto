@@ -6,12 +6,48 @@ import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 service DebugV1Service {
+  rpc CreateAdminIDToken(CreateAdminIDTokenRequest) returns (CreateAdminIDTokenResponse) {
+    option (google.api.http) = {
+      post: "/debug/v1/admins/-/id_token"
+      body: "*"
+    };
+  }
   rpc CreateStaffIDToken(CreateStaffIDTokenRequest) returns (CreateStaffIDTokenResponse) {
     option (google.api.http) = {
       post: "/debug/v1/staffs/-/id_token"
       body: "*"
     };
   }
+  rpc CreateStaffAuthUID(CreateStaffAuthUIDRequest) returns (CreateStaffAuthUIDResponse) {
+    option (google.api.http) = {
+      post: "/debug/v1/staffs/-/auth_uid"
+      body: "*"
+    };
+  }
+}
+
+message CreateAdminIDTokenRequest {
+  string auth_uid = 1;
+  string password = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "auth_uid",
+        "password"
+      ]
+    }
+  };
+}
+
+message CreateAdminIDTokenResponse {
+  string id_token = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id_token"]
+    }
+  };
 }
 
 message CreateStaffIDTokenRequest {
@@ -34,6 +70,30 @@ message CreateStaffIDTokenResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["id_token"]
+    }
+  };
+}
+
+message CreateStaffAuthUIDRequest {
+  string email = 1;
+  string password = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "email",
+        "password"
+      ]
+    }
+  };
+}
+
+message CreateStaffAuthUIDResponse {
+  string auth_uid = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["auth_uid"]
     }
   };
 }

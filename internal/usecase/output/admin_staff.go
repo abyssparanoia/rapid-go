@@ -2,6 +2,18 @@ package output
 
 import "github.com/abyssparanoia/rapid-go/internal/domain/model"
 
+type AdminCreateStaff struct {
+	Staff    *model.Staff
+	Password string
+}
+
+func NewAdminCreateStaff(staff *model.Staff, password string) *AdminCreateStaff {
+	return &AdminCreateStaff{
+		Staff:    staff,
+		Password: password,
+	}
+}
+
 type ListStaffs struct {
 	Staffs     model.Staffs
 	Pagination *model.Pagination

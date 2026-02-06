@@ -20,14 +20,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	DebugV1Service_CreateAdminIDToken_FullMethodName = "/rapid.debug_api.v1.DebugV1Service/CreateAdminIDToken"
 	DebugV1Service_CreateStaffIDToken_FullMethodName = "/rapid.debug_api.v1.DebugV1Service/CreateStaffIDToken"
+	DebugV1Service_CreateStaffAuthUID_FullMethodName = "/rapid.debug_api.v1.DebugV1Service/CreateStaffAuthUID"
 )
 
 // DebugV1ServiceClient is the client API for DebugV1Service service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DebugV1ServiceClient interface {
+	CreateAdminIDToken(ctx context.Context, in *CreateAdminIDTokenRequest, opts ...grpc.CallOption) (*CreateAdminIDTokenResponse, error)
 	CreateStaffIDToken(ctx context.Context, in *CreateStaffIDTokenRequest, opts ...grpc.CallOption) (*CreateStaffIDTokenResponse, error)
+	CreateStaffAuthUID(ctx context.Context, in *CreateStaffAuthUIDRequest, opts ...grpc.CallOption) (*CreateStaffAuthUIDResponse, error)
 }
 
 type debugV1ServiceClient struct {
@@ -36,6 +40,16 @@ type debugV1ServiceClient struct {
 
 func NewDebugV1ServiceClient(cc grpc.ClientConnInterface) DebugV1ServiceClient {
 	return &debugV1ServiceClient{cc}
+}
+
+func (c *debugV1ServiceClient) CreateAdminIDToken(ctx context.Context, in *CreateAdminIDTokenRequest, opts ...grpc.CallOption) (*CreateAdminIDTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAdminIDTokenResponse)
+	err := c.cc.Invoke(ctx, DebugV1Service_CreateAdminIDToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *debugV1ServiceClient) CreateStaffIDToken(ctx context.Context, in *CreateStaffIDTokenRequest, opts ...grpc.CallOption) (*CreateStaffIDTokenResponse, error) {
@@ -48,11 +62,23 @@ func (c *debugV1ServiceClient) CreateStaffIDToken(ctx context.Context, in *Creat
 	return out, nil
 }
 
+func (c *debugV1ServiceClient) CreateStaffAuthUID(ctx context.Context, in *CreateStaffAuthUIDRequest, opts ...grpc.CallOption) (*CreateStaffAuthUIDResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateStaffAuthUIDResponse)
+	err := c.cc.Invoke(ctx, DebugV1Service_CreateStaffAuthUID_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DebugV1ServiceServer is the server API for DebugV1Service service.
 // All implementations should embed UnimplementedDebugV1ServiceServer
 // for forward compatibility.
 type DebugV1ServiceServer interface {
+	CreateAdminIDToken(context.Context, *CreateAdminIDTokenRequest) (*CreateAdminIDTokenResponse, error)
 	CreateStaffIDToken(context.Context, *CreateStaffIDTokenRequest) (*CreateStaffIDTokenResponse, error)
+	CreateStaffAuthUID(context.Context, *CreateStaffAuthUIDRequest) (*CreateStaffAuthUIDResponse, error)
 }
 
 // UnimplementedDebugV1ServiceServer should be embedded to have
@@ -62,8 +88,14 @@ type DebugV1ServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedDebugV1ServiceServer struct{}
 
+func (UnimplementedDebugV1ServiceServer) CreateAdminIDToken(context.Context, *CreateAdminIDTokenRequest) (*CreateAdminIDTokenResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateAdminIDToken not implemented")
+}
 func (UnimplementedDebugV1ServiceServer) CreateStaffIDToken(context.Context, *CreateStaffIDTokenRequest) (*CreateStaffIDTokenResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateStaffIDToken not implemented")
+}
+func (UnimplementedDebugV1ServiceServer) CreateStaffAuthUID(context.Context, *CreateStaffAuthUIDRequest) (*CreateStaffAuthUIDResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateStaffAuthUID not implemented")
 }
 func (UnimplementedDebugV1ServiceServer) testEmbeddedByValue() {}
 
@@ -85,6 +117,24 @@ func RegisterDebugV1ServiceServer(s grpc.ServiceRegistrar, srv DebugV1ServiceSer
 	s.RegisterService(&DebugV1Service_ServiceDesc, srv)
 }
 
+func _DebugV1Service_CreateAdminIDToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAdminIDTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DebugV1ServiceServer).CreateAdminIDToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DebugV1Service_CreateAdminIDToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DebugV1ServiceServer).CreateAdminIDToken(ctx, req.(*CreateAdminIDTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DebugV1Service_CreateStaffIDToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateStaffIDTokenRequest)
 	if err := dec(in); err != nil {
@@ -103,6 +153,24 @@ func _DebugV1Service_CreateStaffIDToken_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DebugV1Service_CreateStaffAuthUID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateStaffAuthUIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DebugV1ServiceServer).CreateStaffAuthUID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DebugV1Service_CreateStaffAuthUID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DebugV1ServiceServer).CreateStaffAuthUID(ctx, req.(*CreateStaffAuthUIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DebugV1Service_ServiceDesc is the grpc.ServiceDesc for DebugV1Service service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -111,8 +179,16 @@ var DebugV1Service_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DebugV1ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "CreateAdminIDToken",
+			Handler:    _DebugV1Service_CreateAdminIDToken_Handler,
+		},
+		{
 			MethodName: "CreateStaffIDToken",
 			Handler:    _DebugV1Service_CreateStaffIDToken_Handler,
+		},
+		{
+			MethodName: "CreateStaffAuthUID",
+			Handler:    _DebugV1Service_CreateStaffAuthUID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -4,10 +4,12 @@ import (
 	"context"
 
 	"github.com/aarondl/null/v8"
+	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/domain/service"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/password"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 )
@@ -107,14 +109,22 @@ func (i *adminStaffInteractor) List(
 func (i *adminStaffInteractor) Create(
 	ctx context.Context,
 	param *input.AdminCreateStaff,
-) (*model.Staff, error) {
+) (*output.AdminCreateStaff, error) {
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
 
+	// Generate password
+	generatedPassword, err := password.Generate(password.DefaultLength)
+	if err != nil {
+		return nil, errors.InternalErr.Wrap(err)
+	}
+
 	var staff *model.Staff
-	if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
-		tenant, err := i.tenantRepository.Get(
+	var tenant *model.Tenant
+	var imagePath string
+	err = i.transactable.RWTx(ctx, func(ctx context.Context) error {
+		tenant, err = i.tenantRepository.Get(
 			ctx,
 			repository.GetTenantQuery{
 				ID: null.StringFrom(param.TenantID),
@@ -127,7 +137,7 @@ func (i *adminStaffInteractor) Create(
 			return err
 		}
 
-		imagePath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID)
+		imagePath, err = i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID)
 		if err != nil {
 			return err
 		}
@@ -137,7 +147,7 @@ func (i *adminStaffInteractor) Create(
 			service.StaffCreateParam{
 				TenantID:    tenant.ID,
 				Email:       param.Email,
-				Password:    "random1234",
+				Password:    generatedPassword,
 				StaffRole:   param.Role,
 				DisplayName: param.DisplayName,
 				ImagePath:   imagePath,
@@ -149,12 +159,13 @@ func (i *adminStaffInteractor) Create(
 		}
 
 		return nil
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, err
 	}
 
 	// 表示用に再取得する
-	staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
+	staff, err = i.staffRepository.Get(ctx, repository.GetStaffQuery{
 		ID: null.StringFrom(staff.ID),
 		BaseGetOptions: repository.BaseGetOptions{
 			OrFail:  true,
@@ -169,7 +180,7 @@ func (i *adminStaffInteractor) Create(
 		return nil, err
 	}
 
-	return staff, nil
+	return output.NewAdminCreateStaff(staff, generatedPassword), nil
 }
 
 func (i *adminStaffInteractor) Update(

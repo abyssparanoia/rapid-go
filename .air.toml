@@ -15,7 +15,7 @@ full_bin = "./.bin/app-cli http-server run"
 # Watch these filename extensions.
 include_ext = ["go"]
 # Ignore these filename extensions or directories.
-exclude_dir = ["schema", "doc", "docker", "proto", "tmp"]
+exclude_dir = ["schema", "doc", "docker", "proto", "tmp", "db"]
 # Watch these directories if you specified.
 include_dir = []
 # Exclude files.
@@ -25,7 +25,7 @@ exclude_regex = ["_test\\.go"]
 # Exclude unchanged files.
 exclude_unchanged = true
 # Follow symlink for directories
-follow_symlink = true
+follow_symlink = false
 # This log file places in your tmp_dir.
 log = "air.log"
 # It's not necessary to trigger build each time file changes if it's too frequent.

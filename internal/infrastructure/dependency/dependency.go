@@ -8,6 +8,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/aws"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
 	cognito_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/repository"
+
 	// redis_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/redis/cache"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
 	// "github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase"
@@ -167,6 +168,7 @@ func (d *Dependency) Inject(
 	)
 
 	d.DebugInteractor = usecase.NewDebugInteractor(
+		adminAuthenticationRepository,
 		staffAuthenticationRepository,
 	)
 

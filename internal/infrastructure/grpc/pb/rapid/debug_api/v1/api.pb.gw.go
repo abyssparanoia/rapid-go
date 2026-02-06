@@ -35,6 +35,33 @@ var (
 	_ = metadata.Join
 )
 
+func request_DebugV1Service_CreateAdminIDToken_0(ctx context.Context, marshaler runtime.Marshaler, client DebugV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateAdminIDTokenRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.CreateAdminIDToken(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_DebugV1Service_CreateAdminIDToken_0(ctx context.Context, marshaler runtime.Marshaler, server DebugV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateAdminIDTokenRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.CreateAdminIDToken(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_DebugV1Service_CreateStaffIDToken_0(ctx context.Context, marshaler runtime.Marshaler, client DebugV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq CreateStaffIDTokenRequest
@@ -62,12 +89,59 @@ func local_request_DebugV1Service_CreateStaffIDToken_0(ctx context.Context, mars
 	return msg, metadata, err
 }
 
+func request_DebugV1Service_CreateStaffAuthUID_0(ctx context.Context, marshaler runtime.Marshaler, client DebugV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateStaffAuthUIDRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.CreateStaffAuthUID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_DebugV1Service_CreateStaffAuthUID_0(ctx context.Context, marshaler runtime.Marshaler, server DebugV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateStaffAuthUIDRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.CreateStaffAuthUID(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterDebugV1ServiceHandlerServer registers the http handlers for service DebugV1Service to "mux".
 // UnaryRPC     :call DebugV1ServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterDebugV1ServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterDebugV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server DebugV1ServiceServer) error {
+	mux.Handle(http.MethodPost, pattern_DebugV1Service_CreateAdminIDToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.debug_api.v1.DebugV1Service/CreateAdminIDToken", runtime.WithHTTPPathPattern("/debug/v1/admins/-/id_token"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_DebugV1Service_CreateAdminIDToken_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_DebugV1Service_CreateAdminIDToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_DebugV1Service_CreateStaffIDToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -87,6 +161,26 @@ func RegisterDebugV1ServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 		forward_DebugV1Service_CreateStaffIDToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_DebugV1Service_CreateStaffAuthUID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/rapid.debug_api.v1.DebugV1Service/CreateStaffAuthUID", runtime.WithHTTPPathPattern("/debug/v1/staffs/-/auth_uid"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_DebugV1Service_CreateStaffAuthUID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_DebugV1Service_CreateStaffAuthUID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -128,6 +222,23 @@ func RegisterDebugV1ServiceHandler(ctx context.Context, mux *runtime.ServeMux, c
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "DebugV1ServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterDebugV1ServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client DebugV1ServiceClient) error {
+	mux.Handle(http.MethodPost, pattern_DebugV1Service_CreateAdminIDToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.debug_api.v1.DebugV1Service/CreateAdminIDToken", runtime.WithHTTPPathPattern("/debug/v1/admins/-/id_token"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_DebugV1Service_CreateAdminIDToken_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_DebugV1Service_CreateAdminIDToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_DebugV1Service_CreateStaffIDToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -145,13 +256,34 @@ func RegisterDebugV1ServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 		forward_DebugV1Service_CreateStaffIDToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_DebugV1Service_CreateStaffAuthUID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/rapid.debug_api.v1.DebugV1Service/CreateStaffAuthUID", runtime.WithHTTPPathPattern("/debug/v1/staffs/-/auth_uid"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_DebugV1Service_CreateStaffAuthUID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_DebugV1Service_CreateStaffAuthUID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
 var (
+	pattern_DebugV1Service_CreateAdminIDToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"debug", "v1", "admins", "-", "id_token"}, ""))
 	pattern_DebugV1Service_CreateStaffIDToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"debug", "v1", "staffs", "-", "id_token"}, ""))
+	pattern_DebugV1Service_CreateStaffAuthUID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"debug", "v1", "staffs", "-", "auth_uid"}, ""))
 )
 
 var (
+	forward_DebugV1Service_CreateAdminIDToken_0 = runtime.ForwardResponseMessage
 	forward_DebugV1Service_CreateStaffIDToken_0 = runtime.ForwardResponseMessage
+	forward_DebugV1Service_CreateStaffAuthUID_0 = runtime.ForwardResponseMessage
 )
