@@ -16,6 +16,58 @@
     "application/json"
   ],
   "paths": {
+    "/debug/v1/admins/-/id_token": {
+      "post": {
+        "operationId": "CreateAdminIDToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateAdminIDTokenResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateAdminIDTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DebugV1Service"
+        ]
+      }
+    },
+    "/debug/v1/staffs/-/auth_uid": {
+      "post": {
+        "operationId": "CreateStaffAuthUID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateStaffAuthUIDResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateStaffAuthUIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DebugV1Service"
+        ]
+      }
+    },
     "/debug/v1/staffs/-/id_token": {
       "post": {
         "operationId": "CreateStaffIDToken",
@@ -44,6 +96,58 @@
     }
   },
   "definitions": {
+    "v1CreateAdminIDTokenRequest": {
+      "type": "object",
+      "properties": {
+        "auth_uid": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "auth_uid",
+        "password"
+      ]
+    },
+    "v1CreateAdminIDTokenResponse": {
+      "type": "object",
+      "properties": {
+        "id_token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id_token"
+      ]
+    },
+    "v1CreateStaffAuthUIDRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "email",
+        "password"
+      ]
+    },
+    "v1CreateStaffAuthUIDResponse": {
+      "type": "object",
+      "properties": {
+        "auth_uid": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "auth_uid"
+      ]
+    },
     "v1CreateStaffIDTokenRequest": {
       "type": "object",
       "properties": {

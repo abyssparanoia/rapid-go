@@ -16,6 +16,7 @@ import (
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1"
 	debug_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/debug_api/v1"
 	public_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/public_api/v1"
+	staff_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/staff_api/v1"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/http/internal/handler"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/http/internal/middlewares"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/logger"
@@ -94,6 +95,10 @@ func Run() {
 	}
 
 	if err = admin_apiv1.RegisterAdminV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
+		panic(err)
+	}
+
+	if err = staff_apiv1.RegisterStaffV1ServiceHandler(context.Background(), grpcGateway, conn); err != nil {
 		panic(err)
 	}
 

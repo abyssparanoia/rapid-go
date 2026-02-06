@@ -44,10 +44,10 @@ func (m *MockAdminStaffInteractor) EXPECT() *MockAdminStaffInteractorMockRecorde
 }
 
 // Create mocks base method.
-func (m *MockAdminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
+func (m *MockAdminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*output.AdminCreateStaff, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, param)
-	ret0, _ := ret[0].(*model.Staff)
+	ret0, _ := ret[0].(*output.AdminCreateStaff)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

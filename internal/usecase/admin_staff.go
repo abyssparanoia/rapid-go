@@ -21,7 +21,7 @@ type AdminStaffInteractor interface {
 	Create(
 		ctx context.Context,
 		param *input.AdminCreateStaff,
-	) (*model.Staff, error)
+	) (*output.AdminCreateStaff, error)
 	Update(
 		ctx context.Context,
 		param *input.AdminUpdateStaff,

@@ -368,6 +368,7 @@ func (x *CreateStaffRequest) GetImageAssetId() string {
 type CreateStaffResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Staff         *Staff                 `protobuf:"bytes,1,opt,name=staff,proto3" json:"staff,omitempty"`
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -407,6 +408,13 @@ func (x *CreateStaffResponse) GetStaff() *Staff {
 		return x.Staff
 	}
 	return nil
+}
+
+func (x *CreateStaffResponse) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
 }
 
 // Update
@@ -560,11 +568,11 @@ const file_rapid_admin_api_v1_api_staff_proto_rawDesc = "" +
 	"\fdisplay_name\x18\x03 \x01(\tR\vdisplayName\x121\n" +
 	"\x04role\x18\x04 \x01(\x0e2\x1d.rapid.admin_api.v1.StaffRoleR\x04role\x12$\n" +
 	"\x0eimage_asset_id\x18\x05 \x01(\tR\fimageAssetId:@\x92A=\n" +
-	";\xd2\x01\ttenant_id\xd2\x01\x05email\xd2\x01\fdisplay_name\xd2\x01\x04role\xd2\x01\x0eimage_asset_id\"U\n" +
+	";\xd2\x01\ttenant_id\xd2\x01\x05email\xd2\x01\fdisplay_name\xd2\x01\x04role\xd2\x01\x0eimage_asset_id\"|\n" +
 	"\x13CreateStaffResponse\x12/\n" +
-	"\x05staff\x18\x01 \x01(\v2\x19.rapid.admin_api.v1.StaffR\x05staff:\r\x92A\n" +
-	"\n" +
-	"\b\xd2\x01\x05staff\"\xf9\x01\n" +
+	"\x05staff\x18\x01 \x01(\v2\x19.rapid.admin_api.v1.StaffR\x05staff\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword:\x18\x92A\x15\n" +
+	"\x13\xd2\x01\x05staff\xd2\x01\bpassword\"\xf9\x01\n" +
 	"\x12UpdateStaffRequest\x12\x19\n" +
 	"\bstaff_id\x18\x01 \x01(\tR\astaffId\x12&\n" +
 	"\fdisplay_name\x18\x02 \x01(\tH\x00R\vdisplayName\x88\x01\x01\x126\n" +

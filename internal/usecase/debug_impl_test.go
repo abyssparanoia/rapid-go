@@ -10,6 +10,98 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
+func TestDebugInteractor_CreateAdminIDToken(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		authUID  string
+		password string
+	}
+
+	type want struct {
+		token          string
+		expectedResult error
+	}
+
+	type testcase struct {
+		args    args
+		usecase DebugInteractor
+		want    want
+	}
+
+	type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
+
+	tests := map[string]testcaseFunc{
+		"repository error": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			authUID := "test-admin-auth-uid"
+			password := "password123"
+
+			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
+			mockAdminAuthRepo.EXPECT().
+				CreateIDToken(gomock.Any(), authUID, password).
+				Return("", errors.InvalidIDTokenErr.New())
+
+			return testcase{
+				args: args{
+					authUID:  authUID,
+					password: password,
+				},
+				usecase: &debugInteractor{
+					adminAuthenticationRepository: mockAdminAuthRepo,
+					staffAuthenticationRepository: nil,
+				},
+				want: want{
+					expectedResult: errors.InvalidIDTokenErr,
+				},
+			}
+		},
+		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+			authUID := "test-admin-auth-uid"
+			password := "password123"
+			token := "test-admin-id-token"
+
+			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
+			mockAdminAuthRepo.EXPECT().
+				CreateIDToken(gomock.Any(), authUID, password).
+				Return(token, nil)
+
+			return testcase{
+				args: args{
+					authUID:  authUID,
+					password: password,
+				},
+				usecase: &debugInteractor{
+					adminAuthenticationRepository: mockAdminAuthRepo,
+					staffAuthenticationRepository: nil,
+				},
+				want: want{
+					token: token,
+				},
+			}
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			ctx := context.Background()
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			tc := tc(ctx, ctrl)
+
+			got, err := tc.usecase.CreateAdminIDToken(ctx, tc.args.authUID, tc.args.password)
+
+			if tc.want.expectedResult == nil {
+				require.NoError(t, err)
+				require.Equal(t, tc.want.token, got)
+			} else {
+				require.ErrorContains(t, err, tc.want.expectedResult.Error())
+			}
+		})
+	}
+}
+
 func TestDebugInteractor_CreateStaffIDToken(t *testing.T) {
 	t.Parallel()
 
@@ -47,6 +139,7 @@ func TestDebugInteractor_CreateStaffIDToken(t *testing.T) {
 					password: password,
 				},
 				usecase: &debugInteractor{
+					adminAuthenticationRepository: nil,
 					staffAuthenticationRepository: mockStaffAuthRepo,
 				},
 				want: want{
@@ -70,6 +163,7 @@ func TestDebugInteractor_CreateStaffIDToken(t *testing.T) {
 					password: password,
 				},
 				usecase: &debugInteractor{
+					adminAuthenticationRepository: nil,
 					staffAuthenticationRepository: mockStaffAuthRepo,
 				},
 				want: want{

@@ -3,12 +3,11 @@ package create_root_admin_cmd
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/base64"
 	"fmt"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/password"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/spf13/cobra"
@@ -36,8 +35,8 @@ func (c *CMD) CreateRootAdmin(cmd *cobra.Command) error {
 		return errors.InternalErr.WithDetail("display-name is required")
 	}
 
-	// Generate random password (16 characters)
-	password, err := generatePassword(16)
+	// Generate random password
+	generatedPassword, err := password.Generate(password.DefaultLength)
 	if err != nil {
 		return errors.InternalErr.Wrap(err).WithDetail("failed to generate password")
 	}
@@ -47,7 +46,7 @@ func (c *CMD) CreateRootAdmin(cmd *cobra.Command) error {
 		input.NewTaskCreateAdmin(
 			email,
 			displayName,
-			password,
+			generatedPassword,
 			now.Now(),
 		),
 	)
@@ -61,27 +60,4 @@ func (c *CMD) CreateRootAdmin(cmd *cobra.Command) error {
 	fmt.Printf("Password: %s\n", result.Password)
 
 	return nil
-}
-
-// generatePassword generates a random password of the specified length
-func generatePassword(length int) (string, error) {
-	// Calculate bytes needed for base64 encoding
-	// base64 encoding expands data by 4/3, so we need length * 3 / 4 bytes
-	byteLength := (length * 3) / 4
-	if byteLength < 1 {
-		byteLength = 1
-	}
-
-	bytes := make([]byte, byteLength)
-	if _, err := rand.Read(bytes); err != nil {
-		return "", errors.InternalErr.Wrap(err)
-	}
-
-	// Encode to base64 and truncate to desired length
-	encoded := base64.URLEncoding.EncodeToString(bytes)
-	if len(encoded) > length {
-		encoded = encoded[:length]
-	}
-
-	return encoded, nil
 }

@@ -24,6 +24,102 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type CreateAdminIDTokenRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AuthUid       string                 `protobuf:"bytes,1,opt,name=auth_uid,json=authUid,proto3" json:"auth_uid,omitempty"`
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateAdminIDTokenRequest) Reset() {
+	*x = CreateAdminIDTokenRequest{}
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateAdminIDTokenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAdminIDTokenRequest) ProtoMessage() {}
+
+func (x *CreateAdminIDTokenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAdminIDTokenRequest.ProtoReflect.Descriptor instead.
+func (*CreateAdminIDTokenRequest) Descriptor() ([]byte, []int) {
+	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *CreateAdminIDTokenRequest) GetAuthUid() string {
+	if x != nil {
+		return x.AuthUid
+	}
+	return ""
+}
+
+func (x *CreateAdminIDTokenRequest) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type CreateAdminIDTokenResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IdToken       string                 `protobuf:"bytes,1,opt,name=id_token,json=idToken,proto3" json:"id_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateAdminIDTokenResponse) Reset() {
+	*x = CreateAdminIDTokenResponse{}
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateAdminIDTokenResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAdminIDTokenResponse) ProtoMessage() {}
+
+func (x *CreateAdminIDTokenResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAdminIDTokenResponse.ProtoReflect.Descriptor instead.
+func (*CreateAdminIDTokenResponse) Descriptor() ([]byte, []int) {
+	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *CreateAdminIDTokenResponse) GetIdToken() string {
+	if x != nil {
+		return x.IdToken
+	}
+	return ""
+}
+
 type CreateStaffIDTokenRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AuthUid       string                 `protobuf:"bytes,1,opt,name=auth_uid,json=authUid,proto3" json:"auth_uid,omitempty"`
@@ -34,7 +130,7 @@ type CreateStaffIDTokenRequest struct {
 
 func (x *CreateStaffIDTokenRequest) Reset() {
 	*x = CreateStaffIDTokenRequest{}
-	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[0]
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +142,7 @@ func (x *CreateStaffIDTokenRequest) String() string {
 func (*CreateStaffIDTokenRequest) ProtoMessage() {}
 
 func (x *CreateStaffIDTokenRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[0]
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +155,7 @@ func (x *CreateStaffIDTokenRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateStaffIDTokenRequest.ProtoReflect.Descriptor instead.
 func (*CreateStaffIDTokenRequest) Descriptor() ([]byte, []int) {
-	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{0}
+	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CreateStaffIDTokenRequest) GetAuthUid() string {
@@ -85,7 +181,7 @@ type CreateStaffIDTokenResponse struct {
 
 func (x *CreateStaffIDTokenResponse) Reset() {
 	*x = CreateStaffIDTokenResponse{}
-	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[1]
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -97,7 +193,7 @@ func (x *CreateStaffIDTokenResponse) String() string {
 func (*CreateStaffIDTokenResponse) ProtoMessage() {}
 
 func (x *CreateStaffIDTokenResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[1]
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -110,7 +206,7 @@ func (x *CreateStaffIDTokenResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateStaffIDTokenResponse.ProtoReflect.Descriptor instead.
 func (*CreateStaffIDTokenResponse) Descriptor() ([]byte, []int) {
-	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{1}
+	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *CreateStaffIDTokenResponse) GetIdToken() string {
@@ -120,20 +216,132 @@ func (x *CreateStaffIDTokenResponse) GetIdToken() string {
 	return ""
 }
 
+type CreateStaffAuthUIDRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateStaffAuthUIDRequest) Reset() {
+	*x = CreateStaffAuthUIDRequest{}
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateStaffAuthUIDRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateStaffAuthUIDRequest) ProtoMessage() {}
+
+func (x *CreateStaffAuthUIDRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateStaffAuthUIDRequest.ProtoReflect.Descriptor instead.
+func (*CreateStaffAuthUIDRequest) Descriptor() ([]byte, []int) {
+	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CreateStaffAuthUIDRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *CreateStaffAuthUIDRequest) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type CreateStaffAuthUIDResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AuthUid       string                 `protobuf:"bytes,1,opt,name=auth_uid,json=authUid,proto3" json:"auth_uid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateStaffAuthUIDResponse) Reset() {
+	*x = CreateStaffAuthUIDResponse{}
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateStaffAuthUIDResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateStaffAuthUIDResponse) ProtoMessage() {}
+
+func (x *CreateStaffAuthUIDResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_rapid_debug_api_v1_api_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateStaffAuthUIDResponse.ProtoReflect.Descriptor instead.
+func (*CreateStaffAuthUIDResponse) Descriptor() ([]byte, []int) {
+	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CreateStaffAuthUIDResponse) GetAuthUid() string {
+	if x != nil {
+		return x.AuthUid
+	}
+	return ""
+}
+
 var File_rapid_debug_api_v1_api_proto protoreflect.FileDescriptor
 
 const file_rapid_debug_api_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"\x1crapid/debug_api/v1/api.proto\x12\x12rapid.debug_api.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"o\n" +
+	"\x19CreateAdminIDTokenRequest\x12\x19\n" +
+	"\bauth_uid\x18\x01 \x01(\tR\aauthUid\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword:\x1b\x92A\x18\n" +
+	"\x16\xd2\x01\bauth_uid\xd2\x01\bpassword\"I\n" +
+	"\x1aCreateAdminIDTokenResponse\x12\x19\n" +
+	"\bid_token\x18\x01 \x01(\tR\aidToken:\x10\x92A\r\n" +
+	"\v\xd2\x01\bid_token\"o\n" +
 	"\x19CreateStaffIDTokenRequest\x12\x19\n" +
 	"\bauth_uid\x18\x01 \x01(\tR\aauthUid\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword:\x1b\x92A\x18\n" +
 	"\x16\xd2\x01\bauth_uid\xd2\x01\bpassword\"I\n" +
 	"\x1aCreateStaffIDTokenResponse\x12\x19\n" +
 	"\bid_token\x18\x01 \x01(\tR\aidToken:\x10\x92A\r\n" +
-	"\v\xd2\x01\bid_token2\xae\x01\n" +
+	"\v\xd2\x01\bid_token\"g\n" +
+	"\x19CreateStaffAuthUIDRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword:\x18\x92A\x15\n" +
+	"\x13\xd2\x01\x05email\xd2\x01\bpassword\"I\n" +
+	"\x1aCreateStaffAuthUIDResponse\x12\x19\n" +
+	"\bauth_uid\x18\x01 \x01(\tR\aauthUid:\x10\x92A\r\n" +
+	"\v\xd2\x01\bauth_uid2\xea\x03\n" +
 	"\x0eDebugV1Service\x12\x9b\x01\n" +
-	"\x12CreateStaffIDToken\x12-.rapid.debug_api.v1.CreateStaffIDTokenRequest\x1a..rapid.debug_api.v1.CreateStaffIDTokenResponse\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/debug/v1/staffs/-/id_tokenB\xea\x01\n" +
+	"\x12CreateAdminIDToken\x12-.rapid.debug_api.v1.CreateAdminIDTokenRequest\x1a..rapid.debug_api.v1.CreateAdminIDTokenResponse\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/debug/v1/admins/-/id_token\x12\x9b\x01\n" +
+	"\x12CreateStaffIDToken\x12-.rapid.debug_api.v1.CreateStaffIDTokenRequest\x1a..rapid.debug_api.v1.CreateStaffIDTokenResponse\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/debug/v1/staffs/-/id_token\x12\x9b\x01\n" +
+	"\x12CreateStaffAuthUID\x12-.rapid.debug_api.v1.CreateStaffAuthUIDRequest\x1a..rapid.debug_api.v1.CreateStaffAuthUIDResponse\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/debug/v1/staffs/-/auth_uidB\xea\x01\n" +
 	"\x16com.rapid.debug_api.v1B\bApiProtoP\x01Z`github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/debug_api/v1;debug_apiv1\xa2\x02\x03RDX\xaa\x02\x11Rapid.DebugApi.V1\xca\x02\x11Rapid\\DebugApi\\V1\xe2\x02\x1dRapid\\DebugApi\\V1\\GPBMetadata\xea\x02\x13Rapid::DebugApi::V1b\x06proto3"
 
 var (
@@ -148,16 +356,24 @@ func file_rapid_debug_api_v1_api_proto_rawDescGZIP() []byte {
 	return file_rapid_debug_api_v1_api_proto_rawDescData
 }
 
-var file_rapid_debug_api_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_rapid_debug_api_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_rapid_debug_api_v1_api_proto_goTypes = []any{
-	(*CreateStaffIDTokenRequest)(nil),  // 0: rapid.debug_api.v1.CreateStaffIDTokenRequest
-	(*CreateStaffIDTokenResponse)(nil), // 1: rapid.debug_api.v1.CreateStaffIDTokenResponse
+	(*CreateAdminIDTokenRequest)(nil),  // 0: rapid.debug_api.v1.CreateAdminIDTokenRequest
+	(*CreateAdminIDTokenResponse)(nil), // 1: rapid.debug_api.v1.CreateAdminIDTokenResponse
+	(*CreateStaffIDTokenRequest)(nil),  // 2: rapid.debug_api.v1.CreateStaffIDTokenRequest
+	(*CreateStaffIDTokenResponse)(nil), // 3: rapid.debug_api.v1.CreateStaffIDTokenResponse
+	(*CreateStaffAuthUIDRequest)(nil),  // 4: rapid.debug_api.v1.CreateStaffAuthUIDRequest
+	(*CreateStaffAuthUIDResponse)(nil), // 5: rapid.debug_api.v1.CreateStaffAuthUIDResponse
 }
 var file_rapid_debug_api_v1_api_proto_depIdxs = []int32{
-	0, // 0: rapid.debug_api.v1.DebugV1Service.CreateStaffIDToken:input_type -> rapid.debug_api.v1.CreateStaffIDTokenRequest
-	1, // 1: rapid.debug_api.v1.DebugV1Service.CreateStaffIDToken:output_type -> rapid.debug_api.v1.CreateStaffIDTokenResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	0, // 0: rapid.debug_api.v1.DebugV1Service.CreateAdminIDToken:input_type -> rapid.debug_api.v1.CreateAdminIDTokenRequest
+	2, // 1: rapid.debug_api.v1.DebugV1Service.CreateStaffIDToken:input_type -> rapid.debug_api.v1.CreateStaffIDTokenRequest
+	4, // 2: rapid.debug_api.v1.DebugV1Service.CreateStaffAuthUID:input_type -> rapid.debug_api.v1.CreateStaffAuthUIDRequest
+	1, // 3: rapid.debug_api.v1.DebugV1Service.CreateAdminIDToken:output_type -> rapid.debug_api.v1.CreateAdminIDTokenResponse
+	3, // 4: rapid.debug_api.v1.DebugV1Service.CreateStaffIDToken:output_type -> rapid.debug_api.v1.CreateStaffIDTokenResponse
+	5, // 5: rapid.debug_api.v1.DebugV1Service.CreateStaffAuthUID:output_type -> rapid.debug_api.v1.CreateStaffAuthUIDResponse
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -174,7 +390,7 @@ func file_rapid_debug_api_v1_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rapid_debug_api_v1_api_proto_rawDesc), len(file_rapid_debug_api_v1_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

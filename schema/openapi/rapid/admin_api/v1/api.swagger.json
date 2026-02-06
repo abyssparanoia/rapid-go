@@ -448,10 +448,14 @@
       "properties": {
         "staff": {
           "$ref": "#/definitions/v1Staff"
+        },
+        "password": {
+          "type": "string"
         }
       },
       "required": [
-        "staff"
+        "staff",
+        "password"
       ]
     },
     "v1CreateTenantRequest": {

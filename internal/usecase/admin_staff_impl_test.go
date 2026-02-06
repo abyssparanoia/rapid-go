@@ -15,6 +15,7 @@ import (
 	mock_service "github.com/abyssparanoia/rapid-go/internal/domain/service/mock"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/id"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/password"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
 	"github.com/stretchr/testify/require"
@@ -289,7 +290,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 	}
 
 	type want struct {
-		staff          *model.Staff
+		output         *output.AdminCreateStaff
 		expectedResult error
 	}
 
@@ -327,6 +328,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 			tenant := testdata.Tenant
 			mockID := id.Mock()
 			staff.ID = mockID
+			mockPassword := password.Mock("test-password-123")
 
 			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 			mockTenantRepo.EXPECT().
@@ -350,7 +352,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 					service.StaffCreateParam{
 						TenantID:    tenant.ID,
 						Email:       staff.Email,
-						Password:    "random1234",
+						Password:    mockPassword,
 						StaffRole:   staff.Role,
 						DisplayName: staff.DisplayName,
 						ImagePath:   staff.ImagePath,
@@ -391,7 +393,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 					assetService:     mockAssetService,
 				},
 				want: want{
-					staff: staff,
+					output: output.NewAdminCreateStaff(staff, mockPassword),
 				},
 			}
 		},
@@ -416,7 +418,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 			))
 			if tc.want.expectedResult == nil {
 				require.NoError(t, err)
-				require.Equal(t, tc.want.staff, got)
+				require.Equal(t, tc.want.output, got)
 			} else {
 				require.ErrorContains(t, err, tc.want.expectedResult.Error())
 			}
