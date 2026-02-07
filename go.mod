@@ -21,7 +21,7 @@ require (
 	cloud.google.com/go/spanner v1.87.0
 	cloud.google.com/go/storage v1.59.2
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/aarondl/null/v8 v8.1.3
+	github.com/aarondl/null/v9 v9.0.1
 	github.com/aarondl/null/v9 v9.0.1
 	github.com/aarondl/sqlboiler/v4 v4.19.7
 	github.com/aarondl/strmangle v0.0.9
