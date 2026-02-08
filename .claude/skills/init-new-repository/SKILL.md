@@ -89,7 +89,6 @@ python3 .claude/skills/init-new-repository/scripts/init_repository.py \
 **4. Cleans up generated code:**
 - Deletes `internal/infrastructure/grpc/pb/rapid/` (will be regenerated)
 - Deletes `schema/openapi/rapid/` (will be regenerated)
-- Deletes `internal/infrastructure/{database}/internal/dbmodel/` (will be regenerated)
 
 ### Step 3: Regenerate Code
 

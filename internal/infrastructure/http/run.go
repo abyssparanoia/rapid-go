@@ -52,7 +52,8 @@ func Run() {
 	d.Inject(ctx, e)
 
 	grpcServer := internal_grpc.NewServer(ctx, e, logger, d)
-	grpcLis, err := net.Listen("tcp", fmt.Sprintf(":%s", InternalGRPCPort))
+	lc := &net.ListenConfig{}
+	grpcLis, err := lc.Listen(ctx, "tcp", fmt.Sprintf(":%s", InternalGRPCPort))
 	if err != nil {
 		panic(err)
 	}

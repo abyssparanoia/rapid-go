@@ -442,7 +442,7 @@ def main():
         ("buf.build/abyssparanoia/rapid", f"buf.build/{buf_org}/{service_name}"),
         # Docker network
         ("rapid-go-network", docker_network),
-        (f"rapid-go_{docker_network}", f"{service_name}_{docker_network}"),
+        ("rapid-go_rapid-go-network", f"{service_name}_{docker_network}"),
         # Project title
         ("RAPID GO", project_title),
         ("# RAPID GO", f"# {project_title}"),
@@ -521,13 +521,6 @@ def main():
         print(f"✓ Deleted: {generated_openapi_dir}")
     else:
         print(f"ℹ Already deleted or not found: {generated_openapi_dir}")
-
-    # Delete generated dbmodel directories for both databases
-    for db_name in ['mysql', 'postgresql']:
-        dbmodel_dir = repo_root / "internal" / "infrastructure" / db_name / "internal" / "dbmodel"
-        if dbmodel_dir.exists():
-            if delete_directory(dbmodel_dir, args.dry_run):
-                print(f"✓ Deleted: {dbmodel_dir}")
 
     print("\n" + "=" * 80)
     print("Initialization Complete!")
