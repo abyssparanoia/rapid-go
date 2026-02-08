@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/aarondl/null/v8"
+	"github.com/aarondl/null/v9"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
 	"github.com/abyssparanoia/rapid-go/internal/domain/service"
@@ -45,7 +45,8 @@ func (i *staffMeInteractor) SignUp(
 	}
 
 	// 2. Validate asset
-	imagePath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID)
+	authContext := model.NewStaffAssetAuthContext(param.AuthUID)
+	imagePath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID, authContext)
 	if err != nil {
 		return nil, err
 	}
@@ -142,8 +143,9 @@ func (i *staffMeInteractor) Update(
 	// Validate asset if provided
 	var imagePath string
 	if param.ImageAssetID.Valid {
+		authContext := model.NewStaffAssetAuthContext(param.StaffID)
 		var err error
-		imagePath, err = i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String)
+		imagePath, err = i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String, authContext)
 		if err != nil {
 			return nil, err
 		}

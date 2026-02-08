@@ -11,7 +11,7 @@ import (
     "time"
 
     "github.com/abyssparanoia/rapid-go/internal/pkg/id"
-    "github.com/aarondl/null/v8"
+    "github.com/aarondl/null/v9"
 )
 
 type Example struct {

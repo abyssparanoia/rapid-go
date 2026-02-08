@@ -21,6 +21,7 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 	type args struct {
 		assetType   model.AssetType
 		contentType model.ContentType
+		authContext model.AssetAuthContext
 		requestTime time.Time
 	}
 
@@ -68,6 +69,7 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 				args: args{
 					assetType:   asset.Type,
 					contentType: asset.ContentType,
+					authContext: asset.AuthContext,
 					requestTime: requestTime,
 				},
 				service: &assetService{
@@ -93,7 +95,7 @@ func TestAssetService_CreatePresignedURL(t *testing.T) {
 
 			tc := tc(ctx, ctrl)
 
-			got, err := tc.service.CreatePresignedURL(ctx, tc.args.assetType, tc.args.contentType, tc.args.requestTime)
+			got, err := tc.service.CreatePresignedURL(ctx, tc.args.assetType, tc.args.contentType, tc.args.authContext, tc.args.requestTime)
 			if tc.want.expectedResult == nil {
 				require.NoError(t, err)
 				require.Equal(t, tc.want.got, got)

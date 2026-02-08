@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 
+	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/service"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/output"
@@ -27,10 +28,12 @@ func (i *adminAssetInteractor) CreatePresignedURL(
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
+	authContext := model.NewAdminAssetAuthContext(param.AdminID)
 	got, err := i.assetService.CreatePresignedURL(
 		ctx,
 		param.AssetType,
 		param.ContentType,
+		authContext,
 		param.RequestTime,
 	)
 	if err != nil {

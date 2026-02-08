@@ -56,18 +56,18 @@ func (mr *MockAssetPathMockRecorder) Clear(ctx, id any) *gomock.Call {
 }
 
 // Get mocks base method.
-func (m *MockAssetPath) Get(ctx context.Context, id string) (string, error) {
+func (m *MockAssetPath) Get(ctx context.Context, id string, authContext model.AssetAuthContext) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, id)
+	ret := m.ctrl.Call(m, "Get", ctx, id, authContext)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockAssetPathMockRecorder) Get(ctx, id any) *gomock.Call {
+func (mr *MockAssetPathMockRecorder) Get(ctx, id, authContext any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAssetPath)(nil).Get), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAssetPath)(nil).Get), ctx, id, authContext)
 }
 
 // Set mocks base method.

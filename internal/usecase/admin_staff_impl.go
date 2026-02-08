@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/aarondl/null/v8"
+	"github.com/aarondl/null/v9"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
@@ -137,7 +137,8 @@ func (i *adminStaffInteractor) Create(
 			return err
 		}
 
-		imagePath, err = i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID)
+		authContext := model.NewAdminAssetAuthContext(param.AdminID)
+		imagePath, err = i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID, authContext)
 		if err != nil {
 			return err
 		}
@@ -208,7 +209,8 @@ func (i *adminStaffInteractor) Update(
 		// Get image path if image_asset_id is provided
 		var imagePath null.String
 		if param.ImageAssetID.Valid {
-			path, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String)
+			authContext := model.NewAdminAssetAuthContext(param.AdminID)
+			path, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String, authContext)
 			if err != nil {
 				return err
 			}

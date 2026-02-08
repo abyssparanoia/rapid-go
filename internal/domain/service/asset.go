@@ -13,12 +13,14 @@ type Asset interface {
 		ctx context.Context,
 		assetType model.AssetType,
 		contentType model.ContentType,
+		authContext model.AssetAuthContext,
 		requestTime time.Time,
 	) (*AssetCreatePresignedURLResult, error)
 	GetWithValidate(
 		ctx context.Context,
 		assetType model.AssetType,
 		assetID string,
+		authContext model.AssetAuthContext,
 	) (string, error)
 	BatchSetTenantURLs(
 		ctx context.Context,

@@ -22,9 +22,11 @@ func NewAssetPath() cache.AssetPath {
 func (c *assetPath) Get(
 	ctx context.Context,
 	id string,
+	authContext model.AssetAuthContext,
 ) (string, error) {
 	mods := []qm.QueryMod{}
 	mods = append(mods, dbmodel.AssetWhere.ID.EQ(id))
+	mods = append(mods, dbmodel.AssetWhere.AuthContext.EQ(authContext.String()))
 	dbAsset, err := dbmodel.Assets(
 		mods...,
 	).One(ctx, transactable.GetContextExecutor(ctx))

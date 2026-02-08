@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"github.com/aarondl/null/v8"
+	"github.com/aarondl/null/v9"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"github.com/golang-jwt/jwt/v5"
 )

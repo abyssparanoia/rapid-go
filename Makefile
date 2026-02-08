@@ -79,10 +79,10 @@ migrate.up:
 	.bin/app-cli schema-migration database up
 	.bin/app-cli schema-migration database sync-constants
 	.bin/app-cli schema-migration database extract-schema
-	make generate.mermaid.mysql
-	make generate.sqlboiler.mysql
-	# make generate.mermaid.postgresql
-	# make generate.sqlboiler.postgresql
+	# make generate.mermaid.mysql
+	# make generate.sqlboiler.mysql
+	make generate.mermaid.postgresql
+	make generate.sqlboiler.postgresql
 
 .PHONY: migrate.up.ci
 migrate.up.ci:

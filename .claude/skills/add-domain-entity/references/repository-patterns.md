@@ -14,7 +14,7 @@ import (
 
     "github.com/abyssparanoia/rapid-go/internal/domain/model"
     "github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
-    "github.com/aarondl/null/v8"
+    "github.com/aarondl/null/v9"
 )
 
 //go:generate go tool go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository

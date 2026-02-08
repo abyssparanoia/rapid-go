@@ -11,6 +11,7 @@ type AssetPath interface {
 	Get(
 		ctx context.Context,
 		id string,
+		authContext model.AssetAuthContext,
 	) (string, error)
 	Set(
 		ctx context.Context,

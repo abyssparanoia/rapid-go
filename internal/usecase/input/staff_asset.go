@@ -10,17 +10,20 @@ import (
 )
 
 type StaffCreateAssetPresignedURL struct {
+	StaffID     string            `validate:"required"`
 	ContentType model.ContentType `validate:"required"`
 	AssetType   model.AssetType   `validate:"required"`
 	RequestTime time.Time         `validate:"required"`
 }
 
 func NewStaffCreateAssetPresignedURL(
+	staffID string,
 	contentType model.ContentType,
 	assetType model.AssetType,
 	requestTime time.Time,
 ) *StaffCreateAssetPresignedURL {
 	return &StaffCreateAssetPresignedURL{
+		StaffID:     staffID,
 		ContentType: contentType,
 		AssetType:   assetType,
 		RequestTime: requestTime,

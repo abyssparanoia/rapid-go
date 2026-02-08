@@ -23,7 +23,7 @@ import (
     "context"
 
     "github.com/abyssparanoia/rapid-go/internal/domain/model"
-    "github.com/aarondl/null/v8"
+    "github.com/aarondl/null/v9"
 )
 
 //go:generate go tool go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
@@ -97,6 +97,7 @@ type ListStaffsQuery struct {
 ```
 
 **Key points:**
+
 - SortKey is **always** `nullable.Type[model.XXXSortKey]` in repository queries
 - Input layer resolves nullable to non-nullable with default (`CreatedAtDesc`)
 - Repository implementation checks `query.SortKey.Valid && query.SortKey.Value().Valid()` before applying sort
@@ -140,7 +141,7 @@ type ListExamplesQuery struct {
 ```go
 package repository
 
-import "github.com/aarondl/null/v8"
+import "github.com/aarondl/null/v9"
 
 type BaseGetOptions struct {
     OrFail     bool  // Return error if not found (vs nil)
@@ -312,11 +313,11 @@ func (r *example) List(ctx context.Context, query repository.ListExamplesQuery) 
 
 #### Key Differences Between Databases
 
-| Database | Identifier Quoting | Example |
-|----------|-------------------|---------|
-| MySQL | Backticks | `` `created_at` DESC `` |
-| PostgreSQL | Double quotes | `"created_at" DESC` |
-| Spanner | Backticks | `` `created_at` DESC `` |
+| Database   | Identifier Quoting | Example                 |
+| ---------- | ------------------ | ----------------------- |
+| MySQL      | Backticks          | `` `created_at` DESC `` |
+| PostgreSQL | Double quotes      | `"created_at" DESC`     |
+| Spanner    | Backticks          | `` `created_at` DESC `` |
 
 #### Unknown SortKey Handling
 
@@ -328,6 +329,7 @@ case model.ExampleSortKeyUnknown:
 ```
 
 **Anti-pattern** (do not use):
+
 ```go
 case model.ExampleSortKeyUnknown:
     // No sorting applied for unknown  // WRONG - should return error

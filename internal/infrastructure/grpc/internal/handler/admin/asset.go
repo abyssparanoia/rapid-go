@@ -5,14 +5,21 @@ import (
 
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/handler/admin/marshaller"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/request_interceptor"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/internal/interceptor/session_interceptor"
 	admin_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/admin_api/v1"
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
 func (h *AdminHandler) CreateAssetPresignedURL(ctx context.Context, req *admin_apiv1.CreateAssetPresignedURLRequest) (*admin_apiv1.CreateAssetPresignedURLResponse, error) {
+	claims, err := session_interceptor.RequireAdminSessionContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	got, err := h.assetInteractor.CreatePresignedURL(
 		ctx,
 		input.NewAdminCreateAssetPresignedURL(
+			claims.AdminID.String,
 			marshaller.AdminContentTypeToModel(req.GetContentType()),
 			marshaller.AdminAssetTypeToModel(req.GetAssetType()),
 			request_interceptor.GetRequestTime(ctx),

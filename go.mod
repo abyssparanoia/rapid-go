@@ -21,7 +21,6 @@ require (
 	cloud.google.com/go/spanner v1.87.0
 	cloud.google.com/go/storage v1.59.2
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/aarondl/null/v8 v8.1.3
 	github.com/aarondl/null/v9 v9.0.1
 	github.com/aarondl/sqlboiler/v4 v4.19.7
 	github.com/aarondl/strmangle v0.0.9
@@ -116,7 +115,6 @@ require (
 	github.com/MirrexOne/unqueryvet v1.4.0 // indirect
 	github.com/OpenPeeDeeP/depguard/v2 v2.2.1 // indirect
 	github.com/aarondl/inflect v0.0.2 // indirect
-	github.com/aarondl/randomize v0.0.2 // indirect
 	github.com/air-verse/air v1.64.5 // indirect
 	github.com/alecthomas/chroma/v2 v2.21.1 // indirect
 	github.com/alecthomas/go-check-sumtype v0.3.1 // indirect

@@ -9,6 +9,7 @@ CREATE TABLE asset_types (
 
 CREATE TABLE assets (
     "id"              VARCHAR(64)   PRIMARY KEY,
+    "auth_context"    VARCHAR(256)  NOT NULL,
     "content_type"    VARCHAR(256)  NOT NULL,
     "type"            VARCHAR(256)  NOT NULL,
     "path"            TEXT          NOT NULL,
@@ -19,6 +20,7 @@ CREATE TABLE assets (
     CONSTRAINT "assets_fkey_content_type" FOREIGN KEY ("content_type") REFERENCES "content_types" ("id")
 );
 
+CREATE INDEX "assets_idx_auth_context" ON "assets" ("auth_context");
 CREATE INDEX "assets_idx_type" ON "assets" ("type");
 CREATE INDEX "assets_idx_content_type" ON "assets" ("content_type");
 
