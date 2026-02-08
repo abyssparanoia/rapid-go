@@ -10,17 +10,20 @@ import (
 )
 
 type AdminCreateAssetPresignedURL struct {
+	AdminID     string            `validate:"required"`
 	ContentType model.ContentType `validate:"required"`
 	AssetType   model.AssetType   `validate:"required"`
 	RequestTime time.Time         `validate:"required"`
 }
 
 func NewAdminCreateAssetPresignedURL(
+	adminID string,
 	contentType model.ContentType,
 	assetType model.AssetType,
 	requestTime time.Time,
 ) *AdminCreateAssetPresignedURL {
 	return &AdminCreateAssetPresignedURL{
+		AdminID:     adminID,
 		ContentType: contentType,
 		AssetType:   assetType,
 		RequestTime: requestTime,

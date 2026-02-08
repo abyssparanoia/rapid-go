@@ -25,6 +25,7 @@ CREATE TABLE `asset_types` (
 
 CREATE TABLE `assets` (
   `id` varchar(64) NOT NULL COMMENT 'id',
+  `auth_context` varchar(256) NOT NULL COMMENT 'auth_context',
   `content_type` varchar(256) NOT NULL COMMENT 'content_type',
   `type` varchar(256) NOT NULL COMMENT 'type',
   `path` text NOT NULL COMMENT 'path',
@@ -32,6 +33,7 @@ CREATE TABLE `assets` (
   `created_at` datetime NOT NULL COMMENT 'created date',
   `updated_at` datetime NOT NULL COMMENT 'update date',
   PRIMARY KEY (`id`),
+  KEY `assets_idx_auth_context` (`auth_context`),
   KEY `assets_fkey_type` (`type`),
   KEY `assets_fkey_content_type` (`content_type`),
   CONSTRAINT `assets_fkey_content_type` FOREIGN KEY (`content_type`) REFERENCES `content_types` (`id`),
@@ -49,7 +51,7 @@ CREATE TABLE `goose_db_version` (
   `is_applied` tinyint(1) NOT NULL,
   `tstamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 
 CREATE TABLE `staff_roles` (
   `id` varchar(32) NOT NULL COMMENT 'id',

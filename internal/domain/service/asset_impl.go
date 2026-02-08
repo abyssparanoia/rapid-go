@@ -28,11 +28,13 @@ func (s *assetService) CreatePresignedURL(
 	ctx context.Context,
 	assetType model.AssetType,
 	contentType model.ContentType,
+	authContext model.AssetAuthContext,
 	requestTime time.Time,
 ) (*AssetCreatePresignedURLResult, error) {
 	asset := model.NewAsset(
 		assetType,
 		contentType,
+		authContext,
 		requestTime,
 	)
 	presignedURL, err := s.assetRepository.GenerateWritePresignedURL(
@@ -61,8 +63,9 @@ func (s *assetService) GetWithValidate(
 	ctx context.Context,
 	assetType model.AssetType,
 	assetID string,
+	authContext model.AssetAuthContext,
 ) (string, error) {
-	got, err := s.assetPathCache.Get(ctx, assetID)
+	got, err := s.assetPathCache.Get(ctx, assetID, authContext)
 	if err != nil {
 		return "", err
 	}

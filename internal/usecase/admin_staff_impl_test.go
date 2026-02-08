@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aarondl/null/v8"
+	"github.com/aarondl/null/v9"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
@@ -281,6 +281,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
+		adminID      string
 		tenantID     string
 		email        string
 		displayName  string
@@ -326,6 +327,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 			requestTime := testdata.RequestTime
 			staff := testdata.Staff
 			tenant := testdata.Tenant
+			admin := testdata.Admin
 			mockID := id.Mock()
 			staff.ID = mockID
 			mockPassword := password.Mock("test-password-123")
@@ -343,7 +345,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, staff.ImagePath).
+				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, staff.ImagePath, gomock.Any()).
 				Return(staff.ImagePath, nil)
 
 			mockStaffService := mock_service.NewMockStaff(ctrl)
@@ -378,6 +380,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 
 			return testcase{
 				args: args{
+					adminID:      admin.ID,
 					tenantID:     tenant.ID,
 					email:        staff.Email,
 					displayName:  staff.DisplayName,
@@ -409,6 +412,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 			tc := tc(ctx, ctrl)
 
 			got, err := tc.usecase.Create(ctx, input.NewAdminCreateStaff(
+				tc.args.adminID,
 				tc.args.tenantID,
 				tc.args.email,
 				tc.args.displayName,
@@ -430,6 +434,7 @@ func TestAdminStaffInteractor_Update(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
+		adminID      string
 		staffID      string
 		displayName  null.String
 		role         nullable.Type[model.StaffRole]
@@ -464,6 +469,7 @@ func TestAdminStaffInteractor_Update(t *testing.T) {
 			testdata := factory.NewFactory()
 			requestTime := testdata.RequestTime
 			staff := testdata.Staff
+			admin := testdata.Admin
 
 			mockStaffRepo := mock_repository.NewMockStaff(ctrl)
 			mockStaffRepo.EXPECT().
@@ -494,7 +500,7 @@ func TestAdminStaffInteractor_Update(t *testing.T) {
 			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, staff.ImagePath).
+				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, staff.ImagePath, gomock.Any()).
 				Return(staff.ImagePath, nil)
 			mockAssetService.EXPECT().
 				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
@@ -502,6 +508,7 @@ func TestAdminStaffInteractor_Update(t *testing.T) {
 
 			return testcase{
 				args: args{
+					adminID:      admin.ID,
 					staffID:      staff.ID,
 					displayName:  null.StringFrom(staff.DisplayName),
 					role:         nullable.TypeFrom(staff.Role),
@@ -532,6 +539,7 @@ func TestAdminStaffInteractor_Update(t *testing.T) {
 			tc := tc(ctx, ctrl)
 
 			got, err := tc.usecase.Update(ctx, input.NewAdminUpdateStaff(
+				tc.args.adminID,
 				tc.args.staffID,
 				tc.args.displayName,
 				tc.args.role,

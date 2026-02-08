@@ -24,6 +24,7 @@ import (
 // Asset is an object representing the database table.
 type Asset struct {
 	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	AuthContext string    `boil:"auth_context" json:"auth_context" toml:"auth_context" yaml:"auth_context"`
 	ContentType string    `boil:"content_type" json:"content_type" toml:"content_type" yaml:"content_type"`
 	Type        string    `boil:"type" json:"type" toml:"type" yaml:"type"`
 	Path        string    `boil:"path" json:"path" toml:"path" yaml:"path"`
@@ -37,6 +38,7 @@ type Asset struct {
 
 var AssetColumns = struct {
 	ID          string
+	AuthContext string
 	ContentType string
 	Type        string
 	Path        string
@@ -45,6 +47,7 @@ var AssetColumns = struct {
 	UpdatedAt   string
 }{
 	ID:          "id",
+	AuthContext: "auth_context",
 	ContentType: "content_type",
 	Type:        "type",
 	Path:        "path",
@@ -55,6 +58,7 @@ var AssetColumns = struct {
 
 var AssetTableColumns = struct {
 	ID          string
+	AuthContext string
 	ContentType string
 	Type        string
 	Path        string
@@ -63,6 +67,7 @@ var AssetTableColumns = struct {
 	UpdatedAt   string
 }{
 	ID:          "assets.id",
+	AuthContext: "assets.auth_context",
 	ContentType: "assets.content_type",
 	Type:        "assets.type",
 	Path:        "assets.path",
@@ -75,6 +80,7 @@ var AssetTableColumns = struct {
 
 var AssetWhere = struct {
 	ID          whereHelperstring
+	AuthContext whereHelperstring
 	ContentType whereHelperstring
 	Type        whereHelperstring
 	Path        whereHelperstring
@@ -83,6 +89,7 @@ var AssetWhere = struct {
 	UpdatedAt   whereHelpertime_Time
 }{
 	ID:          whereHelperstring{field: "\"assets\".\"id\""},
+	AuthContext: whereHelperstring{field: "\"assets\".\"auth_context\""},
 	ContentType: whereHelperstring{field: "\"assets\".\"content_type\""},
 	Type:        whereHelperstring{field: "\"assets\".\"type\""},
 	Path:        whereHelperstring{field: "\"assets\".\"path\""},
@@ -108,8 +115,8 @@ func (*assetR) NewStruct() *assetR {
 type assetL struct{}
 
 var (
-	assetAllColumns            = []string{"id", "content_type", "type", "path", "expires_at", "created_at", "updated_at"}
-	assetColumnsWithoutDefault = []string{"id", "content_type", "type", "path", "expires_at", "created_at", "updated_at"}
+	assetAllColumns            = []string{"id", "auth_context", "content_type", "type", "path", "expires_at", "created_at", "updated_at"}
+	assetColumnsWithoutDefault = []string{"id", "auth_context", "content_type", "type", "path", "expires_at", "created_at", "updated_at"}
 	assetColumnsWithDefault    = []string{}
 	assetPrimaryKeyColumns     = []string{"id"}
 	assetGeneratedColumns      = []string{}

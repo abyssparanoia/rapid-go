@@ -167,7 +167,7 @@ import (
     "github.com/eaglys-platform/pandlock-api/internal/domain/model"
     "github.com/eaglys-platform/pandlock-api/internal/domain/repository"
     "github.com/eaglys-platform/pandlock-api/internal/usecase/input"
-    "github.com/aarondl/null/v8"
+    "github.com/aarondl/null/v9"
 )
 
 type taskProjectKeyCreationInteractor struct {

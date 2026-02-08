@@ -86,31 +86,31 @@ func (mr *MockAssetMockRecorder) BatchSetTenantURLs(ctx, tenants, requestTime an
 }
 
 // CreatePresignedURL mocks base method.
-func (m *MockAsset) CreatePresignedURL(ctx context.Context, assetType model.AssetType, contentType model.ContentType, requestTime time.Time) (*service.AssetCreatePresignedURLResult, error) {
+func (m *MockAsset) CreatePresignedURL(ctx context.Context, assetType model.AssetType, contentType model.ContentType, authContext model.AssetAuthContext, requestTime time.Time) (*service.AssetCreatePresignedURLResult, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreatePresignedURL", ctx, assetType, contentType, requestTime)
+	ret := m.ctrl.Call(m, "CreatePresignedURL", ctx, assetType, contentType, authContext, requestTime)
 	ret0, _ := ret[0].(*service.AssetCreatePresignedURLResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreatePresignedURL indicates an expected call of CreatePresignedURL.
-func (mr *MockAssetMockRecorder) CreatePresignedURL(ctx, assetType, contentType, requestTime any) *gomock.Call {
+func (mr *MockAssetMockRecorder) CreatePresignedURL(ctx, assetType, contentType, authContext, requestTime any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePresignedURL", reflect.TypeOf((*MockAsset)(nil).CreatePresignedURL), ctx, assetType, contentType, requestTime)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePresignedURL", reflect.TypeOf((*MockAsset)(nil).CreatePresignedURL), ctx, assetType, contentType, authContext, requestTime)
 }
 
 // GetWithValidate mocks base method.
-func (m *MockAsset) GetWithValidate(ctx context.Context, assetType model.AssetType, assetID string) (string, error) {
+func (m *MockAsset) GetWithValidate(ctx context.Context, assetType model.AssetType, assetID string, authContext model.AssetAuthContext) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetWithValidate", ctx, assetType, assetID)
+	ret := m.ctrl.Call(m, "GetWithValidate", ctx, assetType, assetID, authContext)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetWithValidate indicates an expected call of GetWithValidate.
-func (mr *MockAssetMockRecorder) GetWithValidate(ctx, assetType, assetID any) *gomock.Call {
+func (mr *MockAssetMockRecorder) GetWithValidate(ctx, assetType, assetID, authContext any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithValidate", reflect.TypeOf((*MockAsset)(nil).GetWithValidate), ctx, assetType, assetID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithValidate", reflect.TypeOf((*MockAsset)(nil).GetWithValidate), ctx, assetType, assetID, authContext)
 }

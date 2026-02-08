@@ -20,6 +20,7 @@ func TestAdminAssetInteractor_CreatePresignedURL(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
+		adminID     string
 		contentType model.ContentType
 		assetType   model.AssetType
 		requestTime time.Time
@@ -45,6 +46,7 @@ func TestAdminAssetInteractor_CreatePresignedURL(t *testing.T) {
 
 			return testcase{
 				args: args{
+					adminID:     testdata.Admin.ID,
 					contentType: model.ContentTypeUnknown, // Invalid content type
 					assetType:   model.AssetTypeUserImage,
 					requestTime: testdata.RequestTime,
@@ -64,11 +66,12 @@ func TestAdminAssetInteractor_CreatePresignedURL(t *testing.T) {
 
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				CreatePresignedURL(gomock.Any(), assetType, contentType, testdata.RequestTime).
+				CreatePresignedURL(gomock.Any(), assetType, contentType, gomock.Any(), testdata.RequestTime).
 				Return(nil, errors.InternalErr.New())
 
 			return testcase{
 				args: args{
+					adminID:     testdata.Admin.ID,
 					contentType: contentType,
 					assetType:   assetType,
 					requestTime: testdata.RequestTime,
@@ -95,11 +98,12 @@ func TestAdminAssetInteractor_CreatePresignedURL(t *testing.T) {
 
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				CreatePresignedURL(gomock.Any(), assetType, contentType, testdata.RequestTime).
+				CreatePresignedURL(gomock.Any(), assetType, contentType, gomock.Any(), testdata.RequestTime).
 				Return(serviceResult, nil)
 
 			return testcase{
 				args: args{
+					adminID:     testdata.Admin.ID,
 					contentType: contentType,
 					assetType:   assetType,
 					requestTime: testdata.RequestTime,
@@ -124,6 +128,7 @@ func TestAdminAssetInteractor_CreatePresignedURL(t *testing.T) {
 			tc := tc(ctx, ctrl)
 
 			got, err := tc.usecase.CreatePresignedURL(ctx, input.NewAdminCreateAssetPresignedURL(
+				tc.args.adminID,
 				tc.args.contentType,
 				tc.args.assetType,
 				tc.args.requestTime,

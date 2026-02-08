@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/aarondl/null/v8"
+	"github.com/aarondl/null/v9"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	mock_repository "github.com/abyssparanoia/rapid-go/internal/domain/repository/mock"

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aarondl/null/v8"
+	"github.com/aarondl/null/v9"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model/factory"
@@ -113,7 +113,7 @@ func TestStaffMeInteractor_SignUp(t *testing.T) {
 				Return(staff, nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, "image-asset-id").
+				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, "image-asset-id", gomock.Any()).
 				Return("/path/to/image", nil)
 			mockAssetService.EXPECT().
 				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
@@ -461,7 +461,7 @@ func TestStaffMeInteractor_Update(t *testing.T) {
 			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, "image-asset-id").
+				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, "image-asset-id", gomock.Any()).
 				Return("/path/to/image", nil)
 			mockAssetService.EXPECT().
 				BatchSetStaffURLs(gomock.Any(), model.Staffs{updatedStaff}, gomock.Any()).

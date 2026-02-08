@@ -15,6 +15,7 @@ type Asset struct {
 	ContentType ContentType
 	Type        AssetType
 	Path        string
+	AuthContext AssetAuthContext
 	ExpiresAt   time.Time
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -25,13 +26,19 @@ type Assets []*Asset
 func NewAsset(
 	assetType AssetType,
 	contentType ContentType,
+	authContext AssetAuthContext,
 	t time.Time,
 ) *Asset {
+	if !authContext.Valid() {
+		panic(errors.AssetInvalidErr.New().
+			WithDetail("asset auth context is invalid"))
+	}
 	return &Asset{
 		ID:          id.New(),
 		ContentType: contentType,
 		Type:        assetType,
 		Path:        fmt.Sprintf("%s/%s.%s", assetType.String(), uuid.UUIDBase64(), contentType.Extension()),
+		AuthContext: authContext,
 		ExpiresAt:   t.Add(15 * time.Minute),
 		CreatedAt:   t,
 		UpdatedAt:   t,

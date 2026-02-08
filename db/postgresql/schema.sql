@@ -26,6 +26,7 @@ CREATE TABLE "public"."asset_types" (
 
 CREATE TABLE "public"."assets" (
     "id" character varying(64) NOT NULL,
+    "auth_context" character varying(256) NOT NULL,
     "content_type" character varying(256) NOT NULL,
     "type" character varying(256) NOT NULL,
     "path" text NOT NULL,
@@ -36,6 +37,8 @@ CREATE TABLE "public"."assets" (
     CONSTRAINT "assets_fkey_type" FOREIGN KEY (type) REFERENCES asset_types(id),
     CONSTRAINT "assets_pkey" PRIMARY KEY (id)
 );
+
+CREATE INDEX assets_idx_auth_context ON assets USING btree (auth_context);
 
 CREATE INDEX assets_idx_content_type ON assets USING btree (content_type);
 

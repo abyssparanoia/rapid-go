@@ -13,6 +13,7 @@ COMMENT "asset_type";
 
 CREATE TABLE `assets` (
   `id`                       VARCHAR(64)    NOT NULL COMMENT "id",
+  `auth_context`             VARCHAR(256)  NOT NULL COMMENT "auth_context",
   `content_type`             VARCHAR(256)  NOT NULL COMMENT "content_type",
   `type`                     VARCHAR(256)   NOT NULL COMMENT "type",
   `path`                     TEXT           NOT NULL COMMENT "path",
@@ -20,6 +21,7 @@ CREATE TABLE `assets` (
   `created_at`               DATETIME       NOT NULL COMMENT "created date",
   `updated_at`               DATETIME       NOT NULL COMMENT "update date",
   CONSTRAINT `assets_pkey` PRIMARY KEY (`id`),
+  INDEX `assets_idx_auth_context` (`auth_context`),
   CONSTRAINT `assets_fkey_type` FOREIGN KEY (`type`) REFERENCES `asset_types` (`id`),
   CONSTRAINT `assets_fkey_content_type` FOREIGN KEY (`content_type`) REFERENCES `content_types` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4

@@ -15,6 +15,7 @@ func NewFactory() struct {
 	RequestTime time.Time
 	Tenant      *model.Tenant
 	Staff       *model.Staff
+	Admin       *model.Admin
 	Asset       *model.Asset
 } {
 	opts := []options.OptionFunc{
@@ -44,6 +45,13 @@ func NewFactory() struct {
 	user.CreatedAt = n
 	user.UpdatedAt = n
 
+	admin := &model.Admin{}
+	if err := faker.FakeData(admin, opts...); err != nil {
+		panic(err)
+	}
+	admin.CreatedAt = n
+	admin.UpdatedAt = n
+
 	asset := &model.Asset{}
 	if err := faker.FakeData(asset, opts...); err != nil {
 		panic(err)
@@ -51,6 +59,7 @@ func NewFactory() struct {
 	asset.ContentType = model.ContentTypeImagePNG
 	asset.Type = model.AssetTypeUserImage
 	asset.Path = "private/user_images/mock.png"
+	asset.AuthContext = model.NewStaffAssetAuthContext(user.ID)
 	asset.ExpiresAt = n.Add(15 * time.Minute)
 	asset.CreatedAt = n
 	asset.UpdatedAt = n
@@ -59,11 +68,13 @@ func NewFactory() struct {
 		RequestTime time.Time
 		Tenant      *model.Tenant
 		Staff       *model.Staff
+		Admin       *model.Admin
 		Asset       *model.Asset
 	}{
 		RequestTime: n,
 		Tenant:      tenant,
 		Staff:       user,
+		Admin:       admin,
 		Asset:       asset,
 	}
 }

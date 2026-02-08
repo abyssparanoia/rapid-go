@@ -77,7 +77,7 @@ func (p *AdminListExamples) Validate() error {
 ### Update Input
 
 ```go
-import "github.com/aarondl/null/v8"
+import "github.com/aarondl/null/v9"
 
 type AdminUpdateExample struct {
     StaffID     string      `validate:"required"`
@@ -173,7 +173,7 @@ import (
     "github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
     "github.com/abyssparanoia/rapid-go/internal/usecase/input"
     "github.com/abyssparanoia/rapid-go/internal/usecase/output"
-    "github.com/aarondl/null/v8"
+    "github.com/aarondl/null/v9"
 )
 
 type adminExampleInteractor struct {

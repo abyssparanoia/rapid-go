@@ -3,7 +3,7 @@ package input
 import (
 	"time"
 
-	"github.com/aarondl/null/v8"
+	"github.com/aarondl/null/v9"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
@@ -80,6 +80,7 @@ func (p *AdminListStaffs) Validate() error {
 }
 
 type AdminCreateStaff struct {
+	AdminID      string          `validate:"required"`
 	TenantID     string          `validate:"required"`
 	Email        string          `validate:"required"`
 	DisplayName  string          `validate:"required"`
@@ -89,6 +90,7 @@ type AdminCreateStaff struct {
 }
 
 func NewAdminCreateStaff(
+	adminID,
 	tenantID,
 	email,
 	displayName string,
@@ -97,6 +99,7 @@ func NewAdminCreateStaff(
 	requestTime time.Time,
 ) *AdminCreateStaff {
 	return &AdminCreateStaff{
+		AdminID:      adminID,
 		TenantID:     tenantID,
 		Email:        email,
 		DisplayName:  displayName,
@@ -115,6 +118,7 @@ func (p *AdminCreateStaff) Validate() error {
 
 // AdminUpdateStaff represents input for updating a staff member
 type AdminUpdateStaff struct {
+	AdminID      string `validate:"required"`
 	StaffID      string `validate:"required"`
 	DisplayName  null.String
 	Role         nullable.Type[model.StaffRole]
@@ -123,6 +127,7 @@ type AdminUpdateStaff struct {
 }
 
 func NewAdminUpdateStaff(
+	adminID string,
 	staffID string,
 	displayName null.String,
 	role nullable.Type[model.StaffRole],
@@ -130,6 +135,7 @@ func NewAdminUpdateStaff(
 	requestTime time.Time,
 ) *AdminUpdateStaff {
 	return &AdminUpdateStaff{
+		AdminID:      adminID,
 		StaffID:      staffID,
 		DisplayName:  displayName,
 		Role:         role,

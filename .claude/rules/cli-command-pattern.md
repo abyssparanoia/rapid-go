@@ -3,6 +3,7 @@
 ## Overview
 
 CLI commands are task-oriented commands executed via `./app task {command-name}`. These commands are used for:
+
 - Initial setup operations (e.g., creating root admin/staff)
 - One-time data migration tasks
 - Administrative operations that don't fit into the API workflow
@@ -93,6 +94,7 @@ func (p *TaskCreateAdmin) Validate() error {
 **Location**: `internal/usecase/output/task_{entity}.go`
 
 Only create when:
+
 - Command needs to return multiple values to caller
 - Values need to be formatted for display
 
@@ -141,6 +143,7 @@ type TaskAdminInteractor interface {
 ```
 
 **Naming Pattern**:
+
 - Interface: `Task{Entity}Interactor`
 - Method: Descriptive action (e.g., `Create`, `Migrate`, `Cleanup`)
 
@@ -153,7 +156,7 @@ package usecase
 
 import (
     "context"
-    "github.com/aarondl/null/v8"
+    "github.com/aarondl/null/v9"
     "github.com/abyssparanoia/rapid-go/internal/domain/model"
     "github.com/abyssparanoia/rapid-go/internal/domain/repository"
     "github.com/abyssparanoia/rapid-go/internal/pkg/nullable"
@@ -206,6 +209,7 @@ func (i *taskAdminInteractor) Create(
 ```
 
 **Key Points**:
+
 - Use `RWTx` for write operations
 - Validate input at the beginning
 - Keep business logic in transaction scope
@@ -299,6 +303,7 @@ func NewCreateRootAdminCmd() *cobra.Command {
 ```
 
 **Command Naming**:
+
 - Use: kebab-case (e.g., `create-root-admin`, `migrate-users`)
 - Package: snake_case with `_cmd` suffix (e.g., `create_root_admin_cmd`)
 - Function: PascalCase (e.g., `NewCreateRootAdminCmd`)
@@ -395,6 +400,7 @@ func generatePassword(length int) (string, error) {
 ```
 
 **Key Points**:
+
 - Validate all required flags
 - Generate required values (passwords, codes) in CMD layer, not interactor
 - Use `fmt.Printf` for standard output
@@ -558,6 +564,7 @@ fmt.Println("Complete!")
 ## Error Handling
 
 CLI commands should:
+
 - Return errors from CMD execution methods
 - Use `panic(err)` in cobra `Run` function for fatal errors
 - Log detailed context with structured logging if needed
