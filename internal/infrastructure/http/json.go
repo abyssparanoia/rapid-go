@@ -368,12 +368,12 @@ func getFieldName(fd protoreflect.FieldDescriptor, useProtoNames bool) string {
 	if useProtoNames {
 		return string(fd.Name())
 	}
-	return string(fd.JSONName())
+	return fd.JSONName()
 }
 
 // isInt64Kind returns true if the field kind is an int64-like type.
 func isInt64Kind(kind protoreflect.Kind) bool {
-	switch kind {
+	switch kind { //nolint:exhaustive // This is a false positive.
 	case protoreflect.Int64Kind, protoreflect.Uint64Kind, protoreflect.Sint64Kind,
 		protoreflect.Sfixed64Kind, protoreflect.Fixed64Kind:
 		return true
@@ -392,7 +392,7 @@ func convertFieldsRecursive(data interface{}, md protoreflect.MessageDescriptor,
 		for key, value := range v {
 			// Find the field descriptor for this key
 			var fd protoreflect.FieldDescriptor
-			for i := 0; i < fields.Len(); i++ {
+			for i := 0; i < fields.Len(); i++ { //nolint:intrange
 				f := fields.Get(i)
 				if getFieldName(f, useProtoNames) == key {
 					fd = f
@@ -411,7 +411,7 @@ func convertFieldsRecursive(data interface{}, md protoreflect.MessageDescriptor,
 				if slice, ok := value.([]interface{}); ok {
 					convertedSlice := make([]interface{}, len(slice))
 					for i, item := range slice {
-						if fd.Kind() == protoreflect.MessageKind {
+						if fd.Kind() == protoreflect.MessageKind { //nolint:gocritic
 							// Nested message
 							convertedSlice[i] = convertFieldsRecursive(item, fd.Message(), useProtoNames)
 						} else if isInt64Kind(fd.Kind()) {
@@ -429,7 +429,7 @@ func convertFieldsRecursive(data interface{}, md protoreflect.MessageDescriptor,
 			}
 
 			// Handle single fields
-			if fd.Kind() == protoreflect.MessageKind {
+			if fd.Kind() == protoreflect.MessageKind { //nolint:gocritic
 				// Nested message
 				result[key] = convertFieldsRecursive(value, fd.Message(), useProtoNames)
 			} else if isInt64Kind(fd.Kind()) {
