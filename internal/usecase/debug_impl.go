@@ -24,18 +24,18 @@ func NewDebugInteractor(
 
 func (i *debugInteractor) CreateAdminIDToken(
 	ctx context.Context,
-	authUID string,
+	email string,
 	password string,
 ) (string, error) {
-	return i.adminAuthenticationRepository.CreateIDToken(ctx, authUID, password)
+	return i.adminAuthenticationRepository.CreateIDToken(ctx, email, password)
 }
 
 func (i *debugInteractor) CreateStaffIDToken(
 	ctx context.Context,
-	authUID string,
+	email string,
 	password string,
 ) (string, error) {
-	return i.staffAuthenticationRepository.CreateIDToken(ctx, authUID, password)
+	return i.staffAuthenticationRepository.CreateIDToken(ctx, email, password)
 }
 
 func (i *debugInteractor) CreateStaffAuthUID(

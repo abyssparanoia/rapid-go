@@ -58,18 +58,18 @@ func (mr *MockAdminAuthenticationMockRecorder) CreateCustomToken(ctx, authUID an
 }
 
 // CreateIDToken mocks base method.
-func (m *MockAdminAuthentication) CreateIDToken(ctx context.Context, authUID, password string) (string, error) {
+func (m *MockAdminAuthentication) CreateIDToken(ctx context.Context, email, password string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateIDToken", ctx, authUID, password)
+	ret := m.ctrl.Call(m, "CreateIDToken", ctx, email, password)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateIDToken indicates an expected call of CreateIDToken.
-func (mr *MockAdminAuthenticationMockRecorder) CreateIDToken(ctx, authUID, password any) *gomock.Call {
+func (mr *MockAdminAuthenticationMockRecorder) CreateIDToken(ctx, email, password any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIDToken", reflect.TypeOf((*MockAdminAuthentication)(nil).CreateIDToken), ctx, authUID, password)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIDToken", reflect.TypeOf((*MockAdminAuthentication)(nil).CreateIDToken), ctx, email, password)
 }
 
 // CreateUser mocks base method.

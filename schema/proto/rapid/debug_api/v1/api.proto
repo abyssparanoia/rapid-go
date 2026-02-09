@@ -27,13 +27,13 @@ service DebugV1Service {
 }
 
 message CreateAdminIDTokenRequest {
-  string auth_uid = 1;
+  string email = 1;
   string password = 2;
 
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: [
-        "auth_uid",
+        "email",
         "password"
       ]
     }
@@ -51,13 +51,13 @@ message CreateAdminIDTokenResponse {
 }
 
 message CreateStaffIDTokenRequest {
-  string auth_uid = 1;
+  string email = 1;
   string password = 2;
 
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: [
-        "auth_uid",
+        "email",
         "password"
       ]
     }

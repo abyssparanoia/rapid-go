@@ -160,7 +160,7 @@ get_admin_token() {
 
     response=$(curl -s -X POST "$BASE_URL/debug/v1/admins/-/id_token" \
         -H "Content-Type: application/json" \
-        -d "{\"auth_uid\":\"$ADMIN_AUTH_UID\",\"password\":\"$ADMIN_PASSWORD\"}")
+        -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASSWORD\"}")
 
     ADMIN_TOKEN=$(echo "$response" | jq -r '.id_token // empty')
 
@@ -276,7 +276,7 @@ get_staff_token() {
 
     response=$(curl -s -X POST "$BASE_URL/debug/v1/staffs/-/id_token" \
         -H "Content-Type: application/json" \
-        -d "{\"auth_uid\":\"$STAFF_AUTH_UID\",\"password\":\"$STAFF_PASSWORD\"}")
+        -d "{\"email\":\"$STAFF_EMAIL\",\"password\":\"$STAFF_PASSWORD\"}")
 
     STAFF_TOKEN=$(echo "$response" | jq -r '.id_token // empty')
 
@@ -364,7 +364,7 @@ staff_signup() {
     print_info "Getting ID token for signup staff..."
     token_response=$(curl -s -X POST "$BASE_URL/debug/v1/staffs/-/id_token" \
         -H "Content-Type: application/json" \
-        -d "{\"auth_uid\":\"$SIGNUP_AUTH_UID\",\"password\":\"$SIGNUP_STAFF_PASSWORD\"}")
+        -d "{\"email\":\"$SIGNUP_STAFF_EMAIL\",\"password\":\"$SIGNUP_STAFF_PASSWORD\"}")
 
     SIGNUP_STAFF_TOKEN=$(echo "$token_response" | jq -r '.id_token // empty')
 
