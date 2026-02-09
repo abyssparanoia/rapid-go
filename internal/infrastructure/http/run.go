@@ -76,6 +76,9 @@ func Run() {
 			UnmarshalOptions: protojson.UnmarshalOptions{
 				DiscardUnknown: true,
 			},
+			// Uncomment the following line to serialize int64/uint64 as JSON numbers instead of strings.
+			// WARNING: Values greater than 2^53 may lose precision in JavaScript.
+			// Int64AsNumber: true,
 		},
 	}))
 

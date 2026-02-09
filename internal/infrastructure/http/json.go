@@ -12,6 +12,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // CustomJSONPb is a Marshaler which marshals/unmarshals into/from JSON
@@ -23,6 +24,10 @@ import (
 type CustomJSONPb struct {
 	protojson.MarshalOptions
 	protojson.UnmarshalOptions
+	// Int64AsNumber controls whether int64/uint64 fields are serialized as JSON numbers.
+	// Default (false): int64/uint64 are serialized as strings (protobuf default for JavaScript compatibility)
+	// true: int64/uint64 are serialized as numbers (may lose precision for values > 2^53)
+	Int64AsNumber bool
 }
 
 // ContentType always returns "application/json".
@@ -32,7 +37,8 @@ func (*CustomJSONPb) ContentType(_ interface{}) string {
 
 // Marshal marshals "v" into JSON.
 func (j *CustomJSONPb) Marshal(v interface{}) ([]byte, error) {
-	if _, ok := v.(proto.Message); !ok {
+	msg, ok := v.(proto.Message)
+	if !ok {
 		return j.marshalNonProtoField(v)
 	}
 
@@ -40,7 +46,19 @@ func (j *CustomJSONPb) Marshal(v interface{}) ([]byte, error) {
 	if err := j.marshalTo(&buf, v); err != nil {
 		return nil, err
 	}
-	return buf.Bytes(), nil
+
+	result := buf.Bytes()
+
+	// Convert int64 strings to numbers if enabled
+	if j.Int64AsNumber {
+		converted, err := j.convertInt64StringsToNumbers(result, msg)
+		if err != nil {
+			return nil, err
+		}
+		return converted, nil
+	}
+
+	return result, nil
 }
 
 func (j *CustomJSONPb) marshalTo(w io.Writer, v interface{}) error {
@@ -343,4 +361,140 @@ var convFromType = map[reflect.Kind]reflect.Value{ //nolint:exhaustive // This i
 	reflect.Uint64:  reflect.ValueOf(runtime.Uint64),
 	reflect.Uint32:  reflect.ValueOf(runtime.Uint32),
 	reflect.Slice:   reflect.ValueOf(runtime.Bytes),
+}
+
+// getFieldName returns the field name to use in JSON based on UseProtoNames setting.
+func getFieldName(fd protoreflect.FieldDescriptor, useProtoNames bool) string {
+	if useProtoNames {
+		return string(fd.Name())
+	}
+	return fd.JSONName()
+}
+
+// isInt64Kind returns true if the field kind is an int64-like type.
+func isInt64Kind(kind protoreflect.Kind) bool {
+	switch kind { //nolint:exhaustive // This is a false positive.
+	case protoreflect.Int64Kind, protoreflect.Uint64Kind, protoreflect.Sint64Kind,
+		protoreflect.Sfixed64Kind, protoreflect.Fixed64Kind:
+		return true
+	default:
+		return false
+	}
+}
+
+// convertFieldsRecursive recursively converts int64 string fields to numbers in the data structure.
+func convertFieldsRecursive(data interface{}, md protoreflect.MessageDescriptor, useProtoNames bool) interface{} { //nolint:gocognit,gocyclo // Complex type conversion logic
+	switch v := data.(type) {
+	case map[string]interface{}:
+		// Process map fields
+		result := make(map[string]interface{})
+		fields := md.Fields()
+		for key, value := range v {
+			// Find the field descriptor for this key
+			var fd protoreflect.FieldDescriptor
+			for i := 0; i < fields.Len(); i++ { //nolint:intrange
+				f := fields.Get(i)
+				if getFieldName(f, useProtoNames) == key {
+					fd = f
+					break
+				}
+			}
+
+			if fd == nil {
+				// Field not found in descriptor, keep as-is
+				result[key] = value
+				continue
+			}
+
+			// Handle repeated fields
+			if fd.IsList() {
+				if slice, ok := value.([]interface{}); ok {
+					convertedSlice := make([]interface{}, len(slice))
+					for i, item := range slice {
+						if fd.Kind() == protoreflect.MessageKind { //nolint:gocritic
+							// Nested message
+							convertedSlice[i] = convertFieldsRecursive(item, fd.Message(), useProtoNames)
+						} else if isInt64Kind(fd.Kind()) {
+							// int64 field in array
+							convertedSlice[i] = convertStringToNumber(item)
+						} else {
+							convertedSlice[i] = item
+						}
+					}
+					result[key] = convertedSlice
+				} else {
+					result[key] = value
+				}
+				continue
+			}
+
+			// Handle single fields
+			if fd.Kind() == protoreflect.MessageKind { //nolint:gocritic
+				// Nested message
+				result[key] = convertFieldsRecursive(value, fd.Message(), useProtoNames)
+			} else if isInt64Kind(fd.Kind()) {
+				// int64 field - convert string to number
+				result[key] = convertStringToNumber(value)
+			} else {
+				result[key] = value
+			}
+		}
+		return result
+
+	case []interface{}:
+		// Process array (shouldn't happen at top level for proto messages, but handle it anyway)
+		result := make([]interface{}, len(v))
+		for i, item := range v {
+			result[i] = convertFieldsRecursive(item, md, useProtoNames)
+		}
+		return result
+
+	default:
+		return data
+	}
+}
+
+// convertStringToNumber converts a string value to a number if possible.
+func convertStringToNumber(value interface{}) interface{} {
+	str, ok := value.(string)
+	if !ok {
+		return value
+	}
+
+	// Try to parse as int64 first
+	if num, err := strconv.ParseInt(str, 10, 64); err == nil {
+		return num
+	}
+
+	// Try to parse as uint64
+	if num, err := strconv.ParseUint(str, 10, 64); err == nil {
+		return num
+	}
+
+	// If parsing fails, return as-is
+	return value
+}
+
+// convertInt64StringsToNumbers uses proto reflection to convert int64/uint64 fields
+// from strings to numbers in the JSON output.
+func (j *CustomJSONPb) convertInt64StringsToNumbers(jsonBytes []byte, msg proto.Message) ([]byte, error) {
+	// Parse JSON into map
+	var data map[string]interface{}
+	if err := json.Unmarshal(jsonBytes, &data); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON for int64 conversion: %w", err)
+	}
+
+	// Get message descriptor
+	md := msg.ProtoReflect().Descriptor()
+
+	// Convert fields recursively
+	converted := convertFieldsRecursive(data, md, j.UseProtoNames)
+
+	// Marshal back to JSON
+	result, err := json.Marshal(converted)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal converted JSON: %w", err)
+	}
+
+	return result, nil
 }
