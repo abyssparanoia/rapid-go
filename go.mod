@@ -19,7 +19,7 @@ tool (
 require (
 	cloud.google.com/go v0.123.0
 	cloud.google.com/go/spanner v1.87.0
-	cloud.google.com/go/storage v1.59.2
+	cloud.google.com/go/storage v1.60.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/aarondl/null/v9 v9.0.1
 	github.com/aarondl/sqlboiler/v4 v4.19.7
@@ -106,8 +106,8 @@ require (
 	github.com/Djarvur/go-err113 v0.1.1 // indirect
 	github.com/GoogleCloudPlatform/grpc-gcp-go/grpcgcp v1.5.3 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.30.0 // indirect
-	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.54.0 // indirect
-	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.54.0 // indirect
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.55.0 // indirect
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.55.0 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.4.0 // indirect
 	github.com/Masterminds/sprig/v3 v3.2.2 // indirect
@@ -411,7 +411,7 @@ require (
 	golang.org/x/exp/typeparams v0.0.0-20251023183803-a4bb9ffd2546 // indirect
 	golang.org/x/mod v0.32.0 // indirect
 	golang.org/x/net v0.49.0 // indirect
-	golang.org/x/oauth2 v0.34.0 // indirect
+	golang.org/x/oauth2 v0.35.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/telemetry v0.0.0-20260109210033-bd525da824e2 // indirect
