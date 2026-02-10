@@ -5,12 +5,12 @@ import "context"
 type DebugInteractor interface {
 	CreateAdminIDToken(
 		ctx context.Context,
-		authUID string,
+		email string,
 		password string,
 	) (string, error)
 	CreateStaffIDToken(
 		ctx context.Context,
-		authUID string,
+		email string,
 		password string,
 	) (string, error)
 	CreateStaffAuthUID(

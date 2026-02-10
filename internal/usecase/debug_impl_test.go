@@ -14,7 +14,7 @@ func TestDebugInteractor_CreateAdminIDToken(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		authUID  string
+		email    string
 		password string
 	}
 
@@ -33,17 +33,17 @@ func TestDebugInteractor_CreateAdminIDToken(t *testing.T) {
 
 	tests := map[string]testcaseFunc{
 		"repository error": func(ctx context.Context, ctrl *gomock.Controller) testcase {
-			authUID := "test-admin-auth-uid"
+			email := "admin@example.com"
 			password := "password123"
 
 			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
 			mockAdminAuthRepo.EXPECT().
-				CreateIDToken(gomock.Any(), authUID, password).
+				CreateIDToken(gomock.Any(), email, password).
 				Return("", errors.InvalidIDTokenErr.New())
 
 			return testcase{
 				args: args{
-					authUID:  authUID,
+					email:    email,
 					password: password,
 				},
 				usecase: &debugInteractor{
@@ -56,18 +56,18 @@ func TestDebugInteractor_CreateAdminIDToken(t *testing.T) {
 			}
 		},
 		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
-			authUID := "test-admin-auth-uid"
+			email := "admin@example.com"
 			password := "password123"
 			token := "test-admin-id-token"
 
 			mockAdminAuthRepo := mock_repository.NewMockAdminAuthentication(ctrl)
 			mockAdminAuthRepo.EXPECT().
-				CreateIDToken(gomock.Any(), authUID, password).
+				CreateIDToken(gomock.Any(), email, password).
 				Return(token, nil)
 
 			return testcase{
 				args: args{
-					authUID:  authUID,
+					email:    email,
 					password: password,
 				},
 				usecase: &debugInteractor{
@@ -90,7 +90,7 @@ func TestDebugInteractor_CreateAdminIDToken(t *testing.T) {
 
 			tc := tc(ctx, ctrl)
 
-			got, err := tc.usecase.CreateAdminIDToken(ctx, tc.args.authUID, tc.args.password)
+			got, err := tc.usecase.CreateAdminIDToken(ctx, tc.args.email, tc.args.password)
 
 			if tc.want.expectedResult == nil {
 				require.NoError(t, err)
@@ -106,7 +106,7 @@ func TestDebugInteractor_CreateStaffIDToken(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		authUID  string
+		email    string
 		password string
 	}
 
@@ -125,17 +125,17 @@ func TestDebugInteractor_CreateStaffIDToken(t *testing.T) {
 
 	tests := map[string]testcaseFunc{
 		"repository error": func(ctx context.Context, ctrl *gomock.Controller) testcase {
-			authUID := "test-auth-uid"
+			email := "staff@example.com"
 			password := "password123"
 
 			mockStaffAuthRepo := mock_repository.NewMockStaffAuthentication(ctrl)
 			mockStaffAuthRepo.EXPECT().
-				CreateIDToken(gomock.Any(), authUID, password).
+				CreateIDToken(gomock.Any(), email, password).
 				Return("", errors.InvalidIDTokenErr.New())
 
 			return testcase{
 				args: args{
-					authUID:  authUID,
+					email:    email,
 					password: password,
 				},
 				usecase: &debugInteractor{
@@ -148,18 +148,18 @@ func TestDebugInteractor_CreateStaffIDToken(t *testing.T) {
 			}
 		},
 		"success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
-			authUID := "test-auth-uid"
+			email := "staff@example.com"
 			password := "password123"
 			token := "test-id-token"
 
 			mockStaffAuthRepo := mock_repository.NewMockStaffAuthentication(ctrl)
 			mockStaffAuthRepo.EXPECT().
-				CreateIDToken(gomock.Any(), authUID, password).
+				CreateIDToken(gomock.Any(), email, password).
 				Return(token, nil)
 
 			return testcase{
 				args: args{
-					authUID:  authUID,
+					email:    email,
 					password: password,
 				},
 				usecase: &debugInteractor{
@@ -182,7 +182,7 @@ func TestDebugInteractor_CreateStaffIDToken(t *testing.T) {
 
 			tc := tc(ctx, ctrl)
 
-			got, err := tc.usecase.CreateStaffIDToken(ctx, tc.args.authUID, tc.args.password)
+			got, err := tc.usecase.CreateStaffIDToken(ctx, tc.args.email, tc.args.password)
 
 			if tc.want.expectedResult == nil {
 				require.NoError(t, err)

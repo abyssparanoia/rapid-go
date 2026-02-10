@@ -20,7 +20,7 @@ func NewDebugHandler(
 }
 
 func (h *DebugHandler) CreateAdminIDToken(ctx context.Context, req *debug_apiv1.CreateAdminIDTokenRequest) (*debug_apiv1.CreateAdminIDTokenResponse, error) {
-	idToken, err := h.debugInteractor.CreateAdminIDToken(ctx, req.GetAuthUid(), req.GetPassword())
+	idToken, err := h.debugInteractor.CreateAdminIDToken(ctx, req.GetEmail(), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (h *DebugHandler) CreateAdminIDToken(ctx context.Context, req *debug_apiv1.
 }
 
 func (h *DebugHandler) CreateStaffIDToken(ctx context.Context, req *debug_apiv1.CreateStaffIDTokenRequest) (*debug_apiv1.CreateStaffIDTokenResponse, error) {
-	idToken, err := h.debugInteractor.CreateStaffIDToken(ctx, req.GetAuthUid(), req.GetPassword())
+	idToken, err := h.debugInteractor.CreateStaffIDToken(ctx, req.GetEmail(), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}

@@ -26,7 +26,7 @@ const (
 
 type CreateAdminIDTokenRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AuthUid       string                 `protobuf:"bytes,1,opt,name=auth_uid,json=authUid,proto3" json:"auth_uid,omitempty"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -62,9 +62,9 @@ func (*CreateAdminIDTokenRequest) Descriptor() ([]byte, []int) {
 	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CreateAdminIDTokenRequest) GetAuthUid() string {
+func (x *CreateAdminIDTokenRequest) GetEmail() string {
 	if x != nil {
-		return x.AuthUid
+		return x.Email
 	}
 	return ""
 }
@@ -122,7 +122,7 @@ func (x *CreateAdminIDTokenResponse) GetIdToken() string {
 
 type CreateStaffIDTokenRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AuthUid       string                 `protobuf:"bytes,1,opt,name=auth_uid,json=authUid,proto3" json:"auth_uid,omitempty"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -158,9 +158,9 @@ func (*CreateStaffIDTokenRequest) Descriptor() ([]byte, []int) {
 	return file_rapid_debug_api_v1_api_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CreateStaffIDTokenRequest) GetAuthUid() string {
+func (x *CreateStaffIDTokenRequest) GetEmail() string {
 	if x != nil {
-		return x.AuthUid
+		return x.Email
 	}
 	return ""
 }
@@ -316,18 +316,18 @@ var File_rapid_debug_api_v1_api_proto protoreflect.FileDescriptor
 
 const file_rapid_debug_api_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"\x1crapid/debug_api/v1/api.proto\x12\x12rapid.debug_api.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"o\n" +
-	"\x19CreateAdminIDTokenRequest\x12\x19\n" +
-	"\bauth_uid\x18\x01 \x01(\tR\aauthUid\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword:\x1b\x92A\x18\n" +
-	"\x16\xd2\x01\bauth_uid\xd2\x01\bpassword\"I\n" +
+	"\x1crapid/debug_api/v1/api.proto\x12\x12rapid.debug_api.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"g\n" +
+	"\x19CreateAdminIDTokenRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword:\x18\x92A\x15\n" +
+	"\x13\xd2\x01\x05email\xd2\x01\bpassword\"I\n" +
 	"\x1aCreateAdminIDTokenResponse\x12\x19\n" +
 	"\bid_token\x18\x01 \x01(\tR\aidToken:\x10\x92A\r\n" +
-	"\v\xd2\x01\bid_token\"o\n" +
-	"\x19CreateStaffIDTokenRequest\x12\x19\n" +
-	"\bauth_uid\x18\x01 \x01(\tR\aauthUid\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword:\x1b\x92A\x18\n" +
-	"\x16\xd2\x01\bauth_uid\xd2\x01\bpassword\"I\n" +
+	"\v\xd2\x01\bid_token\"g\n" +
+	"\x19CreateStaffIDTokenRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword:\x18\x92A\x15\n" +
+	"\x13\xd2\x01\x05email\xd2\x01\bpassword\"I\n" +
 	"\x1aCreateStaffIDTokenResponse\x12\x19\n" +
 	"\bid_token\x18\x01 \x01(\tR\aidToken:\x10\x92A\r\n" +
 	"\v\xd2\x01\bid_token\"g\n" +

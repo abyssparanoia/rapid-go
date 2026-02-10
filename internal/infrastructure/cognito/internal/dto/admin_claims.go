@@ -27,11 +27,12 @@ type AdminUserAttributes struct {
 }
 
 func NewAdminUserAttributesFromCognitoUser(cognitoUser *types.UserType) *AdminUserAttributes {
-	userAttributes := &AdminUserAttributes{
-		AuthUID: *cognitoUser.Username,
-	}
+	userAttributes := &AdminUserAttributes{}
 
 	for _, attribute := range cognitoUser.Attributes {
+		if *attribute.Name == "sub" {
+			userAttributes.AuthUID = *attribute.Value
+		}
 		if *attribute.Name == "email" {
 			userAttributes.Email = *attribute.Value
 		}
@@ -48,7 +49,7 @@ func NewAdminUserAttributesFromCognitoUser(cognitoUser *types.UserType) *AdminUs
 
 func NewAdminUserAttributesFromClaims(awsClaims *AWSCognitoAdminClaims) *AdminUserAttributes {
 	userAttributes := &AdminUserAttributes{
-		AuthUID: awsClaims.Username,
+		AuthUID: awsClaims.Subject,
 		Email:   awsClaims.Email,
 	}
 	if awsClaims.AdminID != "" {

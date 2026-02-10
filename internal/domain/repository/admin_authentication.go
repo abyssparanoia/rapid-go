@@ -14,7 +14,7 @@ type AdminAuthentication interface {
 	CreateUser(ctx context.Context, param AdminAuthenticationCreateUserParam) (string, error)
 	StoreClaims(ctx context.Context, authUID string, adminClaims *model.AdminClaims) error
 	CreateCustomToken(ctx context.Context, authUID string) (string, error)
-	CreateIDToken(ctx context.Context, authUID string, password string) (string, error)
+	CreateIDToken(ctx context.Context, email string, password string) (string, error)
 }
 
 type AdminAuthenticationCreateUserParam struct {

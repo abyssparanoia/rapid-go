@@ -11,12 +11,15 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/internal/dto"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/internal/marshaller"
-	"github.com/abyssparanoia/rapid-go/internal/pkg/uuid"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/lestrrat-go/jwx/v3/jwk"
+)
+
+const (
+	cognitoSubAttribute = "sub"
 )
 
 type staffAuthentication struct {
@@ -114,8 +117,18 @@ func (r *staffAuthentication) GetUserByEmail(
 			Exist: false,
 		}, nil
 	}
+
+	// Extract sub (authUID) from user attributes
+	var authUID string
+	for _, attr := range user.Attributes {
+		if *attr.Name == cognitoSubAttribute {
+			authUID = *attr.Value
+			break
+		}
+	}
+
 	return &repository.StaffAuthenticationGetUserByEmailResult{
-		AuthUID:     *user.Username,
+		AuthUID:     authUID,
 		StaffClaims: marshaller.StaffUserAttributesToModel(dto.NewUserAttributesFromCognitoUser(user)),
 		Exist:       true,
 	}, nil
@@ -125,7 +138,6 @@ func (r *staffAuthentication) CreateUser(
 	ctx context.Context,
 	param repository.StaffAuthenticationCreateUserParam,
 ) (string, error) {
-	authUID := uuid.UUIDBase64()
 	emailAttr := &types.AttributeType{
 		Name:  aws.String(string(types.UsernameAttributeTypeEmail)),
 		Value: aws.String(param.Email),
@@ -137,19 +149,31 @@ func (r *staffAuthentication) CreateUser(
 	attrs := []types.AttributeType{*emailAttr, *emailVerifiedAttr}
 	req := &cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:             aws.String(r.userPoolID),
-		Username:               aws.String(authUID),
+		Username:               aws.String(param.Email),
 		UserAttributes:         attrs,
 		DesiredDeliveryMediums: []types.DeliveryMediumType{types.DeliveryMediumTypeEmail},
 	}
-	_, err := r.cli.AdminCreateUser(ctx, req)
+	res, err := r.cli.AdminCreateUser(ctx, req)
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
+	}
+
+	// Extract sub from response
+	var authUID string
+	for _, attr := range res.User.Attributes {
+		if *attr.Name == cognitoSubAttribute {
+			authUID = *attr.Value
+			break
+		}
+	}
+	if authUID == "" {
+		return "", errors.InternalErr.New().WithDetail("sub attribute not found in response")
 	}
 
 	if param.Password.Valid {
 		req := &cognitoidentityprovider.AdminSetUserPasswordInput{
 			UserPoolId: aws.String(r.userPoolID),
-			Username:   aws.String(authUID),
+			Username:   aws.String(param.Email),
 			Password:   aws.String(param.Password.String),
 			Permanent:  true,
 		}
@@ -168,7 +192,7 @@ func (r *staffAuthentication) StoreClaims(
 ) error {
 	req := &cognitoidentityprovider.AdminUpdateUserAttributesInput{
 		UserPoolId:     aws.String(r.userPoolID),
-		Username:       aws.String(authUID),
+		Username:       aws.String(claims.Email),
 		UserAttributes: marshaller.StaffClaimsToStaffCustomUserAttributes(claims).ToSlice(),
 	}
 	_, err := r.cli.AdminUpdateUserAttributes(ctx, req)
@@ -187,13 +211,13 @@ func (r *staffAuthentication) CreateCustomToken(
 
 func (r *staffAuthentication) CreateIDToken(
 	ctx context.Context,
-	authUID string,
+	email string,
 	password string,
 ) (string, error) {
 	req := &cognitoidentityprovider.AdminInitiateAuthInput{
 		AuthFlow: types.AuthFlowTypeAdminUserPasswordAuth,
 		AuthParameters: map[string]string{
-			"USERNAME": authUID,
+			"USERNAME": email,
 			"PASSWORD": password,
 		},
 		ClientId:   aws.String(r.clientID),

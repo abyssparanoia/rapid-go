@@ -99,7 +99,7 @@
     "v1CreateAdminIDTokenRequest": {
       "type": "object",
       "properties": {
-        "auth_uid": {
+        "email": {
           "type": "string"
         },
         "password": {
@@ -107,7 +107,7 @@
         }
       },
       "required": [
-        "auth_uid",
+        "email",
         "password"
       ]
     },
@@ -151,7 +151,7 @@
     "v1CreateStaffIDTokenRequest": {
       "type": "object",
       "properties": {
-        "auth_uid": {
+        "email": {
           "type": "string"
         },
         "password": {
@@ -159,7 +159,7 @@
         }
       },
       "required": [
-        "auth_uid",
+        "email",
         "password"
       ]
     },

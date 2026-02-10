@@ -109,10 +109,19 @@ func (r *adminAuthentication) CreateCustomToken(
 
 func (r *adminAuthentication) CreateIDToken(
 	ctx context.Context,
-	authUID string,
+	email string,
 	password string,
 ) (string, error) {
-	customToken, err := r.cli.CustomToken(ctx, authUID)
+	// Get user by email to retrieve authUID
+	result, err := r.GetUserByEmail(ctx, email)
+	if err != nil {
+		return "", err
+	}
+	if !result.Exist {
+		return "", errors.InvalidIDTokenErr.New().WithDetail("user not found")
+	}
+
+	customToken, err := r.cli.CustomToken(ctx, result.AuthUID)
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}

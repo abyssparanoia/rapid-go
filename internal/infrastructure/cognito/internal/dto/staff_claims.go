@@ -29,10 +29,11 @@ type StaffUserAttributes struct {
 }
 
 func NewUserAttributesFromCognitoUser(cognitoUser *types.UserType) *StaffUserAttributes {
-	userAttributes := &StaffUserAttributes{
-		AuthUID: *cognitoUser.Username,
-	}
+	userAttributes := &StaffUserAttributes{}
 	for _, attribute := range cognitoUser.Attributes {
+		if *attribute.Name == "sub" {
+			userAttributes.AuthUID = *attribute.Value
+		}
 		if *attribute.Name == "email" {
 			userAttributes.Email = *attribute.Value
 		}
@@ -52,7 +53,7 @@ func NewUserAttributesFromCognitoUser(cognitoUser *types.UserType) *StaffUserAtt
 
 func NewUserAttributesFromClaims(awsClaims *AWSCognitoStaffClaims) *StaffUserAttributes {
 	userAttributes := &StaffUserAttributes{
-		AuthUID: awsClaims.Username,
+		AuthUID: awsClaims.Subject,
 		Email:   awsClaims.Email,
 	}
 	if awsClaims.TenantID != "" {

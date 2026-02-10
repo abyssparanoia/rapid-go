@@ -32,7 +32,7 @@ type StaffAuthentication interface {
 	) (string, error)
 	CreateIDToken(
 		ctx context.Context,
-		authUID string,
+		email string,
 		password string,
 	) (string, error)
 }
