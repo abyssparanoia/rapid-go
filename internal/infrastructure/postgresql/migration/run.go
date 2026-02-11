@@ -39,7 +39,7 @@ func RunUp() {
 		panic(err)
 	}
 
-	logger := logger.New(environment.MinLogLevelInfo)
+	logger := logger.New(environment.MinLogLevelInfo.ZapLogLevel())
 
 	logger.Info("start database schema migration")
 
@@ -64,7 +64,7 @@ func RunDown() {
 		panic(err)
 	}
 
-	logger := logger.New(environment.MinLogLevelInfo)
+	logger := logger.New(environment.MinLogLevelInfo.ZapLogLevel())
 
 	logger.Info("start database schema down")
 
@@ -89,7 +89,7 @@ func RunExtractSchema() {
 		panic(err)
 	}
 
-	logger := logger.New(environment.MinLogLevelInfo)
+	logger := logger.New(environment.MinLogLevelInfo.ZapLogLevel())
 
 	logger.Info("start extracting database schema")
 
@@ -133,7 +133,7 @@ func RunSyncConstants() {
 	}
 	ctx := context.Background()
 
-	l := logger.New(environment.MinLogLevelInfo)
+	l := logger.New(environment.MinLogLevelInfo.ZapLogLevel())
 	ctx = logger.ToContext(ctx, l)
 
 	databaseCli := postgresql.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, true)

@@ -1,5 +1,7 @@
 package environment
 
+import "go.uber.org/zap/zapcore"
+
 type Environment struct {
 	Port        string                 `env:"PORT,required"`
 	Environment ApplicationEnvironment `env:"ENV,required"`
@@ -31,6 +33,19 @@ const (
 	MinLogLevelInfo    MinLogLevel = "info"
 	MinLogLevelWarning MinLogLevel = "warning"
 )
+
+func (ml MinLogLevel) ZapLogLevel() zapcore.Level {
+	switch ml {
+	case MinLogLevelDebug:
+		return zapcore.DebugLevel
+	case MinLogLevelInfo:
+		return zapcore.InfoLevel
+	case MinLogLevelWarning:
+		return zapcore.WarnLevel
+	default:
+		return zapcore.InfoLevel
+	}
+}
 
 type DatabaseEnvironment struct {
 	DBHost      string `env:"DB_HOST,required"`
