@@ -79,16 +79,27 @@ python3 .claude/skills/init-new-repository/scripts/init_repository.py \
 - Deletes unused database code:
   - If `mysql`: removes `db/postgresql/` and `internal/infrastructure/postgresql/`
   - If `postgresql`: removes `db/mysql/` and `internal/infrastructure/mysql/`
+- Updates Go import statements:
+  - `internal/infrastructure/dependency/dependency.go` - switches database import aliases (`mysql` ↔ `postgresql`)
+  - `internal/infrastructure/grpc/internal/handler/public/handler.go` - switches database imports
+  - `internal/infrastructure/cmd/internal/schema_migration_cmd/database_cmd/cmd.go` - toggles commented migration imports
 - Updates configuration files:
-  - `internal/infrastructure/dependency/dependency.go` - import aliases
-  - `internal/infrastructure/cmd/internal/schema_migration_cmd/database_cmd/cmd.go` - migration imports
   - `Makefile` - database-specific generation targets
   - `.envrc.tmpl` - environment variables
   - `docker-compose.yml` - removes unused database service
+- Updates .claude documentation:
+  - `.claude/rules/repository.md` - path pattern examples
+  - `.claude/rules/dependency-injection.md` - import examples
+  - `.claude/skills/add-domain-entity/references/repository-patterns.md` - import examples
+  - `.claude/skills/add-domain-entity/references/marshaller-patterns.md` - import examples
 
 **4. Cleans up generated code:**
 - Deletes `internal/infrastructure/grpc/pb/rapid/` (will be regenerated)
 - Deletes `schema/openapi/rapid/` (will be regenerated)
+
+**5. Verifies database consistency:**
+- Checks that all database-specific files are consistent with selected database
+- Reports warnings if any inconsistencies are detected (script continues normally)
 
 ### Step 3: Regenerate Code
 
