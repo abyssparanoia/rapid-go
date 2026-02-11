@@ -18,7 +18,7 @@ tool (
 
 require (
 	cloud.google.com/go v0.123.0
-	cloud.google.com/go/spanner v1.87.0
+	cloud.google.com/go/spanner v1.88.0
 	cloud.google.com/go/storage v1.60.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/aarondl/null/v9 v9.0.1
@@ -104,7 +104,7 @@ require (
 	github.com/Azure/go-ansiterm v0.0.0-20250102033503-faa5f7b0171c // indirect
 	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/Djarvur/go-err113 v0.1.1 // indirect
-	github.com/GoogleCloudPlatform/grpc-gcp-go/grpcgcp v1.5.3 // indirect
+	github.com/GoogleCloudPlatform/grpc-gcp-go/grpcgcp v1.6.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.30.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.55.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.55.0 // indirect
