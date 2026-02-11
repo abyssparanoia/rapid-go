@@ -381,6 +381,203 @@ def remove_docker_compose_db_service(compose_path: Path, database: str, dry_run:
             print(f"Error: Could not write to {compose_path}: {e}")
 
 
+def toggle_database_imports(repo_root: Path, database: str, dry_run: bool = False) -> bool:
+    """
+    Toggle database import paths in Go files.
+
+    For PostgreSQL selection, replaces 'mysql' with 'postgresql' in database import aliases.
+    For MySQL selection, no changes needed (mysql is the default).
+
+    Args:
+        repo_root: Repository root directory
+        database: Selected database ('mysql' or 'postgresql')
+        dry_run: If True, don't actually modify files
+
+    Returns:
+        True if any files were modified, False otherwise
+    """
+    if database == 'mysql':
+        # MySQL is default, no changes needed for imports
+        return False
+
+    # PostgreSQL selected - need to switch imports from mysql to postgresql
+    files_to_update = [
+        repo_root / "internal" / "infrastructure" / "dependency" / "dependency.go",
+        repo_root / "internal" / "infrastructure" / "grpc" / "internal" / "handler" / "public" / "handler.go",
+    ]
+
+    modified = False
+    for file_path in files_to_update:
+        if not file_path.exists():
+            continue
+
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+        except Exception as e:
+            print(f"Warning: Could not read {file_path}: {e}")
+            continue
+
+        # Replace mysql with postgresql in import paths
+        # Pattern: internal/infrastructure/mysql → internal/infrastructure/postgresql
+        new_content = content.replace(
+            'internal/infrastructure/mysql',
+            'internal/infrastructure/postgresql'
+        )
+
+        if new_content != content:
+            if not dry_run:
+                try:
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        f.write(new_content)
+                    modified = True
+                except Exception as e:
+                    print(f"Error: Could not write to {file_path}: {e}")
+            else:
+                modified = True
+
+    return modified
+
+
+def toggle_migration_imports(repo_root: Path, database: str, dry_run: bool = False) -> bool:
+    """
+    Toggle commented migration imports in database_cmd/cmd.go.
+
+    For MySQL (default):
+        migration "github.com/.../mysql/migration"
+        // migration "github.com/.../postgresql/migration"
+
+    For PostgreSQL:
+        // migration "github.com/.../mysql/migration"
+        migration "github.com/.../postgresql/migration"
+
+    Args:
+        repo_root: Repository root directory
+        database: Selected database ('mysql' or 'postgresql')
+        dry_run: If True, don't actually modify the file
+
+    Returns:
+        True if file was modified, False otherwise
+    """
+    cmd_path = repo_root / "internal" / "infrastructure" / "cmd" / "internal" / "schema_migration_cmd" / "database_cmd" / "cmd.go"
+
+    if not cmd_path.exists():
+        return False
+
+    try:
+        with open(cmd_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+    except Exception as e:
+        print(f"Warning: Could not read {cmd_path}: {e}")
+        return False
+
+    modified = False
+    for i, line in enumerate(lines):
+        # Check for migration import lines
+        if 'migration "' in line and '/migration"' in line:
+            if database == 'mysql':
+                # Uncomment mysql, comment postgresql
+                if '/mysql/migration"' in line and line.strip().startswith('//'):
+                    lines[i] = line.lstrip('# ').lstrip('/')
+                    lines[i] = lines[i].lstrip()  # Remove any leading whitespace after removing comment
+                    modified = True
+                elif '/postgresql/migration"' in line and not line.strip().startswith('//'):
+                    lines[i] = '// ' + line
+                    modified = True
+            else:  # postgresql
+                # Comment mysql, uncomment postgresql
+                if '/mysql/migration"' in line and not line.strip().startswith('//'):
+                    lines[i] = '\t// ' + line.lstrip('\t')
+                    modified = True
+                elif '/postgresql/migration"' in line and line.strip().startswith('//'):
+                    # Remove the comment marker while preserving indentation
+                    stripped = line.lstrip()
+                    if stripped.startswith('// '):
+                        lines[i] = line.replace('// ', '', 1)
+                    elif stripped.startswith('//'):
+                        lines[i] = line.replace('//', '', 1)
+                    modified = True
+
+    if modified and not dry_run:
+        try:
+            with open(cmd_path, 'w', encoding='utf-8') as f:
+                f.writelines(lines)
+        except Exception as e:
+            print(f"Error: Could not write to {cmd_path}: {e}")
+            return False
+
+    return modified
+
+
+def verify_database_consistency(repo_root: Path, database: str) -> List[str]:
+    """
+    Verify all database-specific files are consistent.
+
+    Checks:
+    1. dependency.go imports match selected database
+    2. database_cmd/cmd.go has correct import uncommented
+    3. public/handler.go imports match selected database
+
+    Args:
+        repo_root: Repository root directory
+        database: Selected database ('mysql' or 'postgresql')
+
+    Returns:
+        List of warning messages (empty if all checks pass)
+    """
+    warnings = []
+    expected_db = database
+    unexpected_db = 'postgresql' if database == 'mysql' else 'mysql'
+
+    # Check dependency.go
+    dep_file = repo_root / "internal" / "infrastructure" / "dependency" / "dependency.go"
+    if dep_file.exists():
+        try:
+            content = dep_file.read_text(encoding='utf-8')
+            if f'infrastructure/{unexpected_db}' in content:
+                warnings.append(f"dependency.go still contains '{unexpected_db}' imports")
+        except Exception:
+            pass
+
+    # Check database_cmd/cmd.go
+    cmd_file = repo_root / "internal" / "infrastructure" / "cmd" / "internal" / "schema_migration_cmd" / "database_cmd" / "cmd.go"
+    if cmd_file.exists():
+        try:
+            content = cmd_file.read_text(encoding='utf-8')
+            lines = content.split('\n')
+
+            # Check if expected import is uncommented
+            expected_active = False
+            unexpected_commented = False
+
+            for line in lines:
+                if f'/{expected_db}/migration"' in line:
+                    if not line.strip().startswith('//'):
+                        expected_active = True
+                elif f'/{unexpected_db}/migration"' in line:
+                    if line.strip().startswith('//'):
+                        unexpected_commented = True
+
+            if not expected_active:
+                warnings.append(f"database_cmd/cmd.go: {expected_db} migration import is not active")
+            if not unexpected_commented:
+                warnings.append(f"database_cmd/cmd.go: {unexpected_db} migration import is not commented out")
+        except Exception:
+            pass
+
+    # Check public/handler.go
+    handler_file = repo_root / "internal" / "infrastructure" / "grpc" / "internal" / "handler" / "public" / "handler.go"
+    if handler_file.exists():
+        try:
+            content = handler_file.read_text(encoding='utf-8')
+            if f'infrastructure/{unexpected_db}' in content:
+                warnings.append(f"public/handler.go still contains '{unexpected_db}' imports")
+        except Exception:
+            pass
+
+    return warnings
+
+
 def main():
     """Main execution function."""
     args = parse_args()
@@ -504,6 +701,16 @@ def main():
     remove_docker_compose_db_service(compose_path, database, args.dry_run)
     print(f"✓ Updated docker-compose.yml (removed {db_to_remove} service)")
 
+    # Toggle database imports in Go files
+    if toggle_database_imports(repo_root, database, args.dry_run):
+        print(f"✓ Updated database imports in dependency.go and public/handler.go for {database}")
+    else:
+        print(f"ℹ No database import changes needed (using {database} as default)")
+
+    # Toggle migration imports in database_cmd/cmd.go
+    if toggle_migration_imports(repo_root, database, args.dry_run):
+        print(f"✓ Updated migration imports in database_cmd/cmd.go for {database}")
+
     print("\n" + "=" * 80)
     print("Step 4: Cleaning up generated code")
     print("=" * 80)
@@ -521,6 +728,22 @@ def main():
         print(f"✓ Deleted: {generated_openapi_dir}")
     else:
         print(f"ℹ Already deleted or not found: {generated_openapi_dir}")
+
+    # Verify database consistency
+    print("\n" + "=" * 80)
+    print("Step 5: Verifying database consistency")
+    print("=" * 80)
+
+    if args.dry_run:
+        print("ℹ Skipping verification in dry-run mode (files not modified yet)")
+    else:
+        warnings = verify_database_consistency(repo_root, database)
+        if warnings:
+            print("\n⚠️  Warnings detected (please verify manually):")
+            for warning in warnings:
+                print(f"  • {warning}")
+        else:
+            print("✓ All database-specific files are consistent")
 
     print("\n" + "=" * 80)
     print("Initialization Complete!")

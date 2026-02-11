@@ -441,6 +441,23 @@ description: Efficient codebase investigation for rapid-go
 description: Efficient codebase investigation for awesome
 ```
 
+5. **Database-specific paths (PostgreSQL selection only):**
+```go
+// Before
+import "github.com/mycompany/awesome-api/internal/infrastructure/mysql/repository"
+
+// After (when postgresql is selected)
+import "github.com/mycompany/awesome-api/internal/infrastructure/postgresql/repository"
+```
+
+**Database-specific files updated (PostgreSQL selection):**
+- `.claude/rules/repository.md` - path pattern examples
+- `.claude/rules/dependency-injection.md` - import examples
+- `.claude/skills/add-domain-entity/references/repository-patterns.md` - import examples
+- `.claude/skills/add-domain-entity/references/marshaller-patterns.md` - import examples
+
+**Note:** Files under `.claude/skills/init-new-repository/` maintain both MySQL and PostgreSQL examples as templates.
+
 **Updated files include:**
 - `CLAUDE.md`
 - All files in `rules/`
@@ -585,6 +602,61 @@ rm -rf schema/openapi/{service-name}/
 make migrate.up
 make generate.buf
 make generate.mock
+```
+
+---
+
+## Database Consistency Verification
+
+After initialization, the script performs automatic verification to ensure all database-specific files are consistent with the selected database.
+
+### What is Checked
+
+1. **dependency.go imports**
+   - Verifies database import aliases match selected database
+   - Example (PostgreSQL): Should contain `internal/infrastructure/postgresql`, not `mysql`
+
+2. **database_cmd/cmd.go migration imports**
+   - Verifies correct migration import is active (uncommented)
+   - Verifies incorrect migration import is commented out
+
+3. **public/handler.go imports**
+   - Verifies database import matches selected database
+
+### Warning Output Example
+
+If inconsistencies are detected, warnings are displayed but the script continues normally:
+
+```
+========================================================================
+Step 5: Verifying database consistency
+========================================================================
+
+⚠️  Warnings detected (please verify manually):
+  • dependency.go still contains 'mysql' imports
+  • database_cmd/cmd.go: postgresql migration import is not active
+
+========================================================================
+Initialization Complete!
+========================================================================
+```
+
+### Manual Verification
+
+If warnings are shown, manually check the affected files:
+
+```bash
+# Check dependency.go imports
+grep -n "infrastructure/mysql\|infrastructure/postgresql" \
+  internal/infrastructure/dependency/dependency.go
+
+# Check migration imports
+grep -n "migration.*migration\"" \
+  internal/infrastructure/cmd/internal/schema_migration_cmd/database_cmd/cmd.go
+
+# Check public handler imports
+grep -n "infrastructure/mysql\|infrastructure/postgresql" \
+  internal/infrastructure/grpc/internal/handler/public/handler.go
 ```
 
 ---
