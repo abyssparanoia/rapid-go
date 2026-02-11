@@ -22,7 +22,7 @@ func NewCreateRootAdminCmd() *cobra.Command {
 				panic(err)
 			}
 
-			l := logger.New(e.MinLogLevel)
+			l := logger.New(e.MinLogLevel.ZapLogLevel())
 			ctx = logger.ToContext(ctx, l)
 
 			d := &dependency.Dependency{}

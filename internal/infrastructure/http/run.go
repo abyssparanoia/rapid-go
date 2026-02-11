@@ -41,7 +41,7 @@ func Run() {
 		panic(err)
 	}
 
-	logger := logger.New(e.MinLogLevel)
+	logger := logger.New(e.MinLogLevel.ZapLogLevel())
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3000*time.Second)
 	defer cancel()
