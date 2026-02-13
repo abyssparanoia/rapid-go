@@ -166,6 +166,50 @@ func (h *Handler) ListExamples(
 }
 ```
 
+## Handling Optional Proto String Fields (null.StringFromPtr)
+
+For optional proto `string` fields (which become `*string` in Go), always use `null.StringFromPtr`
+to convert directly, and pass the result into the input constructor call:
+
+### Correct Pattern
+
+```go
+staff, err := h.staffInteractor.Update(
+    ctx,
+    input.NewAdminUpdateStaff(
+        claims.AdminID.String,
+        req.GetStaffId(),
+        null.StringFromPtr(req.DisplayName),    // optional string → null.String
+        role,
+        null.StringFromPtr(req.ImageAssetId),   // optional string → null.String
+        requestTime,
+    ),
+)
+```
+
+### Anti-Pattern (DO NOT USE)
+
+```go
+// Bad - Creating param then mutating fields
+param := input.NewAdminUpdateStaff(
+    claims.AdminID.String,
+    req.GetStaffId(),
+    null.String{},    // empty default
+    role,
+    null.String{},    // empty default
+    requestTime,
+)
+if req.DisplayName != nil {
+    param.DisplayName = null.StringFrom(*req.DisplayName)
+}
+```
+
+### Rules
+
+1. **Use `null.StringFromPtr(req.Field)`** for optional proto string fields - never manual nil check + `null.StringFrom(*req.Field)`
+2. **Use `nullable.TypeFromPtr`** with marshaller conversion for optional proto enum fields (since enum conversion is needed, declare variable before constructor)
+3. **Call input constructor directly in the interactor call** - do not create param variable first and mutate it
+
 ## Marshaller (Proto <-> Domain)
 
 Location: `internal/infrastructure/grpc/internal/handler/{actor}/marshaller/{resource}.go`
