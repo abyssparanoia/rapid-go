@@ -46,10 +46,11 @@ func (i *staffMeInteractor) SignUp(
 
 	// 2. Validate asset
 	authContext := model.NewStaffAssetAuthContext(param.AuthUID)
-	imagePath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID, authContext)
+	imagePath, clearAssetPath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID, authContext)
 	if err != nil {
 		return nil, err
 	}
+	defer clearAssetPath()
 
 	var staff *model.Staff
 
@@ -157,10 +158,11 @@ func (i *staffMeInteractor) Update(
 		var imagePath null.String
 		if param.ImageAssetID.Valid {
 			authContext := model.NewStaffAssetAuthContext(param.StaffID)
-			path, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String, authContext)
+			path, clearAssetPath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String, authContext)
 			if err != nil {
 				return err
 			}
+			defer clearAssetPath()
 			imagePath = null.StringFrom(path)
 		}
 

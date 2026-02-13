@@ -138,10 +138,12 @@ func (i *adminStaffInteractor) Create(
 		}
 
 		authContext := model.NewAdminAssetAuthContext(param.AdminID)
-		imagePath, err = i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID, authContext)
+		var clearAssetPath func()
+		imagePath, clearAssetPath, err = i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID, authContext)
 		if err != nil {
 			return err
 		}
+		defer clearAssetPath()
 
 		staff, err = i.staffService.Create(
 			ctx,
@@ -210,10 +212,11 @@ func (i *adminStaffInteractor) Update(
 		var imagePath null.String
 		if param.ImageAssetID.Valid {
 			authContext := model.NewAdminAssetAuthContext(param.AdminID)
-			path, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String, authContext)
+			path, clearAssetPath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String, authContext)
 			if err != nil {
 				return err
 			}
+			defer clearAssetPath()
 			imagePath = null.StringFrom(path)
 		}
 

@@ -21,7 +21,7 @@ type Asset interface {
 		assetType model.AssetType,
 		assetID string,
 		authContext model.AssetAuthContext,
-	) (string, error)
+	) (string, func(), error)
 	BatchSetTenantURLs(
 		ctx context.Context,
 		tenants model.Tenants,
