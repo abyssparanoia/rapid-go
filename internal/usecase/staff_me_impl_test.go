@@ -114,7 +114,7 @@ func TestStaffMeInteractor_SignUp(t *testing.T) {
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
 				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, "image-asset-id", gomock.Any()).
-				Return("/path/to/image", nil)
+				Return("/path/to/image", func() {}, nil)
 			mockAssetService.EXPECT().
 				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
 				Return(nil)
@@ -462,7 +462,7 @@ func TestStaffMeInteractor_Update(t *testing.T) {
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
 				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, "image-asset-id", gomock.Any()).
-				Return("/path/to/image", nil)
+				Return("/path/to/image", func() {}, nil)
 			mockAssetService.EXPECT().
 				BatchSetStaffURLs(gomock.Any(), model.Staffs{updatedStaff}, gomock.Any()).
 				Return(nil)

@@ -64,15 +64,19 @@ func (s *assetService) GetWithValidate(
 	assetType model.AssetType,
 	assetID string,
 	authContext model.AssetAuthContext,
-) (string, error) {
+) (string, func(), error) {
+	noop := func() {}
 	got, err := s.assetPathCache.Get(ctx, assetID, authContext)
 	if err != nil {
-		return "", err
+		return "", noop, err
 	}
 	if err := model.ValidateAssetPath(assetType, got); err != nil {
-		return "", err
+		return "", noop, err
 	}
-	return got, nil
+	clearCache := func() {
+		_ = s.assetPathCache.Clear(ctx, assetID)
+	}
+	return got, clearCache, nil
 }
 
 func (s *assetService) BatchSetStaffURLs(

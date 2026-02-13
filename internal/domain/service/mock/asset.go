@@ -101,12 +101,13 @@ func (mr *MockAssetMockRecorder) CreatePresignedURL(ctx, assetType, contentType,
 }
 
 // GetWithValidate mocks base method.
-func (m *MockAsset) GetWithValidate(ctx context.Context, assetType model.AssetType, assetID string, authContext model.AssetAuthContext) (string, error) {
+func (m *MockAsset) GetWithValidate(ctx context.Context, assetType model.AssetType, assetID string, authContext model.AssetAuthContext) (string, func(), error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetWithValidate", ctx, assetType, assetID, authContext)
 	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(func())
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // GetWithValidate indicates an expected call of GetWithValidate.
