@@ -48,18 +48,15 @@ func (h *StaffHandler) UpdateMeTenant(
 	}
 	requestTime := request_interceptor.GetRequestTime(ctx)
 
-	param := input.NewStaffUpdateMeTenant(
-		claims.TenantID.String,
-		claims.StaffID.String,
-		null.String{},
-		requestTime,
+	tenant, err := h.meTenantInteractor.Update(
+		ctx,
+		input.NewStaffUpdateMeTenant(
+			claims.TenantID.String,
+			claims.StaffID.String,
+			null.StringFromPtr(req.Name),
+			requestTime,
+		),
 	)
-
-	if req.Name != nil {
-		param.Name = null.StringFrom(*req.Name)
-	}
-
-	tenant, err := h.meTenantInteractor.Update(ctx, param)
 	if err != nil {
 		return nil, err
 	}

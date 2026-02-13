@@ -140,17 +140,6 @@ func (i *staffMeInteractor) Update(
 		return nil, err
 	}
 
-	// Validate asset if provided
-	var imagePath string
-	if param.ImageAssetID.Valid {
-		authContext := model.NewStaffAssetAuthContext(param.StaffID)
-		var err error
-		imagePath, err = i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String, authContext)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
 		// Get with lock
 		staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
@@ -164,8 +153,19 @@ func (i *staffMeInteractor) Update(
 			return err
 		}
 
+		// Validate asset if provided (inside transaction)
+		var imagePath null.String
+		if param.ImageAssetID.Valid {
+			authContext := model.NewStaffAssetAuthContext(param.StaffID)
+			path, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String, authContext)
+			if err != nil {
+				return err
+			}
+			imagePath = null.StringFrom(path)
+		}
+
 		// Apply updates via domain method (role is not updated in UpdateMe)
-		staff.Update(param.DisplayName, nullable.Type[model.StaffRole]{}, null.StringFrom(imagePath), param.RequestTime)
+		staff.Update(param.DisplayName, nullable.Type[model.StaffRole]{}, imagePath, param.RequestTime)
 
 		// Persist
 		return i.staffRepository.Update(ctx, staff)

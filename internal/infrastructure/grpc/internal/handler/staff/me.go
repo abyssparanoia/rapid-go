@@ -72,22 +72,16 @@ func (h *StaffHandler) UpdateMe(
 	}
 	requestTime := request_interceptor.GetRequestTime(ctx)
 
-	param := input.NewStaffUpdateMe(
-		claims.TenantID.String,
-		claims.StaffID.String,
-		null.String{},
-		null.String{},
-		requestTime,
+	staff, err := h.meInteractor.Update(
+		ctx,
+		input.NewStaffUpdateMe(
+			claims.TenantID.String,
+			claims.StaffID.String,
+			null.StringFromPtr(req.DisplayName),
+			null.StringFromPtr(req.ImageAssetId),
+			requestTime,
+		),
 	)
-
-	if req.DisplayName != nil {
-		param.DisplayName = null.StringFrom(*req.DisplayName)
-	}
-	if req.ImageAssetId != nil {
-		param.ImageAssetID = null.StringFrom(*req.ImageAssetId)
-	}
-
-	staff, err := h.meInteractor.Update(ctx, param)
 	if err != nil {
 		return nil, err
 	}

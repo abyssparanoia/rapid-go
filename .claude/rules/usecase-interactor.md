@@ -671,6 +671,50 @@ func (i *adminAdminInteractor) Delete(
 }
 ```
 
+## Asset Validation in Update Methods
+
+When validating optional asset fields (e.g., `ImageAssetID`) in update operations:
+
+1. **Asset validation MUST be inside the transaction** - ensures consistency with the database state
+2. **Use `var imagePath null.String`** (not `var imagePath string`) - the zero value `null.String{}` has `Valid: false`, which correctly skips the update when no asset is provided
+3. **Only set `imagePath = null.StringFrom(path)` when asset is actually provided** - prevents empty string from clearing the field
+
+### Correct Pattern (see admin_staff_impl.go)
+
+```go
+if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
+    staff, err := i.staffRepository.Get(ctx, ...)
+    if err != nil {
+        return err
+    }
+
+    var imagePath null.String  // zero value = {Valid: false}
+    if param.ImageAssetID.Valid {
+        path, err := i.assetService.GetWithValidate(ctx, ...)
+        if err != nil {
+            return err
+        }
+        imagePath = null.StringFrom(path)  // only set when provided
+    }
+
+    staff.Update(param.DisplayName, param.Role, imagePath, param.RequestTime)
+    return i.staffRepository.Update(ctx, staff)
+})
+```
+
+### Anti-Pattern (DO NOT USE)
+
+```go
+// Bug: var imagePath string → empty string "" when not provided
+// null.StringFrom("") creates {Valid: true, String: ""} which CLEARS the field
+var imagePath string
+if param.ImageAssetID.Valid {
+    imagePath, err = i.assetService.GetWithValidate(ctx, ...)
+}
+// Outside transaction - inconsistent state possible
+staff.Update(param.DisplayName, role, null.StringFrom(imagePath), ...)
+```
+
 ## Optional Update Fields with nullable.Type
 
 For optional update fields, use `nullable.Type[T]` instead of pointers:
