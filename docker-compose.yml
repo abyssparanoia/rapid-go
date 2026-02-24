@@ -37,10 +37,10 @@ services:
       - rapid-go-network
 
   aws:
-    build: ./localstack
+    build: ./emulator/aws
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${LOCALSTACK_VOLUME_DIR:-./localstack/data}:/var/lib/localstack
+      - ${LOCALSTACK_VOLUME_DIR:-./emulator/aws/data}:/var/lib/localstack
     environment:
       SERVICES: s3,sns,sqs
       DEBUG: ${DEBUG:-0}
@@ -58,8 +58,8 @@ services:
   aws-cognito:
     image: jagregory/cognito-local:latest
     volumes:
-      - ./localstack/cognito/.cognito:/app/.cognito
-      - ./localstack/cognito/cognito.json:/app/.cognito/config.json
+      - ./emulator/aws/cognito/.cognito:/app/.cognito
+      - ./emulator/aws/cognito/cognito.json:/app/.cognito/config.json
     command: ["node", "/app/start.js"]
     ports:
       - 9229:9229
@@ -91,6 +91,16 @@ services:
       SPANNER_EMULATOR_URL: "http://spanner:9020/"
       INSTANCE_NAME: "test-instance"
       DATABASE_NAME: "test-database"
+    networks:
+      - rapid-go-network
+
+  fake-gcs:
+    image: fsouza/fake-gcs-server
+    command: ["-scheme", "http", "-external-url", "http://localhost:4443", "-port", "4443"]
+    volumes:
+      - ./emulator/gcs/data:/data
+    ports:
+      - "4443:4443"
     networks:
       - rapid-go-network
 

@@ -13,8 +13,11 @@ tmp
 secret/
 schema/openapi/generated
 .terraform
-localstack/data
-localstack/cognito/.cognito
+emulator/aws/data
+emulator/aws/cognito/.cognito
+emulator/gcs/data/*
+!emulator/gcs/data/local-private-bucket/.gitkeep
+!emulator/gcs/data/local-public-bucket/.gitkeep
 db/mysql/erd/src
 db/redis/dump.rdb
 sqlboiler.toml

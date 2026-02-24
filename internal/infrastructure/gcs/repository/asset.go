@@ -22,17 +22,26 @@ type asset struct {
 	privateBucketHandle *storage.BucketHandle
 	publicBucketHandle  *storage.BucketHandle
 	publicAssetBaseURL  string
+	emulatorHost        string
+	privateBucketName   string
+	publicBucketName    string
 }
 
 func NewAsset(
 	privateBucketHandle *storage.BucketHandle,
 	publicBucketHandle *storage.BucketHandle,
 	publicAssetBaseURL string,
+	emulatorHost string,
+	privateBucketName string,
+	publicBucketName string,
 ) repository.Asset {
 	return &asset{
 		privateBucketHandle: privateBucketHandle,
 		publicBucketHandle:  publicBucketHandle,
 		publicAssetBaseURL:  strings.TrimSuffix(publicAssetBaseURL, "/"),
+		emulatorHost:        emulatorHost,
+		privateBucketName:   privateBucketName,
+		publicBucketName:    publicBucketName,
 	}
 }
 
@@ -42,7 +51,16 @@ func (r *asset) GenerateWritePresignedURL(
 	path string,
 	expires time.Duration,
 ) (string, error) {
-	// Select bucket based on path prefix
+	// Emulator mode: return direct HTTP URL (fake-gcs-server doesn't validate signatures)
+	if r.emulatorHost != "" {
+		bucketName := r.privateBucketName
+		if strings.HasPrefix(path, "public/") {
+			bucketName = r.publicBucketName
+		}
+		return fmt.Sprintf("%s/%s/%s", r.emulatorHost, bucketName, path), nil
+	}
+
+	// Production mode: generate signed URL
 	bucketHandle := r.privateBucketHandle
 	if strings.HasPrefix(path, "public/") {
 		bucketHandle = r.publicBucketHandle
@@ -70,7 +88,12 @@ func (r *asset) GenerateReadURL(
 		return fmt.Sprintf("%s/%s", r.publicAssetBaseURL, path), nil
 	}
 
-	// Private: generate presigned URL with rounded expiration for cache optimization
+	// Emulator mode: return direct HTTP URL for private assets
+	if r.emulatorHost != "" {
+		return fmt.Sprintf("%s/%s/%s", r.emulatorHost, r.privateBucketName, path), nil
+	}
+
+	// Production mode: generate presigned URL with rounded expiration for cache optimization
 	// Round request time to 5-minute intervals so same URL is generated within window
 	roundedTime := requestTime.Truncate(urlRoundingDuration)
 	// Expiration: rounded time + 2 * rounding duration (ensures URL valid for full window)
