@@ -153,7 +153,7 @@ format:
 
 .PHONY: init.local.cognito
 init.local.cognito:
-	bash ./localstack/cognito/init.sh
+	bash ./emulator/aws/cognito/init.sh
 
 define format
 	@go fmt ./... 
