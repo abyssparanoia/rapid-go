@@ -3,7 +3,7 @@ package output
 type TaskCreateAdmin struct {
 	AdminID  string
 	AuthUID  string
-	Password string
+	Password string //nolint:gosec
 }
 
 func NewTaskCreateAdmin(

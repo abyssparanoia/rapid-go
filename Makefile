@@ -4,6 +4,9 @@ SQLBOILER_SED_EXPRESSION := "s/{{GOPATH}}/$(subst /,\/,$(GOPATH))/g"
 .PHONY: build
 build:
 	go build -o ./.bin/app-cli ./cmd/app
+	# for GCP
+	# go build -o ./.bin/app-cli -tags=gcp ./cmd/app
+	
 
 .PHONY: test
 test:

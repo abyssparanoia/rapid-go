@@ -10,7 +10,7 @@ import (
 type TaskCreateAdmin struct {
 	Email       string    `validate:"required,email"`
 	DisplayName string    `validate:"required"`
-	Password    string    `validate:"required"`
+	Password    string    `validate:"required"` //nolint:gosec
 	RequestTime time.Time `validate:"required"`
 }
 

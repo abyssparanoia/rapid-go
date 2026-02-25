@@ -64,12 +64,13 @@ type RedisEnvironment struct {
 }
 
 type GCPEnvironment struct {
-	GCPProjectID          string `env:"GCP_PROJECT_ID,required"`
-	FirebaseClientAPIKey  string `env:"FIREBASE_CLIENT_API_KEY"`
-	GCSEmulatorHost       string `env:"GCS_EMULATOR_HOST"`
-	GCPPrivateBucketName  string `env:"GCP_PRIVATE_BUCKET_NAME,required"`
-	GCPPublicBucketName   string `env:"GCP_PUBLIC_BUCKET_NAME,required"`
-	GCPPublicAssetBaseURL string `env:"GCP_PUBLIC_ASSET_BASE_URL,required"`
+	GCPProjectID             string `env:"GCP_PROJECT_ID,required"`
+	FirebaseClientAPIKey     string `env:"FIREBASE_CLIENT_API_KEY"`
+	FirebaseAuthEmulatorHost string `env:"FIREBASE_AUTH_EMULATOR_HOST"`
+	GCSEmulatorHost          string `env:"GCS_EMULATOR_HOST"`
+	GCPPrivateBucketName     string `env:"GCP_PRIVATE_BUCKET_NAME,required"`
+	GCPPublicBucketName      string `env:"GCP_PUBLIC_BUCKET_NAME,required"`
+	GCPPublicAssetBaseURL    string `env:"GCP_PUBLIC_ASSET_BASE_URL,required"`
 }
 
 type AWSEnvironment struct {
