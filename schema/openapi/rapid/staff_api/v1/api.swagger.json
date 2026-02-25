@@ -23,7 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1CreateAssetPresignedURLResponse"
+              "$ref": "#/definitions/v1CreateAssetPresignedURLResponse"
             }
           }
         },
@@ -33,7 +33,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1CreateAssetPresignedURLRequest"
+              "$ref": "#/definitions/v1CreateAssetPresignedURLRequest"
             }
           }
         ],
@@ -155,7 +155,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1ListStaffsResponse"
+              "$ref": "#/definitions/v1ListStaffsResponse"
             }
           }
         },
@@ -201,7 +201,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/rapidStaff_apiV1GetStaffResponse"
+              "$ref": "#/definitions/v1GetStaffResponse"
             }
           }
         },

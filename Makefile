@@ -4,6 +4,9 @@ SQLBOILER_SED_EXPRESSION := "s/{{GOPATH}}/$(subst /,\/,$(GOPATH))/g"
 .PHONY: build
 build:
 	go build -o ./.bin/app-cli ./cmd/app
+	# for GCP
+	# go build -o ./.bin/app-cli -tags=gcp ./cmd/app
+	
 
 .PHONY: test
 test:
@@ -153,7 +156,7 @@ format:
 
 .PHONY: init.local.cognito
 init.local.cognito:
-	bash ./localstack/cognito/init.sh
+	bash ./emulator/aws/cognito/init.sh
 
 define format
 	@go fmt ./... 

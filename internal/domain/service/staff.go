@@ -18,7 +18,7 @@ type Staff interface {
 type StaffCreateParam struct {
 	TenantID    string
 	Email       string
-	Password    string
+	Password    string //nolint:gosec
 	StaffRole   model.StaffRole
 	DisplayName string
 	ImagePath   string

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"io"
@@ -8,7 +9,7 @@ import (
 	"net/url"
 	"strings"
 
-	"firebase.google.com/go/auth"
+	"firebase.google.com/go/v4/auth"
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
@@ -19,15 +20,18 @@ import (
 type staffStaffAuthentication struct {
 	cli          *auth.Client
 	clientAPIKey string
+	emulatorHost string
 }
 
 func NewStaffAuthentication(
 	firebaseAuthCli *auth.Client,
 	firebaseClientAPIKey string,
+	emulatorHost string,
 ) repository.StaffAuthentication {
 	return &staffStaffAuthentication{
 		cli:          firebaseAuthCli,
 		clientAPIKey: firebaseClientAPIKey,
+		emulatorHost: emulatorHost,
 	}
 }
 
@@ -119,23 +123,49 @@ func (r *staffStaffAuthentication) CreateIDToken(
 		return "", errors.InvalidIDTokenErr.New().WithDetail("user not found")
 	}
 
-	customToken, err := r.cli.CustomToken(ctx, result.AuthUID)
+	var reqBody io.Reader
+	var apiURL string
+	var contentType string
+	var jsonBody []byte
+	var customToken string
+	var req *http.Request
+
+	if r.emulatorHost != "" {
+		// Emulator: Use signInWithPassword (avoids CustomToken emulatedSigner issue)
+		apiURL = "http://" + r.emulatorHost + "/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + r.clientAPIKey
+		jsonBody, err = json.Marshal(map[string]interface{}{
+			"email":             email,
+			"password":          password,
+			"returnSecureToken": true,
+		})
+		if err != nil {
+			return "", errors.InternalErr.Wrap(err)
+		}
+		reqBody = bytes.NewReader(jsonBody)
+		contentType = "application/json"
+	} else {
+		// Production: Use CustomToken flow with real service account signing
+		customToken, err = r.cli.CustomToken(ctx, result.AuthUID)
+		if err != nil {
+			return "", errors.InternalErr.Wrap(err)
+		}
+
+		apiURL = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken"
+		values := url.Values{}
+		values.Add("token", customToken)
+		values.Add("returnSecureToken", "true")
+		values.Add("key", r.clientAPIKey)
+		reqBody = strings.NewReader(values.Encode())
+		contentType = "application/x-www-form-urlencoded"
+	}
+
+	req, err = http.NewRequestWithContext(ctx, http.MethodPost, apiURL, reqBody)
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}
+	req.Header.Set("Content-Type", contentType)
 
-	values := url.Values{}
-	values.Add("token", customToken)
-	values.Add("returnSecureToken", "true")
-	values.Add("key", r.clientAPIKey)
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken", strings.NewReader(values.Encode()))
-	if err != nil {
-		return "", errors.InternalErr.Wrap(err)
-	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) //nolint:gosec // URL is constructed from trusted environment variables
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}
@@ -146,9 +176,19 @@ func (r *staffStaffAuthentication) CreateIDToken(
 		return "", errors.InternalErr.Wrap(err)
 	}
 
+	// Check HTTP status code
+	if resp.StatusCode != http.StatusOK {
+		return "", errors.InternalErr.Errorf("firebase auth request failed: status=%d body=%s", resp.StatusCode, string(b))
+	}
+
 	var res dto.VerifyCustomTokenResponse
 	if err := json.Unmarshal(b, &res); err != nil {
 		return "", errors.InternalErr.Wrap(err)
+	}
+
+	// Check for empty idToken
+	if res.IDToken == "" {
+		return "", errors.InternalErr.Errorf("empty id_token in response: body=%s", string(b))
 	}
 
 	return res.IDToken, nil

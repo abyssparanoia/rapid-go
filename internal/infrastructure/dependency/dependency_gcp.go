@@ -1,4 +1,4 @@
-//go:build !gcp
+//go:build gcp
 
 // nolint:godot,gci
 package dependency
@@ -7,16 +7,15 @@ import (
 	"context"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/service"
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/aws"
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
-	cognito_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase"
+	firebase_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/repository"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs"
+	gcs_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs/repository"
 	database "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql"
 	database_cache "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/cache"
 	database_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/repository"
 	database_transactable "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql/transactable"
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/s3"
-	s3_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/s3/repository"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
 
@@ -49,39 +48,38 @@ func (d *Dependency) Inject(
 ) {
 	d.DatabaseCli = database.NewClient(e.DBHost, e.DBUser, e.DBPassword, e.DBDatabase, e.DBLogEnable)
 
-	// AWS
-	awsSession := aws.NewConfig(ctx, e.AWSRegion)
-	s3Client := s3.NewClient(awsSession, e.AWSEmulatorHost)
-	cognitoCli := cognito.NewClient(awsSession, e.AWSCognitoEmulatorHost)
+	// GCP Cloud Storage
+	gcsCli := gcs.NewClient(ctx, e.GCSEmulatorHost)
+	gcsPrivateBucketHandle := gcs.NewBucketHandle(gcsCli, e.GCPPrivateBucketName)
+	gcsPublicBucketHandle := gcs.NewBucketHandle(gcsCli, e.GCPPublicBucketName)
+
+	// Firebase Auth
+	firebaseCli := firebase.NewClient(e.GCPProjectID, e.FirebaseAuthEmulatorHost)
 
 	transactable := database_transactable.NewTransactable()
 
-	staffAuthenticationRepository := cognito_repository.NewStaffAuthentication(
-		ctx,
-		cognitoCli,
-		e.AWSCognitoStaffUserPoolID,
-		e.AWSCognitoStaffClientID,
-		e.AWSCognitoEmulatorHost,
-		e.AWSRegion,
+	staffAuthenticationRepository := firebase_repository.NewStaffAuthentication(
+		firebaseCli,
+		e.FirebaseClientAPIKey,
+		e.FirebaseAuthEmulatorHost,
 	)
-	adminAuthenticationRepository := cognito_repository.NewAdminAuthentication(
-		ctx,
-		cognitoCli,
-		e.AWSCognitoAdminUserPoolID,
-		e.AWSCognitoAdminClientID,
-		e.AWSCognitoEmulatorHost,
-		e.AWSRegion,
+	adminAuthenticationRepository := firebase_repository.NewAdminAuthentication(
+		firebaseCli,
+		e.FirebaseClientAPIKey,
+		e.FirebaseAuthEmulatorHost,
 	)
 	tenantRepository := database_repository.NewTenant()
 	staffRepository := database_repository.NewStaff()
 	adminRepository := database_repository.NewAdmin()
 
-	// S3 asset repository
-	assetRepository := s3_repository.NewAsset(
-		s3Client,
-		e.AWSPrivateBucketName,
-		e.AWSPublicBucketName,
-		e.AWSPublicAssetBaseURL,
+	// GCS asset repository
+	assetRepository := gcs_repository.NewAsset(
+		gcsPrivateBucketHandle,
+		gcsPublicBucketHandle,
+		e.GCPPublicAssetBaseURL,
+		e.GCSEmulatorHost,
+		e.GCPPrivateBucketName,
+		e.GCPPublicBucketName,
 	)
 
 	assetPathCache := database_cache.NewAssetPath()
