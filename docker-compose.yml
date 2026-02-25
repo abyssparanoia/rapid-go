@@ -104,6 +104,17 @@ services:
     networks:
       - rapid-go-network
 
+  firebase-auth:
+    image: andreysenov/firebase-tools
+    command: ["firebase", "emulators:start", "--only", "auth", "--project", "sample", "--import=/data", "--export-on-exit=/data"]
+    volumes:
+      - ./emulator/firebase/data:/data
+      - ./emulator/firebase/firebase.json:/home/node/firebase.json
+    ports:
+      - "9099:9099"
+    networks:
+      - rapid-go-network
+
 networks:
   rapid-go-network:
     driver: bridge

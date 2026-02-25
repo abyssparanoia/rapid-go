@@ -7,10 +7,9 @@ import (
 	"context"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/service"
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/aws"
-	"github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito"
-	cognito_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/cognito/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
+	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase"
+	firebase_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/repository"
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs"
 	gcs_repository "github.com/abyssparanoia/rapid-go/internal/infrastructure/gcs/repository"
 	database "github.com/abyssparanoia/rapid-go/internal/infrastructure/mysql"
@@ -54,27 +53,20 @@ func (d *Dependency) Inject(
 	gcsPrivateBucketHandle := gcs.NewBucketHandle(gcsCli, e.GCPPrivateBucketName)
 	gcsPublicBucketHandle := gcs.NewBucketHandle(gcsCli, e.GCPPublicBucketName)
 
-	// AWS (for Cognito)
-	awsSession := aws.NewConfig(ctx, e.AWSRegion)
-	cognitoCli := cognito.NewClient(awsSession, e.AWSCognitoEmulatorHost)
+	// Firebase Auth
+	firebaseCli := firebase.NewClient(e.GCPProjectID, e.FirebaseAuthEmulatorHost)
 
 	transactable := database_transactable.NewTransactable()
 
-	staffAuthenticationRepository := cognito_repository.NewStaffAuthentication(
-		ctx,
-		cognitoCli,
-		e.AWSCognitoStaffUserPoolID,
-		e.AWSCognitoStaffClientID,
-		e.AWSCognitoEmulatorHost,
-		e.AWSRegion,
+	staffAuthenticationRepository := firebase_repository.NewStaffAuthentication(
+		firebaseCli,
+		e.FirebaseClientAPIKey,
+		e.FirebaseAuthEmulatorHost,
 	)
-	adminAuthenticationRepository := cognito_repository.NewAdminAuthentication(
-		ctx,
-		cognitoCli,
-		e.AWSCognitoAdminUserPoolID,
-		e.AWSCognitoAdminClientID,
-		e.AWSCognitoEmulatorHost,
-		e.AWSRegion,
+	adminAuthenticationRepository := firebase_repository.NewAdminAuthentication(
+		firebaseCli,
+		e.FirebaseClientAPIKey,
+		e.FirebaseAuthEmulatorHost,
 	)
 	tenantRepository := database_repository.NewTenant()
 	staffRepository := database_repository.NewStaff()
