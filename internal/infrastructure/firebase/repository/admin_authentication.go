@@ -128,11 +128,14 @@ func (r *adminAuthentication) CreateIDToken(
 	var reqBody io.Reader
 	var apiURL string
 	var contentType string
+	var jsonBody []byte
+	var customToken string
+	var req *http.Request
 
 	if r.emulatorHost != "" {
 		// Emulator: Use signInWithPassword (avoids CustomToken emulatedSigner issue)
 		apiURL = "http://" + r.emulatorHost + "/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + r.clientAPIKey
-		jsonBody, err := json.Marshal(map[string]interface{}{
+		jsonBody, err = json.Marshal(map[string]interface{}{
 			"email":             email,
 			"password":          password,
 			"returnSecureToken": true,
@@ -144,7 +147,7 @@ func (r *adminAuthentication) CreateIDToken(
 		contentType = "application/json"
 	} else {
 		// Production: Use CustomToken flow with real service account signing
-		customToken, err := r.cli.CustomToken(ctx, result.AuthUID)
+		customToken, err = r.cli.CustomToken(ctx, result.AuthUID)
 		if err != nil {
 			return "", errors.InternalErr.Wrap(err)
 		}
@@ -158,13 +161,13 @@ func (r *adminAuthentication) CreateIDToken(
 		contentType = "application/x-www-form-urlencoded"
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, apiURL, reqBody)
+	req, err = http.NewRequestWithContext(ctx, http.MethodPost, apiURL, reqBody)
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}
 	req.Header.Set("Content-Type", contentType)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) //nolint:gosec // URL is constructed from trusted environment variables
 	if err != nil {
 		return "", errors.InternalErr.Wrap(err)
 	}

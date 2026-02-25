@@ -4,7 +4,7 @@ import "github.com/abyssparanoia/rapid-go/internal/domain/model"
 
 type AdminCreateStaff struct {
 	Staff    *model.Staff
-	Password string
+	Password string //nolint:gosec
 }
 
 func NewAdminCreateStaff(staff *model.Staff, password string) *AdminCreateStaff {
