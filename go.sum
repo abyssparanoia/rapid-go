@@ -319,6 +319,8 @@ github.com/cli/browser v1.3.0/go.mod h1:HH8s+fOAxjhQoBUAsKuPCbqUuxZDhQ2/aD+SzsEf
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cloudspannerecosystem/memefish v0.0.0-20231128072053-0a1141e8eb65 h1:Rg9tANZcL6gdZlY1W5TeWMD4pIQN63qkAhS+HhjhbPA=
 github.com/cloudspannerecosystem/memefish v0.0.0-20231128072053-0a1141e8eb65/go.mod h1:Q40NmYZbmaw9ay7p94ng9NNBuX1N+4OK3cSjN4q5tPM=
+github.com/cloudspannerecosystem/memefish v0.5.0 h1:4L1K1pTqzHyhu5R7dHpOmVVjYKWeivmRBJRQgJdMY7I=
+github.com/cloudspannerecosystem/memefish v0.5.0/go.mod h1:LB19E2xVWA3vns8r01ESIZB67/OYZOHVuETzifgTzVc=
 github.com/cloudspannerecosystem/wrench v1.10.1 h1:aGA6gnAb3TMEDVCvgFluvbFtkwkQxtbz5cCM2JpRFbk=
 github.com/cloudspannerecosystem/wrench v1.10.1/go.mod h1:NFWKXWSm2XNts8S9hfVfU/lOFFYV9AzCSkkjIl8D924=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
@@ -1036,6 +1038,7 @@ go.lsp.dev/uri v0.3.0 h1:KcZJmh6nFIBeJzTugn5JTU6OOyG0lDOo3R9KwTxTYbo=
 go.lsp.dev/uri v0.3.0/go.mod h1:P5sbO1IQR+qySTWOCnhnK7phBx+W3zbLqSMDJNTw88I=
 go.mercari.io/yo v0.5.7 h1:V5VLLFfNVlwpHvJtLq8y4kssEVt58o8q4ov0M/wdZUE=
 go.mercari.io/yo v0.5.7/go.mod h1:2xF5cXdaqTCVEaF6ShUT6RwBZp78a9pg/h5IZdsq34o=
+go.mercari.io/yo v0.8.1/go.mod h1:3JQN+/lFuAIBTIT54cmpn+qpzn4CkoSidiVqVVepOAM=
 go.opencensus.io v0.24.0 h1:y73uSU6J157QMP2kn2r30vwW1A2W2WFwSCGnAVxeaD0=
 go.opencensus.io v0.24.0/go.mod h1:vNK8G9p7aAivkbmorf4v+7Hgx+Zs0yY+0fOtgBfjQKo=
 go.opentelemetry.io/auto/sdk v1.2.1 h1:jXsnJ4Lmnqd11kwkBV2LgLoFMZKizbCi5fNZ/ipaZ64=
