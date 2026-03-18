@@ -119,7 +119,7 @@ jobs:
       ENV: local
       PORT: "8080"
       MIN_LOG_LEVEL: debug
-      DB_HOST: "localhost:3306"
+      DB_HOST: "tcp(localhost:3306)"
       DB_USER: root
       DB_PASSWORD: password
       DB_DATABASE: maindb
