@@ -1,89 +1,64 @@
 #!/bin/bash
 
-# E2E Test Script
-# This script performs end-to-end testing of the full authentication and API flow
+# E2E Test Runner
+# Sources test files from docs/e2e/tests/ and runs them in order.
+# Each test file defines functions; this script calls them in the correct sequence.
 
 set -e  # Exit on error
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Configuration
-BASE_URL="${BASE_URL:-http://localhost:8080}"
-CLI_PATH="${CLI_PATH:-.bin/app-cli}"
+# Source common helpers & variables
+source "$SCRIPT_DIR/common.sh"
 
-# Generate unique identifiers for this test run
-TEST_ID="$(date +%s)-${RANDOM}"
-ADMIN_EMAIL="${ADMIN_EMAIL:-e2e-admin-${TEST_ID}@example.com}"
-ADMIN_DISPLAY_NAME="${ADMIN_DISPLAY_NAME:-E2E Admin ${TEST_ID}}"
-STAFF_EMAIL="${STAFF_EMAIL:-e2e-staff-${TEST_ID}@example.com}"
-STAFF_DISPLAY_NAME="${STAFF_DISPLAY_NAME:-E2E Staff ${TEST_ID}}"
-TENANT_NAME="${TENANT_NAME:-E2E Test Tenant ${TEST_ID}}"
-
-# Test results tracking
-TOTAL_TESTS=0
-PASSED_TESTS=0
-FAILED_TESTS=0
-
-# Shared state (populated by steps)
-ADMIN_ID=""
-ADMIN_AUTH_UID=""
-ADMIN_PASSWORD=""
-ADMIN_TOKEN=""
-TENANT_ID=""
-STAFF_ID=""
-STAFF_AUTH_UID=""
-STAFF_PASSWORD=""
-STAFF_TOKEN=""
-
-# Helper functions
-print_step() {
-    echo -e "${BLUE}========================================${NC}"
-    echo -e "${BLUE}$1${NC}"
-    echo -e "${BLUE}========================================${NC}"
-}
-
-print_success() {
-    echo -e "${GREEN}✓ $1${NC}"
-    PASSED_TESTS=$((PASSED_TESTS + 1))
-    TOTAL_TESTS=$((TOTAL_TESTS + 1))
-}
-
-print_error() {
-    echo -e "${RED}✗ $1${NC}"
-    FAILED_TESTS=$((FAILED_TESTS + 1))
-    TOTAL_TESTS=$((TOTAL_TESTS + 1))
-}
-
-print_info() {
-    echo -e "${YELLOW}ℹ $1${NC}"
-}
-
-print_result() {
-    echo ""
-    echo -e "${BLUE}========================================${NC}"
-    echo -e "${BLUE}Test Results${NC}"
-    echo -e "${BLUE}========================================${NC}"
-    echo -e "Total Tests: ${TOTAL_TESTS}"
-    echo -e "${GREEN}Passed: ${PASSED_TESTS}${NC}"
-    if [ $FAILED_TESTS -gt 0 ]; then
-        echo -e "${RED}Failed: ${FAILED_TESTS}${NC}"
-        exit 1
-    else
-        echo -e "${GREEN}All tests passed!${NC}"
-    fi
-}
-
-# Source all step files
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-for step_file in "$SCRIPT_DIR"/steps/step_*.sh; do
-    # shellcheck source=/dev/null
-    source "$step_file"
+# Source all test files
+for f in "$SCRIPT_DIR"/tests/*.sh; do
+    source "$f"
 done
+
+# PID of background HTTP server
+HTTP_SERVER_PID=""
+
+cleanup() {
+    local exit_code=$?
+    echo ""
+    # Show server logs on failure (before killing processes)
+    if [ $exit_code -ne 0 ]; then
+        print_server_logs
+    fi
+    print_info "Cleaning up background processes..."
+    if [ -n "$HTTP_SERVER_PID" ]; then
+        kill "$HTTP_SERVER_PID" 2>/dev/null || true
+        wait "$HTTP_SERVER_PID" 2>/dev/null || true
+    fi
+    # Remove temp log file
+    [ -n "$SERVER_LOG_FILE" ] && rm -f "$SERVER_LOG_FILE"
+    print_info "Cleanup complete."
+}
+
+trap cleanup EXIT
+
+start_server() {
+    print_step "Building & Starting Server"
+
+    # 1. Build binary
+    print_info "Building CLI binary..."
+    (cd "$REPO_ROOT" && /usr/bin/make build) || { echo "make build failed"; exit 1; }
+    print_info "Build complete: $CLI_PATH"
+
+    # 2. Start HTTP server in background
+    print_info "Starting HTTP server..."
+    SERVER_LOG_FILE=$(mktemp /tmp/e2e-server-XXXXXX.log)
+    (cd "$REPO_ROOT" && "$CLI_PATH" http-server run) > "$SERVER_LOG_FILE" 2>&1 &
+    HTTP_SERVER_PID=$!
+    print_info "HTTP server started (PID=$HTTP_SERVER_PID)"
+
+    # 3. Wait for server to become healthy
+    wait_for_health
+
+    echo ""
+}
 
 # Main execution
 main() {
@@ -93,19 +68,46 @@ main() {
     echo -e "${GREEN}=================================${NC}"
     echo ""
 
-    step_01_check_prerequisites
-    step_02_health_check
-    step_03_create_admin
-    step_04_get_admin_token
-    step_05_test_admin_api
-    step_06_create_tenant
-    step_07_create_staff
-    step_08_get_staff_token
-    step_09_test_staff_api
-    step_10_test_staff_update_me
-    step_11_test_staff_tenant_api
-    step_12_staff_signup
+    # Start server (build → launch → health-wait)
+    start_server
 
+    # Phase 1: Prerequisites & Health
+    check_prerequisites
+    health_check
+
+    # Phase 2: Admin Setup
+    create_admin
+    get_admin_token
+
+    # Phase 3: Admin Tenant CRUD
+    test_admin_list_tenants
+    create_tenant
+    test_admin_get_tenant
+    test_admin_update_tenant
+    test_admin_delete_tenant
+
+    # Phase 4: Admin Staff CRUD
+    create_staff
+    test_admin_list_staffs
+    test_admin_get_staff
+    test_admin_update_staff
+
+    # Phase 5: Staff APIs (requires staff token)
+    get_staff_token
+    test_staff_get_me
+    test_staff_update_me
+    test_staff_get_tenant
+    test_staff_update_tenant
+    test_staff_create_asset
+
+    # Phase 6: Staff List/Get
+    test_staff_list_staffs
+    test_staff_get_staff
+
+    # Phase 7: Staff Signup Flow
+    staff_signup
+
+    # Results
     print_result
 }
 
