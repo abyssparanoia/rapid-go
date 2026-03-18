@@ -56,10 +56,10 @@ staff_signup() {
     SIGNUP_ASSET_ID="e2e-signup-asset-${TEST_ID}"
     SIGNUP_ASSET_AUTH_CONTEXT="staff:${SIGNUP_AUTH_UID}"
     SIGNUP_ASSET_PATH="private/user_images/e2e-signup-${TEST_ID}.png"
-    NOW=$(date -u '+%Y-%m-%d %H:%M:%S+00')
-    EXPIRES=$(date -u -v+15M '+%Y-%m-%d %H:%M:%S+00' 2>/dev/null || date -u -d '+15 minutes' '+%Y-%m-%d %H:%M:%S+00')
+    NOW=$(date -u '+%Y-%m-%d %H:%M:%S')
+    EXPIRES=$(date -u -v+15M '+%Y-%m-%d %H:%M:%S' 2>/dev/null || date -u -d '+15 minutes' '+%Y-%m-%d %H:%M:%S')
 
-    run_psql "
+    run_mysql "
         INSERT INTO assets (id, auth_context, content_type, type, path, expires_at, created_at, updated_at)
         VALUES ('${SIGNUP_ASSET_ID}', '${SIGNUP_ASSET_AUTH_CONTEXT}', 'image/png', 'private/user_images', '${SIGNUP_ASSET_PATH}', '${EXPIRES}', '${NOW}', '${NOW}');
     "

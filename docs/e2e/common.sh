@@ -55,6 +55,17 @@ run_psql() {
     fi
 }
 
+# MySQL helper: uses local mysql CLI if available, falls back to docker exec
+MYSQL_CONTAINER="${MYSQL_CONTAINER:-rapid-go-mysql-1}"
+
+run_mysql() {
+    if command -v mysql &> /dev/null; then
+        mysql -h 127.0.0.1 -P 3306 -u root -ppassword maindb -e "$1" 2>/dev/null
+    else
+        docker exec "$MYSQL_CONTAINER" mysql -u root -ppassword maindb -e "$1" 2>/dev/null
+    fi
+}
+
 # Helper functions
 print_step() {
     # Record current log line count so failure output starts from this test
