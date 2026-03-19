@@ -103,7 +103,7 @@ func (r *adminAuthentication) GetUserByEmail(
 	var user *types.UserType
 	for _, cognitoUser := range res.Users {
 		for _, attr := range cognitoUser.Attributes {
-			if attr.Name == aws.String("email") && attr.Value == aws.String(email) {
+			if *attr.Name == "email" && *attr.Value == email {
 				user = &cognitoUser
 			}
 		}
