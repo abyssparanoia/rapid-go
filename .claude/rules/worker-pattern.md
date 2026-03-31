@@ -92,8 +92,8 @@ package input
 import (
     "time"
 
-    "github.com/eaglys-platform/pandlock-api/internal/domain/errors"
-    "github.com/eaglys-platform/pandlock-api/internal/pkg/validation"
+    "github.com/abyssparanoia/rapid-go/internal/domain/errors"
+    "github.com/abyssparanoia/rapid-go/internal/pkg/validation"
 )
 
 type TaskProcessProjectKeyCreation struct {
@@ -134,8 +134,8 @@ package usecase
 import (
     "context"
 
-    "github.com/eaglys-platform/pandlock-api/internal/domain/model"
-    "github.com/eaglys-platform/pandlock-api/internal/usecase/input"
+    "github.com/abyssparanoia/rapid-go/internal/domain/model"
+    "github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
 //go:generate go run go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_usecase
@@ -164,9 +164,9 @@ package usecase
 import (
     "context"
 
-    "github.com/eaglys-platform/pandlock-api/internal/domain/model"
-    "github.com/eaglys-platform/pandlock-api/internal/domain/repository"
-    "github.com/eaglys-platform/pandlock-api/internal/usecase/input"
+    "github.com/abyssparanoia/rapid-go/internal/domain/model"
+    "github.com/abyssparanoia/rapid-go/internal/domain/repository"
+    "github.com/abyssparanoia/rapid-go/internal/usecase/input"
     "github.com/aarondl/null/v9"
 )
 
@@ -359,9 +359,9 @@ import (
     "time"
 
     "github.com/aws/aws-sdk-go-v2/service/sqs/types"
-    "github.com/eaglys-platform/pandlock-api/internal/domain/errors"
-    "github.com/eaglys-platform/pandlock-api/internal/usecase"
-    "github.com/eaglys-platform/pandlock-api/internal/usecase/input"
+    "github.com/abyssparanoia/rapid-go/internal/domain/errors"
+    "github.com/abyssparanoia/rapid-go/internal/usecase"
+    "github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
 type ProjectKeyCreationMessage struct {
@@ -428,7 +428,7 @@ Location: `internal/infrastructure/cmd/internal/worker_cmd/cmd.go`
 package worker_cmd
 
 import (
-    "github.com/eaglys-platform/pandlock-api/internal/infrastructure/cmd/internal/worker_cmd/project_key_creation_cmd"
+    "github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/worker_cmd/project_key_creation_cmd"
     "github.com/spf13/cobra"
 )
 
@@ -462,12 +462,12 @@ import (
     "time"
 
     "github.com/caarlos0/env/v11"
-    "github.com/eaglys-platform/pandlock-api/internal/infrastructure/dependency"
-    "github.com/eaglys-platform/pandlock-api/internal/infrastructure/environment"
-    "github.com/eaglys-platform/pandlock-api/internal/infrastructure/sqs"
-    "github.com/eaglys-platform/pandlock-api/internal/infrastructure/sqs/handler"
-    "github.com/eaglys-platform/pandlock-api/internal/infrastructure/sqs/subscriber"
-    "github.com/eaglys-platform/pandlock-api/internal/pkg/logger"
+    "github.com/abyssparanoia/rapid-go/internal/infrastructure/dependency"
+    "github.com/abyssparanoia/rapid-go/internal/infrastructure/environment"
+    "github.com/abyssparanoia/rapid-go/internal/infrastructure/sqs"
+    "github.com/abyssparanoia/rapid-go/internal/infrastructure/sqs/handler"
+    "github.com/abyssparanoia/rapid-go/internal/infrastructure/sqs/subscriber"
+    "github.com/abyssparanoia/rapid-go/internal/pkg/logger"
     "github.com/spf13/cobra"
     "go.uber.org/zap"
 )
@@ -609,7 +609,7 @@ Location: `internal/infrastructure/cmd/root.go`
 
 ```go
 import (
-    "github.com/eaglys-platform/pandlock-api/internal/infrastructure/cmd/internal/worker_cmd"
+    "github.com/abyssparanoia/rapid-go/internal/infrastructure/cmd/internal/worker_cmd"
 )
 
 func NewCmdRoot() *cobra.Command {
