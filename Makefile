@@ -162,6 +162,10 @@ generate.mermaid.postgresql:
 format:
 	$(call format)
 
+.PHONY: init.local.aws
+init.local.aws:
+	bash ./emulator/aws/script/init.sh
+
 .PHONY: init.local.cognito
 init.local.cognito:
 	bash ./emulator/aws/cognito/init.sh

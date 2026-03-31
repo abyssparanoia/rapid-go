@@ -26,4 +26,5 @@
 - `make test` or `go test ./internal/...` – run unit tests.
 
 ## Local AWS emulation
-- `make init.local.cognito` – initialize Localstack Cognito resources (scripts in `localstack/`).
+- `make init.local.aws` – initialize S3 buckets (kumo, scripts in `emulator/aws/`).
+- `make init.local.cognito` – initialize Cognito resources (scripts in `emulator/aws/cognito/`).

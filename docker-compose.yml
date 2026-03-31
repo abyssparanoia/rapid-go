@@ -37,21 +37,13 @@ services:
       - rapid-go-network
 
   aws:
-    build: ./emulator/aws
+    image: ghcr.io/sivchari/kumo:latest
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${LOCALSTACK_VOLUME_DIR:-./emulator/aws/data}:/var/lib/localstack
+      - ./emulator/aws/data:/data
     environment:
-      SERVICES: s3,sns,sqs
-      DEBUG: ${DEBUG:-0}
-      AWS_ACCESS_KEY_ID: test
-      AWS_SECRET_ACCESS_KEY: test
-      AWS_DEFAULT_REGION: ap-northeast-1
-      DISABLE_CORS_CHECKS: 1
+      KUMO_DATA_DIR: /data
     ports:
       - 4566:4566
-      - 8000:8080
-      - 4572:4572
     networks:
       - rapid-go-network
 
