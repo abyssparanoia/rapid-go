@@ -184,31 +184,19 @@ jobs:
           echo "PostgreSQL failed to start"
           exit 1
 
-      - name: Wait for LocalStack
+      - name: Initialize S3 buckets
         run: |
           for i in $(seq 1 30); do
-            if curl -sf http://localhost:4566/_localstack/health | grep -q '"s3"'; then
-              echo "LocalStack is ready"
-              exit 0
+            if aws --endpoint-url=http://localhost:4566 s3 ls 2>/dev/null; then
+              echo "kumo is ready"
+              break
             fi
-            echo "Waiting for LocalStack... ($i/30)"
+            echo "Waiting for kumo... ($i/30)"
             sleep 2
           done
-          echo "LocalStack failed to start"
-          exit 1
-
-      - name: Verify LocalStack init completed
-        run: |
-          for i in $(seq 1 15); do
-            if aws --endpoint-url=http://localhost:4566 s3 ls s3://local-private-asset-bucket 2>/dev/null; then
-              echo "LocalStack init completed (S3 buckets exist)"
-              exit 0
-            fi
-            echo "Waiting for LocalStack init... ($i/15)"
-            sleep 2
-          done
-          echo "LocalStack init did not complete"
-          exit 1
+          aws --endpoint-url=http://localhost:4566 s3 mb s3://local-private-asset-bucket/
+          aws --endpoint-url=http://localhost:4566 s3 mb s3://local-public-asset-bucket/
+          echo "S3 buckets created"
 
       - name: Run migrations
         run: /usr/bin/make migrate.up.ci

@@ -664,7 +664,7 @@ func (s *Subscriber) processMessage(ctx context.Context, message types.Message) 
 }
 ```
 
-## LocalStack Setup (Development)
+## kumo Setup (Development)
 
 ### Docker Compose Configuration
 
@@ -673,24 +673,42 @@ Location: `docker-compose.yml`
 ```yaml
 services:
   aws:
-    build: ./localstack
+    image: ghcr.io/sivchari/kumo:latest
+    volumes:
+      - ./emulator/aws/data:/data
     environment:
-      SERVICES: s3,sns,sqs # Enable SQS service
-      AWS_DEFAULT_REGION: ap-northeast-1
+      KUMO_DATA_DIR: /data
+    ports:
+      - 4566:4566
 ```
 
 ### Initialization Script
 
-Location: `localstack/script/init.sh`
+Location: `emulator/aws/script/init.sh`
+
+Unlike LocalStack, kumo does not have an auto-exec `ready.d` hook. Run the init script manually via Make:
+
+```bash
+make init.local.aws
+```
+
+To add SQS queues, extend the init script:
 
 ```bash
 #!/bin/sh
 
-echo "SQS setup start!"
+# Wait for kumo readiness
+for i in $(seq 1 30); do
+  if aws --endpoint-url=http://localhost:4566 s3 ls 2>/dev/null; then
+    break
+  fi
+  sleep 2
+done
+
 echo "Creating SQS queues..."
 
 # Create queue for project key creation
-aws --endpoint-url=http://aws:4566 sqs create-queue --queue-name project-key-creation
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name project-key-creation
 echo 'project-key-creation queue created!'
 
 echo "SQS setup Done!"
@@ -753,7 +771,7 @@ source .envrc
 ### Manual Testing
 
 ```bash
-# Send test message (LocalStack)
+# Send test message (kumo)
 aws --endpoint-url=http://localhost:4566 sqs send-message \
   --queue-url http://localhost:4566/000000000000/project-key-creation \
   --message-body '{"project_id": "test-project-123"}'

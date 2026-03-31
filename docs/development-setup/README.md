@@ -43,6 +43,14 @@ docker-compose up -d
 
 This starts the MySQL database and other required services.
 
+### 1a. Initialize AWS S3 Buckets
+
+```bash
+make init.local.aws
+```
+
+Creates the local S3 buckets in kumo. Run once after starting services for the first time.
+
 ### 2. Run Database Migrations
 
 ```bash
@@ -173,6 +181,8 @@ See [create-root-admin CLI documentation](../create-root-admin-cli/README.md) fo
 | `make test` | Run all tests |
 | `make lint.go` | Lint Go code |
 | `make lint.proto` | Lint proto files |
+| `make init.local.aws` | Initialize S3 buckets in kumo |
+| `make init.local.cognito` | Initialize Cognito user pools |
 
 ## Docker Services
 
@@ -180,8 +190,9 @@ The `docker-compose.yml` includes:
 
 - **MySQL**: Primary database (port 3306)
 - **Redis**: Cache layer (port 6379)
-- **AWS LocalStack**: Local AWS services emulation (port 4566)
-  - S3, SNS, SQS, Cognito emulation
+- **kumo**: Local AWS services emulation (port 4566)
+  - S3, SNS, SQS emulation
+- **Cognito Local**: AWS Cognito emulation (port 9229)
 
 ## Troubleshooting
 
