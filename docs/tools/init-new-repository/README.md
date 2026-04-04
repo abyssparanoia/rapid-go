@@ -358,6 +358,6 @@ After initialization, your repository will have:
 
 ## Related Documentation
 
-- [Development Setup Guide](../development-setup/README.md)
-- [Skill Documentation](../../.claude/skills/init-new-repository/SKILL.md)
-- [Replacement Patterns Reference](../../.claude/skills/init-new-repository/references/patterns.md)
+- [Development Setup Guide](../../development-setup/README.md)
+- [Skill Documentation](../../../.claude/skills/init-new-repository/SKILL.md)
+- [Replacement Patterns Reference](../../../.claude/skills/init-new-repository/references/patterns.md)
