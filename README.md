@@ -27,7 +27,16 @@ the boilerplate for monorepo application (support only http protocol)
 
 ### CLI Tools
 
-- **[create-root-admin CLI](./docs/create-root-admin-cli/README.md)** - Create initial root administrator accounts
+- **[create-root-admin CLI](./docs/tools/create-root-admin-cli/README.md)** - Create initial root administrator accounts
+- **[init-new-repository](./docs/tools/init-new-repository/README.md)** - Initialize a new repository from rapid-go template
+
+### Specifications
+
+- **[Specifications](./docs/specifications/)** - System specification documents
+
+### Infrastructure
+
+- **[Infra Architectures](./docs/infra-architectures/)** - AWS/GCP infrastructure architecture documents
 
 ### Development Guidelines
 

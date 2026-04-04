@@ -304,10 +304,10 @@ aws cognito-idp admin-get-user \
 
 ## 関連リソース
 
-- [Admin API仕様](../admin-api/README.md)
-- [Cognito統合ガイド](../cognito-integration/README.md)
-- [開発環境セットアップ](../development-setup/README.md)
-- [CLI実装ガイド](../../.claude/rules/cli-command-pattern.md)
+- [Admin API仕様](../../specifications/admin-api/README.md)
+- [Cognito統合ガイド](../../specifications/cognito-integration/README.md)
+- [開発環境セットアップ](../../development-setup/README.md)
+- [CLI実装ガイド](../../../.claude/rules/cli-command-pattern.md)
 
 ## コマンド実装詳細
 
