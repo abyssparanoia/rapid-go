@@ -12,6 +12,14 @@ build:
 test:
 	@go test ./internal/...
 
+.PHONY: e2e
+e2e:
+	bash docs/e2e/run_e2e.sh
+
+.PHONY: e2e.cover
+e2e.cover:
+	bash docs/e2e/check_e2e_coverage.sh
+
 .PHONY: http.dev
 http.dev:
 	go tool github.com/air-verse/air -c .air.toml
@@ -153,6 +161,10 @@ generate.mermaid.postgresql:
 .PHONY: format
 format:
 	$(call format)
+
+.PHONY: init.local.aws
+init.local.aws:
+	bash ./emulator/aws/script/init.sh
 
 .PHONY: init.local.cognito
 init.local.cognito:

@@ -17,7 +17,7 @@
 - `db`: database configs, sqlboiler templates, migrations, mermaid outputs
 - `schema`: protobuf & openapi definitions
 - `docker`: container assets; `docker-compose.yml` for local deps
-- `localstack`: scripts/data for local AWS emulation (Cognito etc.)
+- `emulator/aws`: scripts/data for local AWS emulation (kumo for S3/SNS/SQS, cognito-local for Cognito)
 - `docs`: developer docs (e.g., docs/golang.md)
 - `deployments`: terraform and deployment assets
 - `test-script`: sample/test scripts for spanner and others
