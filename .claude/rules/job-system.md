@@ -8,110 +8,154 @@ The job system provides asynchronous task execution using a serverless architect
 - **Avoiding server load**: Moving intensive tasks off the main HTTP server
 - **Scalability**: Serverless execution scales based on workload
 
-## Table Design Philosophy
+## Architecture
 
-### Core Tables
+```
+HTTP Request
+    ↓
+Create Job Record (status=queued)
+    ↓
+Publisher.KickJob(jobID)
+    ↓
+SNS/Pub-Sub Topic
+    ↓
+AWS Batch / Cloud Run Jobs
+    ↓
+./app task process-job --job-id={jobID}
+    ↓
+CMD: JobInteractor.Start → Task{Type}Interactor.Execute → JobInteractor.Complete/Fail
+    ↓
+Job completed or failed
+```
 
-#### `jobs` - Main Job Table
+**Key principle**: The CMD layer orchestrates the lifecycle — `Start`, type-specific `Execute`, then `Complete` or `Fail` — using separate dedicated interactors.
 
-Tracks job execution state and errors.
+## Table Design
+
+### `jobs` - Main Job Table
 
 ```sql
 CREATE TABLE `jobs` (
-  `id`                       VARCHAR(64)    NOT NULL COMMENT "ジョブID",
-  `tenant_id`                VARCHAR(64)    NOT NULL COMMENT "テナントID",
-  `job_type`                 VARCHAR(64)    NOT NULL COMMENT "ジョブタイプ",
-  `status`                   VARCHAR(64)    NOT NULL COMMENT "ジョブステータス",
-  `error_code`               VARCHAR(64)    NULL COMMENT "エラーコード",
-  `error_message`            TEXT           NULL COMMENT "エラーメッセージ",
-  `created_at`               DATETIME       NOT NULL COMMENT "作成日時",
-  `updated_at`               DATETIME       NOT NULL COMMENT "更新日時",
+  `id`              VARCHAR(64)  NOT NULL COMMENT "ジョブID",
+  `job_type`        VARCHAR(64)  NOT NULL COMMENT "ジョブタイプ",
+  `status`          VARCHAR(64)  NOT NULL COMMENT "ジョブステータス",
+  `auth_context`    VARCHAR(256) NOT NULL COMMENT "認可コンテキスト (type:identifier)",
+  `idempotency_key` VARCHAR(256) NOT NULL COMMENT "冪等キー",
+  `metadata`        JSON         NOT NULL COMMENT "ジョブパラメータ (JSON)",
+  `error_code`      VARCHAR(64)  NULL COMMENT "エラーコード",
+  `error_message`   TEXT         NULL COMMENT "エラーメッセージ",
+  `created_at`      DATETIME     NOT NULL COMMENT "作成日時",
+  `updated_at`      DATETIME     NOT NULL COMMENT "更新日時",
   CONSTRAINT `jobs_pkey` PRIMARY KEY (`id`),
-  CONSTRAINT `jobs_fkey_tenant_id` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`),
   CONSTRAINT `jobs_fkey_job_type` FOREIGN KEY (`job_type`) REFERENCES `job_types` (`id`),
-  CONSTRAINT `jobs_fkey_status` FOREIGN KEY (`status`) REFERENCES `job_statuses` (`id`)
+  CONSTRAINT `jobs_fkey_status` FOREIGN KEY (`status`) REFERENCES `job_statuses` (`id`),
+  UNIQUE `jobs_unique_idempotency_key` (`idempotency_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 COMMENT "ジョブの管理テーブル";
 ```
 
-#### `job_types` - Job Type Constants
+**Key design decisions:**
+
+1. **`metadata` JSON NOT NULL** — Always stored, even if empty (`{}`). Job-type-specific parameters are stored as JSON instead of individual detail tables. Each job type has a dedicated typed metadata struct in the domain model.
+2. **`idempotency_key` UNIQUE** — Prevents duplicate job creation. Caller sets an arbitrary key; the DB enforces uniqueness.
+3. **`auth_context`** — Same `type:identifier` pattern as `AssetAuthContext`. Types: `staff`, `admin`, `batch`. Handles authorization context without tenant dependency.
+4. **No `tenant_id`** — Jobs are not always tenant-dependent (e.g., admin panel operations). Authorization is managed via `auth_context`.
+5. **No individual parameter tables** — Unlike the original design, there are no `job_{type}` detail tables.
+
+### Constant Tables
 
 ```yaml
-# db/main/constants/constants.yaml
 - table: job_types
   values:
-    - issue_gift_catalog
-    - activate_gift_catalog
-    - send_gift_catalog_codes
-    - download_gift_catalog_codes
-    - generate_gift_catalog_delivery_printing
-```
+    - initialize_bots
 
-#### `job_statuses` - Job Status Constants
-
-```yaml
 - table: job_statuses
   values:
-    - queued      # Initial state - waiting to be kicked
-    - started     # Execution in progress
-    - completed   # Successfully finished
-    - failed      # Execution failed with error
+    - queued
+    - started
+    - completed
+    - failed
 ```
-
-### Job Detail Tables (One per Job Type)
-
-Each `job_type` has a corresponding detail table storing type-specific parameters.
-
-#### Pattern: One-to-One with `jobs` Table
-
-```sql
-CREATE TABLE `job_issue_gift_catalogs` (
-  `id`                              VARCHAR(64)    NOT NULL COMMENT "ジョブ発行ギフトカタログID",
-  `tenant_id`                       VARCHAR(64)    NOT NULL COMMENT "テナントID",
-  `job_id`                          VARCHAR(64)    NOT NULL COMMENT "ジョブID",
-  `gift_catalog_id`                 VARCHAR(64)    NOT NULL COMMENT "発行するギフトカタログID",
-  `created_at`                      DATETIME       NOT NULL COMMENT "作成日時",
-  `updated_at`                      DATETIME       NOT NULL COMMENT "更新日時",
-  CONSTRAINT `job_issue_gcs_pkey` PRIMARY KEY (`id`),
-  CONSTRAINT `job_issue_gcs_fkey_tenant_id` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`),
-  CONSTRAINT `job_issue_gcs_fkey_job_id` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`),
-  CONSTRAINT `job_issue_gcs_fkey_gift_catalog_id` FOREIGN KEY (`gift_catalog_id`) REFERENCES `gift_catalogs` (`id`),
-  UNIQUE `job_issue_gcs_unique_job_id` (`job_id`)  -- Enforces 1:1 relationship
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-COMMENT "ギフトカタログの発行ジョブの詳細管理テーブル";
-```
-
-### Design Principles
-
-1. **Separation of Concerns**: Main `jobs` table tracks execution state; detail tables store job-specific parameters
-2. **1:1 Relationship**: UNIQUE constraint on `job_id` in detail tables ensures one-to-one mapping
-3. **Tenant Scoping**: All tables include `tenant_id` for multi-tenant isolation
-4. **Error Tracking**: `error_code` and `error_message` capture failure details
-5. **Status Lifecycle**: `queued` → `started` → `completed` OR `failed`
 
 ## Domain Model
 
-Location: `internal/domain/model/job.go`
+Location: `internal/domain/model/job.go`, `internal/domain/model/job_metadata.go`
+
+### JobAuthContext
+
+Same `type:identifier` pattern as `AssetAuthContext`:
+
+```go
+type JobAuthContext string
+
+func NewStaffJobAuthContext(staffID string) JobAuthContext {
+    return JobAuthContext("staff:" + staffID)
+}
+func NewAdminJobAuthContext(adminID string) JobAuthContext {
+    return JobAuthContext("admin:" + adminID)
+}
+func NewBatchJobAuthContext(identifier string) JobAuthContext {
+    return JobAuthContext("batch:" + identifier)
+}
+```
+
+### JobMetadata Interface
+
+Location: `internal/domain/model/job_metadata.go`
+
+Each job type has its own typed metadata struct implementing `JobMetadata`:
+
+```go
+// JobMetadata represents type-safe metadata for a job.
+type JobMetadata interface {
+    jobType() JobType
+    ToMap() map[string]any
+}
+
+// Convert raw map to typed metadata for the given job type.
+func JobMetadataFromMap(jt JobType, m map[string]any) (JobMetadata, error)
+```
+
+#### Typed Metadata Structs
+
+```go
+// InitializeBotsMetadata is the metadata for JobTypeInitializeBots jobs.
+type InitializeBotsMetadata struct{}
+
+func (m *InitializeBotsMetadata) ToMap() map[string]any {
+    return map[string]any{}
+}
+```
+
+Add fields to the struct as job-specific parameters grow.
 
 ### Job Entity
 
 ```go
 type Job struct {
-    ID                                  string
-    TenantID                            string
-    JobType                             JobType
-    Status                              JobStatus
-    ErrorCode                           null.String
-    ErrorMessage                        null.String
-    // Job-specific details (only one will be valid per job)
-    IssueGiftCatalog                    nullable.Type[JobIssueGiftCatalog]
-    ActivateGiftCatalog                 nullable.Type[JobActivateGiftCatalog]
-    SendGiftCatalogCodes                nullable.Type[JobSendGiftCatalogCodes]
-    DownloadGiftCatalogCodes            nullable.Type[JobDownloadGiftCatalogCodes]
-    GenerateGiftCatalogDeliveryPrinting nullable.Type[JobGenerateGiftCatalogDeliveryPrinting]
-    CreatedAt                           time.Time
-    UpdatedAt                           time.Time
+    ID             string
+    JobType        JobType
+    Status         JobStatus
+    AuthContext    JobAuthContext
+    IdempotencyKey string
+    Metadata       JobMetadata   // Always non-nil; typed per job type
+    ErrorCode      null.String
+    ErrorMessage   null.String
+    CreatedAt      time.Time
+    UpdatedAt      time.Time
 }
+```
+
+### Constructor
+
+```go
+func NewJob(
+    jobType JobType,
+    authContext JobAuthContext,
+    idempotencyKey string,
+    metadata JobMetadata,   // Always pass a typed struct, never nil
+    t time.Time,
+) *Job
 ```
 
 ### State Transition Methods
@@ -119,16 +163,15 @@ type Job struct {
 #### Start
 
 ```go
-func (m *Job) Start(requestTime time.Time) (*Job, error) {
+func (m *Job) Start(t time.Time) (*Job, error) {
     if m.Status != JobStatusQueued {
         return nil, errors.JobCanNotStartErr.New().
             WithDetail("job is not queued").
-            WithValue("job_id", m.ID)
+            WithValue("job_id", m.ID).
+            WithValue("status", m.Status.String())
     }
-
     m.Status = JobStatusStarted
-    m.UpdatedAt = requestTime
-
+    m.UpdatedAt = t
     return m, nil
 }
 ```
@@ -136,17 +179,30 @@ func (m *Job) Start(requestTime time.Time) (*Job, error) {
 #### Complete
 
 ```go
-func (m *Job) Complete(requestTime time.Time) *Job {
+func (m *Job) Complete(t time.Time) (*Job, error) {
+    if m.Status != JobStatusStarted {
+        return nil, errors.JobCanNotCompleteErr.New().
+            WithDetail("job is not started").
+            WithValue("job_id", m.ID).
+            WithValue("status", m.Status.String())
+    }
     m.Status = JobStatusCompleted
-    m.UpdatedAt = requestTime
-    return m
+    m.UpdatedAt = t
+    return m, nil
 }
 ```
 
 #### Fail
 
 ```go
-func (m *Job) Fail(err error, requestTime time.Time) *Job {
+func (m *Job) Fail(err error, t time.Time) (*Job, error) {
+    if m.Status != JobStatusStarted {
+        return nil, errors.JobCanNotFailErr.New().
+            WithDetail("job is not started").
+            WithValue("job_id", m.ID).
+            WithValue("status", m.Status.String())
+    }
+    // Uses goerr.Unwrap to extract structured error code/message
     var errorCode string
     var errorMessage string
     if goErr := goerr.Unwrap(err); goErr != nil {
@@ -159,546 +215,280 @@ func (m *Job) Fail(err error, requestTime time.Time) *Job {
     m.Status = JobStatusFailed
     m.ErrorCode = null.StringFrom(errorCode)
     m.ErrorMessage = null.StringFrom(errorMessage)
-    m.UpdatedAt = requestTime
-    return m
+    m.UpdatedAt = t
+    return m, nil
 }
 ```
 
-### Constructor Pattern (One per Job Type)
+## Domain Errors
 
 ```go
-func NewJobIssueGiftCatalog(
-    tenantID string,
-    giftCatalogID string,
-    t time.Time,
-) *Job {
-    return &Job{
-        ID:           id.New(),
-        TenantID:     tenantID,
-        JobType:      JobTypeIssueGiftCatalog,
-        Status:       JobStatusQueued,
-        ErrorCode:    null.String{},
-        ErrorMessage: null.String{},
-        IssueGiftCatalog: nullable.TypeFrom(
-            JobIssueGiftCatalog{
-                ID:            id.New(),
-                GiftCatalogID: giftCatalogID,
-                CreatedAt:     t,
-                UpdatedAt:     t,
-            },
-        ),
-        // Other detail fields initialized as empty nullable.Type
-        ActivateGiftCatalog:                 nullable.Type[JobActivateGiftCatalog]{},
-        SendGiftCatalogCodes:                nullable.Type[JobSendGiftCatalogCodes]{},
-        DownloadGiftCatalogCodes:            nullable.Type[JobDownloadGiftCatalogCodes]{},
-        GenerateGiftCatalogDeliveryPrinting: nullable.Type[JobGenerateGiftCatalogDeliveryPrinting]{},
-        CreatedAt:                           t,
-        UpdatedAt:                           t,
-    }
+JobNotFoundErr       = NewNotFoundError("E201501", "Job not found")
+JobCanNotStartErr    = NewConflictError("E201502", "Job cannot be started")
+JobAlreadyExistsErr  = NewConflictError("E201503", "Job with this idempotency key already exists")
+JobCanNotCompleteErr = NewConflictError("E201504", "Job cannot be completed")
+JobCanNotFailErr     = NewConflictError("E201505", "Job cannot be failed")
+```
+
+## Repository
+
+Location: `internal/domain/repository/job.go`
+
+```go
+type Job interface {
+    Get(ctx context.Context, query GetJobQuery) (*model.Job, error)
+    Create(ctx context.Context, job *model.Job) error
+    Update(ctx context.Context, job *model.Job) error
+}
+
+type GetJobQuery struct {
+    BaseGetOptions
+    ID             null.String
+    IdempotencyKey null.String
 }
 ```
 
-## Publisher Integration (SNS → AWS Batch / Cloud Run Jobs)
+## Marshaller
 
-### Interface Definition
+Location: `internal/infrastructure/mysql/internal/marshaller/job.go`
 
-Location: `internal/domain/message/publisher.go`
+- `JobToModel`: returns `(*model.Job, error)` — `types.JSON` (NOT NULL) → `json.Unmarshal` to `map[string]any` (error returned on failure) → `model.JobMetadataFromMap(jobType, m)` for typed metadata (error returned on failure)
+- `JobToDBModel`: `metadata.ToMap()` → `json.Marshal` → `sqltypes.JSON` (non-nullable `[]byte` alias)
+- Uses `sqltypes "github.com/aarondl/sqlboiler/v4/types"` for DB types, `null/v9` for domain types
+
+## Usecase Layer
+
+### JobInteractor (lifecycle only)
+
+Location: `internal/usecase/job.go`
 
 ```go
-package message
-
-//go:generate go run go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_message
-type Publisher interface {
-    KickJob(ctx context.Context, jobId string) error
-    // NOTE: 重い処理を行うジョブを起動する
-    // 現時点では以下でのみ呼び出して良い
-    // - CSVエクスポート
-    // - PDF印刷
-    KickHeavyJob(ctx context.Context, jobId string) error
+type JobInteractor interface {
+    Start(ctx context.Context, param *input.JobStart) (*model.Job, error)
+    Complete(ctx context.Context, param *input.JobComplete) error
+    Fail(ctx context.Context, param *input.JobFail) error
 }
 ```
 
-### Two Job Queues
+Each method: `RWTx → Get(ForUpdate) → domain state change → Update`.
 
-- **KickJob**: Light processing (fast, simple operations)
-- **KickHeavyJob**: Heavy processing (file generation, large batch operations)
+### Task{Type}Interactor (execution only)
 
-**Why separate queues?**
-- Different resource allocation (CPU/Memory)
-- Independent scaling policies
-- Cost optimization (light jobs use smaller instances)
-
-### Implementation (SNS → SQS → AWS Batch)
-
-Location: `internal/infrastructure/sns/message/publisher.go`
+One interactor per job type. The `Execute` method contains the actual business logic.
 
 ```go
-package message
-
-type publisher struct {
-    cli                    *sns.Client
-    applicationEnvironment environment.ApplicationEnvironment
-    batchJobLightTopicARN  string
-    batchJobHeavyTopicARN  string
+// interface
+type TaskBotInteractor interface {
+    Execute(ctx context.Context, param *input.TaskExecuteBot) error
 }
 
-func NewPublisher(
-    cli *sns.Client,
-    applicationEnvironment environment.ApplicationEnvironment,
-    batchJobLightTopicARN string,
-    batchJobHeavyTopicARN string,
-) message.Publisher {
-    return &publisher{
-        cli:                    cli,
-        applicationEnvironment: applicationEnvironment,
-        batchJobLightTopicARN:  batchJobLightTopicARN,
-        batchJobHeavyTopicARN:  batchJobHeavyTopicARN,
-    }
+// input — passes individual command arguments as separate fields
+// Metadata is assembled INSIDE the usecase from these arguments (and optionally DB lookups)
+// Do NOT pass metadata struct from CMD layer
+type TaskExecuteBot struct {
+    RequestTime time.Time `validate:"required"`
+    // Add job-specific command arguments here as individual fields
+    // e.g., SomeParam string `validate:"required"`
 }
+```
 
-func (p *publisher) KickJob(ctx context.Context, jobId string) error {
-    bytes, err := payload.EncodePublishMessage(
-        payload.NewKickJob(jobId),
-    )
+## Task Command Layer (CMD Orchestration)
+
+Location: `internal/infrastructure/cmd/internal/task_cmd/process_job_cmd/`
+
+The CMD layer orchestrates the three-phase execution:
+
+```go
+func (c *CMD) ProcessJob(cmd *cobra.Command) error {
+    // 1. Start
+    job, err := c.jobInteractor.Start(c.ctx, input.NewJobStart(jobID, requestTime))
     if err != nil {
         return err
     }
 
-    // sqsの先では、AWS batchを実行するため、local環境では何もしない.
-    if p.applicationEnvironment == environment.ApplicationEnvironmentLocal {
-        return nil
-    }
+    // 2. Execute (type-specific)
+    executeErr := c.execute(job)
 
-    pi := &sns.PublishInput{
-        Message:          aws.String(string(bytes)),
-        MessageStructure: aws.String("json"),
-        TopicArn:         aws.String(p.batchJobLightTopicARN),
-    }
-
-    if _, err := p.cli.Publish(ctx, pi); err != nil {
-        return errors.InternalErr.Wrap(err)
-    }
-
-    return nil
-}
-
-func (p *publisher) KickHeavyJob(ctx context.Context, jobId string) error {
-    // Same as KickJob but uses batchJobHeavyTopicARN
-    // ...
-}
-```
-
-### Payload Structure
-
-Location: `internal/infrastructure/sns/payload/job.go`
-
-```go
-type KickJob struct {
-    JobID string `json:"job_id"`
-}
-
-func NewKickJob(jobID string) *KickJob {
-    return &KickJob{
-        JobID: jobID,
-    }
-}
-```
-
-## Task Command Pattern
-
-### Command Structure
-
-Location: `cmd/app/main.go` → `internal/infrastructure/cmd/`
-
-```
-cmd/app/
-  └── main.go (entry point)
-      └── internal/infrastructure/cmd/
-          ├── root.go (cobra root command)
-          └── internal/
-              └── task_cmd/
-                  ├── cmd.go (task subcommand registration)
-                  └── process_job_cmd/
-                      ├── cmd.go (cobra command definition)
-                      └── process_job.go (business logic)
-```
-
-### Process Job Command (Generic Job Executor)
-
-Location: `internal/infrastructure/cmd/internal/task_cmd/process_job_cmd/process_job.go`
-
-```go
-package process_job_cmd
-
-type CMD struct {
-    ctx           context.Context
-    jobInteractor usecase.JobInteractor
-}
-
-func (c *CMD) Run(cmd *cobra.Command) error {
-    jobID := cmd.Flag("job-id").Value.String()
-    startTime := now.Now()
-    logger.L(c.ctx).Info("start process job", zap.Time("start_time", startTime))
-
-    if err := c.jobInteractor.Process(
-        c.ctx,
-        input.NewJobProcess(jobID, startTime),
-    ); err != nil {
-        endTime := now.Now()
-        logger.L(c.ctx).Error(
-            "failed to process job",
-            logger_field.Error(err),
-            zap.String("job_id", jobID),
-            zap.Time("start_time", startTime),
-            zap.Time("end_time", endTime),
-            zap.Duration("duration", endTime.Sub(startTime)),
-        )
-        return err
-    }
-
-    endTime := now.Now()
-    logger.L(c.ctx).Info(
-        "completed to process job",
-        zap.String("job_id", jobID),
-        zap.Time("start_time", startTime),
-        zap.Time("end_time", endTime),
-        zap.Duration("duration", endTime.Sub(startTime)),
-    )
-    return nil
-}
-```
-
-### Job Interactor (Generic Job Processor)
-
-Location: `internal/usecase/job_impl.go`
-
-```go
-func (i *jobInteractor) Process(ctx context.Context, param *input.JobProcess) error {
-    if err := param.Validate(); err != nil {
-        return err
-    }
-
-    var job *model.Job
-
-    // 1. Start the job (update status to "started")
-    if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
-        var err error
-        job, err = i.jobRepository.Get(ctx, repository.GetJobQuery{
-            ID: null.StringFrom(param.JobID),
-            BaseGetOptions: repository.BaseGetOptions{
-                OrFail:    true,
-                ForUpdate: true,
-            },
-        })
-        if err != nil {
-            return err
+    // 3. Complete or Fail
+    if executeErr != nil {
+        logger.L(c.ctx).Error("failed to execute job", ...)
+        if err := c.jobInteractor.Fail(c.ctx, input.NewJobFail(jobID, executeErr, now.Now())); err != nil {
+            logger.L(c.ctx).Error("failed to mark job as failed", ...)
+            return executeErr  // Return executeErr so caller knows execution failed
         }
-
-        job, err = job.Start(param.RequestTime)
-        if err != nil {
-            return err
-        }
-
-        if err := i.jobRepository.Update(ctx, job); err != nil {
-            return err
-        }
-        return nil
-    }); err != nil {
-        return err
+        return nil  // Return nil to prevent retry; job is already marked failed
     }
+    return c.jobInteractor.Complete(c.ctx, input.NewJobComplete(jobID, now.Now()))
+}
 
-    // 2. Execute the actual job based on job_type
-    var jobErr error
+func (c *CMD) execute(job *model.Job) error {
     switch job.JobType {
-    case model.JobTypeIssueGiftCatalog:
-        jobErr = i.transactable.RWTx(ctx, func(ctx context.Context) error {
-            _, err := i.giftCatalogService.Issue(ctx, service.GiftCatalogIssueParam{
-                GiftCatalogID: job.IssueGiftCatalog.Ptr().GiftCatalogID,
-                RequestTime:   param.RequestTime,
-            })
-            return err
-        })
-    case model.JobTypeActivateGiftCatalog:
-        jobErr = i.transactable.RWTx(ctx, func(ctx context.Context) error {
-            _, err := i.giftCatalogService.Activate(ctx, service.GiftCatalogActivateParam{
-                GiftCatalogID: job.ActivateGiftCatalog.Ptr().GiftCatalogID,
-                RequestTime:   param.RequestTime,
-            })
-            return err
-        })
-    // ... other job types
+    case model.JobTypeInitializeBots:
+        // Pass individual command arguments — metadata is assembled inside the usecase
+        return c.taskBotInteractor.Execute(
+            c.ctx,
+            input.NewTaskExecuteBot(now.Now()),
+        )
+    case model.JobTypeUnknown:
+        fallthrough
+    default:
+        return errors.InternalErr.Errorf("unknown job type: %s", job.JobType.String())
     }
-
-    // 3. Handle job failure
-    if jobErr != nil {
-        if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
-            job, err := i.jobRepository.Get(ctx, repository.GetJobQuery{
-                ID: null.StringFrom(param.JobID),
-                BaseGetOptions: repository.BaseGetOptions{
-                    OrFail:    true,
-                    ForUpdate: true,
-                },
-            })
-            if err != nil {
-                return err
-            }
-            logger.L(ctx).Error(
-                fmt.Sprintf("failed to process %s job: %s", job.JobType.String(), job.ID),
-                logger_field.Error(jobErr),
-                zap.Reflect("job", job),
-            )
-            job = job.Fail(jobErr, param.RequestTime)
-            if err := i.jobRepository.Update(ctx, job); err != nil {
-                return err
-            }
-            return nil
-        }); err != nil {
-            return err
-        }
-        return nil  // Return nil to prevent retry - job status is already "failed"
-    }
-
-    // 4. Mark job as completed
-    if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
-        var err error
-        job, err = i.jobRepository.Get(ctx, repository.GetJobQuery{
-            ID: null.StringFrom(param.JobID),
-            BaseGetOptions: repository.BaseGetOptions{
-                OrFail:    true,
-                ForUpdate: true,
-            },
-        })
-        if err != nil {
-            return err
-        }
-        job = job.Complete(param.RequestTime)
-        if err := i.jobRepository.Update(ctx, job); err != nil {
-            return err
-        }
-        return nil
-    }); err != nil {
-        return err
-    }
-
-    return nil
 }
 ```
 
-## Implementation Workflow
+**Why this separation:**
 
-### Adding a New Job Type
+- `JobInteractor` is purely lifecycle management (Start/Complete/Fail) — no knowledge of job types
+- `Task{Type}Interactor` contains only the execution logic — no knowledge of job lifecycle
+- CMD layer wires them together, making each part independently testable
 
-Follow these steps when adding a new job type:
+## Dependency Injection
 
-#### 1. Add Migration for Job Detail Table
+```go
+// Dependency struct
+JobInteractor     usecase.JobInteractor
+TaskBotInteractor usecase.TaskBotInteractor
 
-Location: `db/main/migrations/XX_add_job_{job_name}.sql`
-
-```sql
--- +goose Up
-CREATE TABLE `job_{job_name}` (
-  `id`          VARCHAR(64) NOT NULL COMMENT 'ジョブXXID',
-  `tenant_id`   VARCHAR(64) NOT NULL COMMENT 'テナントID',
-  `job_id`      VARCHAR(64) NOT NULL COMMENT 'ジョブID',
-  -- Add job-specific parameter columns here
-  `param_field` VARCHAR(64) NOT NULL COMMENT 'パラメータ',
-  `created_at`  DATETIME    NOT NULL COMMENT '作成日時',
-  `updated_at`  DATETIME    NOT NULL COMMENT '更新日時',
-  CONSTRAINT `job_{job_name}_pkey` PRIMARY KEY (`id`),
-  CONSTRAINT `job_{job_name}_fkey_tenant_id` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`),
-  CONSTRAINT `job_{job_name}_fkey_job_id` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`),
-  UNIQUE `job_{job_name}_unique_job_id` (`job_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-COMMENT 'XXジョブの詳細管理テーブル';
-
--- +goose Down
-DROP TABLE `job_{job_name}`;
+// In Inject()
+jobRepository := database_repository.NewJob()
+d.JobInteractor = usecase.NewJobInteractor(transactable, jobRepository)
+d.TaskBotInteractor = usecase.NewTaskBotInteractor()
 ```
 
-#### 2. Add Job Type to Constants
+## Adding a New Job Type
 
-Location: `db/main/constants/constants.yaml`
+Follow these steps:
+
+### 1. Add constant
 
 ```yaml
+# db/mysql/constants/constants.yaml
 - table: job_types
   values:
-    # ... existing values
-    - {new_job_type}  # Add your new job type here
+    - initialize_bots
+    - your_new_job_type  # Add here
 ```
 
-#### 3. Add Domain Model
+Run `make migrate.up`.
 
-Location: `internal/domain/model/job.go`
+### 2. Add JobType constant
 
 ```go
-// Add new job type constant
+// internal/domain/model/job.go
 const (
-    // ... existing constants
-    JobType{NewJobName} JobType = "{new_job_type}"
+    JobTypeUnknown        JobType = "unknown"
+    JobTypeInitializeBots JobType = "initialize_bots"
+    JobTypeYourNewJob     JobType = "your_new_job_type"  // Add here
 )
+```
 
-// Add detail struct
-type Job{NewJobName} struct {
-    ID          string
-    ParamField  string  // Job-specific parameters
-    CreatedAt   time.Time
-    UpdatedAt   time.Time
+### 3. Define typed metadata struct
+
+```go
+// internal/domain/model/job_metadata.go
+
+// YourNewJobMetadata is the metadata for JobTypeYourNewJob jobs.
+type YourNewJobMetadata struct {
+    SomeParam string
+    // Add job-specific fields here
 }
 
-// Add field to Job entity
-type Job struct {
-    // ... existing fields
-    {NewJobName} nullable.Type[Job{NewJobName}]
+func yourNewJobMetadataFromMap(m map[string]any) *YourNewJobMetadata {
+    meta := &YourNewJobMetadata{}
+    if v, ok := m["some_param"].(string); ok {
+        meta.SomeParam = v
+    }
+    return meta
 }
 
-// Add constructor
-func NewJob{NewJobName}(
-    tenantID string,
-    paramField string,  // Job-specific parameters
-    t time.Time,
-) *Job {
-    return &Job{
-        ID:           id.New(),
-        TenantID:     tenantID,
-        JobType:      JobType{NewJobName},
-        Status:       JobStatusQueued,
-        ErrorCode:    null.String{},
-        ErrorMessage: null.String{},
-        {NewJobName}: nullable.TypeFrom(
-            Job{NewJobName}{
-                ID:         id.New(),
-                ParamField: paramField,
-                CreatedAt:  t,
-                UpdatedAt:  t,
-            },
-        ),
-        // Initialize all other job detail fields as empty
-        IssueGiftCatalog:                    nullable.Type[JobIssueGiftCatalog]{},
-        ActivateGiftCatalog:                 nullable.Type[JobActivateGiftCatalog]{},
-        // ... other fields
-        CreatedAt: t,
-        UpdatedAt: t,
+func (m *YourNewJobMetadata) jobType() JobType {
+    return JobTypeYourNewJob
+}
+
+func (m *YourNewJobMetadata) ToMap() map[string]any {
+    return map[string]any{
+        "some_param": m.SomeParam,
     }
 }
 ```
 
-#### 4. Implement Job Logic in Domain Service
-
-Location: `internal/domain/service/{resource}.go` or create new service
+Also add the case to `JobMetadataFromMap`:
 
 ```go
-type {Resource}Service interface {
-    {Action}(ctx context.Context, param {Resource}{Action}Param) (*{Resource}{Action}Result, error)
-}
-
-type {Resource}{Action}Param struct {
-    // Parameters from job detail table
-    ParamField  string
-    RequestTime time.Time
-}
-
-type {Resource}{Action}Result struct {
-    // Return values if needed
-}
-```
-
-#### 5. Add Case to JobInteractor.Process()
-
-Location: `internal/usecase/job_impl.go`
-
-```go
-func (i *jobInteractor) Process(ctx context.Context, param *input.JobProcess) error {
-    // ... existing code
-
-    switch job.JobType {
-    // ... existing cases
-    case model.JobType{NewJobName}:
-        jobErr = i.transactable.RWTx(ctx, func(ctx context.Context) error {
-            _, err := i.{resource}Service.{Action}(ctx, service.{Resource}{Action}Param{
-                ParamField:  job.{NewJobName}.Ptr().ParamField,
-                RequestTime: param.RequestTime,
-            })
-            return err
-        })
+func JobMetadataFromMap(jt JobType, m map[string]any) (JobMetadata, error) {
+    switch jt {
+    case JobTypeInitializeBots:
+        return initializeBotsMetadataFromMap(m), nil
+    case JobTypeYourNewJob:
+        return yourNewJobMetadataFromMap(m), nil
+    case JobTypeUnknown:
+        fallthrough
+    default:
+        return nil, errors.InternalErr.Errorf("unknown job type for metadata: %s", jt.String())
     }
-
-    // ... rest of the code
 }
 ```
 
-#### 6. Create Job in Usecase
-
-When you need to kick off a job:
+### 4. Create input DTO
 
 ```go
-func (i *interactor) SomeOperation(ctx context.Context, param *input.SomeOperation) error {
-    // Within transaction
-    if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
-        // Create job entity
-        job := model.NewJob{NewJobName}(
-            param.TenantID,
-            param.ParamField,
+// internal/usecase/input/task_your_new_job.go
+// Pass individual command arguments as fields — NOT the metadata struct
+// The usecase assembles metadata internally (may also fetch from DB)
+type TaskExecuteYourNewJob struct {
+    SomeParam   string    `validate:"required"`
+    RequestTime time.Time `validate:"required"`
+}
+```
+
+### 5. Create interactor
+
+```go
+// internal/usecase/task_your_new_job.go
+type TaskYourNewJobInteractor interface {
+    Execute(ctx context.Context, param *input.TaskExecuteYourNewJob) error
+}
+```
+
+### 6. Add case to CMD switch
+
+```go
+// process_job.go
+case model.JobTypeYourNewJob:
+    // Pass individual arguments — metadata assembled inside the usecase
+    return c.taskYourNewJobInteractor.Execute(c.ctx,
+        input.NewTaskExecuteYourNewJob("some_param_value", now.Now()))
+```
+
+### 7. Register in DI
+
+```go
+d.TaskYourNewJobInteractor = usecase.NewTaskYourNewJobInteractor(...)
+```
+
+## Creating a Job (in Usecase)
+
+```go
+func (i *someInteractor) SomeOperation(ctx context.Context, param *input.SomeOperation) error {
+    return i.transactable.RWTx(ctx, func(ctx context.Context) error {
+        job := model.NewJob(
+            model.JobTypeInitializeBots,
+            model.NewStaffJobAuthContext(param.StaffID),
+            "unique-idempotency-key",   // e.g., staffID + ":" + jobType
+            &model.InitializeBotsMetadata{},  // typed metadata struct
             param.RequestTime,
         )
 
-        // Persist job
         if err := i.jobRepository.Create(ctx, job); err != nil {
             return err
         }
 
-        // Kick job via publisher
-        // Use KickJob for light processing, KickHeavyJob for heavy processing
-        if err := i.publisher.KickJob(ctx, job.ID); err != nil {
-            return err
-        }
-
-        return nil
-    }); err != nil {
-        return err
-    }
-
-    return nil
+        // Kick the job via publisher
+        return i.publisher.KickJob(ctx, job.ID)
+    })
 }
 ```
-
-## Best Practices
-
-### 1. Transaction Boundaries
-
-- **Create job within transaction**: Ensure job record is persisted before kicking
-- **Publisher call within transaction**: If publisher fails, job record is rolled back
-- **Job execution in separate transaction**: Each job type operation runs in its own transaction
-
-### 2. Light vs Heavy Jobs
-
-Use `KickJob` for:
-- Database CRUD operations
-- Simple API calls
-- Fast operations (< 30 seconds)
-
-Use `KickHeavyJob` for:
-- File generation (CSV, PDF, ZIP)
-- Large batch processing (1000+ records)
-- Image/video processing
-- Long-running operations (> 30 seconds)
-
-### 3. Error Handling
-
-- **Always call `job.Fail(err, t)`**: Captures error details for debugging
-- **Log errors before failing**: Use structured logging with job context
-- **Return nil after fail**: Prevent retry loops - job status is already "failed"
-
-### 4. Job Parameters
-
-- **Store in detail table**: Don't use JSON columns in main `jobs` table
-- **Keep parameters minimal**: Only store IDs and essential config
-- **Use domain service for logic**: Job interactor delegates to domain services
-
-### 5. Local Development
-
-- **Publisher no-op in local**: `if applicationEnvironment == Local { return nil }`
-- **Manual execution**: Use task command directly: `./app task process-job --job-id={id}`
-- **Testing**: Create job record, then call JobInteractor.Process() directly
 
 ## Infrastructure Setup
 
@@ -711,7 +501,7 @@ Create Job Record (status=queued)
     ↓
 Publisher.KickJob(jobID)
     ↓
-SNS Topic (batchJobLightTopicARN or batchJobHeavyTopicARN)
+SNS Topic
     ↓
 SQS Queue
     ↓
@@ -719,7 +509,7 @@ AWS Batch (triggered by SQS)
     ↓
 ECS Task runs: ./app task process-job --job-id={jobID}
     ↓
-JobInteractor.Process() updates job status
+CMD: Start → Execute → Complete/Fail
     ↓
 Job completed or failed
 ```
@@ -739,100 +529,19 @@ Cloud Run Jobs (triggered by Pub/Sub)
     ↓
 Container runs: ./app task process-job --job-id={jobID}
     ↓
-JobInteractor.Process() updates job status
+CMD: Start → Execute → Complete/Fail
     ↓
 Job completed or failed
 ```
 
-### Key Differences Between AWS and GCP
+## Best Practices
 
-| Aspect | AWS Batch | Cloud Run Jobs |
-|--------|-----------|----------------|
-| Message Queue | SNS → SQS | Pub/Sub |
-| Compute | ECS Tasks | Cloud Run Containers |
-| Publisher Implementation | `internal/infrastructure/sns/message/` | `internal/infrastructure/pubsub/message/` |
-| Environment Variable | `BATCH_JOB_LIGHT_TOPIC_ARN` | `PUBSUB_LIGHT_TOPIC_NAME` |
-
-## Why This Design?
-
-### Problem: Heavy Processing on HTTP Server
-
-- **Request timeout**: HTTP requests timeout after 30-60 seconds
-- **Resource contention**: Heavy jobs block other requests
-- **Scaling difficulty**: Can't scale HTTP and batch workloads independently
-
-### Solution: Async Job Queue + Serverless Execution
-
-- **Decoupled execution**: HTTP server just creates job record and returns immediately
-- **Serverless scaling**: AWS Batch/Cloud Run Jobs scale based on queue depth
-- **Cost efficient**: Pay only for execution time
-- **Retry resilience**: Failed jobs can be retried without user intervention
-- **Progress tracking**: Job status in database provides real-time feedback
-
-### Alternative Approaches
-
-| Approach | When to Use | Trade-offs |
-|----------|-------------|------------|
-| Synchronous | < 5 seconds, simple operations | Simple but blocks request |
-| Background goroutine | < 30 seconds, fire-and-forget | No retry, no status tracking |
-| Cron jobs | Scheduled batch operations | Fixed schedule, not event-driven |
-| **Job queue + serverless** | Heavy, event-driven processing | Best for scale, requires infrastructure |
-
-## Common Patterns
-
-### Job with Multiple Steps
-
-For jobs requiring multiple operations:
-
-```go
-case model.JobTypeGenerateGiftCatalogDeliveryPrinting:
-    jobErr = func() error {
-        // Step 1: Reserve resources (in transaction)
-        var reserveResult *service.ReserveResult
-        if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
-            var err error
-            reserveResult, err = i.service.Reserve(ctx, ...)
-            return err
-        }); err != nil {
-            return err
-        }
-
-        // Step 2: Heavy processing (outside transaction)
-        generateResult, err := i.service.Generate(ctx, ...)
-        if err != nil {
-            return err
-        }
-
-        // Step 3: Finalize (in transaction)
-        if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
-            _, err := i.service.Complete(ctx, ...)
-            return err
-        }); err != nil {
-            return err
-        }
-
-        return nil
-    }()
-```
-
-### Job Chaining (Kick Another Job After Completion)
-
-```go
-func (i *service) Complete(ctx context.Context, param Param) (*Result, error) {
-    // Complete current operation
-    // ...
-
-    // Create next job
-    nextJob := model.NewJob{NextJobName}(...)
-    if err := i.jobRepository.Create(ctx, nextJob); err != nil {
-        return nil, err
-    }
-
-    // Kick next job
-    if err := i.publisher.KickJob(ctx, nextJob.ID); err != nil {
-        return nil, err
-    }
-
-    return result, nil
-}
-```
+1. **Idempotency key design** — Use a deterministic key (e.g., `authContext + ":" + jobType + ":" + resourceID`) to prevent duplicate jobs
+2. **Typed metadata** — Always use the concrete metadata struct for each job type; never use `map[string]any` directly
+3. **metadata NOT NULL** — Always pass a typed metadata struct to `NewJob`; never pass nil
+4. **Return nil after Fail** — Prevents retry loops; job is already marked failed. If `Fail` itself fails, log the failure and return `executeErr` to surface the original error.
+5. **Status guards in Complete/Fail** — Both methods validate the job is in `started` status before transitioning; return `JobCanNotCompleteErr`/`JobCanNotFailErr` otherwise
+6. **Three-phase separation** — Start/Complete/Fail are lifecycle concerns; Execute is business logic
+7. **Type switch is exhaustive** — Always handle `JobTypeUnknown` with an error case
+8. **Local development** — Publisher is no-op in local env; run manually with `./app task process-job --job-id={id}`
+9. **Input DTO holds arguments, not metadata** — `TaskExecute{Type}` input structs receive individual command arguments as flat fields. The usecase assembles the `*model.XxxMetadata` struct internally (and may additionally fetch values from DB). Never pass a metadata struct from CMD layer to usecase input.
