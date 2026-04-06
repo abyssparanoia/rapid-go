@@ -18,7 +18,7 @@ tool (
 
 require (
 	cloud.google.com/go v0.123.0
-	cloud.google.com/go/spanner v1.88.0
+	cloud.google.com/go/spanner v1.89.0
 	cloud.google.com/go/storage v1.61.3
 	firebase.google.com/go/v4 v4.19.0
 	github.com/aarondl/null/v9 v9.0.1
