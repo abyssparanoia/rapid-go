@@ -19,7 +19,7 @@ tool (
 require (
 	cloud.google.com/go v0.123.0
 	cloud.google.com/go/spanner v1.89.0
-	cloud.google.com/go/storage v1.61.3
+	cloud.google.com/go/storage v1.62.0
 	firebase.google.com/go/v4 v4.19.0
 	github.com/aarondl/null/v9 v9.0.1
 	github.com/aarondl/sqlboiler/v4 v4.19.7
@@ -78,11 +78,11 @@ require (
 	buf.build/go/spdx v0.2.0 // indirect
 	buf.build/go/standard v0.1.1-0.20260325175353-2b287e071df5 // indirect
 	cel.dev/expr v0.25.1 // indirect
-	cloud.google.com/go/auth v0.18.2 // indirect
+	cloud.google.com/go/auth v0.19.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	cloud.google.com/go/firestore v1.21.0 // indirect
-	cloud.google.com/go/iam v1.5.3 // indirect
+	cloud.google.com/go/iam v1.6.0 // indirect
 	cloud.google.com/go/longrunning v0.8.0 // indirect
 	cloud.google.com/go/monitoring v1.24.3 // indirect
 	codeberg.org/chavacava/garif v0.2.0 // indirect
