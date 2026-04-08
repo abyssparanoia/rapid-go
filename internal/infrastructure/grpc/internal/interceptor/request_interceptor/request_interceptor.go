@@ -74,18 +74,26 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 				Write(fields...)
 
 			errCode, errMessage := extractErrInfo(err)
-			st, err := status.
-				New(code, errCode).
-				WithDetails(
-					&errdetails.DebugInfo{
-						Detail: errMessage,
-					},
-					&errdetails.RequestInfo{
-						RequestId: operationID.String(),
+			var st *status.Status
+			var stErr error
+			if meta := errors.PublicMetadata(err); len(meta) > 0 {
+				st, stErr = status.New(code, errCode).WithDetails(
+					&errdetails.DebugInfo{Detail: errMessage},
+					&errdetails.RequestInfo{RequestId: operationID.String()},
+					&errdetails.ErrorInfo{
+						Reason:   errCode,
+						Domain:   producerID,
+						Metadata: meta,
 					},
 				)
-			if err != nil {
-				return nil, errors.InternalErr.Wrap(err)
+			} else {
+				st, stErr = status.New(code, errCode).WithDetails(
+					&errdetails.DebugInfo{Detail: errMessage},
+					&errdetails.RequestInfo{RequestId: operationID.String()},
+				)
+			}
+			if stErr != nil {
+				return nil, errors.InternalErr.Wrap(stErr)
 			}
 
 			return nil, st.Err()
