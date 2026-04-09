@@ -42,6 +42,44 @@ func TestWithPublicMetadata_OverwritesSameKey(t *testing.T) {
 	assert.Len(t, meta, 1)
 }
 
+func TestWithPublicMetadata_IntValue(t *testing.T) {
+	err := goerr.New("test error")
+	err = WithPublicMetadata(err, "count", 42)
+
+	meta := PublicMetadata(err)
+	require.NotNil(t, meta)
+	assert.Equal(t, 42, meta["count"])
+}
+
+func TestWithPublicMetadata_BoolValue(t *testing.T) {
+	err := goerr.New("test error")
+	err = WithPublicMetadata(err, "is_expired", true)
+
+	meta := PublicMetadata(err)
+	require.NotNil(t, meta)
+	assert.Equal(t, true, meta["is_expired"])
+}
+
+func TestWithPublicMetadata_SliceValue(t *testing.T) {
+	err := goerr.New("test error")
+	tags := []string{"a", "b"}
+	err = WithPublicMetadata(err, "tags", tags)
+
+	meta := PublicMetadata(err)
+	require.NotNil(t, meta)
+	assert.Equal(t, tags, meta["tags"])
+}
+
+func TestWithPublicMetadata_NestedMapValue(t *testing.T) {
+	err := goerr.New("test error")
+	nested := map[string]any{"k": "v", "n": 1}
+	err = WithPublicMetadata(err, "details", nested)
+
+	meta := PublicMetadata(err)
+	require.NotNil(t, meta)
+	assert.Equal(t, nested, meta["details"])
+}
+
 func TestPublicMetadata_NilError(t *testing.T) {
 	meta := PublicMetadata(nil)
 	assert.Nil(t, meta)

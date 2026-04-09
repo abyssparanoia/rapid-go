@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 const producerID = "rapid"
@@ -77,15 +78,19 @@ func (i *RequestLog) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			var st *status.Status
 			var stErr error
 			if meta := errors.PublicMetadata(err); len(meta) > 0 {
-				st, stErr = status.New(code, errCode).WithDetails(
-					&errdetails.DebugInfo{Detail: errMessage},
-					&errdetails.RequestInfo{RequestId: operationID.String()},
-					&errdetails.ErrorInfo{
-						Reason:   errCode,
-						Domain:   producerID,
-						Metadata: meta,
-					},
-				)
+				if s, convErr := structpb.NewStruct(meta); convErr == nil {
+					st, stErr = status.New(code, errCode).WithDetails(
+						&errdetails.DebugInfo{Detail: errMessage},
+						&errdetails.RequestInfo{RequestId: operationID.String()},
+						s,
+					)
+				} else {
+					logger.L(ctx).Warn("failed to encode public metadata as structpb.Struct", logger_field.Error(convErr))
+					st, stErr = status.New(code, errCode).WithDetails(
+						&errdetails.DebugInfo{Detail: errMessage},
+						&errdetails.RequestInfo{RequestId: operationID.String()},
+					)
+				}
 			} else {
 				st, stErr = status.New(code, errCode).WithDetails(
 					&errdetails.DebugInfo{Detail: errMessage},
