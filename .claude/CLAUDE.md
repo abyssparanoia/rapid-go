@@ -117,12 +117,12 @@ Available automation skills in `.claude/skills/`:
 | `add-database-table` | Create migration file and constant tables |
 | `add-domain-entity` | Create domain model, repository interface, and implementation |
 | `add-api-endpoint` | Create usecase, proto definition, and gRPC handler |
-| `review-pr` | Self-review PR changes against project rules before creating PR |
+| `review-diff` | Review & auto-fix current branch diff against main/master. Catches AI anti-patterns and rule violations, then fixes them automatically |
 | `create-pull-request` | PR creation guide with branch naming and body templates |
 
 **Implementation Workflow**: `add-database-table` → `add-domain-entity` → `add-api-endpoint`
 
-**Review Workflow**: Use `review-pr` before `create-pull-request` to catch issues early
+**Review Workflow**: Use `review-diff` to auto-fix issues, then `create-pull-request` to create the PR
 
 **Investigation Workflow**: Use `code-investigation` before modifying existing code
 
