@@ -49,8 +49,9 @@ Read `references/ai-antipatterns.md`. Check **every changed file** against all p
 
 **Priority patterns — must detect in every review:**
 - **#1** `gomock.Any()` for non-context parameters (no exceptions)
-- **#11** Fully-owned entity placed in `ReadonlyReference` instead of direct field
-- **#24** Private method defined in usecase interactor
+- **#6** Direct model initialization instead of using `factory.NewFactory()` in tests
+- **#12** Fully-owned entity placed in `ReadonlyReference` instead of direct field
+- **#25** Private method defined in usecase interactor
 
 Record each finding: file path, line number, pattern violated, fix to apply.
 
