@@ -95,9 +95,41 @@ mockRepo.EXPECT().Create(gomock.Any(), admin).Return(nil)
 
 ---
 
+### 6. Direct model initialization instead of using factory in tests
+
+Test data must be created via `factory.NewFactory()`, not by directly initializing domain model structs. Use `factory.CloneValue()` when a modified copy is needed.
+
+```go
+// BAD - direct struct initialization with hardcoded values
+staff := &model.Staff{
+    ID:        "test-id",
+    TenantID:  "tenant-id",
+    Role:      model.StaffRoleAdmin,
+    Email:     "test@example.com",
+    CreatedAt: time.Now(),
+    UpdatedAt: time.Now(),
+}
+
+// GOOD - use factory
+testdata := factory.NewFactory()
+staff := testdata.Staff
+
+// GOOD - modified copy via CloneValue
+testdata := factory.NewFactory()
+updatedStaff := &model.Staff{}
+factory.CloneValue(testdata.Staff, updatedStaff)
+updatedStaff.DisplayName = "Updated Name"
+```
+
+**Why**: The factory generates consistent, cross-referenced test data with faker. Direct initialization risks missing fields, inconsistent references (e.g., `Staff.TenantID` not matching `Tenant.ID`), and breaks when new required fields are added to the model.
+
+**Exception**: Empty structs used solely as `CloneValue` targets (`&model.Staff{}`) are acceptable.
+
+---
+
 ## Domain Layer
 
-### 6. Direct field assignment instead of domain methods
+### 7. Direct field assignment instead of domain methods
 
 ```go
 // BAD - in usecase
@@ -112,7 +144,7 @@ admin.UpdateRole(param.Role, param.RequestTime)
 
 ---
 
-### 7. State transition without validation
+### 8. State transition without validation
 
 ```go
 // BAD - no current state check
@@ -139,7 +171,7 @@ func (m *Invitation) Accept(t time.Time) (*Invitation, error) {
 
 ---
 
-### 8. Enum type missing `Unknown` constant
+### 9. Enum type missing `Unknown` constant
 
 ```go
 // BAD
@@ -158,13 +190,13 @@ const (
 
 ---
 
-### 9. Missing `Valid()` and `String()` on enum types
+### 10. Missing `Valid()` and `String()` on enum types
 
 Every custom type must have both methods.
 
 ---
 
-### 10. `ReadonlyReference` set in constructor
+### 11. `ReadonlyReference` set in constructor
 
 ```go
 // BAD - constructor sets ReadonlyReference
@@ -184,7 +216,7 @@ func NewStaff(...) *Staff {
 
 ---
 
-### 11. Fully-owned (completely dependent) entity placed in ReadonlyReference
+### 12. Fully-owned (completely dependent) entity placed in ReadonlyReference
 
 Entities that **cannot exist without the parent** (owned/composed) must be direct fields, not in `ReadonlyReference`. `ReadonlyReference` is only for lookup/reference data that exists independently.
 
@@ -224,7 +256,7 @@ type Staff struct {
 
 ## Repository Layer
 
-### 12. Using pointer type for optional enum/custom type fields
+### 13. Using pointer type for optional enum/custom type fields
 
 ```go
 // BAD
@@ -242,7 +274,7 @@ type ListQuery struct {
 
 ---
 
-### 13. Missing `transactable.GetContextExecutor(ctx)`
+### 14. Missing `transactable.GetContextExecutor(ctx)`
 
 ```go
 // BAD
@@ -254,7 +286,7 @@ dbmodel.Examples(mods...).One(ctx, transactable.GetContextExecutor(ctx))
 
 ---
 
-### 14. Sorting applied after pagination
+### 15. Sorting applied after pagination
 
 ```go
 // BAD - wrong order
@@ -268,7 +300,7 @@ mods = append(mods, qm.Limit(limit), qm.Offset(offset))
 
 ---
 
-### 15. `SortKey` unknown case does not return error
+### 16. `SortKey` unknown case does not return error
 
 ```go
 // BAD - silently skips
@@ -282,7 +314,7 @@ case model.ExampleSortKeyUnknown:
 
 ---
 
-### 16. Related entity's `ReadonlyReference` populated in marshaller
+### 17. Related entity's `ReadonlyReference` populated in marshaller
 
 ```go
 // BAD - recursive population
@@ -304,7 +336,7 @@ Tenant: TenantToModel(e.R.Tenant),  // TenantToModel returns Tenant with Readonl
 
 ## Usecase Layer
 
-### 17. Missing `param.Validate()` call
+### 18. Missing `param.Validate()` call
 
 Every interactor method must start with:
 ```go
@@ -315,7 +347,7 @@ if err := param.Validate(); err != nil {
 
 ---
 
-### 18. Missing `ForUpdate: true` before update/delete
+### 19. Missing `ForUpdate: true` before update/delete
 
 ```go
 // BAD - no lock
@@ -332,7 +364,7 @@ entity, err := i.repo.Get(ctx, GetQuery{
 
 ---
 
-### 19. IdP sync (`StoreClaims` / `DeleteUser`) outside transaction
+### 20. IdP sync (`StoreClaims` / `DeleteUser`) outside transaction
 
 ```go
 // BAD
@@ -354,7 +386,7 @@ if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
 
 ---
 
-### 20. Missing `Preload: true` on returned entities
+### 21. Missing `Preload: true` on returned entities
 
 ```go
 // BAD
@@ -369,7 +401,7 @@ return i.repo.Get(ctx, GetQuery{
 
 ---
 
-### 21. Missing `BatchSetXxxURLs` call after fetching entities
+### 22. Missing `BatchSetXxxURLs` call after fetching entities
 
 Even if the entity currently has no asset fields, always call:
 ```go
@@ -380,7 +412,7 @@ if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}, param.Reque
 
 ---
 
-### 22. Using `null.StringFrom(*req.Field)` instead of `null.StringFromPtr(req.Field)`
+### 23. Using `null.StringFrom(*req.Field)` instead of `null.StringFromPtr(req.Field)`
 
 ```go
 // BAD
@@ -395,7 +427,7 @@ null.StringFromPtr(req.DisplayName)
 
 ---
 
-### 23. IdP deleted after DB deletion (wrong order)
+### 24. IdP deleted after DB deletion (wrong order)
 
 On user deletion, IdP must be deleted FIRST:
 ```go
@@ -406,7 +438,7 @@ i.repo.Delete(ctx, id)                     // Then DB
 
 ---
 
-### 24. Private method in usecase interactor
+### 25. Private method in usecase interactor
 
 Interactor implementations must NOT define private methods. Only implement public interface methods.
 
@@ -443,7 +475,7 @@ func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCre
 
 ## gRPC Handler Layer
 
-### 25. Wrong method ordering in handler file
+### 26. Wrong method ordering in handler file
 
 Required order: Get → List → Create → Custom(no ID) → Update → Custom(with ID) → Delete
 
@@ -461,7 +493,7 @@ func (h *Handler) UpdateStaff(...)
 
 ---
 
-### 26. Optional proto enum field not using `nullable.TypeFromPtr` / manual nil check
+### 27. Optional proto enum field not using `nullable.TypeFromPtr` / manual nil check
 
 ```go
 // BAD - using pointer variable before constructor
@@ -482,7 +514,7 @@ if req.Status != nil {
 
 ---
 
-### 27. Nullable timestamp field without variable declaration pattern in marshaller
+### 28. Nullable timestamp field without variable declaration pattern in marshaller
 
 ```go
 // BAD - inline ternary / anonymous function
@@ -505,7 +537,7 @@ return &pb.Example{AcceptedAt: acceptedAt}
 
 ## Proto Definition
 
-### 28. `SortKey` enum defined after the field that uses it
+### 29. `SortKey` enum defined after the field that uses it
 
 ```protobuf
 // BAD
@@ -519,7 +551,7 @@ optional ListStaffsSortKey sort_key = 4;
 
 ---
 
-### 29. Enum not starting with `_UNSPECIFIED = 0`
+### 30. Enum not starting with `_UNSPECIFIED = 0`
 
 ```protobuf
 // BAD
@@ -538,7 +570,7 @@ enum StaffRole {
 
 ## General AI Patterns (Across All Layers)
 
-### 30. Unnecessary helper abstractions for one-time use
+### 31. Unnecessary helper abstractions for one-time use
 
 AI often creates helper functions that are only called once. Remove and inline.
 
@@ -555,13 +587,13 @@ staff, err := i.repo.Get(ctx, repository.GetStaffQuery{...})
 
 ---
 
-### 31. Adding comments or docstrings to unchanged code
+### 32. Adding comments or docstrings to unchanged code
 
 AI often adds `// CreateStaff creates a staff` style comments to functions it touches. Remove these unless the logic is genuinely non-obvious.
 
 ---
 
-### 32. Adding error handling for impossible cases
+### 33. Adding error handling for impossible cases
 
 ```go
 // BAD - fmt.Sprintf cannot fail
@@ -573,7 +605,7 @@ if str == "" {
 
 ---
 
-### 33. Backwards-compatibility shims for removed code
+### 34. Backwards-compatibility shims for removed code
 
 ```go
 // BAD - renaming to _unused instead of deleting
@@ -585,7 +617,7 @@ Delete unused code entirely.
 
 ---
 
-### 34. Feature flags or conditional code for "future use"
+### 35. Feature flags or conditional code for "future use"
 
 ```go
 // BAD
