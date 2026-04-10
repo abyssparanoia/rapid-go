@@ -54,6 +54,40 @@ type AdminStaffInteractor interface {
 
 **Implementation file methods must follow the same order.**
 
+## No Private Methods
+
+Interactor implementations must **not** define private methods. Only public interface methods are implemented.
+
+Private helpers scatter business logic inside the usecase layer and reduce testability. Move logic to the right place instead:
+
+| Situation | Solution |
+|-----------|----------|
+| Short logic (a few lines) | Inline in the public method |
+| Logic spans multiple entities | Extract to `domain/service/` |
+| Single entity state transition | Add method to `domain/model/` |
+| Repository query building | Inline (do not create a helper) |
+
+```go
+// BAD - private helper in interactor
+func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
+    staff, err := i.buildStaff(param)  // calls private helper
+    ...
+}
+func (i *adminStaffInteractor) buildStaff(param *input.AdminCreateStaff) *model.Staff { ... }
+
+// GOOD (A) - inline the logic
+func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
+    staff := model.NewStaff(param.TenantID, param.Role, param.AuthUID, ...)
+    ...
+}
+
+// GOOD (B) - extract to domain service if logic spans entities
+func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
+    staff, err := i.staffService.Create(ctx, service.StaffCreateParam{...})
+    ...
+}
+```
+
 ## Unit Testing Requirement
 
 **ALL usecase interactor implementations MUST have corresponding unit tests.**

@@ -71,6 +71,33 @@ type Order struct {
 }
 ```
 
+### Owned Child Entities – Cascade Requirements
+
+When an entity **cannot exist without its parent** (fully-owned / composed relationship), it must be a **direct field**, not in `ReadonlyReference`. The repository layer must enforce cascading behavior:
+
+| Operation | Requirement |
+|-----------|-------------|
+| `Get` / `List` | Load owned children **regardless of `Preload` flag** |
+| `Create` | Insert children in the **same transaction** as the parent |
+| `Update` | Upsert / replace children in the **same transaction** as the parent |
+| `Delete` | Delete children in the same transaction (or via `ON DELETE CASCADE`) |
+
+For 0..1 owned relationships, use `nullable.Type[ChildModel]` (not a pointer):
+
+```go
+// 1..N owned - direct field, always loaded, cascade writes
+type Order struct {
+    ID    string
+    Items OrderItems  // Not in ReadonlyReference
+}
+
+// 0..1 owned - nullable.Type, not *StaffProfile
+type Staff struct {
+    ID      string
+    Profile nullable.Type[StaffProfile]
+}
+```
+
 ### Rules for ReadonlyReference
 
 1. **ReadonlyReference within ReadonlyReference is always nil**
