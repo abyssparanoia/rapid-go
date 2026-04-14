@@ -814,25 +814,33 @@ if param.Role.Valid {
 
 ## Domain Method Usage (Domain Logic First)
 
-**IMPORTANT**: Always use domain model methods for state changes instead of direct field assignment.
+**IMPORTANT**: All domain model operations (creation and state changes) MUST use domain model constructors and methods. Never directly initialize structs or assign fields in the usecase layer.
 
-### Good Pattern
+### Creation: Use Constructors
 
 ```go
-// In usecase
-if param.Role.Valid {
-    admin.UpdateRole(param.Role.Value(), param.RequestTime)
+// GOOD - use domain constructor
+staff := model.NewStaff(param.TenantID, param.Role, param.AuthUID, param.DisplayName, param.ImagePath, param.Email, param.RequestTime)
+
+// BAD - direct struct initialization in usecase
+staff := &model.Staff{
+    ID:          id.New(),
+    TenantID:    param.TenantID,
+    Role:        param.Role,
+    CreatedAt:   param.RequestTime,
+    UpdatedAt:   param.RequestTime,
 }
 ```
 
-### Anti-Pattern
+### Updates: Use Domain Methods
 
 ```go
-// Don't do this in usecase
-if param.Role.Valid {
-    admin.Role = param.Role.Value()
-    admin.UpdatedAt = param.RequestTime
-}
+// GOOD
+admin.UpdateRole(param.Role.Value(), param.RequestTime)
+
+// BAD - direct field assignment
+admin.Role = param.Role.Value()
+admin.UpdatedAt = param.RequestTime
 ```
 
 See `domain-model.md` for more details on domain method patterns.
