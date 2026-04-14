@@ -4,6 +4,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 
 ## Domain Model (`internal/domain/model/**`)
 
+- [ ] No package-level private functions (inline or move to model method)
 - [ ] Entity has `ReadonlyReference` struct pointer for relations
 - [ ] Constructor uses `id.New()` for ID generation
 - [ ] Constructor sets both `CreatedAt` and `UpdatedAt` to same time
@@ -25,6 +26,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 
 ## Repository Implementation (`internal/infrastructure/**/repository/**`)
 
+- [ ] No package-level private functions (inline or move to struct method)
 - [ ] Uses `transactable.GetContextExecutor(ctx)` for all queries
 - [ ] `Get` method handles `OrFail` correctly (nil vs error on not found)
 - [ ] `Get` method handles `ForUpdate` option
@@ -43,6 +45,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 
 ## Usecase Interactor (`internal/usecase/**`)
 
+- [ ] No package-level private functions (inline or move to struct method)
 - [ ] Interface has `//go:generate` directive
 - [ ] Implementation uses dependency injection via constructor
 - [ ] All methods start with `param.Validate()` check
