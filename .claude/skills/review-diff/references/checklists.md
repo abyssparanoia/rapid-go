@@ -111,6 +111,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] Mock setup uses closure pattern with `func(ctrl *gomock.Controller)`
 - [ ] Transactable mock uses `DoAndReturn` to execute function
 - [ ] Error assertions use `assert.ErrorIs(t, err, want.err)`
+- [ ] Test data created via `factory.NewFactory()`, not direct model struct initialization
 
 ## Dependency Injection (`internal/infrastructure/dependency/**`)
 
