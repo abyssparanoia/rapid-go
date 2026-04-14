@@ -51,7 +51,8 @@ Read `references/ai-antipatterns.md`. Check **every changed file** against all p
 - **#1** `gomock.Any()` for non-context parameters (no exceptions)
 - **#6** Direct model initialization instead of using `factory.NewFactory()` in tests
 - **#12** Fully-owned entity placed in `ReadonlyReference` instead of direct field
-- **#25** Private method defined in usecase interactor
+- **#25** Private method defined in usecase interactor (receiver method)
+- **#31** Package-level private functions in domain/usecase/infrastructure layers
 - **#36** Direct domain model struct initialization in usecase (bypassing constructor)
 - **#37** Unnecessary nil/valid checks on guaranteed values
 - **#39** Field-by-field struct construction in conversion functions

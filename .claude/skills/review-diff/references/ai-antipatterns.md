@@ -570,20 +570,48 @@ enum StaffRole {
 
 ## General AI Patterns (Across All Layers)
 
-### 31. Unnecessary helper abstractions for one-time use
+### 31. Package-level private functions
 
-AI often creates helper functions that are only called once. Remove and inline.
+Package-level private functions (non-receiver functions) are prohibited in domain, usecase, and infrastructure layers. They pollute the package namespace and scatter logic.
 
 ```go
-// BAD - one-time helper
+// BAD - package-level private function
 func buildStaffQuery(id string) repository.GetStaffQuery {
     return repository.GetStaffQuery{...}
 }
-// Only called in one place
 
-// GOOD - inline it
+// BAD - package-level private helper
+func toStaffModel(param *input.AdminCreateStaff, t time.Time) *model.Staff {
+    return model.NewStaff(param.TenantID, param.Role, ...)
+}
+
+// BAD - package-level validation helper
+func validateStaffInput(param *input.AdminCreateStaff) error {
+    if param.Email == "" {
+        return errors.RequestInvalidArgumentErr.New()
+    }
+    return nil
+}
+
+// GOOD - inline the logic
 staff, err := i.repo.Get(ctx, repository.GetStaffQuery{...})
+
+// GOOD - method on domain model
+func (m *Staff) Validate() error { ... }
+
+// GOOD - method on domain service struct
+func (s *staffService) Create(ctx context.Context, param StaffCreateParam) (*model.Staff, error) { ... }
 ```
+
+**Decision guide:**
+| Situation | Solution |
+|---|---|
+| Short logic (few lines) | Inline in the calling method |
+| Reusable business logic | Method on domain model or domain service |
+| Data conversion | Method on marshaller struct, or inline |
+| Validation | Method on input struct or domain model |
+
+**Exception**: Package-level private functions are acceptable only when they are pure utility functions with no domain knowledge (e.g., generic type conversion helpers). Even then, prefer placing them in a shared `pkg/` utility package.
 
 ---
 
