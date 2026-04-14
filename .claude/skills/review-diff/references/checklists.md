@@ -39,6 +39,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] Enum conversions handle all cases including Unknown/default
 - [ ] Slice conversion function defined (`{Entity}sToModel`)
 - [ ] Related entity's `ReadonlyReference` always nil (no recursive loading)
+- [ ] Uses struct literal return (not field-by-field assignment on empty struct)
 
 ## Usecase Interactor (`internal/usecase/**`)
 
@@ -47,7 +48,10 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] All methods start with `param.Validate()` check
 - [ ] Write operations wrapped in `transactable.RWTx`
 - [ ] Get before update uses `ForUpdate: true` for locking
+- [ ] Entity creation uses domain constructors (`model.NewXxx()`), not direct struct init
 - [ ] State changes use domain methods (not direct field assignment)
+- [ ] No unnecessary nil/valid checks on values guaranteed by preceding code
+- [ ] No unnecessary intermediate variable declarations (return directly when possible)
 - [ ] IdP sync (StoreClaims/DeleteUser) happens within transaction
 - [ ] On delete: IdP deletion before database deletion
 - [ ] Final return fetches entity with `Preload: true` for fresh data
@@ -78,6 +82,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] Enum conversions have both `ToPb` and `ToModel` directions
 - [ ] Slice conversion function defined (`{Entity}sToPb`)
 - [ ] All proto fields are explicitly mapped (check for omissions)
+- [ ] Uses struct literal return (not field-by-field assignment on empty struct)
 
 ## Proto Definition (`schema/proto/**`)
 

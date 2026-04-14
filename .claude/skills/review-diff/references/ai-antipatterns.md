@@ -629,3 +629,149 @@ if featureEnabled {
 ```
 
 Just implement the new behavior directly.
+
+---
+
+### 36. Direct domain model struct initialization in usecase (bypassing constructor)
+
+```go
+// BAD - direct struct literal in usecase
+func (i *adminStaffInteractor) Create(...) (*model.Staff, error) {
+    staff := &model.Staff{
+        ID:          id.New(),
+        TenantID:    param.TenantID,
+        Role:        param.Role,
+        DisplayName: param.DisplayName,
+        CreatedAt:   param.RequestTime,
+        UpdatedAt:   param.RequestTime,
+    }
+    return staff, nil
+}
+
+// GOOD - use domain model constructor
+func (i *adminStaffInteractor) Create(...) (*model.Staff, error) {
+    staff := model.NewStaff(
+        param.TenantID,
+        param.Role,
+        param.AuthUID,
+        param.DisplayName,
+        param.ImagePath,
+        param.Email,
+        param.RequestTime,
+    )
+    return staff, nil
+}
+```
+
+**Why**: Constructors encapsulate initialization logic (ID generation, default values, field constraints). Bypassing them risks missing required fields and duplicates logic across call sites.
+
+**Note**: This is distinct from #7 (direct field assignment for updates). #7 is about mutation; this is about creation.
+
+---
+
+### 37. Unnecessary nil/valid checks on guaranteed values
+
+```go
+// BAD - staff is guaranteed non-nil by OrFail: true
+staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
+    ID:             null.StringFrom(param.StaffID),
+    BaseGetOptions: repository.BaseGetOptions{OrFail: true},
+})
+if err != nil {
+    return nil, err
+}
+if staff == nil {  // Unnecessary - OrFail guarantees non-nil on success
+    return nil, errors.StaffNotFoundErr.New()
+}
+
+// GOOD - trust OrFail guarantee
+staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
+    ID:             null.StringFrom(param.StaffID),
+    BaseGetOptions: repository.BaseGetOptions{OrFail: true},
+})
+if err != nil {
+    return nil, err
+}
+// Use staff directly
+
+// BAD - checking .Valid on a value just set with TypeFrom
+role := nullable.TypeFrom(param.Role)
+if role.Valid {  // Always true
+    query.Role = role
+}
+
+// GOOD
+query.Role = nullable.TypeFrom(param.Role)
+```
+
+**Fix**: Remove nil/valid checks when the preceding code guarantees the value. Trust `OrFail`, `TypeFrom`, `StringFrom`, and similar constructors.
+
+---
+
+### 38. Unnecessary intermediate variable declarations
+
+```go
+// BAD - unnecessary variable
+result := someFunction(ctx, param)
+return result
+
+// GOOD
+return someFunction(ctx, param)
+
+// BAD - declaring then immediately returning
+staffs, err := i.staffRepository.List(ctx, query)
+if err != nil {
+    return nil, err
+}
+result := &output.AdminListStaffs{
+    Staffs:     staffs,
+    TotalCount: totalCount,
+}
+return result, nil
+
+// GOOD - return directly
+staffs, err := i.staffRepository.List(ctx, query)
+if err != nil {
+    return nil, err
+}
+return &output.AdminListStaffs{
+    Staffs:     staffs,
+    TotalCount: totalCount,
+}, nil
+```
+
+**Exception**: Variables are acceptable when (1) the value is used multiple times, (2) conditional mutation is needed (e.g., nullable timestamp fields in marshallers), or (3) readability significantly improves.
+
+---
+
+### 39. Field-by-field struct construction in conversion functions
+
+```go
+// BAD - empty struct then field-by-field assignment
+func StaffToPB(m *model.Staff) *pb.Staff {
+    result := &pb.Staff{}
+    result.Id = m.ID
+    result.DisplayName = m.DisplayName
+    result.Email = m.Email
+    result.Role = StaffRoleToPB(m.Role)
+    result.CreatedAt = timestamppb.New(m.CreatedAt)
+    result.UpdatedAt = timestamppb.New(m.UpdatedAt)
+    return result
+}
+
+// GOOD - struct literal with all fields
+func StaffToPB(m *model.Staff) *pb.Staff {
+    return &pb.Staff{
+        Id:          m.ID,
+        DisplayName: m.DisplayName,
+        Email:       m.Email,
+        Role:        StaffRoleToPB(m.Role),
+        CreatedAt:   timestamppb.New(m.CreatedAt),
+        UpdatedAt:   timestamppb.New(m.UpdatedAt),
+    }
+}
+```
+
+**Why**: Field-by-field assignment makes it easy to miss fields silently. Struct literals cause compile errors when fields are added, catching omissions early.
+
+**Exception**: When conditional field assignment is needed (e.g., `ReadonlyReference` or nullable timestamps), use `m := &XXX{...}` with conditional blocks, then `return m`. But all non-conditional fields must still be in the initial struct literal.

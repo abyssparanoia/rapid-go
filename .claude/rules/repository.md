@@ -476,6 +476,32 @@ func ExampleToDBModel(m *model.Example) *dbmodel.Example {
 
 **Note**: `ReadonlyReference` is never converted back to DB model - it's read-only.
 
+### Struct Literal Return Rule
+
+**All conversion functions must use struct literal initialization in the return statement.** Do not create an empty struct and assign fields one by one.
+
+```go
+// GOOD - struct literal with all fields
+func TenantToModel(s *dbmodel.Tenant) *model.Tenant {
+    return &model.Tenant{
+        ID:                s.ID,
+        Name:              s.Name,
+        ReadonlyReference: nil,
+    }
+}
+
+// BAD - field-by-field assignment
+func TenantToModel(s *dbmodel.Tenant) *model.Tenant {
+    m := &model.Tenant{}
+    m.ID = s.ID
+    m.Name = s.Name
+    m.ReadonlyReference = nil
+    return m
+}
+```
+
+**Exception**: When conditional assignment is needed (e.g., `ReadonlyReference`, nullable timestamps), use `m := &XXX{...}` with all non-conditional fields in the literal, then conditional blocks, then `return m`.
+
 ## Transaction Context
 
 Always use `transactable.GetContextExecutor(ctx)` to get the database executor:
