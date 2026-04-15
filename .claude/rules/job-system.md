@@ -23,12 +23,12 @@ AWS Batch / Cloud Run Jobs
     ↓
 ./app task process-job --job-id={jobID}
     ↓
-CMD: JobInteractor.Start → Task{Type}Interactor.Execute → JobInteractor.Complete/Fail
+CMD: JobInteractor.Start → Task{Type}Interactor.Process{JobType}Job → JobInteractor.Complete/Fail
     ↓
 Job completed or failed
 ```
 
-**Key principle**: The CMD layer orchestrates the lifecycle — `Start`, type-specific `Execute`, then `Complete` or `Fail` — using separate dedicated interactors.
+**Key principle**: The CMD layer orchestrates the lifecycle — `Start`, type-specific `Process{JobType}Job`, then `Complete` or `Fail` — using separate dedicated interactors.
 
 ## Table Design
 
@@ -58,7 +58,7 @@ COMMENT "ジョブの管理テーブル";
 
 1. **`metadata` JSON NOT NULL** — Always stored, even if empty (`{}`). Job-type-specific parameters are stored as JSON instead of individual detail tables. Each job type has a dedicated typed metadata struct in the domain model.
 2. **`idempotency_key` UNIQUE** — Prevents duplicate job creation. Caller sets an arbitrary key; the DB enforces uniqueness.
-3. **`auth_context`** — Same `type:identifier` pattern as `AssetAuthContext`. Types: `staff`, `admin`, `batch`. Handles authorization context without tenant dependency.
+3. **`auth_context`** — Same `type:identifier` pattern as `AssetAuthContext`. Types: `staff`, `admin`, `command`. Handles authorization context without tenant dependency.
 4. **No `tenant_id`** — Jobs are not always tenant-dependent (e.g., admin panel operations). Authorization is managed via `auth_context`.
 5. **No individual parameter tables** — Unlike the original design, there are no `job_{type}` detail tables.
 
@@ -94,8 +94,8 @@ func NewStaffJobAuthContext(staffID string) JobAuthContext {
 func NewAdminJobAuthContext(adminID string) JobAuthContext {
     return JobAuthContext("admin:" + adminID)
 }
-func NewBatchJobAuthContext(identifier string) JobAuthContext {
-    return JobAuthContext("batch:" + identifier)
+func NewCommandJobAuthContext(commandName string) JobAuthContext {
+    return JobAuthContext("command:" + commandName)
 }
 ```
 
@@ -272,23 +272,29 @@ type JobInteractor interface {
 
 Each method: `RWTx → Get(ForUpdate) → domain state change → Update`.
 
-### Task{Type}Interactor (execution only)
+### Task{Type}Interactor (job creation + processing)
 
-One interactor per job type. The `Execute` method contains the actual business logic.
+One interactor per job type with **two methods**:
+- `Create{JobType}Job` — validates input, builds metadata, persists the job record, and kicks the publisher. Called from CLI commands or API handlers.
+- `Process{JobType}Job` — fetches the job record, executes the actual business logic. Called exclusively from `process-job` CMD.
 
 ```go
 // interface
 type TaskBotInteractor interface {
-    Execute(ctx context.Context, param *input.TaskExecuteBot) error
+    CreateInitializeBotsJob(ctx context.Context, param *input.TaskCreateInitializeBotsJob) (*model.Job, error)
+    ProcessInitializeBotsJob(ctx context.Context, param *input.TaskProcessInitializeBotsJob) error
 }
 
-// input — passes individual command arguments as separate fields
-// Metadata is assembled INSIDE the usecase from these arguments (and optionally DB lookups)
-// Do NOT pass metadata struct from CMD layer
-type TaskExecuteBot struct {
+// Create input — holds the raw arguments (e.g. file bytes) needed to validate and enqueue the job
+type TaskCreateInitializeBotsJob struct {
+    CSVBytes    []byte    `validate:"required"`
     RequestTime time.Time `validate:"required"`
-    // Add job-specific command arguments here as individual fields
-    // e.g., SomeParam string `validate:"required"`
+}
+
+// Process input — holds only the job ID; all other parameters come from the persisted job record
+type TaskProcessInitializeBotsJob struct {
+    JobID       string    `validate:"required"`
+    RequestTime time.Time `validate:"required"`
 }
 ```
 
@@ -324,10 +330,9 @@ func (c *CMD) ProcessJob(cmd *cobra.Command) error {
 func (c *CMD) execute(job *model.Job) error {
     switch job.JobType {
     case model.JobTypeInitializeBots:
-        // Pass individual command arguments — metadata is assembled inside the usecase
-        return c.taskBotInteractor.Execute(
+        return c.taskBotInteractor.ProcessInitializeBotsJob(
             c.ctx,
-            input.NewTaskExecuteBot(now.Now()),
+            input.NewTaskProcessInitializeBotsJob(job.ID, now.Now()),
         )
     case model.JobTypeUnknown:
         fallthrough
@@ -340,7 +345,7 @@ func (c *CMD) execute(job *model.Job) error {
 **Why this separation:**
 
 - `JobInteractor` is purely lifecycle management (Start/Complete/Fail) — no knowledge of job types
-- `Task{Type}Interactor` contains only the execution logic — no knowledge of job lifecycle
+- `Task{Type}Interactor` owns both job creation (`Create{JobType}Job`) and job processing (`Process{JobType}Job`), keeping all job-type-specific logic in one place
 - CMD layer wires them together, making each part independently testable
 
 ## Dependency Injection
@@ -353,7 +358,12 @@ TaskBotInteractor usecase.TaskBotInteractor
 // In Inject()
 jobRepository := database_repository.NewJob()
 d.JobInteractor = usecase.NewJobInteractor(transactable, jobRepository)
-d.TaskBotInteractor = usecase.NewTaskBotInteractor()
+d.TaskBotInteractor = usecase.NewTaskBotInteractor(
+    transactable,
+    jobRepository,
+    jobPublisher,
+    // ... other dependencies required by Create and Process methods
+)
 ```
 
 ## Adding a New Job Type
@@ -430,15 +440,43 @@ func JobMetadataFromMap(jt JobType, m map[string]any) (JobMetadata, error) {
 }
 ```
 
-### 4. Create input DTO
+### 4. Create input DTOs
 
 ```go
 // internal/usecase/input/task_your_new_job.go
-// Pass individual command arguments as fields — NOT the metadata struct
-// The usecase assembles metadata internally (may also fetch from DB)
-type TaskExecuteYourNewJob struct {
+
+// Create input — holds raw arguments for validation and job enqueuing
+type TaskCreateYourNewJob struct {
     SomeParam   string    `validate:"required"`
     RequestTime time.Time `validate:"required"`
+}
+
+func NewTaskCreateYourNewJob(someParam string, requestTime time.Time) *TaskCreateYourNewJob {
+    return &TaskCreateYourNewJob{SomeParam: someParam, RequestTime: requestTime}
+}
+
+func (p *TaskCreateYourNewJob) Validate() error {
+    if err := validation.Validate(p); err != nil {
+        return errors.RequestInvalidArgumentErr.Wrap(err)
+    }
+    return nil
+}
+
+// Process input — holds only the job ID; parameters come from the persisted job record
+type TaskProcessYourNewJob struct {
+    JobID       string    `validate:"required"`
+    RequestTime time.Time `validate:"required"`
+}
+
+func NewTaskProcessYourNewJob(jobID string, requestTime time.Time) *TaskProcessYourNewJob {
+    return &TaskProcessYourNewJob{JobID: jobID, RequestTime: requestTime}
+}
+
+func (p *TaskProcessYourNewJob) Validate() error {
+    if err := validation.Validate(p); err != nil {
+        return errors.RequestInvalidArgumentErr.Wrap(err)
+    }
+    return nil
 }
 ```
 
@@ -447,7 +485,8 @@ type TaskExecuteYourNewJob struct {
 ```go
 // internal/usecase/task_your_new_job.go
 type TaskYourNewJobInteractor interface {
-    Execute(ctx context.Context, param *input.TaskExecuteYourNewJob) error
+    CreateYourNewJob(ctx context.Context, param *input.TaskCreateYourNewJob) (*model.Job, error)
+    ProcessYourNewJob(ctx context.Context, param *input.TaskProcessYourNewJob) error
 }
 ```
 
@@ -456,9 +495,8 @@ type TaskYourNewJobInteractor interface {
 ```go
 // process_job.go
 case model.JobTypeYourNewJob:
-    // Pass individual arguments — metadata assembled inside the usecase
-    return c.taskYourNewJobInteractor.Execute(c.ctx,
-        input.NewTaskExecuteYourNewJob("some_param_value", now.Now()))
+    return c.taskYourNewJobInteractor.ProcessYourNewJob(c.ctx,
+        input.NewTaskProcessYourNewJob(job.ID, now.Now()))
 ```
 
 ### 7. Register in DI
@@ -467,26 +505,58 @@ case model.JobTypeYourNewJob:
 d.TaskYourNewJobInteractor = usecase.NewTaskYourNewJobInteractor(...)
 ```
 
-## Creating a Job (in Usecase)
+## Creating a Job (in Task{Type}Interactor.Create)
+
+Job creation lives inside `Task{Type}Interactor.Create{JobType}Job`. It validates input, assembles metadata, persists the job record, and kicks the publisher — all within a transaction.
 
 ```go
-func (i *someInteractor) SomeOperation(ctx context.Context, param *input.SomeOperation) error {
-    return i.transactable.RWTx(ctx, func(ctx context.Context) error {
-        job := model.NewJob(
-            model.JobTypeInitializeBots,
-            model.NewStaffJobAuthContext(param.StaffID),
-            "unique-idempotency-key",   // e.g., staffID + ":" + jobType
-            &model.InitializeBotsMetadata{},  // typed metadata struct
-            param.RequestTime,
-        )
+func (i *taskBotInteractor) CreateInitializeBotsJob(
+    ctx context.Context,
+    param *input.TaskCreateInitializeBotsJob,
+) (*model.Job, error) {
+    if err := param.Validate(); err != nil {
+        return nil, err
+    }
 
+    // Validate and build typed metadata from raw input
+    // (e.g., parse CSV, upload to S3, store object key in metadata)
+    metadata := &model.InitializeBotsMetadata{
+        // SomeParam: derivedFromInput,
+    }
+
+    job := model.NewJob(
+        model.JobTypeInitializeBots,
+        model.NewCommandJobAuthContext("initialize-bots"),
+        buildIdempotencyKey(param),        // deterministic key derived from input content
+        metadata,
+        param.RequestTime,
+    )
+
+    if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
         if err := i.jobRepository.Create(ctx, job); err != nil {
             return err
         }
+        return i.jobPublisher.KickJob(ctx, job.ID)
+    }); err != nil {
+        return nil, err
+    }
 
-        // Kick the job via publisher
-        return i.publisher.KickJob(ctx, job.ID)
-    })
+    return job, nil
+}
+```
+
+**Idempotency key**: Must be **deterministic** — derived from the content/intent of the job, not from time. This allows the unique constraint to prevent duplicate jobs for the same input.
+
+```go
+// Good — content-based hash
+func buildIdempotencyKey(param *input.TaskCreateInitializeBotsJob) string {
+    sum := sha256.Sum256(param.CSVBytes)
+    return fmt.Sprintf("initialize-bots:%x", sum)
+}
+
+// Bad — time-based (non-deterministic, defeats idempotency)
+func buildIdempotencyKey(t time.Time) string {
+    return fmt.Sprintf("initialize-bots:%d", t.UnixNano())
 }
 ```
 
@@ -509,7 +579,7 @@ AWS Batch (triggered by SQS)
     ↓
 ECS Task runs: ./app task process-job --job-id={jobID}
     ↓
-CMD: Start → Execute → Complete/Fail
+CMD: Start → Process → Complete/Fail
     ↓
 Job completed or failed
 ```
@@ -529,19 +599,19 @@ Cloud Run Jobs (triggered by Pub/Sub)
     ↓
 Container runs: ./app task process-job --job-id={jobID}
     ↓
-CMD: Start → Execute → Complete/Fail
+CMD: Start → Process → Complete/Fail
     ↓
 Job completed or failed
 ```
 
 ## Best Practices
 
-1. **Idempotency key design** — Use a deterministic key (e.g., `authContext + ":" + jobType + ":" + resourceID`) to prevent duplicate jobs
+1. **Idempotency key design** — Use a deterministic key derived from input content (e.g., SHA-256 of file bytes, or a stable resource identifier). Never use timestamps — they produce a new key every call, defeating the purpose.
 2. **Typed metadata** — Always use the concrete metadata struct for each job type; never use `map[string]any` directly
 3. **metadata NOT NULL** — Always pass a typed metadata struct to `NewJob`; never pass nil
 4. **Return nil after Fail** — Prevents retry loops; job is already marked failed. If `Fail` itself fails, log the failure and return `executeErr` to surface the original error.
 5. **Status guards in Complete/Fail** — Both methods validate the job is in `started` status before transitioning; return `JobCanNotCompleteErr`/`JobCanNotFailErr` otherwise
-6. **Three-phase separation** — Start/Complete/Fail are lifecycle concerns; Execute is business logic
+6. **Two-method Task interactor** — `Create{JobType}Job` owns job creation (validate → build metadata → persist → kick); `Process{JobType}Job` owns job execution (fetch job → run business logic). Keep lifecycle (Start/Complete/Fail) in `JobInteractor` only.
 7. **Type switch is exhaustive** — Always handle `JobTypeUnknown` with an error case
 8. **Local development** — Publisher is no-op in local env; run manually with `./app task process-job --job-id={id}`
-9. **Input DTO holds arguments, not metadata** — `TaskExecute{Type}` input structs receive individual command arguments as flat fields. The usecase assembles the `*model.XxxMetadata` struct internally (and may additionally fetch values from DB). Never pass a metadata struct from CMD layer to usecase input.
+9. **Process input carries only job ID** — `TaskProcess{Type}` input structs hold only the job ID and request time. All job parameters come from the persisted job record (metadata). Never pass raw input data to the process method.
