@@ -18,7 +18,7 @@ tool (
 
 require (
 	cloud.google.com/go v0.123.0
-	cloud.google.com/go/spanner v1.89.0
+	cloud.google.com/go/spanner v1.90.0
 	cloud.google.com/go/storage v1.62.1
 	firebase.google.com/go/v4 v4.19.0
 	github.com/aarondl/null/v9 v9.0.1
@@ -84,7 +84,7 @@ require (
 	cloud.google.com/go/firestore v1.21.0 // indirect
 	cloud.google.com/go/iam v1.7.0 // indirect
 	cloud.google.com/go/longrunning v0.9.0 // indirect
-	cloud.google.com/go/monitoring v1.24.3 // indirect
+	cloud.google.com/go/monitoring v1.25.0 // indirect
 	codeberg.org/chavacava/garif v0.2.0 // indirect
 	codeberg.org/polyfloyd/go-errorlint v1.9.0 // indirect
 	connectrpc.com/connect v1.19.1 // indirect
