@@ -28,8 +28,8 @@ require (
 	github.com/abyssparanoia/memeduck v1.0.3
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/aws/aws-sdk-go-v2 v1.41.5
-	github.com/aws/aws-sdk-go-v2/config v1.32.14
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.59.3
+	github.com/aws/aws-sdk-go-v2/config v1.32.15
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.60.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.99.0
 	github.com/blendle/zapdriver v1.3.1
 	github.com/caarlos0/env/v11 v11.4.0
