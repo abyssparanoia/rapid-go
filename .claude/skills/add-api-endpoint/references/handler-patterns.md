@@ -240,7 +240,7 @@ func (h *Handler) ListExamples(
 ### Update Handler
 
 ```go
-import "github.com/aarondl/null/v9"
+import "github.com/aarondl/null/v8"
 
 func (h *Handler) UpdateExample(
     ctx context.Context,

@@ -21,15 +21,15 @@ require (
 	cloud.google.com/go/spanner v1.90.0
 	cloud.google.com/go/storage v1.62.1
 	firebase.google.com/go/v4 v4.19.0
-	github.com/aarondl/null/v9 v9.0.1
+	github.com/aarondl/null/v8 v8.1.3
 	github.com/aarondl/sqlboiler/v4 v4.19.7
 	github.com/aarondl/strmangle v0.0.9
 	github.com/abyssparanoia/goerr v0.10.0
 	github.com/abyssparanoia/memeduck v1.0.3
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/aws/aws-sdk-go-v2 v1.41.5
-	github.com/aws/aws-sdk-go-v2/config v1.32.14
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.59.3
+	github.com/aws/aws-sdk-go-v2/config v1.32.15
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.60.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.99.0
 	github.com/blendle/zapdriver v1.3.1
 	github.com/caarlos0/env/v11 v11.4.0
@@ -114,6 +114,7 @@ require (
 	github.com/MirrexOne/unqueryvet v1.5.4 // indirect
 	github.com/OpenPeeDeeP/depguard/v2 v2.2.1 // indirect
 	github.com/aarondl/inflect v0.0.2 // indirect
+	github.com/aarondl/randomize v0.0.2 // indirect
 	github.com/air-verse/air v1.65.1 // indirect
 	github.com/alecthomas/chroma/v2 v2.23.1 // indirect
 	github.com/alecthomas/go-check-sumtype v0.3.1 // indirect
