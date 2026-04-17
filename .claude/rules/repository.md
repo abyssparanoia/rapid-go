@@ -23,7 +23,7 @@ import (
     "context"
 
     "github.com/abyssparanoia/rapid-go/internal/domain/model"
-    "github.com/aarondl/null/v9"
+    "github.com/aarondl/null/v8"
 )
 
 //go:generate go tool go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_repository
@@ -141,7 +141,7 @@ type ListExamplesQuery struct {
 ```go
 package repository
 
-import "github.com/aarondl/null/v9"
+import "github.com/aarondl/null/v8"
 
 type BaseGetOptions struct {
     OrFail     bool  // Return error if not found (vs nil)
