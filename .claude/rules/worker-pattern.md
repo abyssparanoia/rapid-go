@@ -167,7 +167,7 @@ import (
     "github.com/abyssparanoia/rapid-go/internal/domain/model"
     "github.com/abyssparanoia/rapid-go/internal/domain/repository"
     "github.com/abyssparanoia/rapid-go/internal/usecase/input"
-    "github.com/aarondl/null/v9"
+    "github.com/aarondl/null/v8"
 )
 
 type taskProjectKeyCreationInteractor struct {

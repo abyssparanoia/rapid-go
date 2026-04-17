@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/aarondl/null/v9"
+import "github.com/aarondl/null/v8"
 
 type BaseGetOptions struct {
 	OrFail     bool
