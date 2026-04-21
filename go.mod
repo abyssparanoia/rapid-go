@@ -1,6 +1,6 @@
 module github.com/abyssparanoia/rapid-go
 
-go 1.25.7
+go 1.26.0
 
 tool (
 	github.com/aarondl/sqlboiler/v4
@@ -45,6 +45,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0
 	github.com/lestrrat-go/jwx/v3 v3.1.0
+	github.com/lestrrat-go/jwx/v4 v4.0.0
 	github.com/lib/pq v1.12.3
 	github.com/lucsky/cuid v1.2.1
 	github.com/pressly/goose/v3 v3.27.0
