@@ -3,11 +3,13 @@ package cognito
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/http"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
-	"github.com/lestrrat-go/jwx/v3/jwk"
+	"github.com/lestrrat-go/jwx/v4/jwk"
 )
 
 func NewClient(cfg aws.Config, localhost string) *cognitoidentityprovider.Client {
@@ -33,7 +35,20 @@ func NewPublicKeySet(
 		endpoint = fmt.Sprintf("https://cognito-idp.%s.amazonaws.com", region)
 	}
 	publicKeysURL := fmt.Sprintf("%s/%s/.well-known/jwks.json", endpoint, userPoolID)
-	publicKeySet, err := jwk.Fetch(ctx, publicKeysURL)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, publicKeysURL, nil)
+	if err != nil {
+		return nil, errors.InternalErr.Wrap(err)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, errors.InternalErr.Wrap(err)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.InternalErr.Wrap(err)
+	}
+	publicKeySet, err := jwk.Parse(body)
 	if err != nil {
 		return nil, errors.InternalErr.Wrap(err)
 	}
