@@ -5,6 +5,11 @@
       "matchPackageNames": ["github.com/aarondl/null"],
       "allowedVersions": "<= 8",
       "description": "Pin to v8 to align with SQLBoiler's dependency. v9 is intentionally not used."
+    },
+    {
+      "matchPackageNames": ["github.com/lestrrat-go/jwx"],
+      "allowedVersions": "< 4",
+      "description": "jwx v4 requires GOEXPERIMENT=jsonv2 (encoding/json/v2). Stay on v3 until Go stabilizes json/v2."
     }
   ]
 }
