@@ -39,22 +39,27 @@ cleanup() {
 
 trap cleanup EXIT
 
-start_server() {
-    print_step "Building & Starting Server"
+build_binary() {
+    print_step "Building CLI Binary"
 
-    # 1. Build binary
     print_info "Building CLI binary..."
     (cd "$REPO_ROOT" && /usr/bin/make build) || { echo "make build failed"; exit 1; }
     print_info "Build complete: $CLI_PATH"
 
-    # 2. Start HTTP server in background
+    echo ""
+}
+
+start_server() {
+    print_step "Starting Server"
+
+    # Start HTTP server in background
     print_info "Starting HTTP server..."
     SERVER_LOG_FILE=$(mktemp /tmp/e2e-server-XXXXXX.log)
     (cd "$REPO_ROOT" && "$CLI_PATH" http-server run) > "$SERVER_LOG_FILE" 2>&1 &
     HTTP_SERVER_PID=$!
     print_info "HTTP server started (PID=$HTTP_SERVER_PID)"
 
-    # 3. Wait for server to become healthy
+    # Wait for server to become healthy
     wait_for_health
 
     echo ""
@@ -68,7 +73,14 @@ main() {
     echo -e "${GREEN}=================================${NC}"
     echo ""
 
-    # Start server (build → launch → health-wait)
+    # Build binary first (required for migration CLI and server)
+    build_binary
+
+    # Reset DB and re-apply migrations for a clean state
+    reset_database
+    migrate_and_seed
+
+    # Start server
     start_server
 
     # Phase 1: Prerequisites & Health

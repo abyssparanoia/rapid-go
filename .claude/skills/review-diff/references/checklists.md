@@ -2,9 +2,15 @@
 
 Detailed checklists for each file category. Apply the relevant sections based on changed files.
 
+## Domain Errors (`internal/domain/errors/**`)
+
+- [ ] Error codes are in ascending numerical order within `errors.go`
+- [ ] No duplicate error codes exist
+- [ ] New error codes use the next available sequence number in a new group (not reusing existing groups)
+- [ ] Error code groups are sorted by group number (E2001xx before E2002xx)
+
 ## Domain Model (`internal/domain/model/**`)
 
-- [ ] No package-level private functions (inline or move to model method)
 - [ ] Entity has `ReadonlyReference` struct pointer for relations
 - [ ] Constructor uses `id.New()` for ID generation
 - [ ] Constructor sets both `CreatedAt` and `UpdatedAt` to same time
@@ -16,6 +22,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] Role types have helper methods like `IsRoot()`, `IsNormal()`
 - [ ] Slice types have `IDs()` and `MapByID()` helpers
 - [ ] Type aliases defined: `{Entity}MapByID`, `{Entity}s`
+- [ ] No package-level private functions (inline or move to model method)
 
 ## Repository Interface (`internal/domain/repository/**`)
 
@@ -26,13 +33,13 @@ Detailed checklists for each file category. Apply the relevant sections based on
 
 ## Repository Implementation (`internal/infrastructure/**/repository/**`)
 
-- [ ] No package-level private functions (inline or move to struct method)
 - [ ] Uses `transactable.GetContextExecutor(ctx)` for all queries
 - [ ] `Get` method handles `OrFail` correctly (nil vs error on not found)
 - [ ] `Get` method handles `ForUpdate` option
 - [ ] `List` method applies pagination with `Page` and `Limit`
 - [ ] `List` method validates sort key with `query.SortKey.Valid && query.SortKey.Ptr().Valid()`
 - [ ] Preload helper defined if relations exist
+- [ ] No package-level private functions (inline or move to struct method)
 
 ## Marshaller (`internal/infrastructure/**/internal/marshaller/**`)
 
@@ -45,7 +52,6 @@ Detailed checklists for each file category. Apply the relevant sections based on
 
 ## Usecase Interactor (`internal/usecase/**`)
 
-- [ ] No package-level private functions (inline or move to struct method)
 - [ ] Interface has `//go:generate` directive
 - [ ] Implementation uses dependency injection via constructor
 - [ ] All methods start with `param.Validate()` check
@@ -59,6 +65,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] On delete: IdP deletion before database deletion
 - [ ] Final return fetches entity with `Preload: true` for fresh data
 - [ ] Asset service called even if no assets currently exist
+- [ ] No package-level private functions (inline or move to struct method)
 
 ## Input Struct (`internal/usecase/input/**`)
 
@@ -130,6 +137,16 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] `StoreClaims` called after entity creation/update
 - [ ] `DeleteUser` called before database deletion
 - [ ] All IdP operations within transaction boundary
+
+## Architecture & File Placement (All new files)
+
+- [ ] Domain layer (`internal/domain/`) has NO infrastructure dependencies (no HTTP clients, no SDK imports, no DB packages)
+- [ ] Repository interfaces are in `internal/domain/repository/` — interfaces for external data access only (DB, external API)
+- [ ] Non-data-access interfaces (e.g., geocoding, IoT, publisher) belong in their own domain package (`internal/domain/{concept}/`) or in `internal/domain/service/`, NOT in `internal/domain/repository/`
+- [ ] Infrastructure implementations are in the correct subdirectory under `internal/infrastructure/` (e.g., `googlemaps/`, `cognito/`, `firebase/`)
+- [ ] DTO types for external API responses are in `internal/infrastructure/{provider}/internal/dto/`, NOT in the repository package itself
+- [ ] Marshaller files are under `internal/infrastructure/{db}/internal/marshaller/` — check that new marshallers don't introduce unnecessary type conversions when direct field mapping suffices
+- [ ] No new packages created under `internal/domain/` unless they represent a genuine domain concept — utility-style packages belong in `internal/pkg/`
 
 ## Invitation Workflow (`*invitation*`)
 

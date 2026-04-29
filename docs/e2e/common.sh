@@ -66,6 +66,22 @@ run_mysql() {
     fi
 }
 
+# Reset the database by dropping and recreating the public schema
+reset_database() {
+    print_step "Resetting Database"
+    run_psql "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+    print_info "Database schema dropped and recreated"
+}
+
+# Run migrations and sync constant table data
+migrate_and_seed() {
+    print_step "Running Migrations & Seeding Constants"
+    (cd "$REPO_ROOT" && "$CLI_PATH" schema-migration database up) || { echo "migrate up failed"; exit 1; }
+    print_info "Migrations applied"
+    (cd "$REPO_ROOT" && "$CLI_PATH" schema-migration database sync-constants) || { echo "sync-constants failed"; exit 1; }
+    print_info "Constants synced"
+}
+
 # Helper functions
 print_step() {
     # Record current log line count so failure output starts from this test
