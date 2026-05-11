@@ -44,7 +44,7 @@ require (
 	github.com/googleapis/gax-go/v2 v2.22.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0
-	github.com/lestrrat-go/jwx/v3 v3.1.0
+	github.com/lestrrat-go/jwx/v3 v3.1.1
 	github.com/lib/pq v1.12.3
 	github.com/lucsky/cuid v1.2.1
 	github.com/pressly/goose/v3 v3.27.0
@@ -383,6 +383,7 @@ require (
 	github.com/ultraware/whitespace v0.2.0 // indirect
 	github.com/uudashr/gocognit v1.2.1 // indirect
 	github.com/uudashr/iface v1.4.2 // indirect
+	github.com/valyala/fastjson v1.6.10 // indirect
 	github.com/vbatts/tar-split v0.12.2 // indirect
 	github.com/xen0n/gosmopolitan v1.3.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
