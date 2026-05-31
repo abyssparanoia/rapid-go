@@ -151,6 +151,7 @@ github.com/abyssparanoia/memeduck v1.0.3 h1:P8tiupAACEPGOZhlGIpAZ8QsvWtjWjPNSBjU
 github.com/abyssparanoia/memeduck v1.0.3/go.mod h1:6dWEqPe+Xxk9bWWAkbV+mTON6EppzbkLPa8PEmODebc=
 github.com/air-verse/air v1.65.1 h1:G4hy4YemKrIcGAvYMor+86PhxdtBEq0n9ebJ4RoYy8w=
 github.com/air-verse/air v1.65.1/go.mod h1:OaJZSfZqf7wyjS2oP/CcEVyIt0JmZuPh5x1gdtklmmY=
+github.com/air-verse/air v1.65.3/go.mod h1:OaJZSfZqf7wyjS2oP/CcEVyIt0JmZuPh5x1gdtklmmY=
 github.com/alecthomas/assert/v2 v2.11.0 h1:2Q9r3ki8+JYXvGsDyBXwH3LcJ+WK5D0gc5E8vS6K3D0=
 github.com/alecthomas/assert/v2 v2.11.0/go.mod h1:Bze95FyfUr7x34QZrjL+XP+0qgp/zg8yS+TtBj1WA3k=
 github.com/alecthomas/chroma/v2 v2.24.1 h1:m5ffpfZbIb++k8AqFEKy9uVgY12xIQtBsQlc6DfZJQM=
