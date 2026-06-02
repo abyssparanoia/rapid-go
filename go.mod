@@ -36,7 +36,7 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.7.0
-	github.com/go-playground/validator/v10 v10.30.2
+	github.com/go-playground/validator/v10 v10.30.3
 	github.com/go-sql-driver/mysql v1.10.0
 	github.com/goccy/go-json v0.10.6
 	github.com/golang-jwt/jwt/v5 v5.3.1
