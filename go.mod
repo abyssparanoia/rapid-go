@@ -19,7 +19,7 @@ tool (
 require (
 	cloud.google.com/go v0.123.0
 	cloud.google.com/go/spanner v1.91.0
-	cloud.google.com/go/storage v1.62.2
+	cloud.google.com/go/storage v1.62.3
 	firebase.google.com/go/v4 v4.20.0
 	github.com/aarondl/null/v8 v8.1.3
 	github.com/aarondl/sqlboiler/v4 v4.19.7
