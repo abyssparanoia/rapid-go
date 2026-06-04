@@ -106,6 +106,16 @@ if tc.want.expectedResult == nil {
 
 Verify that all public methods in the implementation file have corresponding test cases.
 
+# Audit Mode
+
+When the orchestrator prompt begins with `AUDIT MODE` and includes an explicit file list:
+
+1. **Skip** the `git diff ... grep _test.go` step — do not detect `$BASE` or run any git diff command.
+2. **Read the complete content** of every `*_test.go` file in the provided list using the Read tool.
+3. Also read the corresponding `_impl.go` files (remove `_test` suffix and match by path) to identify which public methods exist and need test coverage.
+4. Apply all check items in Sections 3–4 to the full file content.
+5. Report in the same Output Format (Test Files Reviewed, Findings, Summary).
+
 # Semantic Category
 
 For each finding, assign a `semantic_category` used by the orchestrator for deduplication:
