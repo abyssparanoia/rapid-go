@@ -166,6 +166,22 @@ For each finding, assign a `semantic_category` used by the orchestrator for dedu
 | `proto_http_path_change` | HTTP annotation path changed |
 | `proto_enum_unspecified_missing` | Enum 0 not `*_UNSPECIFIED` |
 
+# Audit Mode
+
+When the orchestrator prompt begins with `AUDIT MODE` and includes an explicit file list:
+
+1. **Skip** all `$BASE` detection and `git diff` steps — there is no baseline to diff against.
+2. **Review the complete content** of every file in the provided list using the Read tool.
+3. Apply all applicable check items from Sections 3–7 to the full file content.
+4. **Checks that are N/A in Audit Mode** (require a diff baseline):
+   - Proto: field-number-change, required-list-change, HTTP-path-change (Sections 7 error/warning rows that need `git show $BASE:...`)
+   - Migration: detecting whether a Down migration *changed* vs the previous version (the within-file symmetry check still applies)
+5. All self-contained checks still apply: method ordering, naming, Partial pattern, SortKey,
+   `null/v8`, `now.Now()`, ReadonlyReference, DI registration, mock `//go:generate`, domain
+   purity, file organization, enum `*_UNSPECIFIED` at 0, and migration down-symmetry within
+   the file.
+6. Report in the same Output Format (Files Reviewed, Findings, Summary).
+
 # Output Format
 
 ```markdown
