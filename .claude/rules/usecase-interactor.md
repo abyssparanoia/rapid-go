@@ -54,6 +54,32 @@ type AdminStaffInteractor interface {
 
 **Implementation file methods must follow the same order.**
 
+## No Raw Field Inspection on Domain Models
+
+Interactors must not branch on a domain model's raw exported fields or status. Expose an intent-revealing predicate on the model and call that instead.
+
+```go
+// Bad - usecase inspects raw fields
+if inv.Status != model.InvoiceStatusDraft {
+    logger.L(ctx).Info("already finalized (idempotent)")
+    return nil
+}
+
+// Good - call a model predicate
+if !inv.IsDraft() {
+    logger.L(ctx).Info("already finalized (idempotent)")
+    return nil
+}
+
+// Bad - inline composite guard
+if !invoice.IsStripe() || !invoice.IsDownloadable() || !invoice.Stripe.Valid { ... }
+
+// Good - single predicate
+if !invoice.IsHostedURLAvailable() { ... }
+```
+
+See `domain-model.md` → **Method Naming Convention** for the full list of predicates and the naming rules for model methods.
+
 ## No Private Methods
 
 Interactor implementations must **not** define private methods. Only public interface methods are implemented.
@@ -814,33 +840,44 @@ if param.Role.Valid {
 
 ## Domain Method Usage (Domain Logic First)
 
-**IMPORTANT**: All domain model operations (creation and state changes) MUST use domain model constructors and methods. Never directly initialize structs or assign fields in the usecase layer.
+**IMPORTANT**: Always use domain constructors and methods. Never directly initialize domain model structs or assign fields in the usecase layer.
 
-### Creation: Use Constructors
+### Creation: Use Domain Constructors
 
 ```go
 // GOOD - use domain constructor
-staff := model.NewStaff(param.TenantID, param.Role, param.AuthUID, param.DisplayName, param.ImagePath, param.Email, param.RequestTime)
+func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
+    staff := model.NewStaff(param.TenantID, param.Role, param.AuthUID, param.DisplayName, param.ImagePath, param.Email, param.RequestTime)
+    // ...
+}
 
 // BAD - direct struct initialization in usecase
-staff := &model.Staff{
-    ID:          id.New(),
-    TenantID:    param.TenantID,
-    Role:        param.Role,
-    CreatedAt:   param.RequestTime,
-    UpdatedAt:   param.RequestTime,
+func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
+    staff := &model.Staff{
+        ID:          id.New(),
+        TenantID:    param.TenantID,
+        Role:        param.Role,
+        DisplayName: param.DisplayName,
+    }
+    // ...
 }
 ```
+
+**Why**: Constructors encapsulate ID generation, default values, and field constraints. Direct initialization bypasses these guarantees.
 
 ### Updates: Use Domain Methods
 
 ```go
-// GOOD
-admin.UpdateRole(param.Role.Value(), param.RequestTime)
+// GOOD - use domain method
+if param.Role.Valid {
+    admin.UpdateRole(param.Role.Value(), param.RequestTime)
+}
 
-// BAD - direct field assignment
-admin.Role = param.Role.Value()
-admin.UpdatedAt = param.RequestTime
+// BAD - direct field assignment in usecase
+if param.Role.Valid {
+    admin.Role = param.Role.Value()
+    admin.UpdatedAt = param.RequestTime
+}
 ```
 
 See `domain-model.md` for more details on domain method patterns.

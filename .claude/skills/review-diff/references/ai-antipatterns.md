@@ -570,48 +570,40 @@ enum StaffRole {
 
 ## General AI Patterns (Across All Layers)
 
-### 31. Package-level private functions
+### 31. Package-level private functions in domain/usecase/infrastructure layers
 
-Package-level private functions (non-receiver functions) are prohibited in domain, usecase, and infrastructure layers. They pollute the package namespace and scatter logic.
+Package-level private (non-receiver) functions are prohibited in domain, usecase, and infrastructure layers. They scatter business logic and reduce testability.
 
 ```go
-// BAD - package-level private function
-func buildStaffQuery(id string) repository.GetStaffQuery {
-    return repository.GetStaffQuery{...}
-}
+// BAD - package-level private functions
+func buildStaffQuery(id string) repository.GetStaffQuery { ... }
+func toStaffModel(e *dbmodel.Staff) *model.Staff { ... }
+func validateStaffInput(param *input.AdminCreateStaff) error { ... }
 
-// BAD - package-level private helper
-func toStaffModel(param *input.AdminCreateStaff, t time.Time) *model.Staff {
-    return model.NewStaff(param.TenantID, param.Role, ...)
-}
+// GOOD (A) - inline short logic
+staff, err := i.repo.Get(ctx, repository.GetStaffQuery{
+    ID: null.StringFrom(id),
+    BaseGetOptions: repository.BaseGetOptions{OrFail: true},
+})
 
-// BAD - package-level validation helper
-func validateStaffInput(param *input.AdminCreateStaff) error {
-    if param.Email == "" {
-        return errors.RequestInvalidArgumentErr.New()
-    }
-    return nil
-}
-
-// GOOD - inline the logic
-staff, err := i.repo.Get(ctx, repository.GetStaffQuery{...})
-
-// GOOD - method on domain model
+// GOOD (B) - use domain model method for single entity logic
 func (m *Staff) Validate() error { ... }
 
-// GOOD - method on domain service struct
-func (s *staffService) Create(ctx context.Context, param StaffCreateParam) (*model.Staff, error) { ... }
+// GOOD (C) - use domain service struct method for multi-entity logic
+func (s *staffService) buildQuery(param StaffQueryParam) repository.GetStaffQuery { ... }
 ```
 
 **Decision guide:**
+
 | Situation | Solution |
 |---|---|
-| Short logic (few lines) | Inline in the calling method |
-| Reusable business logic | Method on domain model or domain service |
-| Data conversion | Method on marshaller struct, or inline |
-| Validation | Method on input struct or domain model |
+| Short logic (few lines) | Inline in the public method |
+| Logic spans multiple entities | Extract to `domain/service/` struct method |
+| Single entity behavior | Add method to `domain/model/` |
+| Repository query building | Inline (do not create helper) |
+| Conversion function (marshaller) | Inline or use struct receiver method |
 
-**Exception**: Package-level private functions are acceptable only when they are pure utility functions with no domain knowledge (e.g., generic type conversion helpers). Even then, prefer placing them in a shared `pkg/` utility package.
+**Exception**: Pure utility functions with no domain knowledge belong in `pkg/` packages (e.g., `pkg/id`, `pkg/email`).
 
 ---
 
@@ -662,144 +654,439 @@ Just implement the new behavior directly.
 
 ### 36. Direct domain model struct initialization in usecase (bypassing constructor)
 
+Domain model structs must be created using their constructor functions in the usecase layer, not direct struct initialization.
+
 ```go
-// BAD - direct struct literal in usecase
-func (i *adminStaffInteractor) Create(...) (*model.Staff, error) {
+// BAD - direct struct initialization bypasses constructor guarantees
+func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
     staff := &model.Staff{
         ID:          id.New(),
         TenantID:    param.TenantID,
         Role:        param.Role,
         DisplayName: param.DisplayName,
-        CreatedAt:   param.RequestTime,
-        UpdatedAt:   param.RequestTime,
+        // Missing fields risk silent bugs when new fields are added
     }
-    return staff, nil
+    // ...
 }
 
-// GOOD - use domain model constructor
-func (i *adminStaffInteractor) Create(...) (*model.Staff, error) {
-    staff := model.NewStaff(
-        param.TenantID,
-        param.Role,
-        param.AuthUID,
-        param.DisplayName,
-        param.ImagePath,
-        param.Email,
-        param.RequestTime,
-    )
-    return staff, nil
+// GOOD - use domain constructor
+func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
+    staff := model.NewStaff(param.TenantID, param.Role, param.AuthUID, param.DisplayName, param.ImagePath, param.Email, param.RequestTime)
+    // ...
 }
 ```
 
-**Why**: Constructors encapsulate initialization logic (ID generation, default values, field constraints). Bypassing them risks missing required fields and duplicates logic across call sites.
-
-**Note**: This is distinct from #7 (direct field assignment for updates). #7 is about mutation; this is about creation.
+**Why**: Constructors encapsulate ID generation (`id.New()`), default values, field constraints, and ensure all required fields are set. Direct initialization bypasses these guarantees and breaks silently when new fields are added to the model.
 
 ---
 
 ### 37. Unnecessary nil/valid checks on guaranteed values
 
+Do not add nil checks or `.Valid` checks on values that are guaranteed by preceding code.
+
 ```go
-// BAD - staff is guaranteed non-nil by OrFail: true
+// BAD - OrFail: true guarantees non-nil; nil check is impossible
 staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
-    ID:             null.StringFrom(param.StaffID),
+    ID: null.StringFrom(param.StaffID),
     BaseGetOptions: repository.BaseGetOptions{OrFail: true},
 })
 if err != nil {
     return nil, err
 }
-if staff == nil {  // Unnecessary - OrFail guarantees non-nil on success
+if staff == nil {  // IMPOSSIBLE - OrFail returns error if not found
     return nil, errors.StaffNotFoundErr.New()
 }
 
-// GOOD - trust OrFail guarantee
+// BAD - nullable.TypeFrom guarantees Valid == true
+role := nullable.TypeFrom(model.StaffRoleAdmin)
+if role.Valid {  // ALWAYS true
+    // ...
+}
+
+// GOOD - trust the guarantee
 staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
-    ID:             null.StringFrom(param.StaffID),
+    ID: null.StringFrom(param.StaffID),
     BaseGetOptions: repository.BaseGetOptions{OrFail: true},
 })
 if err != nil {
     return nil, err
 }
-// Use staff directly
-
-// BAD - checking .Valid on a value just set with TypeFrom
-role := nullable.TypeFrom(param.Role)
-if role.Valid {  // Always true
-    query.Role = role
-}
-
-// GOOD
-query.Role = nullable.TypeFrom(param.Role)
+// Use staff directly - guaranteed non-nil
 ```
 
-**Fix**: Remove nil/valid checks when the preceding code guarantees the value. Trust `OrFail`, `TypeFrom`, `StringFrom`, and similar constructors.
+**Why**: Unnecessary checks add noise, suggest distrust of established contracts, and mislead future readers about whether nil is actually possible.
 
 ---
 
 ### 38. Unnecessary intermediate variable declarations
 
+Do not assign to a variable if the value is immediately returned without modification.
+
 ```go
-// BAD - unnecessary variable
-result := someFunction(ctx, param)
-return result
-
-// GOOD
-return someFunction(ctx, param)
-
-// BAD - declaring then immediately returning
-staffs, err := i.staffRepository.List(ctx, query)
-if err != nil {
-    return nil, err
+// BAD - unnecessary intermediate variable
+func StaffToPb(m *model.Staff) *pb.Staff {
+    result := &pb.Staff{
+        Id:   m.ID,
+        Name: m.DisplayName,
+    }
+    return result
 }
-result := &output.AdminListStaffs{
-    Staffs:     staffs,
-    TotalCount: totalCount,
-}
-return result, nil
 
 // GOOD - return directly
-staffs, err := i.staffRepository.List(ctx, query)
-if err != nil {
-    return nil, err
+func StaffToPb(m *model.Staff) *pb.Staff {
+    return &pb.Staff{
+        Id:   m.ID,
+        Name: m.DisplayName,
+    }
 }
-return &output.AdminListStaffs{
-    Staffs:     staffs,
-    TotalCount: totalCount,
-}, nil
 ```
 
-**Exception**: Variables are acceptable when (1) the value is used multiple times, (2) conditional mutation is needed (e.g., nullable timestamp fields in marshallers), or (3) readability significantly improves.
+**Exceptions**: Intermediate variables are acceptable when:
+- The value is used more than once
+- Conditional mutation is needed before return (e.g., nullable timestamp prep)
+- Readability clearly benefits from a named variable
 
 ---
 
 ### 39. Field-by-field struct construction in conversion functions
 
+Conversion/marshaller functions must use struct literal initialization with all fields listed, not field-by-field assignment on an empty struct.
+
 ```go
-// BAD - empty struct then field-by-field assignment
-func StaffToPB(m *model.Staff) *pb.Staff {
-    result := &pb.Staff{}
-    result.Id = m.ID
-    result.DisplayName = m.DisplayName
-    result.Email = m.Email
-    result.Role = StaffRoleToPB(m.Role)
-    result.CreatedAt = timestamppb.New(m.CreatedAt)
-    result.UpdatedAt = timestamppb.New(m.UpdatedAt)
-    return result
+// BAD - field-by-field assignment on empty struct
+func ExampleToModel(e *dbmodel.Example) *model.Example {
+    m := &model.Example{}
+    m.ID = e.ID
+    m.TenantID = e.TenantID
+    m.Name = e.Name
+    m.Status = model.ExampleStatus(e.Status)
+    m.CreatedAt = e.CreatedAt
+    m.UpdatedAt = e.UpdatedAt
+    return m
 }
 
 // GOOD - struct literal with all fields
-func StaffToPB(m *model.Staff) *pb.Staff {
-    return &pb.Staff{
-        Id:          m.ID,
-        DisplayName: m.DisplayName,
-        Email:       m.Email,
-        Role:        StaffRoleToPB(m.Role),
-        CreatedAt:   timestamppb.New(m.CreatedAt),
-        UpdatedAt:   timestamppb.New(m.UpdatedAt),
+func ExampleToModel(e *dbmodel.Example) *model.Example {
+    return &model.Example{
+        ID:                e.ID,
+        TenantID:          e.TenantID,
+        Name:              e.Name,
+        Status:            model.ExampleStatus(e.Status),
+        CreatedAt:         e.CreatedAt,
+        UpdatedAt:         e.UpdatedAt,
+        ReadonlyReference: nil,
     }
 }
 ```
 
-**Why**: Field-by-field assignment makes it easy to miss fields silently. Struct literals cause compile errors when fields are added, catching omissions early.
+**Exception**: When conditional field assignment is required (e.g., `ReadonlyReference` populated only when `e.R != nil`, nullable timestamps), prepare variables first, then use a single struct literal with those variables.
 
-**Exception**: When conditional field assignment is needed (e.g., `ReadonlyReference` or nullable timestamps), use `m := &XXX{...}` with conditional blocks, then `return m`. But all non-conditional fields must still be in the initial struct literal.
+**Fix**: Replace with struct literal return. If `ReadonlyReference` needs conditional population, use the `var` + struct literal pattern from `repository.md`.
+
+---
+
+### 40. Manual nil-pointer conversion when `.Ptr()` exists
+
+For `null.String`, `null.Int64`, `null.Time` (from `github.com/aarondl/null/v8`), use `.Ptr()` directly instead of a manual `if .Valid` block.
+
+```go
+// BAD - manual block
+var paymentMethodID *string
+if m.PaymentMethodID.Valid {
+    paymentMethodID = &m.PaymentMethodID.String
+}
+result := &pb.Invoice{
+    PaymentMethodId: paymentMethodID,
+}
+
+// GOOD - inline .Ptr()
+result := &pb.Invoice{
+    PaymentMethodId: m.PaymentMethodID.Ptr(),
+}
+```
+
+**Why**: `null.String.Ptr()` returns `*string` (nil when `!Valid`). The manual block is dead weight and visually obscures the field mapping.
+
+**Fix**: Replace `var x *T; if .Valid { x = &.Field }` with `.Ptr()` inline in the struct literal.
+
+---
+
+### 41. Redundant `var _ Interface = (*impl)(nil)` assertion
+
+```go
+// BAD - redundant assertion, AI-generated boilerplate
+var _ StaffInvoiceInteractor = (*staffInvoiceInteractor)(nil)
+
+// GOOD - constructor return type already enforces the contract
+func NewStaffInvoiceInteractor(...) StaffInvoiceInteractor {
+    return &staffInvoiceInteractor{...}
+}
+```
+
+**Why**: When a constructor returns `InterfaceType`, the compiler already rejects any implementation that doesn't satisfy the interface. The `var _ Interface = (*impl)(nil)` is redundant and adds noise.
+
+**Fix**: Delete the assertion line entirely.
+
+---
+
+### 42. Ad-hoc per-test fixture helper instead of `factory.NewFactory()`
+
+```go
+// BAD - ad-hoc per-test helper duplicates factory responsibilities
+func newTestInvoice() *model.Invoice {
+    return &model.Invoice{
+        ID:             "test-invoice-id",
+        OrganizationID: "test-org-id",
+        Status:         model.InvoiceStatusDraft,
+        // ...
+    }
+}
+
+// In tests:
+invoice := newTestInvoice()
+
+// GOOD - use factory for deterministic, consistent test data
+testdata := factory.NewFactory()
+invoice := testdata.Invoice
+organizationID := invoice.OrganizationID
+```
+
+**Why**: `factory.NewFactory()` provides deterministic go-faker fixtures with consistent related entity references. Ad-hoc helpers diverge from factory data, cause inconsistency between tests, and duplicate responsibilities.
+
+**Fix**: Delete the helper function. Use `factory.NewFactory()` and access the entity via `testdata.Invoice` (or whichever entity field). If the factory doesn't have the entity yet, add it to `factory.go` following the existing pattern.
+
+---
+
+### 43. Conditional preload of fully-owned child entities
+
+```go
+// BAD - preloadStripe bool flag on owned children
+func (r *invoice) buildPreload(preloadStripe bool) []qm.QueryMod {
+    mods := []qm.QueryMod{
+        qm.Load(dbmodel.InvoiceRels.InvoiceItems),
+    }
+    if preloadStripe {
+        mods = append(mods, qm.Load(dbmodel.InvoiceRels.InvoiceStripe))
+    }
+    return mods
+}
+
+// GOOD - always load owned children unconditionally
+func (r *invoice) buildPreload() []qm.QueryMod {
+    return []qm.QueryMod{
+        qm.Load(dbmodel.InvoiceRels.InvoiceItems),
+        qm.Load(dbmodel.InvoiceRels.InvoiceStripe),
+        qm.Load(fmt.Sprintf("%s.%s", dbmodel.InvoiceRels.InvoiceItems, dbmodel.InvoiceItemRels.InvoiceItemStripe)),
+    }
+}
+```
+
+**Why**: Fully-owned 1:1/1:N children (entities that cannot exist without their parent, composed relationship) must always be loaded — they are part of the parent's aggregate. Optional `preload` flags are only appropriate for *reference* relations (e.g., `ReadonlyReference`). Conditional loading of owned children leads to incomplete domain models and nil-dereference bugs.
+
+---
+
+### 44. pkg layer importing domain layer
+
+```go
+// BAD - internal/pkg/phone/phone.go imports domain/errors
+import (
+    "github.com/abyssparanoia/rapid-go/internal/domain/errors"
+    "github.com/nyaruka/phonenumbers"
+)
+
+func ParseE164(rawNumber string, countryCode string) (*phonenumbers.PhoneNumber, error) {
+    num, err := phonenumbers.Parse(rawNumber, countryCode)
+    if err != nil {
+        return nil, errors.RequestInvalidArgumentErr.Wrap(err)  // domain dependency in pkg
+    }
+    ...
+}
+
+// GOOD - internal/pkg/phone/phone.go uses fmt.Errorf only
+import (
+    "fmt"
+    "github.com/nyaruka/phonenumbers"
+)
+
+func ParseE164(rawNumber string, countryCode string) (*phonenumbers.PhoneNumber, error) {
+    num, err := phonenumbers.Parse(rawNumber, countryCode)
+    if err != nil {
+        return nil, fmt.Errorf("invalid phone number format: %w", err)
+    }
+    ...
+}
+
+// Caller in handler/usecase wraps with domain error
+phoneNumber, err := phone.ParseE164(req.GetPhoneNumber(), "")
+if err != nil {
+    return nil, errors.RequestInvalidArgumentErr.Wrap(err)  // wrapping happens at call site
+}
+```
+
+**Why**: `internal/pkg` is a shared utility layer (logging, IDs, phone parsing, etc.) that must have no dependencies on `domain`, `usecase`, or `infrastructure`. It is used by all layers including domain itself. If `pkg` imported `domain/errors`, a circular import would result when domain tried to use pkg utilities. Domain error wrapping is the responsibility of the caller (handler or usecase layer), not the utility function.
+
+**Fix**: Remove the bool parameter. Always load all owned children in `buildPreload()`.
+
+---
+
+### 45. `Set*` method that overwrites non-empty state (should be `Update` or specific verb)
+
+`Set` is reserved for **fill-empty** semantics: the field was guaranteed empty before this call (nullable/derived field set for the first time). Using `Set` for an overwrite that replaces a possibly-meaningful existing value is misleading.
+
+```go
+// BAD - PaymentMethodID may already hold a value; calling this "Set" implies it was empty
+func (m *Invoice) SetPaymentMethodID(id string, t time.Time) {
+    m.PaymentMethodID = null.StringFrom(id)
+    m.UpdatedAt = t
+}
+
+// BAD - IsDefault is an existing bool being toggled; "Set" implies first-time assignment
+func (m *PaymentMethod) SetDefault(isDefault bool, t time.Time) {
+    m.IsDefault = isDefault
+    m.UpdatedAt = t
+}
+
+// GOOD - "Update" signals that an existing value is being replaced
+func (m *Invoice) UpdatePaymentMethodID(id string, t time.Time) *Invoice {
+    m.PaymentMethodID = null.StringFrom(id)
+    m.UpdatedAt = t
+    return m
+}
+
+func (m *PaymentMethod) UpdateIsDefault(isDefault bool, t time.Time) *PaymentMethod {
+    m.IsDefault = isDefault
+    m.UpdatedAt = t
+    return m
+}
+```
+
+**Rule of thumb**: if the field was guaranteed empty before the call → `Set`; if you are replacing a possibly-meaningful existing value → `Update`; if the change has business meaning or a state guard → use a specific verb (`Finalize`, `MarkPaid`, `Void`, `Delete`…).
+
+**Keep as `Set`**: `SetStripe` family (Invoice, InvoiceItem, InvoiceTax, Payment, Refund, Organization), `Staff.SetImageURL` — these genuinely fill a derived/nullable field that starts empty.
+
+**Fix**: Rename `Set{X}` → `Update{X}` (or a domain-specific verb) when the field may already hold a value. Update all call sites.
+
+---
+
+### 46. Void mutator on a domain model (should return receiver)
+
+All mutating methods on domain models must return the receiver (`*Entity`), and `(*Entity, error)` when they also validate a precondition. Void mutators (`func (m *Entity) Mutate(...)`) are forbidden.
+
+```go
+// BAD - void return; caller cannot chain and shape is inconsistent
+func (m *Invoice) ApplyTotals(subtotal int64, tax int64) {
+    m.Subtotal = subtotal
+    m.TaxAmount = tax
+    m.TotalAmount = subtotal + tax
+}
+
+func (m *Organization) Update(name null.String, t time.Time) {
+    if name.Valid { m.Name = name.String }
+    m.UpdatedAt = t
+}
+
+// GOOD - return receiver enables chaining and consistent shape
+func (m *Invoice) ApplyTotals(subtotal int64, tax int64) *Invoice {
+    m.Subtotal = subtotal
+    m.TaxAmount = tax
+    m.TotalAmount = subtotal + tax
+    return m
+}
+
+func (m *Organization) Update(name null.String, t time.Time) *Organization {
+    if name.Valid { m.Name = name.String }
+    m.UpdatedAt = t
+    return m
+}
+
+// When validating a precondition, return (*Entity, error)
+func (m *PaymentMethod) UpdateCreditCardDetails(...) (*PaymentMethod, error) {
+    if m.PaymentMethodType != PaymentMethodTypeCard {
+        return nil, errors.PaymentMethodTypeMismatchErr.New()
+    }
+    // mutate
+    return m, nil
+}
+```
+
+**Why**: Consistent return shape makes the codebase predictable, enables chaining, and distinguishes pure mutations from validated state transitions at a glance.
+
+**Fix**: Add `return m` (or `return m, nil`) to every void domain model mutator. Change signature from `void` to `*Entity` (or `(*Entity, error)` if validation is present). Update call sites if they were discarding an `error` return that is now a `(*Entity, error)`.
+
+---
+
+### 47. Usecase branching on raw domain model fields instead of calling a predicate
+
+Usecase and service code must not branch on a domain model's exported fields or status constants. Expose an intent-revealing predicate on the model and call it instead.
+
+```go
+// BAD - usecase inspects raw fields
+if inv.Status != model.InvoiceStatusDraft {
+    return nil, errors.InvoiceNotDraftErr.New()
+}
+
+// BAD - composite guard inline in usecase
+if !invoice.IsStripe() || !invoice.IsDownloadable() || !invoice.Stripe.Valid {
+    return "", errors.InvoiceHostedURLNotAvailableErr.New()
+}
+
+// BAD - idempotency check on raw fields in usecase
+if inv.PaymentMethodID.Valid && inv.PaymentMethodID.String == pm.ID {
+    return nil
+}
+
+// GOOD - intent-revealing predicates on the model
+if !inv.IsDraft() {
+    return nil, errors.InvoiceNotDraftErr.New()
+}
+
+if !invoice.IsHostedURLAvailable() {
+    return "", errors.InvoiceHostedURLNotAvailableErr.New()
+}
+
+if inv.HasPaymentMethod(pm.ID) {
+    return nil
+}
+```
+
+**Common predicates to add**: `IsDraft() bool`, `IsPending() bool`, `HasPaymentMethod(id string) bool`, `IsHostedURLAvailable() bool`, `IsStripe() bool`, `IsDownloadable() bool`.
+
+**Why**: Predicates encapsulate domain knowledge inside the model. If another caller forgets the guard, behavior diverges. Raw field inspection leaks domain semantics into the application layer and makes refactors error-prone.
+
+**Fix**: Add an intent-revealing predicate method to the domain model. Replace the inline field check in usecase with a call to the predicate.
+
+---
+
+### 48. Precondition duplicated in usecase immediately before a model method that already checks it
+
+If a model method validates a precondition internally and returns a domain error, the usecase must not check the same condition right before calling the method. Duplicating the guard risks the two checks diverging over time and misleads readers about where the authoritative check lives.
+
+```go
+// BAD - usecase duplicates Invoice.Finalize's internal Status != Draft guard
+invoice, err := i.invoiceRepository.Get(ctx, ...)
+if err != nil { return err }
+if invoice.Status != model.InvoiceStatusDraft {         // duplicate of Finalize's guard
+    return errors.InvoiceNotDraftErr.New()
+}
+invoice, err = invoice.Finalize(pm, t)                  // also checks Status == Draft
+if err != nil { return err }
+
+// GOOD - rely on the model method's own guard; delete the external duplicate
+invoice, err := i.invoiceRepository.Get(ctx, ...)
+if err != nil { return err }
+invoice, err = invoice.Finalize(pm, t)                  // single authoritative check
+if err != nil { return err }
+```
+
+**Exception — idempotency short-circuit**: A webhook handler that wants a silent `return nil` (not an error) on re-delivery may check a predicate *before* calling the model method, because the model method would return an error that the webhook cannot propagate. In this case, the predicate (e.g., `!inv.IsDraft()`) serves as an idempotency guard, not a duplicate validation:
+
+```go
+// OK - webhook idempotency short-circuit (silent nil, not an error)
+if !inv.IsDraft() {
+    logger.L(ctx).Info("invoice already finalized (idempotent)")
+    return nil  // silent return, not an error
+}
+inv, err = inv.Finalize(pm, t)  // model's own guard remains the safety net
+```
+
+**Fix**: Delete the usecase/service check. Let the model method's own guard produce the authoritative error. If a silent return is needed (webhook idempotency), keep the predicate call but document it as an idempotency guard, not a validation.

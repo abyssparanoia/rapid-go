@@ -1,205 +1,122 @@
 ---
 name: review-diff
-description: Review and auto-fix code changes against project conventions by diffing the current branch against the default branch (main/master). Use when: (1) asked to review current changes, (2) running '/review-diff', (3) after completing a feature implementation and wanting to catch issues before creating a PR. Launches 5 specialized review agents in parallel (spec, convention, bug, security/performance, test quality), aggregates findings, and automatically fixes all issues found. Does NOT require an existing PR.
+description: Review and auto-fix code changes against project conventions by diffing the current branch against the default branch (main). Use when: (1) asked to review current changes, (2) running '/review-diff', (3) after completing a feature implementation and wanting to catch issues before creating a PR. Reviews all changed files against .claude/rules/, detects common AI coding mistakes (gomock.Any() misuse, missing ForUpdate, missing Preload, direct field assignment, wrong method ordering, etc.), and automatically fixes all issues found. Does NOT require an existing PR.
 ---
 
-# Diff Review & Auto-Fix (Parallel Agent Edition)
+# Diff Review & Auto-Fix
 
-Review current branch changes against main/master using **5 specialized parallel agents**, then **automatically fix all issues found**.
+Review current branch changes against main and **automatically fix all issues found**.
 
 ## Workflow
 
 ```
-1. Detect Default Branch  → find main or master
-2. Gather Changes         → git diff, changed files, classify
-3. Parallel Agent Review  → launch 5 agents simultaneously
-4. Aggregate Findings     → collect, deduplicate, sort
+1. Detect Default Branch  → find main
+2. Gather Changes         → git diff, changed files
+3. AI Anti-Pattern Check  → detect common AI mistakes
+4. Rule-Based Review      → apply rule checklists per file category
 5. Auto-Fix Issues        → edit files to fix all found problems
 6. Verify Fixes           → lint, tests, code generation
-7. Report                 → summary with agent-level breakdown
+7. Report                 → summary of what was found and fixed
 ```
 
 ## Step 1: Detect Default Branch
 
 ```bash
+# Try to detect
 git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||'
 ```
 
-If that fails, try `origin/main` first, then `origin/master`. Store the result as `$BASE`.
+If that fails, use `origin/main`.
 
-## Step 2: Gather Changes + Classify
+## Step 2: Gather Changes
 
 ```bash
-BASE=origin/main  # or origin/master
+BASE=origin/main
 
-# Changed files list
+# Changed files
 git diff --name-only $BASE...HEAD
 
-# Check if test files are included
-git diff --name-only $BASE...HEAD | grep '_test\.go$'
+# Full diff for review
+git diff $BASE...HEAD
 
-# Commit history for spec-reviewer context
+# Commit history
 git log $BASE...HEAD --oneline
 ```
 
-Note the changed file list — this is passed to agents in their prompts.
+## Step 3: AI Anti-Pattern Check
 
-Determine which agents to launch:
-- **spec-reviewer**: Always (spec compliance)
-- **convention-reviewer**: Always (convention & rules compliance)
-- **bug-reviewer**: Always (bug & anti-pattern detection)
-- **security-perf-reviewer**: Always (security & performance)
-- **test-reviewer**: Only if `*_test.go` files exist in the diff (test quality)
+Read `references/ai-antipatterns.md`. Check **every changed file** against all patterns listed.
 
-## Step 3: Parallel Agent Review
+**Priority patterns — must detect in every review:**
+- **#1** `gomock.Any()` for non-context parameters (no exceptions)
+- **#6** Direct model initialization instead of using `factory.NewFactory()` in tests
+- **#12** Fully-owned entity placed in `ReadonlyReference` instead of direct field
+- **#25** Private method defined in usecase interactor (receiver method)
+- **#31** Package-level private functions in domain/usecase/infrastructure layers
+- **#36** Direct domain model struct initialization in usecase (bypassing constructor)
+- **#37** Unnecessary nil/valid checks on guaranteed values
+- **#39** Field-by-field struct construction in conversion functions
+- **#40** Manual nil-pointer conversion when `.Ptr()` exists (use `null.String.Ptr()` etc.)
+- **#41** Redundant `var _ Interface = (*impl)(nil)` assertion
+- **#42** Ad-hoc per-test fixture helper instead of `factory.NewFactory()`
+- **#43** Conditional preload of fully-owned child entities
+- **#44** `pkg` layer importing `domain/errors` instead of using `fmt.Errorf`
+- **#45** `Set*` method that overwrites non-empty state (should be `Update` or specific verb)
+- **#46** Void mutator on a domain model (should return receiver `*Entity` or `(*Entity, error)`)
+- **#47** Usecase branching on raw domain model fields instead of calling a predicate
+- **#48** Precondition duplicated in usecase immediately before a model method that already checks it
 
-Launch all applicable agents in a **single message** using the Agent tool. All agents run with `run_in_background: true` for parallel execution.
+Record each finding: file path, line number, pattern violated, fix to apply.
 
-### CRITICAL: Use `subagent_type`, Do NOT Embed the Agent Definition
+## Step 4: Rule-Based Review
 
-Each agent is registered as a `subagent_type` via its frontmatter in `.claude/agents/{name}.md`. When you specify `subagent_type: "{name}"`, Claude Code automatically applies:
+Map each changed file to its rule category, then read `references/checklists.md` and apply relevant checklists.
 
-- The `model` field (e.g., `sonnet`) — prevents cost overruns from running on the parent's model
-- The `tools` allow-list (e.g., `[Read, Glob, Grep, Bash]`) — enforces read-only, preventing unintended edits
-- The agent's full body as its system prompt
-
-**Never** read the `.claude/agents/{name}.md` file and embed its contents in the `prompt`. Doing so:
-
-- Causes the agent to launch as `general-purpose` (all tools, including Edit/Write/Bash unrestricted) — breaks the read-only guarantee
-- Bypasses the `model: sonnet` declaration — may run on an expensive model
-- Duplicates the definition between the agent file and SKILL.md, causing drift
-
-### Prompt Content (review context only)
-
-The `prompt` argument should contain **only** the review context. The agent already has its role from the frontmatter/body.
-
-**Template**:
-```
-Target diff: HEAD vs {$BASE}
-
-Changed files:
-{changed_files}
-
-Follow your role definition exactly. Report findings in the format you define, including the Semantic Category field on every finding.
-```
-
-For **spec-reviewer**, also append:
-```
-Commit history:
-{git log output}
-```
-
-For **test-reviewer**, filter `{changed_files}` to `*_test.go` only.
-
-### Agent Tool Call Pattern
-
-Launch all applicable agents in one message:
-
-```
-Agent(
-  description: "Spec compliance review",
-  subagent_type: "spec-reviewer",
-  run_in_background: true,
-  prompt: "<review context only>"
-)
-Agent(
-  description: "Convention & rules review",
-  subagent_type: "convention-reviewer",
-  run_in_background: true,
-  prompt: "<review context only>"
-)
-Agent(
-  description: "Bug & anti-pattern review",
-  subagent_type: "bug-reviewer",
-  run_in_background: true,
-  prompt: "<review context only>"
-)
-Agent(
-  description: "Security & performance review",
-  subagent_type: "security-perf-reviewer",
-  run_in_background: true,
-  prompt: "<review context only>"
-)
-Agent(                                    # only if test files exist
-  description: "Test quality review",
-  subagent_type: "test-reviewer",
-  run_in_background: true,
-  prompt: "<review context only>"
-)
-```
-
-Wait for all agents to complete. You will be notified as each finishes.
-
-## Step 4: Aggregate Findings
-
-After all agents complete:
-
-1. **Collect** all findings from agent responses (each finding now carries `semantic_category`)
-2. **Deduplicate** by `(file, line, semantic_category)` — see dedup rationale below
-3. **Sort** by severity: `error` first, then `warning`, then `info`
-4. **Verify coverage** — ensure every changed file was reviewed by at least one agent
-5. **Separate** auto-fixable from manual-only findings
-
-### Dedup Rationale: Why `semantic_category`, Not `rule_id`
-
-Each agent defines its own rule_id prefix (`AP-*`, `SEC-*`, `CL-*`, etc.), so the same underlying issue can be reported under different rule_ids. Example: a missing `Preload: true` on a return-path `Get` could surface as `AP-21` (bug-reviewer), `PERF-...` (security-perf-reviewer, `query_preload_missing`), or `CL-repo-*` (convention-reviewer) — `rule_id`-based dedup would miss the overlap. `semantic_category` is defined by each agent in its own definition file; the orchestrator uses it as a single cross-agent dedup key.
-
-### Tie-breaking When Multiple Agents Flag the Same `semantic_category`
-
-When the dedup key collides, keep the finding with:
-1. **Highest severity** (`error` > `warning` > `info`)
-2. If tied, **most specific fix** (non-empty `Fix:` block wins over empty)
-3. If still tied, **convention-reviewer > security-perf-reviewer > bug-reviewer > test-reviewer > spec-reviewer** (preferred owner order)
-
-Note the winner's `rule_id` in the final report but merge all agents' notes into the finding's Description so no context is lost.
-
-### Finding Categories
-
-| Rule Prefix | Source Agent | Example |
-|---|---|---|
-| `SPEC-*` | spec-reviewer | SPEC-1 (missing requirement) |
-| `CL-*` | convention-reviewer | CL-usecase-3 (missing Validate), CL-migration-2, CL-proto-5 |
-| `AP-*` | bug-reviewer | AP-36 (direct struct init) |
-| `BUG-*` | bug-reviewer | BUG-1 (nil dereference) |
-| `SEC-*` | security-perf-reviewer | SEC-1 (missing authorization) |
-| `PERF-*` | security-perf-reviewer | PERF-1 (N+1 query) |
-| `TX-*` | security-perf-reviewer | TX-1 (ForUpdate missing) |
-| `TEST-*` | test-reviewer | TEST-1 (insufficient coverage) |
-
-### Agent Scope Matrix
-
-| Concern | Owner agent |
-|---------|------------|
-| Test files (`*_test.go`) | **test-reviewer** only — bug-reviewer skips tests |
-| TX boundary (RWTx, ForUpdate, nesting, long TX) | **security-perf-reviewer** only — bug-reviewer delegates |
-| IdP sync (StoreClaims, DeleteUser, order) | **security-perf-reviewer** only |
-| Input validation (`param.Validate()` missing) | **security-perf-reviewer** |
-| Migration safety | **convention-reviewer** |
-| Proto backward-compatibility | **convention-reviewer** |
-| Preload efficiency | security-perf-reviewer (`query_preload_unnecessary` / `query_preload_missing`) |
-| Logic bugs & non-TX anti-patterns | **bug-reviewer** |
+| File Pattern | Category |
+|---|---|
+| `internal/domain/model/**` | domain-model |
+| `internal/domain/service/**` | domain-service |
+| `internal/domain/errors/**` | domain-errors |
+| `internal/domain/repository/*.go` | repository-interface |
+| `internal/infrastructure/**/repository/**` | repository-impl |
+| `internal/infrastructure/**/marshaller/**` | marshaller |
+| `internal/usecase/**` (non-test) | usecase |
+| `internal/usecase/input/**` | input |
+| `internal/infrastructure/grpc/**/handler/**` | grpc-handler |
+| `internal/infrastructure/dependency/**` | dependency |
+| `schema/proto/**` | proto |
+| `db/**/migrations/**` | migration |
+| `**/*_test.go` | testing |
+| `*invitation*` | invitation-workflow |
+| `*authentication*`, `cognito/**`, `firebase/**` | external-service |
 
 ## Step 5: Auto-Fix Issues
 
-**Fix all auto-fixable issues immediately.** Edit files using available tools.
+**Fix all issues immediately—do not just report.** Edit files using available tools.
 
 Fix in this priority order:
-1. **Security** (SEC-*) — missing authorization, input validation gaps
-2. **Correctness** (BUG-*, AP-19, AP-20, AP-21) — ForUpdate, Preload, IdP sync
-3. **Convention** (CL-*) — method ordering, naming, pattern compliance
-4. **Anti-patterns** (AP-*) — gomock.Any(), direct field assignment
-5. **Test quality** (TEST-*, AP-1~6) — mock strictness, t.Parallel()
-6. **Performance** (PERF-*) — N+1, unnecessary queries
+1. **Correctness** – missing `ForUpdate`, IdP sync outside TX, wrong type for nullable fields
+2. **Rule violations** – method ordering, naming, missing required methods/fields
+3. **AI anti-patterns** – `gomock.Any()` misuse, direct field assignment, unnecessary abstractions
+4. **Test completeness** – missing test cases, wrong mock patterns, missing `t.Parallel()`
 
 When fixing test files that use `gomock.Any()` incorrectly, replace with exact expected values using domain model constructors.
 
-**SPEC-* findings are NOT auto-fixed** — they require human judgment on specification interpretation.
+## Step 6: Verify Fixes
 
-## Step 6: Verify Fixes (with Retry Loop)
+Always run after fixing:
 
-### 6a. Code Generation (if applicable)
+```bash
+/usr/bin/make lint.go
+```
 
-Run generation first — lint/test depend on generated code being up to date:
+Run if test files were changed or fixed:
+
+```bash
+/usr/bin/make test
+```
+
+Run code generation if applicable:
 
 ```bash
 # Migration files changed
@@ -212,72 +129,25 @@ Run generation first — lint/test depend on generated code being up to date:
 /usr/bin/make generate.mock
 ```
 
-### 6b. Lint + Test with Retry
-
-Run verification in a **bounded retry loop** (max 2 retries = 3 total attempts):
-
-```
-attempt = 1
-max_attempts = 3
-while attempt <= max_attempts:
-  run `/usr/bin/make lint.go`
-  if test files changed: run `/usr/bin/make test`
-  if all pass:
-    break
-  else:
-    parse failure output into synthetic findings:
-      - file / line extracted from error location
-      - rule_id = LINT-{n} or TEST-FAIL-{n}
-      - semantic_category = `lint_failure` or `test_failure`
-      - severity = error
-      - description = failure message
-    append to aggregated findings
-    return to Step 5 (Auto-Fix) scoped to only these new findings
-    attempt += 1
-```
-
-### 6c. Escalation After Exhaustion
-
-If attempt > max_attempts:
-- Do **not** discard the remaining failures
-- List each unresolved failure in Step 7's "Issues Requiring Manual Action"
-- Include the failure message verbatim and the file/line
-- Mark overall status as ⚠️ `N manual actions needed`
-
-### Anti-pattern: Silent Success
-
-Never report "✅ Ready" if lint or test failed and was not re-fixed. The verify-retry loop exists specifically so the reviewer cannot silently lie about verification.
-
 ## Step 7: Report
 
 ```markdown
 ## Diff Review Summary
 
 ### Scope
-- Base: origin/main (or master)
-- Changed files: N files
-- Agents launched: N
-
-### Agent Results
-| Agent | Files Reviewed | Findings | Auto-Fixed |
-|-------|---------------|----------|------------|
-| spec-reviewer | N | N (E:N W:N I:N) | 0 |
-| convention-reviewer | N | N (E:N W:N I:N) | N |
-| bug-reviewer | N | N (E:N W:N I:N) | N |
-| security-perf-reviewer | N | N (E:N W:N I:N) | N |
-| test-reviewer | N | N (E:N W:N I:N) | N |
-| **Total** | | **N** | **N** |
+- Base: origin/main
+- Changed files: N files across X categories
 
 ### Auto-Fixed Issues (N)
-1. **[Rule ID]** Short description
+1. **[Category]** Short description
    - `path/to/file.go:123`
    - Was: `<bad code>`
    - Fixed: `<good code>`
 
 ### Issues Requiring Manual Action (N)
-1. **[Rule ID]** Short description
+1. **[Category]** Short description
    - `path/to/file.go`
-   - Reason: Requires spec confirmation / `make generate.buf` needed
+   - Reason: Requires `make generate.buf` / `make generate.mock`
 
 ### Verification
 - [x] lint.go passes

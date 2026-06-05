@@ -50,26 +50,31 @@ type Example struct {
 | Reference data (lookup) | `ReadonlyReference` | Optional (via `Preload`) | Never written together |
 | Owned child entities | Direct field | Always loaded | Written together with parent |
 
-```go
-// ReadonlyReference - for reference/lookup relations
-type Example struct {
-    ID        string
-    TenantID  string
-    CreatedAt time.Time
+### Owned 1:1 Child Field Type Convention (New Entities)
 
-    // Tenant is reference data, not owned by Example
-    ReadonlyReference *struct {
-        Tenant *Tenant
-    }
+For **new** entities with optional owned 1:1 children (where the child may or may not exist), prefer `nullable.Type[ChildStruct]` over `*ChildStruct` pointer:
+
+```go
+// Good - nullable.Type for optional owned 1:1 child (new entities)
+type PaymentMethod struct {
+    ID         string
+    CreditCard nullable.Type[PaymentMethodCreditCard]  // Present when type=card
+    BankAccount nullable.Type[PaymentMethodBankAccount] // Present when type=bank
 }
 
-// Direct field - for owned/composed entities
-type Order struct {
-    ID        string
-    Items     OrderItems  // Always loaded, written together
-    CreatedAt time.Time
+// Acceptable for existing entities (pointer used historically)
+type PaymentMethod struct {
+    CreditCard  *PaymentMethodCreditCard   // Existing code — not required to migrate
+    BankAccount *PaymentMethodBankAccount
 }
 ```
+
+**Why `nullable.Type[T]` for new entities:**
+- Explicit `.Valid` flag prevents nil-dereference without nil checks
+- Consistent with other optional fields in the codebase
+- Clear semantics: `.Valid` = child exists, `.Value()` = access child data
+
+**Note:** Existing entities using `*ChildStruct` do not need to be migrated. Apply the `nullable.Type[T]` convention only when creating new owned 1:1 child relationships.
 
 ### Owned Child Entities – Cascade Requirements
 
@@ -95,6 +100,27 @@ type Order struct {
 type Staff struct {
     ID      string
     Profile nullable.Type[StaffProfile]
+}
+```
+
+```go
+// ReadonlyReference - for reference/lookup relations
+type Example struct {
+    ID        string
+    TenantID  string
+    CreatedAt time.Time
+
+    // Tenant is reference data, not owned by Example
+    ReadonlyReference *struct {
+        Tenant *Tenant
+    }
+}
+
+// Direct field - for owned/composed entities
+type Order struct {
+    ID        string
+    Items     OrderItems  // Always loaded, written together
+    CreatedAt time.Time
 }
 ```
 
@@ -368,6 +394,60 @@ func (k ExampleSortKey) Valid() bool {
 ### Default Value
 
 The default sort key is **always** `CreatedAtDesc`. This default is applied in the input layer constructor, not in the domain model.
+
+## Method Naming Convention
+
+All mutating methods on domain models follow a strict naming scheme based on **semantics**, not syntax.
+
+| Prefix / verb | Meaning | Signature | Examples |
+|---|---|---|---|
+| `Set{X}` | Fill a value that was previously empty (nullable/derived field, never overwrites meaningful state) | `*Entity` | `Invoice.SetStripe`, `InvoiceItem.SetStripe`, `InvoiceTax.SetStripe`, `Payment.SetStripe`, `Refund.SetStripe`, `Organization.SetStripe`, `Staff.SetImageURL` |
+| `Update` / `Update{Field}` | Overwrite an existing value with no domain ceremony | `*Entity` or `(*Entity, error)` if it validates | `Tenant.Update`, `Admin.Update`, `Staff.Update`, `Invoice.UpdatePaymentMethodID`, `PaymentMethod.UpdateIsDefault` |
+| Specific verb (`Finalize`, `MarkPaid`, `Void`, `Pay`, `Delete`…) | A domain state transition with business meaning | `(*Entity, error)` | `Invoice.Finalize`, `Payment.MarkSucceeded`, `PaymentMethod.Delete` |
+
+**Rule of thumb**: if the field was guaranteed empty before, it's `Set`; if you are replacing a possibly-meaningful value with a generic one, it's `Update`; if the change carries business meaning or guards a state machine, use a specific verb.
+
+### Return the Receiver
+
+**All mutating methods must return the receiver** (`*Entity`), and `(*Entity, error)` when they also validate a precondition. This enables chaining and ensures a consistent shape across the codebase.
+
+```go
+// Good - returns receiver
+func (m *Admin) Update(displayName null.String, t time.Time) *Admin {
+    if displayName.Valid { m.DisplayName = displayName.String }
+    m.UpdatedAt = t
+    return m
+}
+
+// Good - returns (receiver, error) when validating
+func (m *PaymentMethod) UpdateCreditCardDetails(...) (*PaymentMethod, error) {
+    if m.PaymentMethodType != PaymentMethodTypeCard {
+        return nil, errors.PaymentMethodTypeMismatchErr.New()...
+    }
+    // mutate
+    return m, nil
+}
+```
+
+Void mutators (`func (m *Entity) Mutate(...)`) are **forbidden** on domain models.
+
+### Validate Inside the Method
+
+If a precondition can be checked from the object's own state, the check belongs **inside the model method** (returning a domain error), never in the usecase/service immediately before the call. Duplicating it externally risks other callers missing it.
+
+### Predicates over Inline Field Inspection
+
+Usecase/service code must not branch on a model's raw exported fields. Expose an intent-revealing predicate on the model instead:
+
+```go
+// Bad - usecase inspects raw fields
+if inv.Status != model.InvoiceStatusDraft { return nil }
+
+// Good - model exposes a predicate
+if !inv.IsDraft() { return nil }
+```
+
+Common predicates: `IsDraft() bool`, `HasPaymentMethod(id string) bool`, `IsHostedURLAvailable() bool`, `IsStripe() bool`, `IsDownloadable() bool`.
 
 ## State Change Methods (Domain Logic First)
 

@@ -159,6 +159,39 @@ type BaseListOptions struct {
 }
 ```
 
+### IncludeDeleted Option on Get Queries
+
+For entities with soft-delete (`deleted_at` column), add `IncludeDeleted bool` directly to the entity's `Get{Entity}Query` struct (not in `BaseGetOptions`, since soft-delete is entity-specific):
+
+```go
+type GetPaymentMethodQuery struct {
+    BaseGetOptions
+    ID             null.String
+    ExternalID     null.String
+    OrganizationID null.String
+    IncludeDeleted bool  // When true, includes soft-deleted rows
+}
+```
+
+**When to use `IncludeDeleted: true`:**
+- Idempotency checks in webhook handlers — a soft-deleted row means the event was already processed (or the record was detached). Skip rather than re-create.
+- Restore workflows — look up a soft-deleted record to restore it.
+
+**Repository implementation pattern:**
+
+```go
+func (r *example) Get(ctx context.Context, query repository.GetExampleQuery) (*model.Example, error) {
+    mods := []qm.QueryMod{}
+
+    // Only filter out soft-deleted rows when IncludeDeleted is false
+    if !query.IncludeDeleted {
+        mods = append(mods, dbmodel.ExampleWhere.DeletedAt.IsNull())
+    }
+
+    // ... rest of query building
+}
+```
+
 ## Implementation (Infrastructure Layer)
 
 Location: `internal/infrastructure/{mysql|postgresql|spanner}/repository/{entity}.go`
@@ -268,23 +301,24 @@ func (r *example) buildListQuery(query repository.ListExamplesQuery) []qm.QueryM
 
 #### PostgreSQL Implementation
 
-PostgreSQL uses double quotes instead of backticks for identifiers:
+PostgreSQL uses double quotes instead of backticks for identifiers. Always reference `dbmodel.{Table}Columns.{Field}` constants instead of hardcoding column name strings — this prevents silent breaks when columns are renamed.
 
 ```go
 func (r *example) List(ctx context.Context, query repository.ListExamplesQuery) (model.Examples, error) {
     mods := r.buildListQuery(query)
 
     // Sorting (BEFORE pagination)
+    // IMPORTANT: Use dbmodel column constants, never hardcode string literals
     if query.SortKey.Valid && query.SortKey.Value().Valid() {
         switch query.SortKey.Value() {
         case model.ExampleSortKeyCreatedAtDesc:
-            mods = append(mods, qm.OrderBy("\"created_at\" DESC"))
+            mods = append(mods, qm.OrderBy("\""+dbmodel.ExampleColumns.CreatedAt+"\" DESC"))
         case model.ExampleSortKeyCreatedAtAsc:
-            mods = append(mods, qm.OrderBy("\"created_at\" ASC"))
+            mods = append(mods, qm.OrderBy("\""+dbmodel.ExampleColumns.CreatedAt+"\" ASC"))
         case model.ExampleSortKeyNameAsc:
-            mods = append(mods, qm.OrderBy("\"name\" ASC"))
+            mods = append(mods, qm.OrderBy("\""+dbmodel.ExampleColumns.Name+"\" ASC"))
         case model.ExampleSortKeyNameDesc:
-            mods = append(mods, qm.OrderBy("\"name\" DESC"))
+            mods = append(mods, qm.OrderBy("\""+dbmodel.ExampleColumns.Name+"\" DESC"))
         case model.ExampleSortKeyUnknown:
             return nil, errors.InternalErr.Errorf("invalid sort key: %s", query.SortKey.Value())
         }
@@ -344,6 +378,40 @@ func (r *example) addPreload(mods []qm.QueryMod) []qm.QueryMod {
     return mods
 }
 ```
+
+### Owned Children vs Reference Relations — Unconditional Preload
+
+`Preload bool` in `BaseGetOptions` / `BaseListOptions` controls loading of **reference** relations (e.g., `ReadonlyReference.Tenant`). It does NOT apply to **fully-owned child entities**.
+
+| Relation Type | Load Condition | Example |
+|---|---|---|
+| Reference (lookup) | Conditional — only when `Preload: true` | `InvoiceRels.Organization` |
+| Owned 1:N child | **Unconditional — always load** | `InvoiceRels.InvoiceItems` |
+| Owned 1:1 child | **Unconditional — always load** | `InvoiceRels.InvoiceStripe` |
+
+**Fully-owned children** (entities that cannot exist without their parent and are part of the same aggregate) **must always be loaded** regardless of the `Preload` flag. Never use a boolean parameter to gate their loading:
+
+```go
+// BAD - conditional preload of owned child
+func (r *invoice) buildPreload(preloadStripe bool) []qm.QueryMod {
+    mods := []qm.QueryMod{qm.Load(dbmodel.InvoiceRels.InvoiceItems)}
+    if preloadStripe {
+        mods = append(mods, qm.Load(dbmodel.InvoiceRels.InvoiceStripe))
+    }
+    return mods
+}
+
+// GOOD - always load owned children
+func (r *invoice) buildPreload() []qm.QueryMod {
+    return []qm.QueryMod{
+        qm.Load(dbmodel.InvoiceRels.InvoiceItems),
+        qm.Load(dbmodel.InvoiceRels.InvoiceStripe),
+        qm.Load(fmt.Sprintf("%s.%s", dbmodel.InvoiceRels.InvoiceItems, dbmodel.InvoiceItemRels.InvoiceItemStripe)),
+    }
+}
+```
+
+**Why**: The API handler may not surface the owned children today, but the domain model is incomplete without them. Conditional loading causes nil-dereference bugs and makes behavior dependent on call-site flags.
 
 ## Marshaller (Infrastructure Layer)
 
@@ -445,6 +513,36 @@ func InvitationToModel(i *dbmodel.Invitation) *model.Invitation {
 - Prevents accidentally omitting fields in struct literal
 - Makes nullable field handling visible and reviewable
 
+### Struct Literal Return Rule
+
+All conversion functions must return the struct using a struct literal with all fields explicitly listed. Do **not** initialize an empty struct and then assign fields one by one.
+
+```go
+// GOOD - struct literal return
+func ExampleToModel(e *dbmodel.Example) *model.Example {
+    return &model.Example{
+        ID:        e.ID,
+        TenantID:  e.TenantID,
+        Name:      e.Name,
+        Status:    model.ExampleStatus(e.Status),
+        CreatedAt: e.CreatedAt,
+        UpdatedAt: e.UpdatedAt,
+        ReadonlyReference: nil,
+    }
+}
+
+// BAD - field-by-field assignment on empty struct
+func ExampleToModel(e *dbmodel.Example) *model.Example {
+    m := &model.Example{}
+    m.ID = e.ID
+    m.TenantID = e.TenantID
+    m.Name = e.Name
+    return m
+}
+```
+
+**Exception**: When conditional field assignment is required (e.g., `ReadonlyReference` populated only when `e.R != nil`, or nullable timestamps), use the `var` declaration pattern described above, then build the struct literal with the prepared variables.
+
 ### Slice Version
 
 ```go
@@ -475,32 +573,6 @@ func ExampleToDBModel(m *model.Example) *dbmodel.Example {
 ```
 
 **Note**: `ReadonlyReference` is never converted back to DB model - it's read-only.
-
-### Struct Literal Return Rule
-
-**All conversion functions must use struct literal initialization in the return statement.** Do not create an empty struct and assign fields one by one.
-
-```go
-// GOOD - struct literal with all fields
-func TenantToModel(s *dbmodel.Tenant) *model.Tenant {
-    return &model.Tenant{
-        ID:                s.ID,
-        Name:              s.Name,
-        ReadonlyReference: nil,
-    }
-}
-
-// BAD - field-by-field assignment
-func TenantToModel(s *dbmodel.Tenant) *model.Tenant {
-    m := &model.Tenant{}
-    m.ID = s.ID
-    m.Name = s.Name
-    m.ReadonlyReference = nil
-    return m
-}
-```
-
-**Exception**: When conditional assignment is needed (e.g., `ReadonlyReference`, nullable timestamps), use `m := &XXX{...}` with all non-conditional fields in the literal, then conditional blocks, then `return m`.
 
 ## Transaction Context
 

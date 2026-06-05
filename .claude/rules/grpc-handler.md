@@ -380,6 +380,61 @@ func AdminInvitationToPb(m *model.AdminInvitation) *pb.AdminInvitation {
 - Code reviewers can more easily spot missing field mappings
 - Prevents accidental omission of nullable field handling
 
+### Direct Return for Simple Marshallers
+
+When there are no optional/nullable fields to declare as intermediate variables, **return the struct literal directly** without assigning to a temporary variable:
+
+```go
+// Good - direct return when no intermediate variables needed
+func PaymentMethodToPb(m *model.PaymentMethod) *pb.PaymentMethod {
+    if m == nil {
+        return nil
+    }
+    return &pb.PaymentMethod{
+        Id:   m.ID,
+        Type: PaymentMethodTypeToPb(m.PaymentMethodType),
+    }
+}
+
+// Bad - unnecessary temporary variable
+func PaymentMethodToPb(m *model.PaymentMethod) *pb.PaymentMethod {
+    if m == nil {
+        return nil
+    }
+    result := &pb.PaymentMethod{   // Don't do this when there's nothing to prepare
+        Id:   m.ID,
+        Type: PaymentMethodTypeToPb(m.PaymentMethodType),
+    }
+    return result
+}
+```
+
+**Rule:** Use intermediate `var` declarations only for nullable/optional fields (e.g., `null.Time`, optional timestamps). Use direct `return &pb.X{...}` for all other cases.
+
+### Mapping `null.String` / `null.Int64` → Optional Proto Fields
+
+For `null.String`, `null.Int64`, and similar `null.*` types (from `github.com/aarondl/null/v8`) that map to `optional` proto fields (which become `*string`, `*int64` in Go), **always use `.Ptr()` directly in the struct literal**. Do NOT declare an intermediate variable with a manual `if .Valid` block.
+
+```go
+// BAD - manual intermediate variable
+var paymentMethodID *string
+if m.PaymentMethodID.Valid {
+    paymentMethodID = &m.PaymentMethodID.String
+}
+result := &pb.Invoice{
+    PaymentMethodId: paymentMethodID,
+    InvoiceNumber:   ...,
+}
+
+// GOOD - inline .Ptr()
+result := &pb.Invoice{
+    PaymentMethodId: m.PaymentMethodID.Ptr(),
+    InvoiceNumber:   m.InvoiceNumber.Ptr(),
+}
+```
+
+**Exception**: `null.Time` → `*timestamppb.Timestamp` still requires a `var` block because conversion from `time.Time` → `*timestamppb.Timestamp` needs `timestamppb.New()`, which `.Ptr()` cannot provide. Use the `var` pattern for those only.
+
 ## Error Handling
 
 - Return errors directly from interactors
