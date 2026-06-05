@@ -50,7 +50,6 @@ Map each changed file to its rule category:
 | `*job*`, `process_job_cmd` | job-system | `job-system.md` |
 | `*worker*`, `worker_cmd` | worker | `worker-pattern.md` |
 | `task_cmd/**`, `task_*` | cli-command | `cli-command-pattern.md` |
-| `device_group*`, `session_interceptor` | device-group-auth | `device-group-authorization.md` |
 | `internal/domain/model/asset.go` | object-storage-paths | `object-storage-paths.md` |
 | `internal/infrastructure/s3/**` | object-storage-paths | `object-storage-paths.md` |
 | `internal/infrastructure/gcs/**` | object-storage-paths | `object-storage-paths.md` |
@@ -107,11 +106,10 @@ Apply to `db/**/migrations/**/*.sql`:
   - `CREATE TABLE` → `DROP TABLE IF EXISTS`
   - `ADD COLUMN` → `DROP COLUMN`
   - `CREATE INDEX` → `DROP INDEX`
-- **Blocking index on large tables**: `CREATE INDEX` (without `CONCURRENTLY` on Postgres) locks the table. Flag as warning for `hw_*` or large tables
+- **Blocking index on large tables**: `CREATE INDEX` (without `CONCURRENTLY` on Postgres) locks the table — flag as warning for large tables
 - **Foreign key cascade**: Confirm `ON DELETE` behavior matches the domain intent (owned children need `CASCADE`, references need `RESTRICT`)
 - **Unique constraint on existing column**: Flag as error — needs data-quality pre-check
 - **Constant table YAML sync**: If a new `*_statuses` / `*_types` enum table is added but no matching YAML file exists under `db/*/constants/`, flag as error
-- **`hw_` prefix rule**: Tables populated by hardware/IoT devices must use `hw_` prefix (see `migration.md`)
 
 ## 7. Proto Backward-Compatibility Checks
 
@@ -161,7 +159,6 @@ For each finding, assign a `semantic_category` used by the orchestrator for dedu
 | `migration_blocking_index` | Non-concurrent index on large table |
 | `migration_fk_cascade` | ON DELETE behavior mismatch |
 | `migration_constant_yaml_sync` | Enum table without YAML |
-| `migration_hw_prefix` | Hardware table without `hw_` prefix |
 | `proto_field_number_change` | Field number modified |
 | `proto_field_number_reuse` | Reused without reserved |
 | `proto_field_deletion` | Deleted without reserved |
