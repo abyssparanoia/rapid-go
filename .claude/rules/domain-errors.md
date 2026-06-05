@@ -80,6 +80,26 @@ var (
 | Invalid State | `{Entity}InvalidErr` | `AssetInvalidErr` |
 | Permission | `{Action}ForbiddenErr` | `DeleteForbiddenErr` |
 
+## Error Code Ordering Rules
+
+**All error definitions in `errors.go` MUST be sorted in ascending numerical order by error code.**
+
+- Error code groups must appear in group number order (E2001xx before E2002xx before E2003xx, etc.)
+- Within a group, definitions must be in sequence order (E200101 before E200102)
+- No duplicate error codes are allowed — each code must be globally unique
+- When adding a new entity/category, assign a new group number (next available `E20Nxx`), never reuse an existing group
+
+```go
+// CORRECT - ascending order
+TenantNotFoundErr = NewNotFoundError("E200101", ...)  // E2001xx group
+StaffNotFoundErr  = NewNotFoundError("E200201", ...)  // E2002xx group
+AdminNotFoundErr  = NewNotFoundError("E200301", ...)  // E2003xx group
+
+// WRONG - out of order
+StaffNotFoundErr  = NewNotFoundError("E200201", ...)
+TenantNotFoundErr = NewNotFoundError("E200101", ...)  // E2001xx after E2002xx
+```
+
 ## Error Codes
 
 Use format `E{category}{sequence}`:

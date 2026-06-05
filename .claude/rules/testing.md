@@ -79,6 +79,63 @@ Key patterns:
 - Function returns `(args, usecase/service, want)` tuple
 - Descriptive test names as map keys
 
+### 同一メソッドのテストケースは 1 関数のテーブルに集約する
+
+1 メソッド (例: `repository.List`) のテストは複数の `Test*` 関数に分けず、`Test{Receiver}_{Method}` の table-driven テスト 1 つに集約する。エラーケース (zero-value rejection 等) も別関数化せず、`wantErr bool` のような field を使ってテーブルに混ぜる。
+
+```go
+// GOOD - エラーケースもテーブルに統合
+tests := map[string]struct {
+    query   ListXxxQuery
+    wantLen int
+    wantErr bool
+}{
+    "success": { query: ListXxxQuery{Limit: 10}, wantLen: 3 },
+    "rejects zero Limit": { query: ListXxxQuery{Limit: 0}, wantErr: true },
+}
+for name, tc := range tests {
+    t.Run(name, func(t *testing.T) {
+        got, err := repo.List(ctx, tc.query)
+        if tc.wantErr {
+            require.Error(t, err)
+            return
+        }
+        require.NoError(t, err)
+        require.Len(t, got, tc.wantLen)
+    })
+}
+
+// BAD - エラーケースだけ別関数に分離
+func TestRepo_List(t *testing.T) { /* 正常系 table */ }
+func TestRepo_List_RejectsZeroLimit(t *testing.T) { /* zero limit only */ }
+```
+
+### テスト helper はパッケージレベルではなくテスト関数内の closure として定義する
+
+このプロジェクトでは package-level 関数を避ける方針のため、テスト固有の helper は `Test*` 関数内で closure として定義する。複数の `Test*` 関数で共有が必要になった時点で初めてパッケージレベルに昇格させる。
+
+```go
+// GOOD - Test 関数内で closure として定義
+func TestRepo_List(t *testing.T) {
+    assertNoUnreliable := func(t *testing.T, logs model.HWBotLocations) {
+        t.Helper()
+        for _, l := range logs { /* ... */ }
+    }
+    // ...
+}
+
+// BAD - package-level の helper
+func assertNoUnreliable(t *testing.T, logs model.HWBotLocations) {
+    t.Helper()
+    // ...
+}
+
+func TestRepo_List(t *testing.T) {
+    // ... 1 箇所からしか呼ばれない
+    assertNoUnreliable(t, got)
+}
+```
+
 ## Mock Setup
 
 ```go
@@ -363,6 +420,42 @@ func newTestExample(t *testing.T) *model.Example {
 func newTestContext(t *testing.T) context.Context {
     t.Helper()
     return context.Background()
+}
+```
+
+### Avoid file-level globals for test fixtures — declare them inline in the test function
+
+固定値 (時刻、テナント ID、車両 ID 等) はテスト関数のローカル変数として宣言する。`var` でファイル先頭に置くと、複数テストが暗黙的に共有してしまい、片方のテストの修正が別テストに波及するため。
+
+ヘルパー関数が値を必要とするときは、グローバル変数で共有するのではなく **引数として渡す**:
+
+```go
+// GOOD - テスト関数のローカル変数として宣言、ヘルパには引数で渡す
+func setupTenantStaffContext(
+    tenantID string,
+    role model.StaffRole,
+    deviceGroupID string,
+    permType model.DeviceGroupPermissionType,
+    requestTime time.Time, // ← caller から渡す
+) context.Context {
+    ctx := context.Background()
+    ctx = request_interceptor.SetRequestTime(ctx, requestTime)
+    // ...
+}
+
+func TestTenantHandler_ListXxx(t *testing.T) {
+    t.Parallel()
+    requestTime := time.Date(2026, 4, 28, 10, 0, 0, 0, time.UTC) // テスト関数内で宣言
+    ctx := setupTenantStaffContext(tenantID, role, "", "", requestTime)
+    // EXPECT 側でも requestTime を直接使う
+}
+
+// BAD - グローバル変数として共有
+var fixedHandlerRequestTime = time.Date(2026, 4, 28, 10, 0, 0, 0, time.UTC)
+
+func setupTenantStaffContext(...) context.Context {
+    ctx = request_interceptor.SetRequestTime(ctx, fixedHandlerRequestTime) // 暗黙参照
+    // ...
 }
 ```
 

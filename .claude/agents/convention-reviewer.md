@@ -50,6 +50,10 @@ Map each changed file to its rule category:
 | `*job*`, `process_job_cmd` | job-system | `job-system.md` |
 | `*worker*`, `worker_cmd` | worker | `worker-pattern.md` |
 | `task_cmd/**`, `task_*` | cli-command | `cli-command-pattern.md` |
+| `device_group*`, `session_interceptor` | device-group-auth | `device-group-authorization.md` |
+| `internal/domain/model/asset.go` | object-storage-paths | `object-storage-paths.md` |
+| `internal/infrastructure/s3/**` | object-storage-paths | `object-storage-paths.md` |
+| `internal/infrastructure/gcs/**` | object-storage-paths | `object-storage-paths.md` |
 
 If a file matches multiple categories, apply all matching checklists.
 
@@ -80,7 +84,7 @@ For each changed file:
 For new files, verify:
 
 - **Domain layer purity**: No infrastructure dependencies (HTTP clients, SDKs, DB packages) in `internal/domain/`
-- **repository vs domain interface packages**: `internal/domain/repository/` is for data persistence access only. Non-data-access interfaces (geocoding, IoT, publisher, cache) belong in their own domain package (`internal/domain/{concept}/`) or in `internal/domain/service/`
+- **repository vs domain interface packages**: `internal/domain/repository/` is for data persistence access only. Non-data-access interfaces (geocoding, IoT, publisher, cache) belong in their own domain package (`internal/domain/{concept}/`) or in `internal/domain/service/`. Existing examples: `domain/iot/`, `domain/publisher/`, `domain/cache/`, `domain/geocode/`
 - **DTO placement**: External API response types go in `internal/infrastructure/{provider}/internal/dto/`, not directly in the repository package
 - **Unnecessary conversion logic**: Check if marshallers have unnecessary type conversions by comparing with existing marshallers in the same directory
 - **New package validity**: New packages under `internal/domain/` must represent genuine domain concepts. Utility-style packages belong in `internal/pkg/`
@@ -103,10 +107,11 @@ Apply to `db/**/migrations/**/*.sql`:
   - `CREATE TABLE` → `DROP TABLE IF EXISTS`
   - `ADD COLUMN` → `DROP COLUMN`
   - `CREATE INDEX` → `DROP INDEX`
-- **Blocking index on large tables**: `CREATE INDEX` (without `CONCURRENTLY` on Postgres) locks the table — flag as warning for large tables
+- **Blocking index on large tables**: `CREATE INDEX` (without `CONCURRENTLY` on Postgres) locks the table. Flag as warning for `hw_*` or large tables
 - **Foreign key cascade**: Confirm `ON DELETE` behavior matches the domain intent (owned children need `CASCADE`, references need `RESTRICT`)
 - **Unique constraint on existing column**: Flag as error — needs data-quality pre-check
 - **Constant table YAML sync**: If a new `*_statuses` / `*_types` enum table is added but no matching YAML file exists under `db/*/constants/`, flag as error
+- **`hw_` prefix rule**: Tables populated by hardware/IoT devices must use `hw_` prefix (see `migration.md`)
 
 ## 7. Proto Backward-Compatibility Checks
 
@@ -156,6 +161,7 @@ For each finding, assign a `semantic_category` used by the orchestrator for dedu
 | `migration_blocking_index` | Non-concurrent index on large table |
 | `migration_fk_cascade` | ON DELETE behavior mismatch |
 | `migration_constant_yaml_sync` | Enum table without YAML |
+| `migration_hw_prefix` | Hardware table without `hw_` prefix |
 | `proto_field_number_change` | Field number modified |
 | `proto_field_number_reuse` | Reused without reserved |
 | `proto_field_deletion` | Deleted without reserved |
@@ -165,22 +171,7 @@ For each finding, assign a `semantic_category` used by the orchestrator for dedu
 | `proto_rename` | Message / RPC / package renamed |
 | `proto_http_path_change` | HTTP annotation path changed |
 | `proto_enum_unspecified_missing` | Enum 0 not `*_UNSPECIFIED` |
-
-# Audit Mode
-
-When the orchestrator prompt begins with `AUDIT MODE` and includes an explicit file list:
-
-1. **Skip** all `$BASE` detection and `git diff` steps — there is no baseline to diff against.
-2. **Review the complete content** of every file in the provided list using the Read tool.
-3. Apply all applicable check items from Sections 3–7 to the full file content.
-4. **Checks that are N/A in Audit Mode** (require a diff baseline):
-   - Proto: field-number-change, required-list-change, HTTP-path-change (Sections 7 error/warning rows that need `git show $BASE:...`)
-   - Migration: detecting whether a Down migration *changed* vs the previous version (the within-file symmetry check still applies)
-5. All self-contained checks still apply: method ordering, naming, Partial pattern, SortKey,
-   `null/v8`, `now.Now()`, ReadonlyReference, DI registration, mock `//go:generate`, domain
-   purity, file organization, enum `*_UNSPECIFIED` at 0, and migration down-symmetry within
-   the file.
-6. Report in the same Output Format (Files Reviewed, Findings, Summary).
+| `asset_path_centralization` | object path prefix がハードコードされ AssetType 定数に集約されていない / private path に `private/` prefix が無い |
 
 # Output Format
 

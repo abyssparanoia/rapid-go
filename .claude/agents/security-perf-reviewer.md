@@ -16,6 +16,7 @@ Detect security vulnerabilities, performance issues, and **transaction-boundary 
 ## 1. Read Rules
 
 Read the following:
+- `.claude/rules/device-group-authorization.md` — 3-layer authorization pattern
 - `.claude/rules/repository.md` — Query patterns
 - `.claude/rules/usecase-interactor.md` — Transaction boundaries
 - `.claude/rules/external-service-integration.md` — IdP integration
@@ -25,9 +26,11 @@ Read the following:
 
 ### Authorization
 
-- **Missing auth**: Handler not calling `session_interceptor.RequireStaffSessionContext` / `RequireAdminSessionContext` as appropriate
-- **Tenant scope missing**: Resource fetched without scoping to the requesting user's tenant
-- **Missing admin role check**: Admin-only operations not checking `param.AdminRole.IsRoot()` etc.
+- **Layer 1 missing**: Handler not calling `RequireStaffSessionContext` / `RequireStaffTenantPermission`
+- **Layer 2 missing**: Tenant-scoped resource without `RequireStaffTenantPermission`
+- **Layer 3 missing**: `RequireStaffDeviceGroupActionPermission` / `RequireStaffTenantActionPermission` needed but not called
+- **Layer order**: Not following Layer 1 → 2 → 3 order
+- **Admin bypass**: Handler-side admin branching (should be handled internally by the function)
 
 ### Input Validation
 
@@ -89,8 +92,8 @@ For each finding, assign a `semantic_category` used by the orchestrator for dedu
 
 | semantic_category | Example |
 |-------------------|---------|
-| `authz_missing` | Session context not required, tenant scope missing |
-| `authz_role_check_missing` | Admin role check absent |
+| `authz_layer_missing` | Layer 1/2/3 missing or wrong order |
+| `authz_admin_bypass` | Handler-side admin branching |
 | `input_validation_missing` | `param.Validate()` missing, proto value not validated |
 | `sql_injection_risk` | Raw SQL concatenation |
 | `idp_sync_missing` | StoreClaims/DeleteUser not called |

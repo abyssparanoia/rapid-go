@@ -15,6 +15,45 @@ Use domain services when:
 - Complex calculations or validations are needed
 - External service coordination is required (via interfaces)
 
+## No Private Functions / Helpers
+
+Service implementations must **not** define package-level private (lowercase) functions or helper types. Only methods on the service struct itself are allowed.
+
+Reason: package-level helpers in service files scatter business logic, reduce testability, and bypass the `domain/model` layer. The whole point of having a service is to dispatch to domain models.
+
+| Situation | Solution |
+|-----------|----------|
+| Logic operates on a single entity slice (grouping, filtering, etc.) | Add a method to the slice type (e.g. `(s TripSegments) GroupByVehicleID()`) |
+| Logic produces a domain model from inputs | Add an exported constructor/builder function in `domain/model/` (e.g. `model.BuildDailyOperatingStatuses(...)`) |
+| Internal calculation type (bucket, accumulator) needed | Define it inside `domain/model/` as a lowercase type with methods. Expose only the exported builder. |
+| Short logic (a few lines) | Inline in the public service method |
+
+```go
+// BAD - package-level helpers in service file
+func groupSegmentsByVehicleID(segs model.TripSegments) map[string]model.TripSegments { ... }
+func fillBucket(b *bucket, segs []*model.TripSegment) { ... }
+
+func (s *xxxService) PopulateDailyMetrics(p Param) {
+    grouped := groupSegmentsByVehicleID(p.Segments)
+    // ...
+}
+
+// GOOD - logic moved to domain/model methods + exported builder
+// In domain/model:
+func (s TripSegments) GroupByVehicleID() map[string]TripSegments { ... }
+func BuildDailyOperatingStatuses(segs TripSegments, ...) []*DailyOperatingStatus { ... }
+
+// Service is a thin dispatch:
+func (s *xxxService) PopulateDailyMetrics(p Param) {
+    grouped := p.Segments.GroupByVehicleID()
+    for _, status := range p.Statuses {
+        status.DailyOperatingStatuses = model.BuildDailyOperatingStatuses(grouped[id], ...)
+    }
+}
+```
+
+Same principle applies to **gRPC handler** package-level helpers: auth-related logic (e.g. intersecting accessible device groups with a request filter) belongs in `internal/infrastructure/grpc/internal/interceptor/session_interceptor/` as exported functions, not in handler-level lowercase helpers.
+
 ## Service Structure
 
 Domain services consist of:
