@@ -26,6 +26,10 @@ func (m StaffRole) IsAdmin() bool {
 	return m == StaffRoleAdmin
 }
 
+func (m StaffRole) IsNormal() bool {
+	return m == StaffRoleNormal
+}
+
 func (m StaffRole) Valid() bool {
 	return m != StaffRoleUnknown && m != ""
 }

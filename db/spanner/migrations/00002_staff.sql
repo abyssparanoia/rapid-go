@@ -7,7 +7,7 @@ CREATE TABLE `Staffs` (
   `TenantID`                 STRING(36)     NOT NULL, -- tenant id
   `Role`                     STRING(32)     NOT NULL, -- role
   `AuthUID`                  STRING(256)    NOT NULL, -- auth uid
-  `DisplayName`              STRING(256)    NOT NULL, -- role
+  `DisplayName`              STRING(256)    NOT NULL, -- display name
   `ImagePath`                STRING(MAX)    NOT NULL, -- image path
   `Email`                    STRING(512)    NOT NULL, -- email
   `CreatedAt`                TIMESTAMP      NOT NULL, -- creation date

@@ -56,13 +56,13 @@ func (r *tenant) List(
 	if query.SortKey.Valid && query.SortKey.Value().Valid() {
 		switch query.SortKey.Value() {
 		case model.TenantSortKeyCreatedAtDesc:
-			mods = append(mods, qm.OrderBy("\"created_at\" DESC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.TenantColumns.CreatedAt+"\" DESC"))
 		case model.TenantSortKeyCreatedAtAsc:
-			mods = append(mods, qm.OrderBy("\"created_at\" ASC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.TenantColumns.CreatedAt+"\" ASC"))
 		case model.TenantSortKeyNameAsc:
-			mods = append(mods, qm.OrderBy("\"name\" ASC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.TenantColumns.Name+"\" ASC"))
 		case model.TenantSortKeyNameDesc:
-			mods = append(mods, qm.OrderBy("\"name\" DESC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.TenantColumns.Name+"\" DESC"))
 		case model.TenantSortKeyUnknown:
 			return nil, errors.InternalErr.Errorf("invalid sort key: %s", query.SortKey.Value())
 		}
@@ -90,7 +90,7 @@ func (r *tenant) Count(
 	ctx context.Context,
 	query repository.ListTenantsQuery,
 ) (uint64, error) {
-	mods := []qm.QueryMod{}
+	mods := r.buildListQuery(query)
 	ttl, err := dbmodel.Tenants(
 		mods...,
 	).Count(ctx, transactable.GetContextExecutor(ctx))
@@ -98,6 +98,10 @@ func (r *tenant) Count(
 		return 0, errors.InternalErr.Wrap(err)
 	}
 	return uint64(ttl), nil
+}
+
+func (r *tenant) buildListQuery(_ repository.ListTenantsQuery) []qm.QueryMod {
+	return []qm.QueryMod{}
 }
 
 func (r *tenant) buildPreload(_ bool) []qm.QueryMod {

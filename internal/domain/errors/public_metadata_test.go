@@ -10,6 +10,7 @@ import (
 )
 
 func TestWithPublicMetadata_SingleEntry(t *testing.T) {
+	t.Parallel()
 	err := goerr.New("test error")
 	err = WithPublicMetadata(err, "field", "email")
 
@@ -20,6 +21,7 @@ func TestWithPublicMetadata_SingleEntry(t *testing.T) {
 }
 
 func TestWithPublicMetadata_MultipleCallsMerge(t *testing.T) {
+	t.Parallel()
 	err := goerr.New("test error")
 	err = WithPublicMetadata(err, "field", "email")
 	err = WithPublicMetadata(err, "form_id", "signup")
@@ -32,6 +34,7 @@ func TestWithPublicMetadata_MultipleCallsMerge(t *testing.T) {
 }
 
 func TestWithPublicMetadata_OverwritesSameKey(t *testing.T) {
+	t.Parallel()
 	err := goerr.New("test error")
 	err = WithPublicMetadata(err, "field", "original")
 	err = WithPublicMetadata(err, "field", "overwritten")
@@ -43,6 +46,7 @@ func TestWithPublicMetadata_OverwritesSameKey(t *testing.T) {
 }
 
 func TestWithPublicMetadata_IntValue(t *testing.T) {
+	t.Parallel()
 	err := goerr.New("test error")
 	err = WithPublicMetadata(err, "count", 42)
 
@@ -52,6 +56,7 @@ func TestWithPublicMetadata_IntValue(t *testing.T) {
 }
 
 func TestWithPublicMetadata_BoolValue(t *testing.T) {
+	t.Parallel()
 	err := goerr.New("test error")
 	err = WithPublicMetadata(err, "is_expired", true)
 
@@ -61,6 +66,7 @@ func TestWithPublicMetadata_BoolValue(t *testing.T) {
 }
 
 func TestWithPublicMetadata_SliceValue(t *testing.T) {
+	t.Parallel()
 	err := goerr.New("test error")
 	tags := []string{"a", "b"}
 	err = WithPublicMetadata(err, "tags", tags)
@@ -71,6 +77,7 @@ func TestWithPublicMetadata_SliceValue(t *testing.T) {
 }
 
 func TestWithPublicMetadata_NestedMapValue(t *testing.T) {
+	t.Parallel()
 	err := goerr.New("test error")
 	nested := map[string]any{"k": "v", "n": 1}
 	err = WithPublicMetadata(err, "details", nested)
@@ -81,22 +88,26 @@ func TestWithPublicMetadata_NestedMapValue(t *testing.T) {
 }
 
 func TestPublicMetadata_NilError(t *testing.T) {
+	t.Parallel()
 	meta := PublicMetadata(nil)
 	assert.Nil(t, meta)
 }
 
 func TestPublicMetadata_NonGoerr(t *testing.T) {
+	t.Parallel()
 	meta := PublicMetadata(fmt.Errorf("plain error"))
 	assert.Nil(t, meta)
 }
 
 func TestPublicMetadata_NoMetadataSet(t *testing.T) {
+	t.Parallel()
 	err := goerr.New("test error")
 	meta := PublicMetadata(err)
 	assert.Nil(t, meta)
 }
 
 func TestPublicMetadata_ThroughWrapChain(t *testing.T) {
+	t.Parallel()
 	inner := goerr.New("inner error")
 	inner = WithPublicMetadata(inner, "field", "email")
 
@@ -112,6 +123,7 @@ func TestPublicMetadata_ThroughWrapChain(t *testing.T) {
 }
 
 func TestWithPublicMetadata_DoesNotLeakToOtherValues(t *testing.T) {
+	t.Parallel()
 	err := goerr.New("test error")
 	err = err.WithValue("sensitive_key", "sensitive_value")
 	err = WithPublicMetadata(err, "public_key", "public_value")

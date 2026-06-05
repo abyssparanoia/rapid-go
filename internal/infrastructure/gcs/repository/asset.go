@@ -11,6 +11,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/abyssparanoia/rapid-go/internal/domain/model"
 	"github.com/abyssparanoia/rapid-go/internal/domain/repository"
+	"github.com/abyssparanoia/rapid-go/internal/pkg/now"
 )
 
 const (
@@ -67,7 +68,7 @@ func (r *asset) GenerateWritePresignedURL(
 	}
 
 	opts := &storage.SignedURLOptions{
-		Expires:     time.Now().Add(expires),
+		Expires:     now.Now().Add(expires),
 		Method:      http.MethodPut,
 		ContentType: contentType.String(),
 	}

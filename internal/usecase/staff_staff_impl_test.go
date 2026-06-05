@@ -45,20 +45,14 @@ func TestStaffStaffInteractor_Get(t *testing.T) {
 
 	tests := map[string]testcaseFunc{
 		"invalid argument": func(ctx context.Context, ctrl *gomock.Controller) testcase {
-			mockTransactable := mock_repository.NewMockTransactable(ctrl)
-			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 			mockStaffRepo := mock_repository.NewMockStaff(ctrl)
-			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 
 			return testcase{
 				args: args{},
 				usecase: &staffStaffInteractor{
-					transactable:     mockTransactable,
-					tenantRepository: mockTenantRepo,
-					staffRepository:  mockStaffRepo,
-					staffService:     mockStaffService,
-					assetService:     mockAssetService,
+					staffRepository: mockStaffRepo,
+					assetService:    mockAssetService,
 				},
 				want: want{
 					expectedResult: errors.RequestInvalidArgumentErr,
@@ -83,9 +77,6 @@ func TestStaffStaffInteractor_Get(t *testing.T) {
 					}).
 				Return(nil, errors.StaffNotFoundErr)
 
-			mockTransactable := mock_repository.NewMockTransactable(ctrl)
-			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 
 			return testcase{
@@ -96,11 +87,8 @@ func TestStaffStaffInteractor_Get(t *testing.T) {
 					requestTime:   testdata.RequestTime,
 				},
 				usecase: &staffStaffInteractor{
-					transactable:     mockTransactable,
-					tenantRepository: mockTenantRepo,
-					staffRepository:  mockStaffRepo,
-					staffService:     mockStaffService,
-					assetService:     mockAssetService,
+					staffRepository: mockStaffRepo,
+					assetService:    mockAssetService,
 				},
 				want: want{
 					expectedResult: errors.StaffNotFoundErr,
@@ -125,9 +113,6 @@ func TestStaffStaffInteractor_Get(t *testing.T) {
 					}).
 				Return(staff, nil)
 
-			mockTransactable := mock_repository.NewMockTransactable(ctrl)
-			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
 				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
@@ -141,11 +126,8 @@ func TestStaffStaffInteractor_Get(t *testing.T) {
 					requestTime:   testdata.RequestTime,
 				},
 				usecase: &staffStaffInteractor{
-					transactable:     mockTransactable,
-					tenantRepository: mockTenantRepo,
-					staffRepository:  mockStaffRepo,
-					staffService:     mockStaffService,
-					assetService:     mockAssetService,
+					staffRepository: mockStaffRepo,
+					assetService:    mockAssetService,
 				},
 				want: want{
 					staff: staff,
@@ -157,7 +139,7 @@ func TestStaffStaffInteractor_Get(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -244,9 +226,6 @@ func TestStaffStaffInteractor_List(t *testing.T) {
 					}).
 				Return(uint64(60), nil)
 
-			mockTransactable := mock_repository.NewMockTransactable(ctrl)
-			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
-			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
 				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).
@@ -262,11 +241,8 @@ func TestStaffStaffInteractor_List(t *testing.T) {
 					requestTime: testdata.RequestTime,
 				},
 				usecase: &staffStaffInteractor{
-					transactable:     mockTransactable,
-					tenantRepository: mockTenantRepo,
-					staffRepository:  mockStaffRepo,
-					staffService:     mockStaffService,
-					assetService:     mockAssetService,
+					staffRepository: mockStaffRepo,
+					assetService:    mockAssetService,
 				},
 				want: want{
 					output: output.NewStaffListStaffs(
@@ -281,7 +257,7 @@ func TestStaffStaffInteractor_List(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 

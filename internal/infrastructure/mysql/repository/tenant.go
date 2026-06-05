@@ -90,7 +90,7 @@ func (r *tenant) Count(
 	ctx context.Context,
 	query repository.ListTenantsQuery,
 ) (uint64, error) {
-	mods := []qm.QueryMod{}
+	mods := r.buildListQuery(query)
 	ttl, err := dbmodel.Tenants(
 		mods...,
 	).Count(ctx, transactable.GetContextExecutor(ctx))
@@ -98,6 +98,10 @@ func (r *tenant) Count(
 		return 0, errors.InternalErr.Wrap(err)
 	}
 	return uint64(ttl), nil
+}
+
+func (r *tenant) buildListQuery(_ repository.ListTenantsQuery) []qm.QueryMod {
+	return []qm.QueryMod{}
 }
 
 func (r *tenant) buildPreload(_ bool) []qm.QueryMod {

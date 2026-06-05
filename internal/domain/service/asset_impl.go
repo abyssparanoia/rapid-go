@@ -85,15 +85,17 @@ func (s *assetService) BatchSetStaffURLs(
 	requestTime time.Time,
 ) error {
 	for _, staff := range staffs {
-		imageURL, err := s.assetRepository.GenerateReadURL(
-			ctx,
-			staff.ImagePath,
-			requestTime,
-		)
-		if err != nil {
-			return err
+		if staff.ImagePath != "" {
+			imageURL, err := s.assetRepository.GenerateReadURL(
+				ctx,
+				staff.ImagePath,
+				requestTime,
+			)
+			if err != nil {
+				return err
+			}
+			staff.SetImageURL(imageURL)
 		}
-		staff.SetImageURL(imageURL)
 
 		if staff.ReadonlyReference != nil && staff.ReadonlyReference.Tenant != nil {
 			if err := s.BatchSetTenantURLs(ctx, model.Tenants{staff.ReadonlyReference.Tenant}, requestTime); err != nil {

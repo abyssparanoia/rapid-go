@@ -61,13 +61,13 @@ func (r *admin) List(
 	if query.SortKey.Valid && query.SortKey.Value().Valid() {
 		switch query.SortKey.Value() {
 		case model.AdminSortKeyCreatedAtDesc:
-			mods = append(mods, qm.OrderBy("\"created_at\" DESC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.AdminColumns.CreatedAt+"\" DESC"))
 		case model.AdminSortKeyCreatedAtAsc:
-			mods = append(mods, qm.OrderBy("\"created_at\" ASC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.AdminColumns.CreatedAt+"\" ASC"))
 		case model.AdminSortKeyDisplayNameAsc:
-			mods = append(mods, qm.OrderBy("\"display_name\" ASC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.AdminColumns.DisplayName+"\" ASC"))
 		case model.AdminSortKeyDisplayNameDesc:
-			mods = append(mods, qm.OrderBy("\"display_name\" DESC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.AdminColumns.DisplayName+"\" DESC"))
 		case model.AdminSortKeyUnknown:
 			return nil, errors.InternalErr.Errorf("invalid sort key: %s", query.SortKey.Value())
 		}

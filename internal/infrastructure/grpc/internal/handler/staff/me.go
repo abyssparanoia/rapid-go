@@ -11,6 +11,30 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/usecase/input"
 )
 
+func (h *StaffHandler) GetMe(
+	ctx context.Context,
+	req *staff_apiv1.GetMeRequest,
+) (*staff_apiv1.GetMeResponse, error) {
+	claims, err := session_interceptor.RequireStaffSessionContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	requestTime := request_interceptor.GetRequestTime(ctx)
+
+	staff, err := h.meInteractor.Get(ctx, input.NewStaffGetMe(
+		claims.TenantID.String,
+		claims.StaffID.String,
+		requestTime,
+	))
+	if err != nil {
+		return nil, err
+	}
+
+	return &staff_apiv1.GetMeResponse{
+		Staff: marshaller.StaffToPB(staff),
+	}, nil
+}
+
 func (h *StaffHandler) SignUp(
 	ctx context.Context,
 	req *staff_apiv1.SignUpRequest,
@@ -34,30 +58,6 @@ func (h *StaffHandler) SignUp(
 	}
 
 	return &staff_apiv1.SignUpResponse{
-		Staff: marshaller.StaffToPB(staff),
-	}, nil
-}
-
-func (h *StaffHandler) GetMe(
-	ctx context.Context,
-	req *staff_apiv1.GetMeRequest,
-) (*staff_apiv1.GetMeResponse, error) {
-	claims, err := session_interceptor.RequireStaffSessionContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	requestTime := request_interceptor.GetRequestTime(ctx)
-
-	staff, err := h.meInteractor.Get(ctx, input.NewStaffGetMe(
-		claims.TenantID.String,
-		claims.StaffID.String,
-		requestTime,
-	))
-	if err != nil {
-		return nil, err
-	}
-
-	return &staff_apiv1.GetMeResponse{
 		Staff: marshaller.StaffToPB(staff),
 	}, nil
 }

@@ -40,12 +40,13 @@ func NewAdmin(
 func (m *Admin) Update(
 	displayName null.String,
 	t time.Time,
-) {
+) *Admin {
 	if displayName.Valid {
 		m.DisplayName = displayName.String
 	}
 
 	m.UpdatedAt = t
+	return m
 }
 
 func (m *Admin) UpdateRole(role AdminRole, t time.Time) *Admin {

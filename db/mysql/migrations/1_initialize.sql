@@ -101,13 +101,13 @@ CREATE TABLE `staffs` (
 COMMENT "staff";
 
 -- +goose Down
-DROP TABLE staffs;
-DROP TABLE staff_roles;
-DROP TABLE tenant_tags;
-DROP TABLE tenant_tag_types;
-DROP TABLE tenants;
-DROP TABLE admins;
-DROP TABLE admin_roles;
-DROP TABLE assets;
-DROP TABLE asset_types;
-DROP TABLE content_types;
+DROP TABLE IF EXISTS staffs;
+DROP TABLE IF EXISTS staff_roles;
+DROP TABLE IF EXISTS tenant_tags;
+DROP TABLE IF EXISTS tenant_tag_types;
+DROP TABLE IF EXISTS tenants;
+DROP TABLE IF EXISTS admins;
+DROP TABLE IF EXISTS admin_roles;
+DROP TABLE IF EXISTS assets;
+DROP TABLE IF EXISTS asset_types;
+DROP TABLE IF EXISTS content_types;

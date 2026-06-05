@@ -60,8 +60,9 @@ func (m *Staff) Exist() bool {
 
 func (m *Staff) SetImageURL(
 	imageURL string,
-) {
+) *Staff {
 	m.ImageURL = null.StringFrom(imageURL)
+	return m
 }
 
 func (m *Staff) Update(
@@ -69,7 +70,7 @@ func (m *Staff) Update(
 	role nullable.Type[StaffRole],
 	imagePath null.String,
 	t time.Time,
-) {
+) *Staff {
 	if displayName.Valid {
 		m.DisplayName = displayName.String
 	}
@@ -80,4 +81,13 @@ func (m *Staff) Update(
 		m.ImagePath = imagePath.String
 	}
 	m.UpdatedAt = t
+	return m
+}
+
+func (es Staffs) IDs() []string {
+	ids := make([]string, 0, len(es))
+	for _, e := range es {
+		ids = append(ids, e.ID)
+	}
+	return ids
 }

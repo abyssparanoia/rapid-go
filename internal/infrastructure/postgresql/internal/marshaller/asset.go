@@ -6,7 +6,7 @@ import (
 )
 
 func AssetToModel(e *dbmodel.Asset) *model.Asset {
-	m := &model.Asset{
+	return &model.Asset{
 		ID:          e.ID,
 		ContentType: model.NewContentType(e.ContentType),
 		Type:        model.NewAssetType(e.Type),
@@ -16,8 +16,6 @@ func AssetToModel(e *dbmodel.Asset) *model.Asset {
 		CreatedAt:   e.CreatedAt,
 		UpdatedAt:   e.UpdatedAt,
 	}
-
-	return m
 }
 
 func AssetsToModel(slice dbmodel.AssetSlice) model.Assets {

@@ -9,13 +9,13 @@ import (
 
 //go:generate go run go.uber.org/mock/mockgen -source=$GOFILE -destination=mock/$GOFILE -package=mock_usecase
 type StaffMeInteractor interface {
-	SignUp(
-		ctx context.Context,
-		param *input.StaffSignUp,
-	) (*model.Staff, error)
 	Get(
 		ctx context.Context,
 		param *input.StaffGetMe,
+	) (*model.Staff, error)
+	SignUp(
+		ctx context.Context,
+		param *input.StaffSignUp,
 	) (*model.Staff, error)
 	Update(
 		ctx context.Context,
