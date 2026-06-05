@@ -167,7 +167,7 @@ import (
     "github.com/eaglys-platform/pandlock-api/internal/domain/model"
     "github.com/eaglys-platform/pandlock-api/internal/domain/repository"
     "github.com/eaglys-platform/pandlock-api/internal/usecase/input"
-    "github.com/aarondl/null/v8"
+    "github.com/aarondl/null/v9"
 )
 
 type taskProjectKeyCreationInteractor struct {
@@ -490,7 +490,7 @@ func run() {
     }
 
     // 2. Initialize logger
-    l := logger.New(e.MinLogLevel)
+    l := logger.New(e.MinLogLevel.ToZapLevel())
     ctx, cancel := context.WithTimeout(context.Background(), 3000*time.Second)
     defer cancel()
     ctx = logger.ToContext(ctx, l)
@@ -662,6 +662,27 @@ func (s *Subscriber) processMessage(ctx context.Context, message types.Message) 
 
     return nil
 }
+```
+
+### Downstream Publish Failure: ack せずエラー返却で nack させる
+
+ingest worker などが「raw 保存後に下流 worker への SNS publish を行う」二段パイプラインで、publish が失敗した場合は **エラーを返却して SQS handler に nack させる** (delete させない)。Error ログのみ出して `return nil` で済ませると、下流の判定漏れが運用上気づけない。
+
+raw 保存が **冪等** (`BatchCreateOrIgnore` / `Upsert` 等) であれば、再配信で raw + publish の両方が再実行されても問題ない。冪等性を担保した上で、publish 失敗は明示的に再配信させる。
+
+```go
+// BAD: ログだけで継続 → publish 失敗が運用上見えない
+if err := i.judgePublisher.BatchRequest(ctx, requests); err != nil {
+    logger.L(ctx).Error("failed to publish, continuing", logger_field.Error(err))
+}
+return nil
+
+// GOOD: エラー返却で nack → 再配信で再試行 (raw 保存は冪等なので二重実行 OK)
+if err := i.judgePublisher.BatchRequest(ctx, requests); err != nil {
+    logger.L(ctx).Error("failed to publish", logger_field.Error(err))
+    return err
+}
+return nil
 ```
 
 ## LocalStack Setup (Development)

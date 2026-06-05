@@ -86,6 +86,46 @@ func NewHandler(
 ) admin_apiv1.AdminV1ServiceServer { /* ... */ }
 ```
 
+### Handlers Must Not Hold Repositories Directly
+
+Handler structs may only depend on `usecase.*Interactor` (and `pb.Unimplemented*Server`). They must NOT take a `repository.*` field — even when the repository call is "just" for authorization context (e.g. resolving a vehicle's `device_group_id` for Layer 3 device-group permission).
+
+Why:
+- Layered architecture: `infrastructure/grpc` is meant to talk to `usecase`, not jump over it into `domain/repository`.
+- Cross-cutting concerns (validation, asset URL hydration, tenant ownership checks) live in the interactor. A handler bypass tends to drift toward duplicating those checks.
+- DI surface bloat: every "auth-only" repository field added to `Dependency` becomes a permanent leak that future handlers copy.
+
+```go
+// BAD - handler holds repository for authorization lookup
+type TenantHandler struct {
+    vehicleInteractor usecase.TenantVehicleInteractor
+    vehicleRepository repository.Vehicle // forbidden, even for auth lookup
+}
+
+func (h *TenantHandler) ListVehicleLocationLogs(ctx context.Context, req ...) (...) {
+    vehicle, err := h.vehicleRepository.Get(ctx, ...) // bypasses usecase
+    // Layer 3 auth using vehicle.DeviceGroupID ...
+}
+
+// GOOD - add a Get method to the interactor; handler routes through usecase
+type TenantHandler struct {
+    vehicleInteractor    usecase.TenantVehicleInteractor
+    vehicleMapInteractor usecase.TenantVehicleMapInteractor
+}
+
+func (h *TenantHandler) ListVehicleLocationLogs(ctx context.Context, req ...) (...) {
+    vehicle, err := h.vehicleInteractor.Get(ctx, input.NewTenantGetVehicle(
+        perm.TenantID, req.GetVehicleId(), request_interceptor.GetRequestTime(ctx),
+    ))
+    // Layer 3 auth using vehicle.DeviceGroupID ...
+    result, err := h.vehicleMapInteractor.ListLocationLogs(ctx, ...)
+}
+```
+
+If no suitable `Get` exists, add one to the matching interactor (with tenant-ownership validation inside). Do not introduce a one-off "auth helper" that takes a repository.
+
+The same rule applies to `Dependency` in `internal/infrastructure/dependency/dependency.go`: only `usecase.*Interactor` fields are exposed to the handler layer; raw repositories stay private.
+
 ## Handler Method Pattern
 
 Location: `internal/infrastructure/grpc/internal/handler/{actor}/{resource}.go`
@@ -166,49 +206,76 @@ func (h *Handler) ListExamples(
 }
 ```
 
-## Handling Optional Proto String Fields (null.StringFromPtr)
+## Handling Optional Proto String Fields
 
-For optional proto `string` fields (which become `*string` in Go), always use `null.StringFromPtr`
-to convert directly, and pass the result into the input constructor call:
-
-### Correct Pattern
+For optional proto `string` fields (e.g., `optional string display_name`), use `null.StringFromPtr()` to convert directly from `*string` to `null.String`:
 
 ```go
-staff, err := h.staffInteractor.Update(
-    ctx,
-    input.NewAdminUpdateStaff(
-        claims.AdminID.String,
-        req.GetStaffId(),
-        null.StringFromPtr(req.DisplayName),    // optional string → null.String
-        role,
-        null.StringFromPtr(req.ImageAssetId),   // optional string → null.String
-        requestTime,
-    ),
-)
+func (h *StaffHandler) UpdateMe(
+    ctx context.Context,
+    req *staff_apiv1.UpdateMeRequest,
+) (*staff_apiv1.UpdateMeResponse, error) {
+    claims, err := session_interceptor.RequireStaffSessionContext(ctx)
+    if err != nil {
+        return nil, err
+    }
+    requestTime := request_interceptor.GetRequestTime(ctx)
+
+    // Good - Direct call to constructor with StringFromPtr
+    staff, err := h.meInteractor.Update(
+        ctx,
+        input.NewStaffUpdateMe(
+            claims.TenantID.String,
+            claims.StaffID.String,
+            null.StringFromPtr(req.DisplayName),    // Handles nil pointer correctly
+            null.StringFromPtr(req.ImageAssetId),
+            requestTime,
+        ),
+    )
+    if err != nil {
+        return nil, err
+    }
+
+    return &staff_apiv1.UpdateMeResponse{
+        Staff: marshaller.StaffToPB(staff),
+    }, nil
+}
 ```
 
-### Anti-Pattern (DO NOT USE)
+### Anti-Pattern: Param Mutation
 
 ```go
-// Bad - Creating param then mutating fields
-param := input.NewAdminUpdateStaff(
-    claims.AdminID.String,
-    req.GetStaffId(),
-    null.String{},    // empty default
-    role,
-    null.String{},    // empty default
+// Bad - Don't create param first and then mutate fields
+param := input.NewStaffUpdateMe(
+    claims.TenantID.String,
+    claims.StaffID.String,
+    null.String{},
+    null.String{},
     requestTime,
 )
+
 if req.DisplayName != nil {
     param.DisplayName = null.StringFrom(*req.DisplayName)
 }
+if req.ImageAssetId != nil {
+    param.ImageAssetID = null.StringFrom(*req.ImageAssetId)
+}
+
+staff, err := h.meInteractor.Update(ctx, param)
 ```
 
 ### Rules
 
-1. **Use `null.StringFromPtr(req.Field)`** for optional proto string fields - never manual nil check + `null.StringFrom(*req.Field)`
-2. **Use `nullable.TypeFromPtr`** with marshaller conversion for optional proto enum fields (since enum conversion is needed, declare variable before constructor)
-3. **Call input constructor directly in the interactor call** - do not create param variable first and mutate it
+1. **Use `null.StringFromPtr()`** for optional proto `string` fields
+   - `null.StringFromPtr(req.Field)` handles `nil` → `null.String{Valid: false}`
+   - `null.StringFromPtr(&"value")` → `null.String{Valid: true, String: "value"}`
+
+2. **Use `nullable.TypeFromPtr()`** for optional proto enum fields
+   - Similar pattern for custom domain types
+
+3. **Call constructor directly** in handler
+   - Pass all arguments inline instead of mutating after construction
+   - More concise and reduces risk of forgetting to set fields
 
 ## Marshaller (Proto <-> Domain)
 
@@ -379,61 +446,6 @@ func AdminInvitationToPb(m *model.AdminInvitation) *pb.AdminInvitation {
 - Explicit variable declarations make it easier to verify all fields are mapped
 - Code reviewers can more easily spot missing field mappings
 - Prevents accidental omission of nullable field handling
-
-### Direct Return for Simple Marshallers
-
-When there are no optional/nullable fields to declare as intermediate variables, **return the struct literal directly** without assigning to a temporary variable:
-
-```go
-// Good - direct return when no intermediate variables needed
-func PaymentMethodToPb(m *model.PaymentMethod) *pb.PaymentMethod {
-    if m == nil {
-        return nil
-    }
-    return &pb.PaymentMethod{
-        Id:   m.ID,
-        Type: PaymentMethodTypeToPb(m.PaymentMethodType),
-    }
-}
-
-// Bad - unnecessary temporary variable
-func PaymentMethodToPb(m *model.PaymentMethod) *pb.PaymentMethod {
-    if m == nil {
-        return nil
-    }
-    result := &pb.PaymentMethod{   // Don't do this when there's nothing to prepare
-        Id:   m.ID,
-        Type: PaymentMethodTypeToPb(m.PaymentMethodType),
-    }
-    return result
-}
-```
-
-**Rule:** Use intermediate `var` declarations only for nullable/optional fields (e.g., `null.Time`, optional timestamps). Use direct `return &pb.X{...}` for all other cases.
-
-### Mapping `null.String` / `null.Int64` → Optional Proto Fields
-
-For `null.String`, `null.Int64`, and similar `null.*` types (from `github.com/aarondl/null/v8`) that map to `optional` proto fields (which become `*string`, `*int64` in Go), **always use `.Ptr()` directly in the struct literal**. Do NOT declare an intermediate variable with a manual `if .Valid` block.
-
-```go
-// BAD - manual intermediate variable
-var paymentMethodID *string
-if m.PaymentMethodID.Valid {
-    paymentMethodID = &m.PaymentMethodID.String
-}
-result := &pb.Invoice{
-    PaymentMethodId: paymentMethodID,
-    InvoiceNumber:   ...,
-}
-
-// GOOD - inline .Ptr()
-result := &pb.Invoice{
-    PaymentMethodId: m.PaymentMethodID.Ptr(),
-    InvoiceNumber:   m.InvoiceNumber.Ptr(),
-}
-```
-
-**Exception**: `null.Time` → `*timestamppb.Timestamp` still requires a `var` block because conversion from `time.Time` → `*timestamppb.Timestamp` needs `timestamppb.New()`, which `.Ptr()` cannot provide. Use the `var` pattern for those only.
 
 ## Error Handling
 

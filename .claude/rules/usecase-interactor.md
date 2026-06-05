@@ -54,32 +54,6 @@ type AdminStaffInteractor interface {
 
 **Implementation file methods must follow the same order.**
 
-## No Raw Field Inspection on Domain Models
-
-Interactors must not branch on a domain model's raw exported fields or status. Expose an intent-revealing predicate on the model and call that instead.
-
-```go
-// Bad - usecase inspects raw fields
-if inv.Status != model.InvoiceStatusDraft {
-    logger.L(ctx).Info("already finalized (idempotent)")
-    return nil
-}
-
-// Good - call a model predicate
-if !inv.IsDraft() {
-    logger.L(ctx).Info("already finalized (idempotent)")
-    return nil
-}
-
-// Bad - inline composite guard
-if !invoice.IsStripe() || !invoice.IsDownloadable() || !invoice.Stripe.Valid { ... }
-
-// Good - single predicate
-if !invoice.IsHostedURLAvailable() { ... }
-```
-
-See `domain-model.md` → **Method Naming Convention** for the full list of predicates and the naming rules for model methods.
-
 ## No Private Methods
 
 Interactor implementations must **not** define private methods. Only public interface methods are implemented.
@@ -287,6 +261,151 @@ func (p *AdminCreateExample) Validate() error {
 - `validate:"required"` - Required field
 - `validate:"required,max=256"` - Required with max length
 - `validate:"required,min=1,max=100"` - For pagination
+
+### All input-derived validation belongs in the input layer — not in the interactor body
+
+入力に対する検証は **input パッケージ内で完結** させ、interactor 側には漏らさない。役割は constructor と `Validate()` で分担する:
+
+| Layer | 責務 |
+|-------|------|
+| `New{...}` constructor | **format パース** (string → time.Time など)。失敗時は `(nil, error)` を返す |
+| `Validate()` | **タグベース検証** (`required`, `max`, `gte/lte`, `gtefield/ltefield`) + **タグでは表現できない検証** (相対距離・複雑な相互排他など) |
+| Interactor | `param.Validate()` を呼ぶだけ。パース済み値 (`param.StartDate` 等) を直接使う |
+
+**フィールド間比較は validator のタグ (`gtefield` / `ltefield` など) を優先**: time.Time 同士の比較も対応している。手動 if 文に書き下す前にタグで表現できないか検討する。「最大 N 日間」のような相対距離ガードはタグでは表現できないので Validate() 内で手動チェックする。
+
+**パース済みフィールドのみ struct に持つ**: 入力日付文字列を constructor で `time.Time` にパースしたら、パース済みフィールド (`StartDate time.Time` 等) のみ struct に保持し、元の string フィールドは残さない。パース後に元文字列を参照しない限り string を併存させる理由はなく、`StartDate string` (元文字列) と `StartDay time.Time` (パース済み) を両持ちすると Date / Day の命名も曖昧になる。**例外**: パース後も元の入力文字列そのものを後続処理で使う必要がある場合に限り、string フィールドも併せて保持してよい。
+
+`Validate()` で parse もしてしまうと「parse 失敗時のエラーが pre-condition チェックに混ざる」「Validate 前後でパース済みフィールドが zero value か否か変わる中間状態になる」ため、parse は constructor に寄せる。
+
+#### Pattern: parse in constructor, range-check in Validate
+
+```go
+type TenantListVehicleLocationHistories struct {
+    TenantID    string    `validate:"required"`
+    RequestTime time.Time `validate:"required"`
+
+    // StartDate / EndDate は入力日付文字列を constructor が JST 0:00 にパースした値
+    // (両端含む期間)。パース失敗時は constructor がエラーを返すため、ここに到達する
+    // 時点で必ず有効値。元の入力文字列はパース後参照しないため struct には保持しない。
+    StartDate time.Time
+    // gtefield=StartDate で start <= end をタグレベルで担保 (時系の time.Time 比較に対応)
+    EndDate time.Time `validate:"gtefield=StartDate"`
+}
+
+// constructor は string → time.Time のパースに責任を持ち、失敗時はエラーを返す。
+// 引数 startDate/endDate (string) はパース後は使わないため struct に保持しない。
+func NewTenantListVehicleLocationHistories(
+    tenantID, startDate, endDate string,
+    requestTime time.Time,
+) (*TenantListVehicleLocationHistories, error) {
+    parsedStart, err := time.ParseInLocation(time.DateOnly, startDate, now.JST)
+    if err != nil {
+        return nil, errors.RequestInvalidArgumentErr.Wrap(err)
+    }
+    parsedEnd, err := time.ParseInLocation(time.DateOnly, endDate, now.JST)
+    if err != nil {
+        return nil, errors.RequestInvalidArgumentErr.Wrap(err)
+    }
+    return &TenantListVehicleLocationHistories{
+        TenantID:    tenantID,
+        RequestTime: requestTime,
+        StartDate:   parsedStart,
+        EndDate:     parsedEnd,
+    }, nil
+}
+
+// Validate() は範囲・整合性チェックのみ。parse は前提として済んでいる。
+// `EndDate >= StartDate` はタグ (gtefield) で担保済みなので、ここでは「相対距離が 7 日以内」のみチェックする。
+func (p *TenantListVehicleLocationHistories) Validate() error {
+    if err := validation.Validate(p); err != nil {
+        return errors.RequestInvalidArgumentErr.Wrap(err)
+    }
+    maxEnd := p.StartDate.AddDate(0, 0, 6) // 7 日 = 両端含む
+    if p.EndDate.After(maxEnd) {
+        return errors.RequestInvalidArgumentErr.New().
+            WithDetail("period must be within 7 days")
+    }
+    return nil
+}
+
+// Interactor は Validate() を呼ぶだけ。Validate 後は param.StartDate / EndDate を直接使う。
+func (i *interactor) ListLocationHistories(ctx context.Context, param *input.TenantListVehicleLocationHistories) (...) {
+    if err := param.Validate(); err != nil {
+        return nil, err
+    }
+    rangeEnd := param.EndDate.AddDate(0, 0, 1)
+    // ...
+}
+
+// Handler 側は constructor のエラーも透過する。
+func (h *Handler) ListXxx(ctx context.Context, req *pb.Req) (*pb.Resp, error) {
+    param, err := input.NewTenantListVehicleLocationHistories(...)
+    if err != nil {
+        return nil, err
+    }
+    got, err := h.interactor.ListLocationHistories(ctx, param)
+    // ...
+}
+```
+
+#### Anti-pattern: parsing / range-check in interactor body
+
+```go
+// BAD - 未パースの string を struct に残し、parse と範囲チェックが interactor 側に漏れている
+func (i *interactor) ListLocationHistories(...) (..., error) {
+    if err := param.Validate(); err != nil {
+        return nil, err
+    }
+    // param.StartDateStr / EndDateStr は未パースの string フィールド。
+    // constructor でパースすべきものを interactor でやってしまっている。
+    startDay, err := time.ParseInLocation(time.DateOnly, param.StartDateStr, now.JST)
+    if err != nil { return nil, ... }
+    endDay, err := time.ParseInLocation(time.DateOnly, param.EndDateStr, now.JST)
+    if err != nil { return nil, ... }
+    if endDay.Before(startDay) { return nil, ... }
+    if endDay.After(maxEnd) { return nil, ... }
+    // ... business logic
+}
+```
+
+理由:
+- 入力検証ロジックが分散すると、別の caller (CLI / worker / 直接テスト) から呼ばれた際に同じ検証が走らずバグになる
+- Validate() の単一責任が崩れる
+- テストで「validation エラー」を検証するときに interactor 全体をモックする必要が出る
+
+#### Anti-pattern: parse を Validate() 側にまとめる
+
+```go
+// BAD - 未パースの string を struct に残し、Validate() で parse もやってしまう
+func (p *TenantListVehicleLocationHistories) Validate() error {
+    // ...
+    parsedStart, err := time.ParseInLocation(time.DateOnly, p.StartDateStr, now.JST)
+    if err != nil { return ... }
+    // ...
+    p.StartDate = parsedStart
+    return nil
+}
+```
+
+問題点:
+- Validate 前後で `p.StartDate` の状態が変わる (zero value or parsed)。caller は Validate を呼んだか覚えておく必要がある
+- parse エラーと「期間が 7 日超」のような pre-condition チェックエラーが同じ Validate() 内に混在する
+- constructor 直後に `param.StartDate` を参照したら zero value、というバグを生みやすい
+
+→ parse は constructor、Validate は範囲・整合性チェックという責務分離を守る。
+
+#### Date format constants
+
+時刻フォーマット文字列は **必ず標準ライブラリ定数 (`time.DateOnly`, `time.RFC3339`, `time.DateTime` など) を使う**。`"2006-01-02"` のようなマジックリテラルは禁止。
+
+```go
+// GOOD - constructor 内で引数 string をパース
+parsed, err := time.ParseInLocation(time.DateOnly, startDate, now.JST)
+
+// BAD - マジックリテラル
+parsed, err := time.ParseInLocation("2006-01-02", startDate, now.JST)
+```
 
 ## Output Structs
 
@@ -731,50 +850,6 @@ func (i *adminAdminInteractor) Delete(
 }
 ```
 
-## Asset Validation in Update Methods
-
-When validating optional asset fields (e.g., `ImageAssetID`) in update operations:
-
-1. **Asset validation MUST be inside the transaction** - ensures consistency with the database state
-2. **Use `var imagePath null.String`** (not `var imagePath string`) - the zero value `null.String{}` has `Valid: false`, which correctly skips the update when no asset is provided
-3. **Only set `imagePath = null.StringFrom(path)` when asset is actually provided** - prevents empty string from clearing the field
-
-### Correct Pattern (see admin_staff_impl.go)
-
-```go
-if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
-    staff, err := i.staffRepository.Get(ctx, ...)
-    if err != nil {
-        return err
-    }
-
-    var imagePath null.String  // zero value = {Valid: false}
-    if param.ImageAssetID.Valid {
-        path, err := i.assetService.GetWithValidate(ctx, ...)
-        if err != nil {
-            return err
-        }
-        imagePath = null.StringFrom(path)  // only set when provided
-    }
-
-    staff.Update(param.DisplayName, param.Role, imagePath, param.RequestTime)
-    return i.staffRepository.Update(ctx, staff)
-})
-```
-
-### Anti-Pattern (DO NOT USE)
-
-```go
-// Bug: var imagePath string → empty string "" when not provided
-// null.StringFrom("") creates {Valid: true, String: ""} which CLEARS the field
-var imagePath string
-if param.ImageAssetID.Valid {
-    imagePath, err = i.assetService.GetWithValidate(ctx, ...)
-}
-// Outside transaction - inconsistent state possible
-staff.Update(param.DisplayName, role, null.StringFrom(imagePath), ...)
-```
-
 ## Optional Update Fields with nullable.Type
 
 For optional update fields, use `nullable.Type[T]` instead of pointers:
@@ -838,46 +913,127 @@ if param.Role.Valid {
 }
 ```
 
-## Domain Method Usage (Domain Logic First)
+## Asset Validation in Update Methods
 
-**IMPORTANT**: Always use domain constructors and methods. Never directly initialize domain model structs or assign fields in the usecase layer.
+When update methods accept optional asset fields (e.g., `ImageAssetID`), follow these critical patterns to avoid bugs:
 
-### Creation: Use Domain Constructors
+### Critical Rules
+
+1. **Validate assets INSIDE transaction** - Not before
+2. **Use `var imagePath null.String`** - NOT `var imagePath string`
+3. **Only set when provided** - `imagePath = null.StringFrom(path)` only in the `if` block
+
+### Correct Pattern
 
 ```go
-// GOOD - use domain constructor
-func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
-    staff := model.NewStaff(param.TenantID, param.Role, param.AuthUID, param.DisplayName, param.ImagePath, param.Email, param.RequestTime)
-    // ...
-}
-
-// BAD - direct struct initialization in usecase
-func (i *adminStaffInteractor) Create(ctx context.Context, param *input.AdminCreateStaff) (*model.Staff, error) {
-    staff := &model.Staff{
-        ID:          id.New(),
-        TenantID:    param.TenantID,
-        Role:        param.Role,
-        DisplayName: param.DisplayName,
+func (i *staffMeInteractor) Update(
+    ctx context.Context,
+    param *input.StaffUpdateMe,
+) (*model.Staff, error) {
+    if err := param.Validate(); err != nil {
+        return nil, err
     }
-    // ...
+
+    if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
+        staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
+            ID: null.StringFrom(param.StaffID),
+            BaseGetOptions: repository.BaseGetOptions{
+                OrFail:    true,
+                ForUpdate: true,
+            },
+        })
+        if err != nil {
+            return err
+        }
+
+        // Validate asset if provided (INSIDE transaction)
+        var imagePath null.String  // IMPORTANT: null.String, not string
+        if param.ImageAssetID.Valid {
+            authContext := model.NewStaffAssetAuthContext(param.StaffID)
+            path, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID.String, authContext)
+            if err != nil {
+                return err
+            }
+            imagePath = null.StringFrom(path)  // Only set when asset provided
+        }
+
+        // Update with null.String (not converted)
+        staff.Update(param.DisplayName, nullable.Type[model.StaffRole]{}, imagePath, param.RequestTime)
+
+        return i.staffRepository.Update(ctx, staff)
+    }); err != nil {
+        return nil, err
+    }
+
+    // Return with relations
+    return i.staffRepository.Get(ctx, repository.GetStaffQuery{
+        ID: null.StringFrom(param.StaffID),
+        BaseGetOptions: repository.BaseGetOptions{
+            OrFail:  true,
+            Preload: true,
+        },
+    })
 }
 ```
 
-**Why**: Constructors encapsulate ID generation, default values, and field constraints. Direct initialization bypasses these guarantees.
+### Anti-Pattern: Using `string` Instead of `null.String`
+
+```go
+// Bad - Using string causes bug
+var imagePath string  // WRONG - This causes the bug!
+if param.ImageAssetID.Valid {
+    var err error
+    imagePath, err = i.assetService.GetWithValidate(...)
+    if err != nil {
+        return nil, err
+    }
+}
+
+// When ImageAssetID is NOT provided:
+// - imagePath remains "" (empty string)
+// - null.StringFrom("") creates {Valid: true, String: ""}
+// - This OVERWRITES existing ImagePath with empty string!
+staff.Update(param.DisplayName, nullable.Type[model.StaffRole]{}, null.StringFrom(imagePath), param.RequestTime)
+```
+
+### Why This Matters
+
+| Approach | When Asset NOT Provided | Result |
+|----------|-------------------------|--------|
+| ✅ `var imagePath null.String` | `{Valid: false}` (zero value) | Field NOT updated (correct) |
+| ❌ `var imagePath string` | `""` (empty string) | Field cleared to empty (BUG) |
+
+**Key Insight**: Domain model's `Update()` method only updates fields where `null.String.Valid == true`. Using `null.String` zero value (`{Valid: false}`) correctly skips the update.
+
+## Domain Method Usage (Domain Logic First)
+
+**IMPORTANT**: All domain model operations (creation and state changes) MUST use domain model constructors and methods. Never directly initialize structs or assign fields in the usecase layer.
+
+### Creation: Use Constructors
+
+```go
+// GOOD - use domain constructor
+staff := model.NewStaff(param.TenantID, param.Role, param.AuthUID, param.DisplayName, param.ImagePath, param.Email, param.RequestTime)
+
+// BAD - direct struct initialization in usecase
+staff := &model.Staff{
+    ID:          id.New(),
+    TenantID:    param.TenantID,
+    Role:        param.Role,
+    CreatedAt:   param.RequestTime,
+    UpdatedAt:   param.RequestTime,
+}
+```
 
 ### Updates: Use Domain Methods
 
 ```go
-// GOOD - use domain method
-if param.Role.Valid {
-    admin.UpdateRole(param.Role.Value(), param.RequestTime)
-}
+// GOOD
+admin.UpdateRole(param.Role.Value(), param.RequestTime)
 
-// BAD - direct field assignment in usecase
-if param.Role.Valid {
-    admin.Role = param.Role.Value()
-    admin.UpdatedAt = param.RequestTime
-}
+// BAD - direct field assignment
+admin.Role = param.Role.Value()
+admin.UpdatedAt = param.RequestTime
 ```
 
 See `domain-model.md` for more details on domain method patterns.

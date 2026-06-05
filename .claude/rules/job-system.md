@@ -278,6 +278,19 @@ One interactor per job type with **two methods**:
 - `Create{JobType}Job` — validates input, builds metadata, persists the job record, and kicks the publisher. Called from CLI commands or API handlers.
 - `Process{JobType}Job` — fetches the job record, executes the actual business logic. Called exclusively from `process-job` CMD.
 
+**Method ordering exception**: Job-related methods deviate from `usecase-interactor.md` standard ordering (Get → List → Create → Update → Delete). Instead, **group by job type, with `Create{Type}Job` immediately followed by `Process{Type}Job`**. This keeps the input/output contract for each job type co-located, easing maintenance when a new job type is added.
+
+```go
+type TaskBotInteractor interface {
+    // initialize_bots job
+    CreateInitializeBotsJob(...) (*model.Job, error)
+    ProcessInitializeBotsJob(...) error
+    // register_manufacture_data job
+    CreateRegisterManufactureDataJob(...) (*model.Job, error)
+    ProcessRegisterManufactureDataJob(...) error
+}
+```
+
 ```go
 // interface
 type TaskBotInteractor interface {
@@ -558,50 +571,6 @@ func buildIdempotencyKey(param *input.TaskCreateInitializeBotsJob) string {
 func buildIdempotencyKey(t time.Time) string {
     return fmt.Sprintf("initialize-bots:%d", t.UnixNano())
 }
-```
-
-## Infrastructure Setup
-
-### AWS Batch Architecture
-
-```
-HTTP Request
-    ↓
-Create Job Record (status=queued)
-    ↓
-Publisher.KickJob(jobID)
-    ↓
-SNS Topic
-    ↓
-SQS Queue
-    ↓
-AWS Batch (triggered by SQS)
-    ↓
-ECS Task runs: ./app task process-job --job-id={jobID}
-    ↓
-CMD: Start → Process → Complete/Fail
-    ↓
-Job completed or failed
-```
-
-### Cloud Run Jobs Architecture (GCP Alternative)
-
-```
-HTTP Request
-    ↓
-Create Job Record (status=queued)
-    ↓
-Publisher.KickJob(jobID)  [GCP Pub/Sub implementation]
-    ↓
-Pub/Sub Topic
-    ↓
-Cloud Run Jobs (triggered by Pub/Sub)
-    ↓
-Container runs: ./app task process-job --job-id={jobID}
-    ↓
-CMD: Start → Process → Complete/Fail
-    ↓
-Job completed or failed
 ```
 
 ## Best Practices

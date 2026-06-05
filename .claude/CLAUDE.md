@@ -70,6 +70,11 @@ Go-based gRPC API server with HTTP API via gRPC-Gateway.
 | `make generate.mock` | Generate mock files |
 | `make test` | Run all tests |
 | `make lint.go` | Lint Go code |
+| `make e2e` | Run E2E tests (requires server running) |
+| `make ao-start` | Start Agent Orchestrator |
+| `make ao-stop` | Stop Agent Orchestrator |
+| `make ao-spawn ISSUE=123` | Spawn agent on specific issue |
+| `make ao-watch` | Open ao-tui dashboard |
 
 ## Layer Dependencies
 
@@ -105,6 +110,9 @@ Detailed coding rules are organized by theme in `.claude/rules/`:
 | `job-system.md` | `job/**`, `cmd/app/internal/task_cmd/process_job_cmd/` | Async job queue patterns (SNS/SQS → AWS Batch) |
 | `worker-pattern.md` | `worker/**`, `cmd/app/internal/worker_cmd/` | Background worker patterns (SQS/Pub/Sub subscribers) |
 | `cli-command-pattern.md` | `cmd/app/internal/task_cmd/**`, `internal/usecase/task_*` | CLI command implementation patterns (`./app task` commands) |
+| `device-group-authorization.md` | `session_interceptor/**`, `handler/**`, `device_group_*` | Device group 3-layer authorization patterns |
+| `package-placement.md` | `internal/pkg/**`, `internal/domain/**` | Where to put new packages — pkg is domain-agnostic only |
+| `object-storage-paths.md` | `internal/domain/model/asset.go`, `s3/**`, `gcs/**`, `job_*` | S3/GCS path prefix 集約と private/ prefix 規約 |
 
 ## Skills
 
@@ -118,16 +126,14 @@ Available automation skills in `.claude/skills/`:
 | `add-domain-entity` | Create domain model, repository interface, and implementation |
 | `add-api-endpoint` | Create usecase, proto definition, and gRPC handler |
 | `review-diff` | Review & auto-fix current branch diff against main/master. Catches AI anti-patterns and rule violations, then fixes them automatically |
-| `audit-rules` | Audit the **entire codebase** for rule-compliance. Partitions source by category, runs convention-reviewer + test-reviewer in parallel (audit mode), auto-fixes all violations, and opens a PR. Run `/audit-rules` (all) or `/audit-rules domain` (single partition) |
 | `fix-review-comments` | Fetch unresolved GitHub PR review comments and auto-fix the code. Run `/fix-review-comments` (current branch PR) or `/fix-review-comments 123` (specific PR) |
 | `create-pull-request` | PR creation guide with branch naming and body templates |
 | `sync-claude-config` | Bidirectionally sync `.claude/` content with the rapid-go template (or a derived project added via `claude --add-dir`); opens a PR in each repo |
+| `create-ao-issue` | Agent Orchestrator 用の GitHub Issue を正しいフォーマットで作成 |
 
 **Implementation Workflow**: `add-database-table` → `add-domain-entity` → `add-api-endpoint`
 
-**Review Workflow**: Use `review-diff` to auto-fix issues on the current branch, then `create-pull-request` to create the PR
-
-**Full Audit Workflow**: Use `audit-rules` for a periodic whole-codebase convention sweep (counterpart to `review-diff` but scoped to all files, not a diff)
+**Review Workflow**: Use `review-diff` to auto-fix issues, then `create-pull-request` to create the PR
 
 **Post-Review Workflow**: Use `fix-review-comments` to address reviewer feedback automatically
 
@@ -143,6 +149,16 @@ Available automation skills in `.claude/skills/`:
 | `foreign key constraint violation` | Missing constant table entry | Add record to `db/mysql/constants/*.yaml` then `make migrate.up` |
 | `transaction has already been committed` | Transaction misuse | Ensure single `RWTx`/`ROTx` per operation flow |
 | `make` command not found or not working | Shell function override in Claude Code | Use full path `/usr/bin/make` instead of `make` |
+
+## Implementation Preflight
+
+新規ファイル作成・大きな変更の前に必ず実施:
+
+1. **同カテゴリの既存ファイルを Read する** — 記憶ではなく実物を見てパターンを確認
+2. **該当する `.claude/rules/*.md` を参照する** — 対象レイヤーのルールを確認してから実装
+3. **`internal/pkg/` を検索する** — 新しいユーティリティ定義前に既存実装を確認
+4. **新規パッケージを置く位置に迷ったら `package-placement.md` を確認** — `internal/pkg/` はドメイン非依存のみ、ドメイン依存は `internal/domain/` 配下
+5. **テスト作成時は `testing.md` と `ai-antipatterns.md` を参照する**
 
 ## PR Checklist
 

@@ -11,7 +11,46 @@ globs:
 
 ## Overview
 
-External services (IdP, storage, email) are integrated through repository interfaces defined in the domain layer, with implementations in the infrastructure layer.
+External services (IdP, storage, email, SIM provider, wireless location, IoT backend, etc.)
+are integrated through domain-layer interfaces with implementations in the infrastructure layer.
+
+## Package Structure (capability / provider split)
+
+Split external integrations on two axes:
+
+- **Capability** – provider-agnostic name of what the system needs
+  (`sim`, `wifi`, `iot`, auth, …).
+- **Provider** – who supplies it (`iij_mobile`, `skyhook`, `iot_core`, `cognito`).
+
+Layout:
+
+```
+internal/domain/{capability}/         # interface, provider-agnostic
+internal/infrastructure/{provider}/{capability}/   # implementation
+```
+
+File / sub-directory naming inside these packages is not prescribed — follow existing patterns (`skyhook/wifi/`, `iot_core/iot/`, `iij_mobile/sim/`).
+
+### Rules
+
+- **Domain は provider-agnostic**: `domain/{capability}/` の interface 名・ファイル名に vendor 名を含めない (`interface IIJMobile` in `domain/sim/` は NG)。vendor 固有の挙動 (メンテ窓、rate 制限等) は interface メソッドとして抽象化し、caller は provider を知らずに済むようにする
+- **Provider 固有ロジックは `internal/pkg/` に置かない**: `pkg/` は汎用 util のみ。vendor のスケジュール・エラーコードマップ等は `infrastructure/{provider}/{capability}/` に concrete type のメソッドとして配置
+- **Provider 直下に実装ファイルを置かない**: 必ず `infrastructure/{provider}/{capability}/` の capability サブディレクトリ配下に配置する。capability が 1 つしかなくても省略しない (`sendgrid/email.go` ではなく `sendgrid/email/email.go`)。理由: (1) capability が後から増えたとき既存ファイル移動が必要になる、(2) `mysql/repository/`, `s3/repository/`, `cognito/repository/`, `skyhook/wifi/` など既存規約との一貫性、(3) package 名が provider 名 (`package sendgrid`) になると capability が暗黙化し import 側で意図が読み取りにくい。package 名は capability (`package email`) にする
+
+## Layer Dependency Rule
+
+```
+Handler / Usecase → Domain interface            ✅
+Infrastructure    → Domain interface (impl)      ✅
+Handler / Infra   → Infrastructure (directly)    ⚠️  go through DI + domain interface
+Domain            → Infrastructure               ❌  forbidden (direction reversed)
+```
+
+---
+
+## Identity Provider (IdP) specialization
+
+Specialization of the above for authentication providers (Cognito / Firebase).
 
 ## Supported Identity Providers
 

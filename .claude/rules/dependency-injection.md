@@ -186,6 +186,60 @@ func setupTestDependency(t *testing.T) *Dependency {
 }
 ```
 
+## Environment Variables
+
+### notEmpty by Default
+
+All environment variables must use the `notEmpty` tag. Do not use `required` (allows empty string) or `envDefault:""` (masks misconfiguration).
+
+```go
+// Good - notEmpty (fails fast on missing OR empty config)
+GoogleMapsAPIKey string `env:"GOOGLE_MAPS_API_KEY,notEmpty"`
+
+// Bad - required only checks if env var is set; "" is allowed and slips into production
+GoogleMapsAPIKey string `env:"GOOGLE_MAPS_API_KEY,required"`
+
+// Bad - allows empty value (masks misconfiguration in production)
+GoogleMapsAPIKey string `env:"GOOGLE_MAPS_API_KEY" envDefault:""`
+```
+
+**`required` vs `notEmpty`** (caarlos0/env v11):
+- `required`: checks only that the env var is **set** — `FOO=""` passes
+- `notEmpty`: checks that the env var is set **and** non-empty — `FOO=""` fails
+
+For local development, set a dummy value in `.envrc` and switch to debug implementations via the `ApplicationEnvironmentLocal` branch in `Inject()`.
+
+When adding a new env variable, also add it to:
+- `.envrc.tmpl` (with a meaningful dummy/local value, not `""`)
+- `.github/workflows/ci.yml` `env` section (for E2E tests)
+
+**Exceptions** (do NOT use `notEmpty`):
+- Fields with a meaningful `envDefault` value (e.g. `MIN_LOG_LEVEL` → `"info"`, `DB_LOG_ENABLE` → `"false"`)
+- Local-only override fields that must be unset in production (e.g. `AWS_EMULATOR_HOST`, `AWS_COGNITO_EMULATOR_HOST`). Leave these untagged and document the intent in a comment.
+- Fields where an empty value is a legitimate configured value in some tier (e.g. `DB_PASSWORD` — local TiDB / TiUP Playground uses no root password). Use `required` (not `notEmpty`) and document the intent in a comment.
+
+### Local Debug Implementation Switching
+
+Consolidate all Real/Debug switching in the single `ApplicationEnvironmentLocal` branch inside `Inject()`. Do not branch on whether an API key is empty.
+
+```go
+// Good - consolidated in the existing local branch
+if e.Environment == environment.ApplicationEnvironmentLocal {
+    thingClient = iot_core_iot.NewThingDebug()
+    geocodeRepo = googlemaps_repository.NewGeocodeDebug()
+} else {
+    thingClient = iot_core_iot.NewThing(controlPlaneCli)
+    geocodeRepo = googlemaps_repository.NewGeocode(e.GoogleMapsAPIKey)
+}
+
+// Bad - scattered API-key-based branching
+if e.GoogleMapsAPIKey != "" {
+    geocodeRepo = googlemaps_repository.NewGeocode(e.GoogleMapsAPIKey)
+} else {
+    geocodeRepo = googlemaps_repository.NewGeocodeDebug()
+}
+```
+
 ## Best Practices
 
 1. **Group by layer** - Clients, then repositories, then caches, then services, then interactors
@@ -194,3 +248,4 @@ func setupTestDependency(t *testing.T) *Dependency {
 4. **Explicit dependencies** - Pass all dependencies through constructor
 5. **No global state** - All dependencies should be in Dependency struct
 6. **Domain services are optional** - Only create when business logic spans multiple entities
+7. **Environment variables must be non-empty** - Use `notEmpty` tag (rejects unset AND empty string), not `required` or `envDefault:""`

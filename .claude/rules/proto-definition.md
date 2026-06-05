@@ -43,9 +43,9 @@ schema/proto/rapid/
 1. **Get methods** - Single resource retrieval (e.g., `GetStaff`)
 2. **List methods** - Collection retrieval with pagination (e.g., `ListStaffs`)
 3. **Create methods** - Resource creation (e.g., `CreateStaff`)
-4. **Custom operations (no ID)** - Special operations without resource ID (e.g., `rpc SendNotifications` with path `/staffs:send-notifications`)
+4. **Custom operations (no ID)** - Special operations without resource ID (e.g., `rpc SendNotifications` with path `/staffs:send_notifications`)
 5. **Update methods** - Resource modification (e.g., `UpdateStaff`)
-6. **Custom operations (with ID)** - Special operations with resource ID (e.g., `rpc SendNotification` with path `/staffs/{staff_id}:send-notification`)
+6. **Custom operations (with ID)** - Special operations with resource ID (e.g., `rpc SendNotification` with path `/staffs/{staff_id}:send_notification`)
 7. **Delete methods** - Resource deletion (e.g., `DeleteStaff`)
 
 **Example ordering in api.proto:**
@@ -77,33 +77,13 @@ service AdminV1Service {
 
 **Important**: This ordering applies to both `api.proto` service definitions and `api_{resource}.proto` message definitions.
 
-**New RPCs go at the END of the service block** — never insert them mid-list between existing RPCs. This minimizes merge conflicts and maintains a clear "arrival order" for reviewing history.
-
-```protobuf
-// BAD - inserted mid-service between UpdateMeOrganization and GetStaff
-service StaffV1Service {
-  rpc UpdateMeOrganization(...)  returns (...) {...}
-  rpc GetInvoice(...)   returns (...) {...}  // ← inserted here
-  rpc ListInvoices(...) returns (...) {...}  // ← inserted here
-  rpc GetStaff(...) returns (...) {...}
-}
-
-// GOOD - appended at end
-service StaffV1Service {
-  rpc UpdateMeOrganization(...) returns (...) {...}
-  rpc GetStaff(...) returns (...) {...}
-  // ... other existing RPCs ...
-  rpc GetInvoice(...)   returns (...) {...}  // ← new, at end
-  rpc ListInvoices(...) returns (...) {...}  // ← new, at end
-}
-```
-
 ## File Organization
 
 ### `api.proto` - Service Definition
 
 - Keep **only** service definitions and HTTP annotations here. Put Request/Response and models into `api_*.proto` / `model_*.proto`.
 - `api.proto` should import `api_*.proto` and reference their message types in RPC signatures.
+- **API仕様コメントはrpc定義に記述する**。認証要否・処理フロー・サーバー側処理などの仕様はすべて `api.proto` のrpc定義上のコメントに集約する。
 
 Example (admin):
 
@@ -150,6 +130,7 @@ service AdminV1Service {
 
 - Define Request/Response messages here (and supporting types such as list `Pagination` if needed).
 - Mark required fields using `protoc-gen-openapiv2` schema annotations (this repository's convention).
+- **API仕様コメントをRequest/Responseメッセージに書かない**。認証要否・処理フローなどの仕様は `api.proto` のrpc定義に記述する。
 
 Example (admin tenant):
 
@@ -207,46 +188,41 @@ message UpdateTenantRequest {
 - Place resource messages and enums here.
 - If you use `google.protobuf.Timestamp`, import `google/protobuf/timestamp.proto`.
 - Each resource requires **both Full and Partial message definitions** (see Partial Pattern section below).
-- **Owned child messages must be nested inside the parent message** (see Owned Child Nesting below).
 
-### Owned Child Message Nesting
+#### Shared Enums Belong in `model_{resource}.proto`
 
-When a message is a **fully-owned child** (cannot exist independently of the parent — a composed 1:1 or 1:N relationship), define it as a **nested message** inside the parent. Top-level message definitions imply the type is reusable across multiple parents, which contradicts ownership semantics.
+ある enum を **複数の Request メッセージ** で参照する場合 (例: `ListXxx` と `ExportXxxCSV` 両方が同じ `DailyMetricType` を必須フィールドに持つケース)、その enum は `model_{resource}.proto` の **トップレベル** に置く。`ListXxxRequest` の中にネストさせて、別 Request から `ListXxxRequest.SomeEnum` の修飾名で参照するのは禁止。
+
+理由:
+- enum は意味的に「画面表示用 List API の都合」ではなく「ドメイン値型」。`ListXxxRequest` の中に隠れていると、新しい RPC が同じ enum を再利用しづらい。
+- ネスト + 修飾参照は **構造的カップリング** を生む — `ListXxxRequest` の名前変更や enum リネームが他 Request を silent に巻き込む。
+- 1 ヶ所だけ修飾名で参照するパターンは proto レベルでは合法だが、Go 側の生成型名 (`ListXxxRequest_SomeEnum_VALUE`) が冗長になり、テスト・marshaller の取り回しも悪化する。
 
 ```protobuf
-// BAD - top-level definition implies reuse / independence
-message InvoiceItem {
-  string id = 1;
-  // ...
+// BAD - SomeEnum を ListXxxRequest にネストし、ExportXxxCSVRequest から修飾参照
+message ListXxxRequest {
+  enum SomeEnum { SOME_ENUM_UNSPECIFIED = 0; ... }
+  SomeEnum field = 5;
 }
-message Invoice {
-  repeated InvoiceItem items = 15;  // ownership not visible in proto
+message ExportXxxCSVRequest {
+  ListXxxRequest.SomeEnum field = 5; // 構造的カップリング
 }
 
-// GOOD - nested definition encodes ownership structurally
-message Invoice {
-  // ...fields...
+// GOOD - SomeEnum をトップレベルに置き、両 Request から直接参照
+// model_xxx.proto
+enum SomeEnum { SOME_ENUM_UNSPECIFIED = 0; ... }
 
-  enum InvoiceItemType {
-    INVOICE_ITEM_TYPE_UNSPECIFIED = 0;
-    INVOICE_ITEM_TYPE_SUBSCRIPTION = 1;
-    // ...
-  }
-
-  message InvoiceItem {
-    string id = 1;
-    InvoiceItemType type = 2;
-    // ...
-  }
-
-  repeated InvoiceItem items = 15;
-  // option ...
+// api_xxx.proto
+message ListXxxRequest {
+  SomeEnum field = 5;
+}
+message ExportXxxCSVRequest {
+  SomeEnum field = 5;
 }
 ```
 
-**Effect on generated Go code**: After `generate.buf`, nested types become `ParentMessage_ChildMessage` (e.g., `Invoice_InvoiceItem`) and nested enums become `ParentMessage_EnumName` (e.g., `Invoice_InvoiceItemType`). Update all Go references accordingly.
+**例外**: `ListXxxSortKey` のように **その List API 固有** で他 RPC で再利用する見込みがない enum は、List Request にネストする (既存規約: SortKey Enum Naming Convention セクション参照)。判断基準は「他 Request から参照する可能性があるか」。
 
-**Rule**: Only use top-level messages for types that are genuinely shared across multiple parent resources (e.g., `Pagination`, `InvoiceStatus`).
 
 Example (admin staff):
 
@@ -363,17 +339,35 @@ message CreateStaffRequest {
 }
 ```
 
-### ネストしたPartial
+### Partial間の依存ルール
 
-PartialがPartialを含む場合も同様にPartialを使用：
+**Partial間では他のPartialを参照しない**のが原則。唯一の例外は**親エンティティ（TenantPartial）**のみ。
+
+親以外のエンティティへの参照は `string {entity}_id` を使用する：
 
 ```protobuf
+// Good - 親参照のみPartialを許可
 message StaffPartial {
   string id = 1;
-  TenantPartial tenant = 2;  // PartialがPartialを含む
+  TenantPartial tenant = 2;  // 親参照 → Partial OK
   // ...
 }
+
+// Good - 親以外はIDで参照
+message StaffInvitationPartial {
+  string id = 1;
+  TenantPartial tenant = 2;           // 親参照 → Partial OK
+  optional string invited_by_staff_id = 6;  // 親以外 → string ID
+  // ...
+}
+
+// Bad - 親以外のPartialを参照
+message StaffInvitationPartial {
+  optional StaffPartial invited_by = 6;  // NG: Partial間の依存
+}
 ```
+
+**Note**: Full メッセージ（CRUD直接レスポンス）では `StaffPartial` などの参照は許可される。この制約は Partial メッセージのみに適用される。
 
 ### Field Number Convention（更新）
 
@@ -436,6 +430,10 @@ delete: "/admin/v1/tenants/{tenant_id}"
 Special endpoint patterns:
 
 - Operation-style endpoints using `/-/` (e.g. `/admin/v1/assets/-/presigned_url`, `/debug/v1/staffs/-/id_token`)
+
+Path naming rule:
+
+- **Use `snake_case` for both the resource segment and the custom verb in URL paths.** Do not mix hyphens and underscores in the same path. Existing endpoints all use snake_case (e.g. `bots:resolve_code`, `staff_invitations:accept`, `license_plate_ocr_sessions/{...}:recognize`, `vehicle_operating_statuses`); a new endpoint such as `location-logs:export-csv` must be written `location_logs:export_csv`.
 
 ## Optional Fields
 

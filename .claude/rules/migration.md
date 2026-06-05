@@ -169,6 +169,25 @@ make migrate.up
 make migrate.status
 ```
 
+## Table Naming Conventions
+
+### `hw_` Prefix for Hardware Data Tables
+
+Tables that receive data streamed directly from hardware devices (HW) **MUST** use the `hw_` prefix.
+
+```sql
+-- Good - hardware telemetry data table
+CREATE TABLE `hw_bot_locations` ( ... );
+
+-- Bad - missing hw_ prefix
+CREATE TABLE `bot_locations` ( ... );
+CREATE TABLE `device_locations` ( ... );
+```
+
+**Rule**: If a table is populated by IoT/hardware devices (e.g., via SQS worker ingesting sensor payloads), it belongs to the `hw_` namespace.
+
+This convention makes it easy to identify hardware-originated data tables at a glance and separates them from application-managed domain tables.
+
 ## Best Practices
 
 1. **Always include Down migration** - Enable rollback capability
@@ -177,6 +196,7 @@ make migrate.status
 4. **Add indexes for foreign keys** - Improve JOIN performance
 5. **Use TIMESTAMPTZ** - Always store timestamps with timezone
 6. **Consider data migration** - Handle existing data when adding constraints
+7. **Use `hw_` prefix for hardware data tables** - Tables populated by IoT/hardware devices must have `hw_` prefix
 
 ## Common Patterns
 
