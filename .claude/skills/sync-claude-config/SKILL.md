@@ -50,49 +50,46 @@ Read the LOCAL project's token values for normalization (see `references/token-m
 | `{org}/{repo}` | Derive from `{go-module}` after `github.com/` |
 | `{database}` | Which of `db/mysql/` or `db/postgresql/` exists |
 
-## Step 1 — Enumerate Candidates
+## Step 1 — Classify via Subagent
 
-Build the set of in-scope file paths on both sides. In-scope paths:
+### CRITICAL: Use `subagent_type`, Do NOT Embed the Agent Definition
 
-```
-.claude/CLAUDE.md
-.claude/rules/**/*.md
-.claude/skills/**    (all files recursively)
-.claude/agents/**/*.md
-.claude/commands/**/*.md
-```
+Specify `subagent_type: "config-sync-classifier"`. Never read the agent `.md` and paste its body into `prompt`. Doing so bypasses `model: sonnet` and the read-only `tools` enforcement.
 
-**Always exclude** (never sync these):
+Assemble the **reverse token map** from Step 0 — substitute the actual LOCAL values into the find/replace pairs from `references/token-mapping.md`. The reverse map must list pairs in longest/most-specific-first order (see token-mapping.md Application Order).
+
+Launch the classifier (do **NOT** use `run_in_background: true` — the result is needed before Step 2):
 
 ```
-.claude/settings.local.json
-.claude/worktrees/**
-.claude/skills/init-new-repository/**   ← intentionally template-bearing; stays in rapid-go only
+Agent(
+  description: "Classify .claude/ files for sync",
+  subagent_type: "config-sync-classifier",
+  prompt: """
+UPSTREAM_ROOT: <absolute path to rapid-go root>
+LOCAL_ROOT: <absolute path to local project root>
+
+REVERSE_MAP (apply longest/most-specific first):
+<go-module-value> → github.com/abyssparanoia/rapid-go
+package <service-name-value>. → package rapid.
+import "<service-name-value>/ → import "rapid/
+pb/<service-name-value>/ → pb/rapid/
+buf.build/<buf-org-value>/<service-name-value> → buf.build/abyssparanoia/rapid
+<service-name-value>_<docker-network-value> → rapid-go_rapid-go-network
+<docker-network-value> → rapid-go-network
+# <project-title-value> → # RAPID GO
+<project-title-value> → RAPID GO
+./schema/openapi/<service-name-value>/ → ./schema/openapi/rapid/
+codebase investigation for <service-name-value> → codebase investigation for rapid-go
+Repository: <org-value>/<repo-value> → Repository: abyssparanoia/rapid-go
+"""
+)
 ```
 
-Compute the **union** of relative paths from both sides.
+Wait for the classifier to return its **Classification Plan** (pull / push / conflict / skip buckets with paths, timestamps, and diff snippets — no full file bodies).
 
-## Step 2 — Normalize & Classify
+**Scalability note**: If the in-scope union exceeds ~60 files, partition by subtree (`rules/`, `skills/`, `agents/`+`commands/`+`CLAUDE.md`) and run classifiers sequentially for each partition, then merge the results before proceeding to Step 2.
 
-For each path in the union, classify it into one of four buckets. Detailed algorithm in `references/sync-algorithm.md`. Summary:
-
-1. Read file content from both sides (use `null` when the file doesn't exist on one side).
-2. Normalize the LOCAL version by applying the **reverse token map** (local → rapid-go canonical). Full map in `references/token-mapping.md`. Apply replacements longest-first to avoid partial matches.
-3. Compare normalized-LOCAL vs UPSTREAM content:
-
-| Exists in UPSTREAM | Exists in LOCAL | Match after normalization | Classification |
-|--------------------|-----------------|--------------------------|----------------|
-| Yes | No | — | **pull** (add to LOCAL) |
-| No | Yes | — | **push** (add to UPSTREAM) |
-| Yes | Yes | Yes | **skip** (identical, no action) |
-| Yes | Yes | No | **conflict** (changed on both sides) |
-
-4. For **conflict** files:
-   - Run `git -C <UPSTREAM> log -1 --format="%ct %H %s" -- <relpath>` and `git -C <LOCAL> log -1 --format="%ct %H %s" -- <relpath>`. Compare unix timestamps.
-   - If only DB-variant lines differ (e.g. `` `mysql` `` vs `` `postgresql` `` in examples), mark **skip — DB-specific** instead.
-   - Otherwise present the normalized diff and timestamp hint. Ask which side is canonical before proceeding.
-
-## Step 3 — Present Plan & Confirm
+## Step 2 — Present Plan & Confirm
 
 Print a consolidated table before touching anything:
 
@@ -118,23 +115,23 @@ For each conflict, show the diff (normalized) and ask: "Apply [upstream | local]
 
 If there are no changes in either direction, report that and stop — do not create empty branches/PRs.
 
-## Step 4 — Apply Changes
+## Step 3 — Apply Changes
 
-After confirmation, apply the classified changes:
+After confirmation, apply the classified changes. The classifier returned only a compact plan (paths + reasons + diff snippets) — **re-read each file fresh** from the source side before transforming and writing it.
 
 **Pull → LOCAL** (rapid-go content into this project):
-- Take the UPSTREAM file content.
+- Read the UPSTREAM file at `<UPSTREAM_ROOT>/<relpath>`.
 - Apply the **forward token map** (rapid-go canonical → local tokens) to localize it.
-- Write/overwrite the file at `<LOCAL>/<relpath>`.
+- Write/overwrite the file at `<LOCAL_ROOT>/<relpath>`.
 
 **Push → UPSTREAM** (local content into rapid-go):
-- Take the LOCAL file content.
+- Read the LOCAL file at `<LOCAL_ROOT>/<relpath>`.
 - Apply the **reverse token map** (local → rapid-go canonical) to canonicalize it.
-- Write/overwrite the file at `<UPSTREAM>/<relpath>`.
+- Write/overwrite the file at `<UPSTREAM_ROOT>/<relpath>`.
 
-Use the Write and Edit tools for LOCAL; use absolute paths under the UPSTREAM root for UPSTREAM files.
+Use the Write and Edit tools for both sides (absolute paths).
 
-## Step 5 — Create PRs (Both Directions)
+## Step 4 — Create PRs (Both Directions)
 
 Follow `.claude/skills/create-pull-request/SKILL.md` conventions. **No AI attribution**.
 
@@ -189,7 +186,7 @@ EOF
 
 Only open a PR on a side that actually received file changes. If one side has nothing to receive, skip that PR.
 
-## Step 6 — Done
+## Step 5 — Done
 
 Report the PR URLs created and remind the user:
 
