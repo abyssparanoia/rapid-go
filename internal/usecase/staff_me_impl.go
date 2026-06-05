@@ -35,6 +35,33 @@ func NewStaffMeInteractor(
 	}
 }
 
+func (i *staffMeInteractor) Get(
+	ctx context.Context,
+	param *input.StaffGetMe,
+) (*model.Staff, error) {
+	if err := param.Validate(); err != nil {
+		return nil, err
+	}
+
+	staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
+		ID: null.StringFrom(param.StaffID),
+		BaseGetOptions: repository.BaseGetOptions{
+			OrFail:  true,
+			Preload: true,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Apply asset URL processing
+	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}, param.RequestTime); err != nil {
+		return nil, err
+	}
+
+	return staff, nil
+}
+
 func (i *staffMeInteractor) SignUp(
 	ctx context.Context,
 	param *input.StaffSignUp,
@@ -44,18 +71,18 @@ func (i *staffMeInteractor) SignUp(
 		return nil, err
 	}
 
-	// 2. Validate asset
-	authContext := model.NewStaffAssetAuthContext(param.AuthUID)
-	imagePath, clearAssetPath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID, authContext)
-	if err != nil {
-		return nil, err
-	}
-	defer clearAssetPath()
-
 	var staff *model.Staff
 
-	// 3. Create tenant and staff in transaction
+	// 2. Create tenant and staff in transaction (asset validation inside)
 	txErr := i.transactable.RWTx(ctx, func(ctx context.Context) error {
+		// Validate asset inside transaction
+		authContext := model.NewStaffAssetAuthContext(param.AuthUID)
+		imagePath, clearAssetPath, err := i.assetService.GetWithValidate(ctx, model.AssetTypeUserImage, param.ImageAssetID, authContext)
+		if err != nil {
+			return err
+		}
+		defer clearAssetPath()
+
 		// Create new tenant
 		tenant := model.NewTenant(
 			param.TenantName,
@@ -86,8 +113,8 @@ func (i *staffMeInteractor) SignUp(
 		return nil, txErr
 	}
 
-	// 4. Return staff with relations loaded
-	staff, err = i.staffRepository.Get(ctx, repository.GetStaffQuery{
+	// 3. Return staff with relations loaded
+	staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
 		ID: null.StringFrom(staff.ID),
 		BaseGetOptions: repository.BaseGetOptions{
 			OrFail:  true,
@@ -98,34 +125,7 @@ func (i *staffMeInteractor) SignUp(
 		return nil, err
 	}
 
-	// 5. Apply asset URL processing
-	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}, param.RequestTime); err != nil {
-		return nil, err
-	}
-
-	return staff, nil
-}
-
-func (i *staffMeInteractor) Get(
-	ctx context.Context,
-	param *input.StaffGetMe,
-) (*model.Staff, error) {
-	if err := param.Validate(); err != nil {
-		return nil, err
-	}
-
-	staff, err := i.staffRepository.Get(ctx, repository.GetStaffQuery{
-		ID: null.StringFrom(param.StaffID),
-		BaseGetOptions: repository.BaseGetOptions{
-			OrFail:  true,
-			Preload: true,
-		},
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Apply asset URL processing
+	// 4. Apply asset URL processing
 	if err := i.assetService.BatchSetStaffURLs(ctx, model.Staffs{staff}, param.RequestTime); err != nil {
 		return nil, err
 	}

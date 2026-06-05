@@ -45,8 +45,8 @@ type Tenant interface {
 }
 
 type GetTenantQuery struct {
-	ID null.String
 	BaseGetOptions
+	ID null.String
 }
 
 type ListTenantsQuery struct {

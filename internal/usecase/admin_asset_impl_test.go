@@ -66,7 +66,7 @@ func TestAdminAssetInteractor_CreatePresignedURL(t *testing.T) {
 
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				CreatePresignedURL(gomock.Any(), assetType, contentType, gomock.Any(), testdata.RequestTime).
+				CreatePresignedURL(gomock.Any(), assetType, contentType, model.NewAdminAssetAuthContext(testdata.Admin.ID), testdata.RequestTime).
 				Return(nil, errors.InternalErr.New())
 
 			return testcase{
@@ -98,7 +98,7 @@ func TestAdminAssetInteractor_CreatePresignedURL(t *testing.T) {
 
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				CreatePresignedURL(gomock.Any(), assetType, contentType, gomock.Any(), testdata.RequestTime).
+				CreatePresignedURL(gomock.Any(), assetType, contentType, model.NewAdminAssetAuthContext(testdata.Admin.ID), testdata.RequestTime).
 				Return(serviceResult, nil)
 
 			return testcase{
@@ -121,7 +121,7 @@ func TestAdminAssetInteractor_CreatePresignedURL(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 

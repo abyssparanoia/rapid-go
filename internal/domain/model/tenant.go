@@ -54,10 +54,19 @@ func NewTenantTag(
 func (m *Tenant) Update(
 	name null.String,
 	t time.Time,
-) {
+) *Tenant {
 	if name.Valid {
 		m.Name = name.String
 	}
 
 	m.UpdatedAt = t
+	return m
+}
+
+func (es Tenants) IDs() []string {
+	ids := make([]string, 0, len(es))
+	for _, e := range es {
+		ids = append(ids, e.ID)
+	}
+	return ids
 }

@@ -90,6 +90,7 @@ func (h *AdminHandler) DeleteTenant(ctx context.Context, req *admin_apiv1.Delete
 		ctx,
 		input.NewAdminDeleteTenant(
 			req.GetTenantId(),
+			request_interceptor.GetRequestTime(ctx),
 		),
 	)
 	if err != nil {

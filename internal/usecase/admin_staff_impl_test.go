@@ -345,7 +345,7 @@ func TestAdminStaffInteractor_Create(t *testing.T) {
 
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, staff.ImagePath, gomock.Any()).
+				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, staff.ImagePath, model.NewAdminAssetAuthContext(admin.ID)).
 				Return(staff.ImagePath, func() {}, nil)
 
 			mockStaffService := mock_service.NewMockStaff(ctrl)
@@ -500,7 +500,7 @@ func TestAdminStaffInteractor_Update(t *testing.T) {
 			mockStaffService := mock_service.NewMockStaff(ctrl)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
-				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, staff.ImagePath, gomock.Any()).
+				GetWithValidate(gomock.Any(), model.AssetTypeUserImage, staff.ImagePath, model.NewAdminAssetAuthContext(admin.ID)).
 				Return(staff.ImagePath, func() {}, nil)
 			mockAssetService.EXPECT().
 				BatchSetStaffURLs(gomock.Any(), model.Staffs{staff}, gomock.Any()).

@@ -17,7 +17,7 @@ import (
 	"github.com/abyssparanoia/rapid-go/internal/infrastructure/firebase/internal/marshaller"
 )
 
-type staffStaffAuthentication struct {
+type staffAuthentication struct {
 	cli          *auth.Client
 	clientAPIKey string
 	emulatorHost string
@@ -28,14 +28,14 @@ func NewStaffAuthentication(
 	firebaseClientAPIKey string,
 	emulatorHost string,
 ) repository.StaffAuthentication {
-	return &staffStaffAuthentication{
+	return &staffAuthentication{
 		cli:          firebaseAuthCli,
 		clientAPIKey: firebaseClientAPIKey,
 		emulatorHost: emulatorHost,
 	}
 }
 
-func (r *staffStaffAuthentication) VerifyIDToken(
+func (r *staffAuthentication) VerifyIDToken(
 	ctx context.Context,
 	idToken string,
 ) (*model.StaffClaims, error) {
@@ -51,7 +51,7 @@ func (r *staffStaffAuthentication) VerifyIDToken(
 	return marshaller.StaffClaimsToModel(t.UID, email, t.Claims), nil
 }
 
-func (r *staffStaffAuthentication) GetUserByEmail(
+func (r *staffAuthentication) GetUserByEmail(
 	ctx context.Context,
 	email string,
 ) (*repository.StaffAuthenticationGetUserByEmailResult, error) {
@@ -71,7 +71,7 @@ func (r *staffStaffAuthentication) GetUserByEmail(
 	}, nil
 }
 
-func (r *staffStaffAuthentication) CreateUser(
+func (r *staffAuthentication) CreateUser(
 	ctx context.Context,
 	param repository.StaffAuthenticationCreateUserParam,
 ) (string, error) {
@@ -87,7 +87,7 @@ func (r *staffStaffAuthentication) CreateUser(
 	return res.UID, nil
 }
 
-func (r *staffStaffAuthentication) StoreClaims(
+func (r *staffAuthentication) StoreClaims(
 	ctx context.Context,
 	authUID string,
 	claims *model.StaffClaims,
@@ -98,7 +98,7 @@ func (r *staffStaffAuthentication) StoreClaims(
 	return nil
 }
 
-func (r *staffStaffAuthentication) CreateCustomToken(
+func (r *staffAuthentication) CreateCustomToken(
 	ctx context.Context,
 	authUID string,
 ) (string, error) {
@@ -109,7 +109,7 @@ func (r *staffStaffAuthentication) CreateCustomToken(
 	return customToken, nil
 }
 
-func (r *staffStaffAuthentication) CreateIDToken(
+func (r *staffAuthentication) CreateIDToken(
 	ctx context.Context,
 	email string,
 	password string,

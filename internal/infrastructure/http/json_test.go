@@ -10,6 +10,7 @@ import (
 )
 
 func TestCustomJSONPb_Int64AsNumber(t *testing.T) {
+	t.Parallel()
 	tests := map[string]func(t *testing.T){
 		"Int64AsNumber false - int64 fields are serialized as strings": func(t *testing.T) {
 			marshaler := &CustomJSONPb{
@@ -97,6 +98,9 @@ func TestCustomJSONPb_Int64AsNumber(t *testing.T) {
 	}
 
 	for name, tc := range tests {
-		t.Run(name, tc)
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			tc(t)
+		})
 	}
 }

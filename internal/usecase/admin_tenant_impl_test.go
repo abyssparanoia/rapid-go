@@ -65,10 +65,11 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 			mockTenantRepo.EXPECT().
 				Get(gomock.Any(),
 					repository.GetTenantQuery{
-						ID: null.StringFrom(tenant.ID),
 						BaseGetOptions: repository.BaseGetOptions{
-							OrFail: true,
+							OrFail:  true,
+							Preload: true,
 						},
+						ID: null.StringFrom(tenant.ID),
 					}).
 				Return(nil, errors.TenantNotFoundErr)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
@@ -96,10 +97,11 @@ func TestAdminAdminTenantInteractor_Get(t *testing.T) {
 			mockTenantRepo.EXPECT().
 				Get(gomock.Any(),
 					repository.GetTenantQuery{
-						ID: null.StringFrom(tenant.ID),
 						BaseGetOptions: repository.BaseGetOptions{
-							OrFail: true,
+							OrFail:  true,
+							Preload: true,
 						},
+						ID: null.StringFrom(tenant.ID),
 					}).
 				Return(tenant, nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
@@ -177,8 +179,9 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 					gomock.Any(),
 					repository.ListTenantsQuery{
 						BaseListOptions: repository.BaseListOptions{
-							Page:  null.Uint64From(2),
-							Limit: null.Uint64From(30),
+							Page:    null.Uint64From(2),
+							Limit:   null.Uint64From(30),
+							Preload: true,
 						},
 						SortKey: nullable.TypeFrom(model.TenantSortKeyCreatedAtDesc),
 					}).
@@ -189,8 +192,9 @@ func TestAdminAdminTenantInteractor_List(t *testing.T) {
 					gomock.Any(),
 					repository.ListTenantsQuery{
 						BaseListOptions: repository.BaseListOptions{
-							Page:  null.Uint64From(2),
-							Limit: null.Uint64From(30),
+							Page:    null.Uint64From(2),
+							Limit:   null.Uint64From(30),
+							Preload: true,
 						},
 						SortKey: nullable.TypeFrom(model.TenantSortKeyCreatedAtDesc),
 					},
@@ -288,10 +292,20 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 			tenant.ID = mockID
 			tenant.Tags = model.TenantTags{}
 
+			mockTransactable := mock_repository.TestMockTransactable()
 			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
 			mockTenantRepo.EXPECT().
 				Create(gomock.Any(), tenant).
 				Return(nil)
+			mockTenantRepo.EXPECT().
+				Get(gomock.Any(), repository.GetTenantQuery{
+					BaseGetOptions: repository.BaseGetOptions{
+						OrFail:  true,
+						Preload: true,
+					},
+					ID: null.StringFrom(tenant.ID),
+				}).
+				Return(tenant, nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
 				BatchSetTenantURLs(gomock.Any(), model.Tenants{tenant}, gomock.Any()).
@@ -303,6 +317,7 @@ func TestAdminAdminTenantInteractor_Create(t *testing.T) {
 					requestTime: requestTime,
 				},
 				usecase: &adminTenantInteractor{
+					transactable:     mockTransactable,
 					tenantRepository: mockTenantRepo,
 					assetService:     mockAssetService,
 				},
@@ -381,16 +396,26 @@ func TestAdminAdminTenantInteractor_Update(t *testing.T) {
 			mockTenantRepo.EXPECT().
 				Get(gomock.Any(),
 					repository.GetTenantQuery{
-						ID: null.StringFrom(tenant.ID),
 						BaseGetOptions: repository.BaseGetOptions{
 							OrFail:    true,
 							ForUpdate: true,
 						},
+						ID: null.StringFrom(tenant.ID),
 					}).
 				Return(tenant, nil)
 			mockTenantRepo.EXPECT().
 				Update(gomock.Any(), updatedTenant).
 				Return(nil)
+			mockTenantRepo.EXPECT().
+				Get(gomock.Any(),
+					repository.GetTenantQuery{
+						BaseGetOptions: repository.BaseGetOptions{
+							OrFail:  true,
+							Preload: true,
+						},
+						ID: null.StringFrom(tenant.ID),
+					}).
+				Return(updatedTenant, nil)
 			mockAssetService := mock_service.NewMockAsset(ctrl)
 			mockAssetService.EXPECT().
 				BatchSetTenantURLs(gomock.Any(), model.Tenants{updatedTenant}, gomock.Any()).
@@ -442,7 +467,8 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		tenantID string
+		tenantID    string
+		requestTime time.Time
 	}
 
 	type want struct {
@@ -471,7 +497,22 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 			testdata := factory.NewFactory()
 			tenant := testdata.Tenant
 
+			mockTransactable := mock_repository.NewMockTransactable(ctrl)
+			mockTransactable.EXPECT().RWTx(gomock.Any(), gomock.Any()).DoAndReturn(
+				func(ctx context.Context, fn func(context.Context) error) error {
+					return fn(ctx)
+				},
+			)
 			mockTenantRepo := mock_repository.NewMockTenant(ctrl)
+			mockTenantRepo.EXPECT().
+				Get(gomock.Any(), repository.GetTenantQuery{
+					BaseGetOptions: repository.BaseGetOptions{
+						OrFail:    true,
+						ForUpdate: true,
+					},
+					ID: null.StringFrom(tenant.ID),
+				}).
+				Return(tenant, nil)
 			mockTenantRepo.EXPECT().
 				Delete(gomock.Any(), tenant.ID).
 				Return(nil)
@@ -479,9 +520,11 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 
 			return testcase{
 				args: args{
-					tenantID: tenant.ID,
+					tenantID:    tenant.ID,
+					requestTime: testdata.RequestTime,
 				},
 				usecase: &adminTenantInteractor{
+					transactable:     mockTransactable,
 					tenantRepository: mockTenantRepo,
 					assetService:     mockAssetService,
 				},
@@ -501,6 +544,7 @@ func TestAdminAdminTenantInteractor_Delete(t *testing.T) {
 
 			err := tc.usecase.Delete(ctx, input.NewAdminDeleteTenant(
 				tc.args.tenantID,
+				tc.args.requestTime,
 			))
 			if tc.want.expectedResult == nil {
 				require.NoError(t, err)

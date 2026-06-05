@@ -2,7 +2,6 @@ package redis_helper
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/abyssparanoia/rapid-go/internal/domain/errors"
 	"github.com/cenkalti/backoff"
@@ -24,7 +23,7 @@ func RunTransaction(ctx context.Context, redisClient *redis.Client, fn func(ctx 
 		}
 		return nil
 	}, b); err != nil {
-		return fmt.Errorf("transaction failed: %w", err)
+		return errors.InternalErr.Wrap(err).WithDetail("transaction failed")
 	}
 	return nil
 }

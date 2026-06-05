@@ -9,6 +9,7 @@ import (
 )
 
 func Test_handleError(t *testing.T) {
+	t.Parallel()
 	testcase := map[string]struct {
 		err  error
 		want error
@@ -37,6 +38,7 @@ func Test_handleError(t *testing.T) {
 
 	for name, tc := range testcase {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			got := handleError(tc.err)
 			if got == nil {
 				if tc.want != nil {

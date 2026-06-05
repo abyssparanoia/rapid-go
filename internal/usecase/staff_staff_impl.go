@@ -13,26 +13,17 @@ import (
 )
 
 type staffStaffInteractor struct {
-	transactable     repository.Transactable
-	tenantRepository repository.Tenant
-	staffRepository  repository.Staff
-	staffService     service.Staff
-	assetService     service.Asset
+	staffRepository repository.Staff
+	assetService    service.Asset
 }
 
 func NewStaffStaffInteractor(
-	transactable repository.Transactable,
-	tenantRepository repository.Tenant,
 	staffRepository repository.Staff,
-	staffService service.Staff,
 	assetService service.Asset,
 ) StaffStaffInteractor {
 	return &staffStaffInteractor{
-		transactable,
-		tenantRepository,
-		staffRepository,
-		staffService,
-		assetService,
+		staffRepository: staffRepository,
+		assetService:    assetService,
 	}
 }
 

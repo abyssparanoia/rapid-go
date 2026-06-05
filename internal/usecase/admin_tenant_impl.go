@@ -40,10 +40,11 @@ func (i *adminTenantInteractor) Get(
 	tenant, err := i.tenantRepository.Get(
 		ctx,
 		repository.GetTenantQuery{
-			ID: null.StringFrom(param.TenantID),
 			BaseGetOptions: repository.BaseGetOptions{
-				OrFail: true,
+				OrFail:  true,
+				Preload: true,
 			},
+			ID: null.StringFrom(param.TenantID),
 		},
 	)
 	if err != nil {
@@ -64,8 +65,9 @@ func (i *adminTenantInteractor) List(
 	}
 	query := repository.ListTenantsQuery{
 		BaseListOptions: repository.BaseListOptions{
-			Page:  null.Uint64From(param.Page),
-			Limit: null.Uint64From(param.Limit),
+			Page:    null.Uint64From(param.Page),
+			Limit:   null.Uint64From(param.Limit),
+			Preload: true,
 		},
 		SortKey: nullable.TypeFrom(param.SortKey),
 	}
@@ -104,7 +106,19 @@ func (i *adminTenantInteractor) Create(
 		return nil, err
 	}
 	tenant := model.NewTenant(param.Name, param.RequestTime)
-	if err := i.tenantRepository.Create(ctx, tenant); err != nil {
+	if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
+		return i.tenantRepository.Create(ctx, tenant)
+	}); err != nil {
+		return nil, err
+	}
+	tenant, err := i.tenantRepository.Get(ctx, repository.GetTenantQuery{
+		BaseGetOptions: repository.BaseGetOptions{
+			OrFail:  true,
+			Preload: true,
+		},
+		ID: null.StringFrom(tenant.ID),
+	})
+	if err != nil {
 		return nil, err
 	}
 	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}, param.RequestTime); err != nil {
@@ -120,17 +134,15 @@ func (i *adminTenantInteractor) Update(
 	if err := param.Validate(); err != nil {
 		return nil, err
 	}
-	var tenant *model.Tenant
 	if err := i.transactable.RWTx(ctx, func(ctx context.Context) error {
-		var err error
-		tenant, err = i.tenantRepository.Get(
+		tenant, err := i.tenantRepository.Get(
 			ctx,
 			repository.GetTenantQuery{
-				ID: null.StringFrom(param.TenantID),
 				BaseGetOptions: repository.BaseGetOptions{
 					OrFail:    true,
 					ForUpdate: true,
 				},
+				ID: null.StringFrom(param.TenantID),
 			},
 		)
 		if err != nil {
@@ -140,11 +152,18 @@ func (i *adminTenantInteractor) Update(
 			param.Name,
 			param.RequestTime,
 		)
-		if err := i.tenantRepository.Update(ctx, tenant); err != nil {
-			return err
-		}
-		return nil
+		return i.tenantRepository.Update(ctx, tenant)
 	}); err != nil {
+		return nil, err
+	}
+	tenant, err := i.tenantRepository.Get(ctx, repository.GetTenantQuery{
+		BaseGetOptions: repository.BaseGetOptions{
+			OrFail:  true,
+			Preload: true,
+		},
+		ID: null.StringFrom(param.TenantID),
+	})
+	if err != nil {
 		return nil, err
 	}
 	if err := i.assetService.BatchSetTenantURLs(ctx, model.Tenants{tenant}, param.RequestTime); err != nil {
@@ -160,5 +179,17 @@ func (i *adminTenantInteractor) Delete(
 	if err := param.Validate(); err != nil {
 		return err
 	}
-	return i.tenantRepository.Delete(ctx, param.TenantID)
+	return i.transactable.RWTx(ctx, func(ctx context.Context) error {
+		_, err := i.tenantRepository.Get(ctx, repository.GetTenantQuery{
+			BaseGetOptions: repository.BaseGetOptions{
+				OrFail:    true,
+				ForUpdate: true,
+			},
+			ID: null.StringFrom(param.TenantID),
+		})
+		if err != nil {
+			return err
+		}
+		return i.tenantRepository.Delete(ctx, param.TenantID)
+	})
 }

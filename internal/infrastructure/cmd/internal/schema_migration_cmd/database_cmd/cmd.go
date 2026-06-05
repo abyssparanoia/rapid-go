@@ -16,11 +16,10 @@ func NewDatabaseCmd() *cobra.Command {
 			}
 		},
 	}
-	cmd.AddCommand(&cobra.Command{
+	createCmd := &cobra.Command{
 		Use:   "create",
 		Short: "create new migration file",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Flags().StringP("name", "n", "", "file name")
 			name, err := cmd.Flags().GetString("name")
 			if err != nil {
 				panic(err)
@@ -30,7 +29,9 @@ func NewDatabaseCmd() *cobra.Command {
 			}
 			migration.RunNewFile(name)
 		},
-	})
+	}
+	createCmd.Flags().StringP("name", "n", "", "file name")
+	cmd.AddCommand(createCmd)
 	cmd.AddCommand(&cobra.Command{
 		Use:   "up",
 		Short: "migrate up",

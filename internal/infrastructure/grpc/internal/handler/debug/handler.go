@@ -1,8 +1,6 @@
 package debug
 
 import (
-	"context"
-
 	debug_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/debug_api/v1"
 	"github.com/abyssparanoia/rapid-go/internal/usecase"
 )
@@ -17,37 +15,4 @@ func NewDebugHandler(
 	return &DebugHandler{
 		debugInteractor: debugInteractor,
 	}
-}
-
-func (h *DebugHandler) CreateAdminIDToken(ctx context.Context, req *debug_apiv1.CreateAdminIDTokenRequest) (*debug_apiv1.CreateAdminIDTokenResponse, error) {
-	idToken, err := h.debugInteractor.CreateAdminIDToken(ctx, req.GetEmail(), req.GetPassword())
-	if err != nil {
-		return nil, err
-	}
-	return &debug_apiv1.CreateAdminIDTokenResponse{
-		IdToken: idToken,
-	}, nil
-}
-
-func (h *DebugHandler) CreateStaffIDToken(ctx context.Context, req *debug_apiv1.CreateStaffIDTokenRequest) (*debug_apiv1.CreateStaffIDTokenResponse, error) {
-	idToken, err := h.debugInteractor.CreateStaffIDToken(ctx, req.GetEmail(), req.GetPassword())
-	if err != nil {
-		return nil, err
-	}
-	return &debug_apiv1.CreateStaffIDTokenResponse{
-		IdToken: idToken,
-	}, nil
-}
-
-func (h *DebugHandler) CreateStaffAuthUID(
-	ctx context.Context,
-	req *debug_apiv1.CreateStaffAuthUIDRequest,
-) (*debug_apiv1.CreateStaffAuthUIDResponse, error) {
-	authUID, err := h.debugInteractor.CreateStaffAuthUID(ctx, req.GetEmail(), req.GetPassword())
-	if err != nil {
-		return nil, err
-	}
-	return &debug_apiv1.CreateStaffAuthUIDResponse{
-		AuthUid: authUID,
-	}, nil
 }

@@ -102,7 +102,7 @@ func TestAdminAuthenticationInteractor_VerifyAdminIDToken(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 

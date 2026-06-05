@@ -60,13 +60,13 @@ func (r *staff) List(
 	if query.SortKey.Valid && query.SortKey.Value().Valid() {
 		switch query.SortKey.Value() {
 		case model.StaffSortKeyCreatedAtDesc:
-			mods = append(mods, qm.OrderBy("\"created_at\" DESC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.StaffColumns.CreatedAt+"\" DESC"))
 		case model.StaffSortKeyCreatedAtAsc:
-			mods = append(mods, qm.OrderBy("\"created_at\" ASC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.StaffColumns.CreatedAt+"\" ASC"))
 		case model.StaffSortKeyDisplayNameAsc:
-			mods = append(mods, qm.OrderBy("\"display_name\" ASC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.StaffColumns.DisplayName+"\" ASC"))
 		case model.StaffSortKeyDisplayNameDesc:
-			mods = append(mods, qm.OrderBy("\"display_name\" DESC"))
+			mods = append(mods, qm.OrderBy("\""+dbmodel.StaffColumns.DisplayName+"\" DESC"))
 		case model.StaffSortKeyUnknown:
 			return nil, errors.InternalErr.Errorf("invalid sort key: %s", query.SortKey.Value())
 		}

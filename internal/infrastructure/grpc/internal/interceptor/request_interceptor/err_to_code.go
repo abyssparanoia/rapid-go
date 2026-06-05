@@ -21,6 +21,12 @@ func errToCode(err error) codes.Code {
 			return codes.AlreadyExists
 		case errors.ErrorCategoryInternal.String():
 			return codes.Internal
+		case errors.ErrorCategoryForbidden.String():
+			return codes.PermissionDenied
+		case errors.ErrorCategoryCanceled.String():
+			return codes.Canceled
+		case errors.ErrorCategoryServiceAvailable.String():
+			return codes.Unavailable
 		}
 	}
 	if status, ok := status.FromError(err); ok {

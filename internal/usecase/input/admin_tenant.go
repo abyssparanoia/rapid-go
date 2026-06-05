@@ -122,14 +122,17 @@ func (p *AdminUpdateTenant) Validate() error {
 }
 
 type AdminDeleteTenant struct {
-	TenantID string `validate:"required"`
+	TenantID    string    `validate:"required"`
+	RequestTime time.Time `validate:"required"`
 }
 
 func NewAdminDeleteTenant(
 	tenantID string,
+	requestTime time.Time,
 ) *AdminDeleteTenant {
 	return &AdminDeleteTenant{
-		TenantID: tenantID,
+		TenantID:    tenantID,
+		RequestTime: requestTime,
 	}
 }
 

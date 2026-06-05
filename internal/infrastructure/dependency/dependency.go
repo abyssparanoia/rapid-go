@@ -125,10 +125,7 @@ func (d *Dependency) Inject(
 		assetService,
 	)
 	d.StaffStaffInteractor = usecase.NewStaffStaffInteractor(
-		transactable,
-		tenantRepository,
 		staffRepository,
-		staffService,
 		assetService,
 	)
 	d.StaffAssetInteractor = usecase.NewStaffAssetInteractor(
