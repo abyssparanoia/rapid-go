@@ -164,3 +164,27 @@ it is classified as SKIP. Running the skill after PRs merge results in no change
 
 **No changes detected**: Report "No sync needed — all in-scope files are identical after
 normalization" and exit without creating branches or PRs.
+
+## Push Screening — Project-Specific Content From Derived Projects
+
+When a derived project proposes changes via the PUSH direction (adding or modifying `.claude/` files in rapid-go), review for content that is **domain-specific to the derived project** and should not become part of the rapid-go template.
+
+### Reject if the content references:
+
+- **Project-specific domain entities**: models, roles, or tables that exist only in the derived project (e.g. product-specific role names, authorization objects, entity types)
+- **Project-specific authorization systems**: multi-layer auth patterns tied to that product's RBAC (e.g. a 3-layer device group permission model)
+- **Internal documentation links**: Notion URLs, Jira links, or Confluence pages belonging to the derived project's organization
+- **Product hardware naming**: table prefixes or naming conventions tied to specific IoT/hardware devices of that product
+
+### Accept if the content:
+
+- Describes a **generalizable pattern** any rapid-go-derived project could use (e.g. a `hw_` prefix for hardware tables is acceptable — the concept of separating hardware-originated data is not product-specific)
+- Improves an existing rule with project-agnostic additions (e.g. error code ordering rules, test consolidation patterns, input validation layer rules)
+- Adds a skill or workflow improvement applicable to any project
+
+### Convention for derived projects
+
+Each derived project should maintain a `references/local-only.md` file in its `sync-claude-config` skill directory that explicitly lists files and sections that are project-specific and must never flow upstream. Keeping this list up-to-date prevents accidental PUSH of project-specific content in future syncs.
+
+**No changes detected**: Report "No sync needed — all in-scope files are identical after
+normalization" and exit without creating branches or PRs.
