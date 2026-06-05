@@ -1,17 +1,17 @@
 ---
 name: fix-review-comments
-description: Fetch unresolved GitHub PR review comments and automatically fix the code, commit, and push. Use when: (1) running '/fix-review-comments', (2) asked to "fix review comments", "address PR comments", "respond to review", or similar. Can target the PR for the current branch, or a specific PR number (e.g. '/fix-review-comments 123'). Skips already-resolved threads and discussion-only comments that require no code change. Also updates Claude rules and review-diff anti-patterns when a comment reveals a missing convention.
+description: Fetch unresolved GitHub PR review comments and automatically fix the code. Use when: (1) running '/fix-review-comments', (2) asked to "fix review comments", "address PR comments", "respond to review", or similar. Can target the PR for the current branch, or a specific PR number (e.g. '/fix-review-comments 123'). Skips already-resolved threads and discussion-only comments that require no code change.
 ---
 
 # Fix Review Comments
 
-Fetch unresolved PR review threads, fix code, update rules if needed, then commit and push.
+Fetch unresolved PR review threads and fix the code automatically.
 
 ## Step 1: Detect PR
 
 ```bash
 # From current branch (no argument)
-gh pr view --json number,url,headRefName | jq -r '"#\(.number) \(.url) \(.headRefName)"'
+gh pr view --json number,url | jq -r '"#\(.number) \(.url)"'
 
 # Or use the number passed as argument
 ```
@@ -78,37 +78,33 @@ For each thread requiring a fix:
 
 Fix all actionable threads before running any verification.
 
-## Step 5: Update Rules (if applicable)
+## Step 5: Update Rules
 
-After fixing code, evaluate whether any comment reveals a **missing or incomplete coding convention** that should be captured in project rules. Ask:
+After fixing the code, evaluate whether any review comment reveals a **missing or incomplete coding convention** in the project rules.
 
-- Could this mistake recur if the rule isn't documented?
-- Is it a pattern-level issue (not just a one-off typo)?
+**When to update rules:**
+- The reviewer points out a pattern that is not documented in `.claude/rules/*.md`
+- The reviewer identifies an AI anti-pattern that is not in `ai-antipatterns.md`
+- The fix represents a recurring mistake AI models make
 
-If yes, update the appropriate file(s):
+**Rule file mapping:**
 
-| Comment type | Target file |
+| Comment topic | Target rule file |
 |---|---|
-| AI-generated code pattern mistake | `.claude/skills/review-diff/references/ai-antipatterns.md` — add new numbered pattern, renumber subsequent |
-| Domain model / entity convention | `.claude/rules/domain-model.md` |
-| Repository / marshaller pattern | `.claude/rules/repository.md` |
-| Usecase / interactor convention | `.claude/rules/usecase-interactor.md` |
-| gRPC handler pattern | `.claude/rules/grpc-handler.md` |
-| Testing convention | `.claude/rules/testing.md` |
-| Proto definition style | `.claude/rules/proto-definition.md` |
-| Other layer-specific rule | Corresponding `.claude/rules/*.md` |
+| Domain model (constructor, state transition, enum) | `.claude/rules/domain-model.md` |
+| Repository query, marshaller | `.claude/rules/repository.md` |
+| Usecase interactor (transaction, locking, IdP sync) | `.claude/rules/usecase-interactor.md` |
+| gRPC handler, marshaller | `.claude/rules/grpc-handler.md` |
+| Proto definition | `.claude/rules/proto-definition.md` |
+| Test patterns (mock, table-driven) | `.claude/rules/testing.md` |
+| Common AI mistakes (any layer) | `.claude/skills/review-diff/references/ai-antipatterns.md` |
 
-When adding to `ai-antipatterns.md`:
-1. Assign the next sequential number
-2. Include BAD/GOOD code examples from the actual review comment
-3. Renumber all subsequent patterns
-4. Update `.claude/skills/review-diff/SKILL.md` priority list if the pattern is critical
-
-When adding to `.claude/rules/*.md`:
-1. Add the rule in the appropriate section
-2. Follow the existing format (tables, code blocks, etc.)
-
-**Do NOT update rules for**: one-off typos, project-specific business logic, or comments that are already covered by existing rules.
+**If updating `ai-antipatterns.md`:**
+1. Assign the next sequential number (check current highest)
+2. Add a new section `### N. Description` with BAD/GOOD examples and **Why**
+3. Renumber `SKILL.md` priority list and `checklists.md` if the pattern number shifts existing ones
+4. Add the new pattern number to the `review-diff/SKILL.md` priority patterns list
+5. Add a checklist item to `review-diff/references/checklists.md` in the relevant section
 
 ## Step 6: Verify
 
@@ -123,20 +119,22 @@ Run tests if logic changed:
 
 ## Step 7: Commit and Push
 
-Stage, commit, and push all changes (code fixes + rule updates):
+Stage all changed files and commit. If code fixes and rule updates are logically separate, consider two commits:
 
 ```bash
-git add -A
-git commit -m "fix: address PR review comments
+# Option A: single commit
+git add <changed files>
+git commit -m "fix: address PR review comments"
 
-- <summary of code fixes>
-- <summary of rule updates, if any>"
+# Option B: two commits when rules were also updated
+git add <code files>
+git commit -m "fix: address PR review comments"
+
+git add .claude/
+git commit -m "docs: update rules based on review feedback"
+
 git push
 ```
-
-If code fixes and rule updates are logically separate, use two commits:
-1. Code fixes first: `fix: address PR #NNN review comments`
-2. Rule updates second: `docs: update rules from PR #NNN review feedback`
 
 ## Step 8: Report
 
@@ -150,9 +148,8 @@ PR: #NNN
    Comment: "@author: ..."
 
 ### Rules Updated (N)
-1. `.claude/rules/xxx.md` — added rule about ...
-   Triggered by: "@author: ..." comment on `path/to/file.go`
-2. `.claude/skills/review-diff/references/ai-antipatterns.md` — added #NN: ...
+1. `.claude/rules/foo.md` — added rule about X
+2. `.claude/skills/review-diff/references/ai-antipatterns.md` — added anti-pattern #N: Y
 
 ### Skipped (N)
 1. `path/to/file.go:line` — reason (already resolved / discussion / no code change needed)

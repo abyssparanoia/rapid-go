@@ -77,6 +77,27 @@ service AdminV1Service {
 
 **Important**: This ordering applies to both `api.proto` service definitions and `api_{resource}.proto` message definitions.
 
+**New RPCs go at the END of the service block** — never insert them mid-list between existing RPCs. This minimizes merge conflicts and maintains a clear "arrival order" for reviewing history.
+
+```protobuf
+// BAD - inserted mid-service between UpdateMeOrganization and GetStaff
+service StaffV1Service {
+  rpc UpdateMeOrganization(...)  returns (...) {...}
+  rpc GetInvoice(...)   returns (...) {...}  // ← inserted here
+  rpc ListInvoices(...) returns (...) {...}  // ← inserted here
+  rpc GetStaff(...) returns (...) {...}
+}
+
+// GOOD - appended at end
+service StaffV1Service {
+  rpc UpdateMeOrganization(...) returns (...) {...}
+  rpc GetStaff(...) returns (...) {...}
+  // ... other existing RPCs ...
+  rpc GetInvoice(...)   returns (...) {...}  // ← new, at end
+  rpc ListInvoices(...) returns (...) {...}  // ← new, at end
+}
+```
+
 ## File Organization
 
 ### `api.proto` - Service Definition
@@ -186,6 +207,46 @@ message UpdateTenantRequest {
 - Place resource messages and enums here.
 - If you use `google.protobuf.Timestamp`, import `google/protobuf/timestamp.proto`.
 - Each resource requires **both Full and Partial message definitions** (see Partial Pattern section below).
+- **Owned child messages must be nested inside the parent message** (see Owned Child Nesting below).
+
+### Owned Child Message Nesting
+
+When a message is a **fully-owned child** (cannot exist independently of the parent — a composed 1:1 or 1:N relationship), define it as a **nested message** inside the parent. Top-level message definitions imply the type is reusable across multiple parents, which contradicts ownership semantics.
+
+```protobuf
+// BAD - top-level definition implies reuse / independence
+message InvoiceItem {
+  string id = 1;
+  // ...
+}
+message Invoice {
+  repeated InvoiceItem items = 15;  // ownership not visible in proto
+}
+
+// GOOD - nested definition encodes ownership structurally
+message Invoice {
+  // ...fields...
+
+  enum InvoiceItemType {
+    INVOICE_ITEM_TYPE_UNSPECIFIED = 0;
+    INVOICE_ITEM_TYPE_SUBSCRIPTION = 1;
+    // ...
+  }
+
+  message InvoiceItem {
+    string id = 1;
+    InvoiceItemType type = 2;
+    // ...
+  }
+
+  repeated InvoiceItem items = 15;
+  // option ...
+}
+```
+
+**Effect on generated Go code**: After `generate.buf`, nested types become `ParentMessage_ChildMessage` (e.g., `Invoice_InvoiceItem`) and nested enums become `ParentMessage_EnumName` (e.g., `Invoice_InvoiceItemType`). Update all Go references accordingly.
+
+**Rule**: Only use top-level messages for types that are genuinely shared across multiple parent resources (e.g., `Pagination`, `InvoiceStatus`).
 
 Example (admin staff):
 

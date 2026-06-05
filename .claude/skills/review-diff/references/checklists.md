@@ -2,13 +2,6 @@
 
 Detailed checklists for each file category. Apply the relevant sections based on changed files.
 
-## Domain Errors (`internal/domain/errors/**`)
-
-- [ ] Error codes are in ascending numerical order within `errors.go`
-- [ ] No duplicate error codes exist
-- [ ] New error codes use the next available sequence number in a new group (not reusing existing groups)
-- [ ] Error code groups are sorted by group number (E2001xx before E2002xx)
-
 ## Domain Model (`internal/domain/model/**`)
 
 - [ ] Entity has `ReadonlyReference` struct pointer for relations
@@ -57,14 +50,14 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] All methods start with `param.Validate()` check
 - [ ] Write operations wrapped in `transactable.RWTx`
 - [ ] Get before update uses `ForUpdate: true` for locking
-- [ ] Entity creation uses domain constructors (`model.NewXxx()`), not direct struct init
 - [ ] State changes use domain methods (not direct field assignment)
-- [ ] No unnecessary nil/valid checks on values guaranteed by preceding code
-- [ ] No unnecessary intermediate variable declarations (return directly when possible)
+- [ ] Entity creation uses domain constructors (`model.NewXxx()`), not direct struct init
 - [ ] IdP sync (StoreClaims/DeleteUser) happens within transaction
 - [ ] On delete: IdP deletion before database deletion
 - [ ] Final return fetches entity with `Preload: true` for fresh data
 - [ ] Asset service called even if no assets currently exist
+- [ ] No unnecessary nil/valid checks on values guaranteed by preceding code
+- [ ] No unnecessary intermediate variable declarations (return directly when possible)
 - [ ] No package-level private functions (inline or move to struct method)
 
 ## Input Struct (`internal/usecase/input/**`)
@@ -138,16 +131,6 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] `DeleteUser` called before database deletion
 - [ ] All IdP operations within transaction boundary
 
-## Architecture & File Placement (All new files)
-
-- [ ] Domain layer (`internal/domain/`) has NO infrastructure dependencies (no HTTP clients, no SDK imports, no DB packages)
-- [ ] Repository interfaces are in `internal/domain/repository/` — interfaces for external data access only (DB, external API)
-- [ ] Non-data-access interfaces (e.g., geocoding, IoT, publisher) belong in their own domain package (`internal/domain/{concept}/`) or in `internal/domain/service/`, NOT in `internal/domain/repository/`
-- [ ] Infrastructure implementations are in the correct subdirectory under `internal/infrastructure/` (e.g., `googlemaps/`, `cognito/`, `firebase/`)
-- [ ] DTO types for external API responses are in `internal/infrastructure/{provider}/internal/dto/`, NOT in the repository package itself
-- [ ] Marshaller files are under `internal/infrastructure/{db}/internal/marshaller/` — check that new marshallers don't introduce unnecessary type conversions when direct field mapping suffices
-- [ ] No new packages created under `internal/domain/` unless they represent a genuine domain concept — utility-style packages belong in `internal/pkg/`
-
 ## Invitation Workflow (`*invitation*`)
 
 - [ ] Status enum includes: Pending, Accepted, Rejected, Invalidated
@@ -155,3 +138,8 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] State transition methods validate current state
 - [ ] `IsExpired()` helper method exists
 - [ ] Email sent within transaction
+
+## Pkg Utilities (`internal/pkg/**`)
+
+- [ ] No imports from `internal/domain`, `internal/usecase`, or `internal/infrastructure`
+- [ ] Errors returned as `fmt.Errorf` — domain error wrapping is the caller's responsibility

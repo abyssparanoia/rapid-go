@@ -20,7 +20,7 @@ External Service → HTTP Server → Custom HTTP Handler → Internal gRPC → g
 ## Directory Structure
 
 ```
-schema/proto/rapid/
+schema/proto/oshipo/
 └── webhook_api/v1/              # Separate package for webhook definitions
     ├── api.proto                # Service definition
     └── api_{service}.proto      # Request/Response messages
@@ -48,17 +48,17 @@ internal/
 
 ### Step 1: Proto Definitions
 
-Create webhook-specific proto package in `schema/proto/rapid/webhook_api/v1/`.
+Create webhook-specific proto package in `schema/proto/oshipo/webhook_api/v1/`.
 
 #### Service Definition (api.proto)
 
 ```protobuf
 syntax = "proto3";
 
-package rapid.webhook_api.v1;
+package oshipo.webhook_api.v1;
 
 import "google/api/annotations.proto";
-import "rapid/webhook_api/v1/api_{service}.proto";
+import "oshipo/webhook_api/v1/api_{service}.proto";
 
 service WebhookService {
   rpc Receive{Service}Webhook(Receive{Service}WebhookRequest) returns (Receive{Service}WebhookResponse) {
@@ -80,7 +80,7 @@ service WebhookService {
 ```protobuf
 syntax = "proto3";
 
-package rapid.webhook_api.v1;
+package oshipo.webhook_api.v1;
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
@@ -179,8 +179,8 @@ func (p *WebhookReceive{Service}) Validate() error {
 package webhook
 
 import (
-    webhook_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/webhook_api/v1"
-    "github.com/abyssparanoia/rapid-go/internal/usecase"
+    webhook_apiv1 "github.com/Mirrativ-com/livedx-oshipo-server/internal/infrastructure/grpc/pb/oshipo/webhook_api/v1"
+    "github.com/Mirrativ-com/livedx-oshipo-server/internal/usecase"
 )
 
 type WebhookHandler struct {
@@ -206,10 +206,10 @@ import (
     "context"
     "time"
 
-    webhook_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/webhook_api/v1"
-    "github.com/abyssparanoia/rapid-go/internal/pkg/logger"
-    "github.com/abyssparanoia/rapid-go/internal/pkg/logger/logger_field"
-    "github.com/abyssparanoia/rapid-go/internal/usecase/input"
+    webhook_apiv1 "github.com/Mirrativ-com/livedx-oshipo-server/internal/infrastructure/grpc/pb/oshipo/webhook_api/v1"
+    "github.com/Mirrativ-com/livedx-oshipo-server/internal/pkg/logger"
+    "github.com/Mirrativ-com/livedx-oshipo-server/internal/pkg/logger/logger_field"
+    "github.com/Mirrativ-com/livedx-oshipo-server/internal/usecase/input"
     "go.uber.org/zap"
 )
 
@@ -278,8 +278,8 @@ import (
     "net/http"
     "strconv"
 
-    webhook_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/webhook_api/v1"
-    "github.com/abyssparanoia/rapid-go/internal/pkg/logger"
+    webhook_apiv1 "github.com/Mirrativ-com/livedx-oshipo-server/internal/infrastructure/grpc/pb/oshipo/webhook_api/v1"
+    "github.com/Mirrativ-com/livedx-oshipo-server/internal/pkg/logger"
     "go.uber.org/zap"
     "google.golang.org/grpc"
 )
@@ -397,7 +397,7 @@ Location: `internal/infrastructure/grpc/run.go`
 ```go
 import (
     // ... existing imports
-    webhook_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/webhook_api/v1"
+    webhook_apiv1 "github.com/Mirrativ-com/livedx-oshipo-server/internal/infrastructure/grpc/pb/oshipo/webhook_api/v1"
 )
 
 func NewServer(...) *grpc.Server {
@@ -433,6 +433,51 @@ if err = grpcGateway.HandlePath(
 **Path Conventions:**
 - External webhook path: `/v1/webhook/{service}` (e.g., `/v1/webhook/app-driver`)
 - Internal gRPC path: `/v1/webhook/{service}-internal` (not exposed externally)
+
+## Webhook Usecase Locking and Idempotency Patterns
+
+### Always Use `ForUpdate: true` Inside RWTx
+
+All repository `Get` calls inside a webhook `RWTx` handler **must** use `ForUpdate: true`. This prevents duplicate processing when multiple webhook events arrive for the same entity concurrently.
+
+```go
+func (i *webhookInteractor) ReceiveSomeEvent(ctx context.Context, param *input.WebhookSomeEvent) error {
+    return i.transactable.RWTx(ctx, func(ctx context.Context) error {
+        entity, err := i.entityRepository.Get(ctx, repository.GetEntityQuery{
+            ExternalID: null.StringFrom(param.ExternalID),
+            BaseGetOptions: repository.BaseGetOptions{
+                OrFail:    false,
+                ForUpdate: true,  // REQUIRED inside RWTx for webhook handlers
+            },
+        })
+        // ...
+    })
+}
+```
+
+### Use `IncludeDeleted: true` for Idempotency Checks
+
+When checking whether an entity was already created (idempotency guard), use `IncludeDeleted: true` so that a previously soft-deleted row is also treated as "already processed" and skipped:
+
+```go
+// Idempotency check - include soft-deleted rows to avoid re-creating
+existing, err := i.paymentMethodRepository.Get(ctx, repository.GetPaymentMethodQuery{
+    ExternalID: null.StringFrom(param.ExternalID),
+    BaseGetOptions: repository.BaseGetOptions{
+        OrFail:    false,
+        ForUpdate: true,
+    },
+    IncludeDeleted: true,  // Soft-deleted = already processed; skip
+})
+if err != nil {
+    return err
+}
+if existing != nil {
+    return nil // Idempotent
+}
+```
+
+**Why:** A soft-deleted record means the entity was previously processed and then deleted (e.g., detached). Re-creating it from a delayed duplicate webhook would corrupt state.
 
 ## Common Patterns
 
@@ -930,13 +975,13 @@ func (i *interactor) Receive(...) error {
 
 ```go
 // Bad - Webhook in public_api package
-package rapid.public_api.v1;
+package oshipo.public_api.v1;
 service PublicV1Service {
     rpc ReceiveWebhook(...) returns (...);
 }
 
 // Good - Separate webhook_api package
-package rapid.webhook_api.v1;
+package oshipo.webhook_api.v1;
 service WebhookService {
     rpc ReceiveWebhook(...) returns (...);
 }
