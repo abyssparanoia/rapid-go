@@ -39,6 +39,60 @@ type Example struct {
 - Relations are in `ReadonlyReference` struct pointer (nil when not loaded)
 - Never modify `ReadonlyReference` in domain logic
 
+### Field Type Conventions
+
+- **Optional primitives & time → `null/v8`, NOT `nullable.Type[T]`.** Use `null.Int64`,
+  `null.Bool`, `null.Float64`, `null.Time`, `null.String` for optional primitive/time fields
+  (struct fields, `Update` method params, repository query filters, input DTOs). `nullable.Type[T]`
+  (`internal/pkg/nullable`) is **only** for custom types that `null/v8` cannot represent — domain
+  enums (e.g. `model.EstimateStatus`), domain structs, and `civil.Date`. There is a `null/v8` type
+  for every primitive, so `nullable.Type[int64/bool/float64/time.Time/string]` is always wrong.
+
+  ```go
+  // BAD - nullable.Type for primitives
+  UsageDays    nullable.Type[int64]
+  HasTransport nullable.Type[bool]
+  ProjectionDM nullable.Type[float64]
+
+  // GOOD - null/v8 for primitives; nullable.Type only for custom types
+  UsageDays    null.Int64
+  HasTransport null.Bool
+  ProjectionDM null.Float64
+  Status       nullable.Type[EstimateStatus] // custom enum → nullable.Type is correct
+  ```
+
+- **Date-only fields → `nullable.Type[civil.Date]`** (not `null.String` / `time.Time`). A calendar date with no time component must be modeled as a real date type, not a stringly-typed `"YYYY-MM-DD"`. Use `nullable.Type[civil.Date]` (`cloud.google.com/go/civil`) for an optional date — this is a custom type `null/v8` does not cover; the marshaller converts to/from the DB `custom_types.NullDate`. Money amounts stay `int64`/`null.Int64`; NUMERIC rate/decimal columns become `float64`/`null.Float64`.
+
+  ```go
+  // BAD - date kept as a string
+  DesiredDate null.String // YYYY-MM-DD
+
+  // GOOD - real date type
+  DesiredDate nullable.Type[civil.Date]
+  ```
+
+- **Document why a field is nullable.** When a column is nullable for a non-obvious reason — especially a master-data FK kept alongside denormalized snapshots (so the row survives master deletion / supports ad-hoc entries) — add a short comment on the field stating the reason. Don't leave reviewers guessing why an FK or value is optional.
+
+  ```go
+  // GOOD - the reason the FK is optional is explicit
+  // LeaseProductID references the source master product. Nullable because the
+  // line item keeps its own snapshots (ProductName, prices), so it must survive
+  // even if the master product is removed, and ad-hoc lines have no master.
+  LeaseProductID null.String
+  ```
+
+- **Issue human-facing identifiers in the constructor**, not as an empty/nullable field filled later. A user-visible number/code (e.g. an estimate number) should be generated in `New{Entity}` from the creation time and stored as a plain `string`, not left `null.String{}` for a separate setter.
+
+  ```go
+  // BAD - left empty, set later
+  EstimateNumber null.String
+
+  // GOOD - issued at creation in the constructor
+  EstimateNumber string // e.g. fmt.Sprintf("%s-%d", t.In(now.JST).Format("20060102"), t.Unix())
+  ```
+
+- **Optionally-loaded relations go in `ReadonlyReference`, not top-level `nullable.Type` fields.** A relation that is only populated when preloaded (including a 1:1 owned detail surfaced for a "get with detail" endpoint) belongs inside the `ReadonlyReference` struct, so its presence clearly signals "loaded vs not". Reserve top-level direct fields for data that is *always* loaded with the entity (see Owned Child Entities – Cascade Requirements).
+
 ## ReadonlyReference Pattern
 
 `ReadonlyReference` is used to hold **read-only** related entities that are optionally loaded by the repository.
@@ -49,6 +103,25 @@ type Example struct {
 |-------------------|-----------------|---------------|----------------|
 | Reference data (lookup) | `ReadonlyReference` | Optional (via `Preload`) | Never written together |
 | Owned child entities | Direct field | Always loaded | Written together with parent |
+
+#### Field type inside `ReadonlyReference`
+
+Use the field type that matches the relation's **nullability**, not always a pointer:
+
+- **Nullable relation** (the FK is nullable, or only one of several mutually-exclusive relations is ever set) → `nullable.Type[T]`. The `.Valid` flag distinguishes "loaded, but absent" from "present".
+- **Required relation** (the FK is `NOT NULL`, so it is always present whenever the reference is loaded) → `*T` pointer.
+
+```go
+// estimate: assignee FK is nullable; created_by FK is NOT NULL;
+// exactly one type-specific detail is ever set.
+ReadonlyReference *struct {
+    Assignee       nullable.Type[Admin] // nullable FK
+    CreatedBy      *Admin               // NOT NULL FK
+    LeaseEstimate  nullable.Type[LeaseEstimate]  // one-of (nullable)
+    AwningEstimate nullable.Type[AwningEstimate]
+    FabricEstimate nullable.Type[FabricEstimate]
+}
+```
 
 ### Owned 1:1 Child Field Type Convention (New Entities)
 

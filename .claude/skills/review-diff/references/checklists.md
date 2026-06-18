@@ -14,7 +14,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] Entity has `ReadonlyReference` struct pointer for relations
 - [ ] Constructor uses `id.New()` for ID generation
 - [ ] Constructor sets both `CreatedAt` and `UpdatedAt` to same time
-- [ ] Update methods use `null.String`, `null.Int64` for optional fields
+- [ ] Optional primitive/time fields & Update params use `null/v8` (`null.Int64`/`null.Bool`/`null.Float64`/`null.Time`/`null.String`), NOT `nullable.Type[primitive]` (#49); `nullable.Type[T]` only for custom types (enums, `civil.Date`)
 - [ ] Update methods always update `UpdatedAt`
 - [ ] Status/Enum types have `Unknown` as first constant
 - [ ] Status types have `String()` and `Valid()` methods
@@ -28,13 +28,14 @@ Detailed checklists for each file category. Apply the relevant sections based on
 
 - [ ] Does NOT inject `transactable` — transaction boundaries belong to the usecase layer
 - [ ] Does NOT call `RWTx` / `ROTx` directly — assumes transaction is already active in context
+- [ ] Asset service has a `BatchSet{Entity}URLs` for every entity a usecase returns — empty-but-recursing if the entity has no asset field, including master/lookup entities and singletons; a singleton uses a plural slice type (e.g. `LeasePricingSettingsList`) so the method keeps the slice signature (#50)
 - [ ] No package-level private functions (use receiver methods on service struct)
 
 ## Repository Interface (`internal/domain/repository/**`)
 
 - [ ] Has `//go:generate` directive for mockgen
-- [ ] Query structs use `null.String`, `null.Uint64` for optional string/numeric fields
-- [ ] Query structs use `nullable.Type[T]` for optional enum/custom type fields
+- [ ] Query structs use `null/v8` for optional primitives (`null.String`/`null.Int64`/`null.Bool`/`null.Float64`/`null.Uint64`/`null.Time`) — never `nullable.Type[primitive]` (#49)
+- [ ] Query structs use `nullable.Type[T]` ONLY for optional custom types (enums, sort keys, `civil.Date`)
 - [ ] `BaseGetOptions`, `BaseBatchGetOptions`, `BaseListOptions` properly embedded
 
 ## Repository Implementation (`internal/infrastructure/**/repository/**`)
@@ -69,8 +70,8 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] No unnecessary intermediate variable declarations (return directly when possible)
 - [ ] IdP sync (StoreClaims/DeleteUser) happens within transaction
 - [ ] On delete: IdP deletion before database deletion
-- [ ] Final return fetches entity with `Preload: true` for fresh data
-- [ ] Asset service called even if no assets currently exist
+- [ ] Final return fetches entity with `Preload: true` for fresh data (#50)
+- [ ] `BatchSet{Entity}URLs` called for the RETURNED entity type, even if no assets currently exist — not the parent's setter (#50)
 - [ ] No package-level private functions (inline or move to struct method)
 
 ## Input Struct (`internal/usecase/input/**`)
@@ -78,7 +79,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] Named as `{Actor}{Action}{Resource}`
 - [ ] Has `RequestTime` field with `validate:"required"`
 - [ ] Has `Validate()` method that uses `validation.Validate()`
-- [ ] Optional update fields use `nullable.Type[T]` (not pointers)
+- [ ] Optional update fields: `null/v8` for primitives/time (not pointers, not `nullable.Type[primitive]` #49); `nullable.Type[T]` only for custom types
 - [ ] Validation includes business rule checks for optional fields
 
 ## gRPC Handler (`internal/infrastructure/grpc/internal/handler/**`)
@@ -87,6 +88,7 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] Gets request time via `request_interceptor.GetRequestTime(ctx)`
 - [ ] Converts proto to input struct correctly
 - [ ] Handles optional proto fields with `if req.Field != nil` pattern
+- [ ] Optional proto primitives → input via `null/v8` FromPtr (`null.StringFromPtr`/`null.Int64FromPtr`/`null.BoolFromPtr`/`null.Float64FromPtr`), not custom `nullable` wrapper helpers (#40, #49)
 - [ ] Returns error directly (interceptor handles conversion)
 - [ ] Uses marshaller for domain-to-proto conversion
 
@@ -122,12 +124,14 @@ Detailed checklists for each file category. Apply the relevant sections based on
 
 ## Tests (`**/*_test.go`)
 
-- [ ] Uses table-driven tests with `map[string]testcaseFunc`
+- [ ] Uses table-driven tests with `map[string]testcaseFunc` — usecase interactor tests are table-driven ONLY (no flat sequential `Test*`); every case incl. errors lives in the one `Test{Receiver}_{Method}` (#3)
+- [ ] Each interactor method covers `invalid argument` / `not found` (where applicable) / `success`
+- [ ] Computed/derived fixtures (`*Calculation`, box-faces, …) come from the factory, not inline literals or package-level helpers (#6, #42)
 - [ ] Test function returns `(args, usecase/service, want)` tuple
 - [ ] Mock setup uses closure pattern with `func(ctrl *gomock.Controller)`
 - [ ] Transactable mock uses `DoAndReturn` to execute function
 - [ ] Error assertions use `assert.ErrorIs(t, err, want.err)`
-- [ ] Test data created via `factory.NewFactory()`, not direct model struct initialization
+- [ ] Test data created via `factory.NewFactory()` + `testdata.X` (and `factory.CloneValue` for copies), NOT `&model.X{...}` literals or ad-hoc `newTestX()` helpers (#6, #42) — if the entity isn't in the factory yet, add it to `factory.go`
 
 ## Dependency Injection (`internal/infrastructure/dependency/**`)
 

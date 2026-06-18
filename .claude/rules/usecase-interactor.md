@@ -686,6 +686,14 @@ examples, err := i.exampleRepository.List(ctx, repository.ListExamplesQuery{
 
 **Always** call `BatchSet{Entity}URLs`. Always call it even if the entity currently has no asset fields (such as profile images).
 
+**No exceptions for masters or singletons.** This applies to **every** resource-returning method —
+including master/lookup `List`s (e.g. `LeaseProduct`, `Fabric`) and singleton `Get`s (e.g.
+`LeasePricingSettings`) that have no asset field and no `ReadonlyReference` today. Each returned type
+still needs its own `BatchSet{Entity}URLs` (a defensive no-op loop) on `service.Asset`, the query
+still sets `Preload: true`, and the interactor still calls it. A singleton whose `Get` returns
+`*model.X` is wrapped in its slice type (e.g. `model.LeasePricingSettingsList{settings}`) so the call
+keeps the slice convention.
+
 ```go
 // Good - Call BatchSet even if no asset fields exist
 func (i *adminExampleInteractor) Get(
@@ -852,7 +860,13 @@ func (i *adminAdminInteractor) Delete(
 
 ## Optional Update Fields with nullable.Type
 
-For optional update fields, use `nullable.Type[T]` instead of pointers:
+For optional update fields, use `nullable.Type[T]` instead of pointers — but **only for custom
+types** (domain enums, `civil.Date`). Optional **primitive/time** input and `Update`-param fields
+use `null/v8` (`null.Int64`, `null.Bool`, `null.Float64`, `null.Time`, `null.String`), never
+`nullable.Type[int64/bool/float64/time.Time/string]`. In handlers, build these from optional proto
+fields with the matching `null/v8` constructor (`null.StringFromPtr`, `null.Int64FromPtr`,
+`null.BoolFromPtr`, `null.Float64FromPtr`) rather than ad-hoc `nullable` wrappers. See the type
+table in `repository.md`.
 
 ### Input Struct
 

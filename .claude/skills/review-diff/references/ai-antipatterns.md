@@ -123,6 +123,8 @@ updatedStaff.DisplayName = "Updated Name"
 
 **Why**: The factory generates consistent, cross-referenced test data with faker. Direct initialization risks missing fields, inconsistent references (e.g., `Staff.TenantID` not matching `Tenant.ID`), and breaks when new required fields are added to the model.
 
+**Also applies to computed/derived fixtures**: service `Calculate` results (`*Calculation`), box-faces sets, and similar derived values belong in the factory too — add a field to `factory.NewFactory()` and reference `testdata.XxxCalculation`. Do not inline them as `&model.XxxCalculation{...}` literals or build them in a package-level test helper (see #42).
+
 **Exception**: Empty structs used solely as `CloneValue` targets (`&model.Staff{}`) are acceptable.
 
 ---
@@ -851,9 +853,9 @@ invoice := testdata.Invoice
 organizationID := invoice.OrganizationID
 ```
 
-**Why**: `factory.NewFactory()` provides deterministic go-faker fixtures with consistent related entity references. Ad-hoc helpers diverge from factory data, cause inconsistency between tests, and duplicate responsibilities.
+**Why**: `factory.NewFactory()` provides deterministic go-faker fixtures with consistent related entity references. Ad-hoc helpers diverge from factory data, cause inconsistency between tests, and duplicate responsibilities. This holds for **computed/derived fixtures** too (e.g. a `func awningCalculation(...) *model.AwningEstimateCalculation` helper) — they belong in the factory, not in a package-level test helper or an inline literal.
 
-**Fix**: Delete the helper function. Use `factory.NewFactory()` and access the entity via `testdata.Invoice` (or whichever entity field). If the factory doesn't have the entity yet, add it to `factory.go` following the existing pattern.
+**Fix**: Delete the helper function. Use `factory.NewFactory()` and access the entity via `testdata.Invoice` (or whichever entity field). If the factory doesn't have the entity (or computed value) yet, add it to `factory.go` following the existing pattern.
 
 ---
 
@@ -1090,3 +1092,95 @@ inv, err = inv.Finalize(pm, t)  // model's own guard remains the safety net
 ```
 
 **Fix**: Delete the usecase/service check. Let the model method's own guard produce the authoritative error. If a silent return is needed (webhook idempotency), keep the predicate call but document it as an idempotency guard, not a validation.
+
+### 49. `nullable.Type[T]` used for a primitive (int/int64/bool/float64/time.Time/string)
+
+`nullable.Type[T]` (`internal/pkg/nullable`) exists only for optional **custom** types that
+`null/v8` cannot represent — domain enums, domain structs, and `civil.Date`. Every primitive and
+time type has a matching `null/v8` type, so using `nullable.Type[...]` for one is always wrong. This
+applies everywhere an optional field appears: domain model fields, `Update` method params,
+repository query filters, and input DTOs.
+
+```go
+// BAD - nullable.Type wrapping a primitive
+type ListFabricsQuery struct {
+    IsActive nullable.Type[bool]   // → null.Bool
+}
+func (m *LeaseEstimate) Update(usageDays nullable.Type[int64], ...) { // → null.Int64
+    if usageDays.Valid { m.UsageDays = usageDays.Value() }
+}
+
+// GOOD - null/v8 for primitives; nullable.Type only for custom types
+type ListFabricsQuery struct {
+    IsActive null.Bool
+}
+func (m *LeaseEstimate) Update(usageDays null.Int64, setupType nullable.Type[LeaseSetupTeardownType], ...) {
+    if usageDays.Valid { m.UsageDays = usageDays.Int64 }   // typed accessor, not .Value()
+    if setupType.Valid { m.SetupTeardownType = setupType.Value() } // custom type → nullable.Type OK
+}
+```
+
+Mapping: `int`/`int64`→`null.Int64`, `bool`→`null.Bool`, `float64`→`null.Float64`,
+`time.Time`→`null.Time`, `string`→`null.String`, `uint64`→`null.Uint64`. Read primitive values via
+the typed accessor (`.Int64`/`.Bool`/`.Float64`), and `nullable.Type[T]` via `.Value()`.
+
+**Fix**: Replace the `nullable.Type[primitive]` with the matching `null/v8` type and switch
+`.Value()` reads to the typed accessor. In handlers, build from optional proto fields with
+`null.Int64FromPtr`/`null.BoolFromPtr`/`null.Float64FromPtr`/`null.StringFromPtr` instead of custom
+`nullable` wrapper helpers (antipattern #40).
+
+### 50. Usecase returns a resource without preload + a `BatchSet{Entity}URLs` call
+
+Every usecase method that returns a domain entity must (a) load it with `Preload: true` on the
+final `Get`/`List`, and (b) run the asset URL setter `BatchSet{Entity}URLs` for the **returned
+entity type** before returning — always, even when the entity has no asset field today (defensive
+programming, see usecase-interactor.md §"Return Pattern Best Practices" and domain-service.md
+§"Asset Service Pattern"). Correspondingly, every returned entity type must HAVE its own
+`BatchSet{Entity}URLs` method on `service.Asset` (an empty-but-recursing method when it has no
+asset field — like `BatchSetTenantURLs`). Calling the parent's `BatchSet` from a child interactor
+(e.g. `BatchSetEstimateURLs` from the lease-estimate interactor that returns `*model.LeaseEstimate`)
+violates the per-returned-type contract.
+
+**No master/singleton exception.** This holds for master/lookup `List`s (`LeaseProduct`, `Fabric`, …)
+and singleton `Get`s (`LeasePricingSettings`, `FabricPricingSettings`) too — assetless, relation-less
+entities still need `Preload: true`, a defensive no-op `BatchSet{Entity}URLs`, and the call. For a
+singleton whose `Get` returns `*model.X`, add a slice type (`model.LeasePricingSettingsList`) and wrap:
+`BatchSetLeasePricingSettingsURLs(ctx, model.LeasePricingSettingsList{settings}, t)`.
+
+```go
+// BAD - returns LeaseEstimate but calls the PARENT's setter (no BatchSetLeaseEstimateURLs exists)
+leaseEstimate, _ := i.leaseEstimateRepository.Get(ctx, repository.GetLeaseEstimateQuery{
+    BaseGetOptions: repository.BaseGetOptions{OrFail: true, Preload: true},
+    ID:             null.StringFrom(param.LeaseEstimateID),
+})
+_ = i.assetService.BatchSetEstimateURLs(ctx, model.Estimates{leaseEstimate.ReadonlyReference.Estimate}, t)
+return leaseEstimate, nil
+
+// GOOD - dedicated per-entity setter (recurses into the parent estimate internally)
+leaseEstimate, _ := i.leaseEstimateRepository.Get(ctx, repository.GetLeaseEstimateQuery{
+    BaseGetOptions: repository.BaseGetOptions{OrFail: true, Preload: true},
+    ID:             null.StringFrom(param.LeaseEstimateID),
+})
+_ = i.assetService.BatchSetLeaseEstimateURLs(ctx, model.LeaseEstimates{leaseEstimate}, t)
+return leaseEstimate, nil
+
+// GOOD - the empty-but-recursing setter on service.Asset
+func (s *assetService) BatchSetLeaseEstimateURLs(ctx context.Context, leaseEstimates model.LeaseEstimates, t time.Time) error {
+    for _, le := range leaseEstimates {
+        if le.ReadonlyReference != nil && le.ReadonlyReference.Estimate != nil {
+            if err := s.BatchSetEstimateURLs(ctx, model.Estimates{le.ReadonlyReference.Estimate}, t); err != nil {
+                return err
+            }
+        }
+    }
+    return nil
+}
+```
+
+**Why**: returning preloaded entities means future relation additions are surfaced automatically;
+the per-type `BatchSet` means future asset fields (and recursive relation URLs) are populated
+without touching call sites. Skipping either, or borrowing the parent's setter, silently drops
+URLs the moment an asset field is added.
+
+**Fix**: add `Preload: true` to the returned `Get`/`List`; add a `BatchSet{Entity}URLs` method for
+the returned type (empty-but-recursing if no asset field) and call it for every returned entity.
