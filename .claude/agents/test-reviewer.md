@@ -150,6 +150,13 @@ For each finding, assign a `semantic_category` used by the orchestrator for dedu
 - **Fix**: `corrected code`
 - **Auto-fixable**: yes/no
 
+**Auto-fixable guidance**: Mark `table_driven_missing` (AP-3), `factory_not_used` (AP-6), the
+ad-hoc-fixture-helper variant (AP-42), `gomock_any_misuse` (AP-1), and `t_parallel_missing` (AP-2)
+as **Auto-fixable: yes** — converting a flat test to `map[string]testcaseFunc` and moving fixtures
+into `factory.NewFactory()` is mechanical. Do not down-rank these to "coverage gap" / manual.
+`coverage_gap` is also auto-fixable when an existing case in the same file can be used as a template
+for the missing `invalid argument` / `not found` / `success` case.
+
 ### Summary
 Test files: N, Total EXPECT(): N, gomock.Any() misuse: N, Total findings: N (error: N, warning: N, info: N)
 ```

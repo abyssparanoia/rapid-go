@@ -188,6 +188,23 @@ CREATE TABLE `device_locations` ( ... );
 
 This convention makes it easy to identify hardware-originated data tables at a glance and separates them from application-managed domain tables.
 
+### History / Audit Tables Read as History
+
+Tables (and their domain models/repositories) that store an append-only history/audit trail **MUST**
+have a name that obviously reads as history — e.g. a `_histories` suffix (`estimate_pdf_histories`,
+`*_audit_logs`). Do not give a history table a name that looks like a primary entity.
+
+```sql
+-- Good - clearly a history/append-only log
+CREATE TABLE "estimate_pdf_histories" ( ... );
+
+-- Bad - reads like a primary resource, hides that it is an issue history
+CREATE TABLE "estimate_pdfs" ( ... );
+```
+
+The matching domain model/repository follow suit (`EstimatePDFHistory`, `repository.EstimatePDFHistory`),
+so readers immediately know it is history — not a surfaced resource.
+
 ## Best Practices
 
 1. **Always include Down migration** - Enable rollback capability

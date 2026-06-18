@@ -65,6 +65,8 @@ Read `references/ai-antipatterns.md`. Check **every changed file** against all p
 - **#46** Void mutator on a domain model (should return receiver `*Entity` or `(*Entity, error)`)
 - **#47** Usecase branching on raw domain model fields instead of calling a predicate
 - **#48** Precondition duplicated in usecase immediately before a model method that already checks it
+- **#49** `nullable.Type[T]` used for a primitive (int/bool/float64/time.Time/string) — use the matching `null/v8` type
+- **#50** Usecase returns a resource without `Preload: true` + a per-entity-type `BatchSet{Entity}URLs` call (and every returned type must have its own, possibly empty-but-recursing, setter)
 
 Record each finding: file path, line number, pattern violated, fix to apply.
 

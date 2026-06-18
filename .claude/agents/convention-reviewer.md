@@ -23,8 +23,11 @@ ls .claude/rules/*.md
 
 Read every file with the Read tool. Pay special attention to rules matching the changed file categories.
 
-Also read:
+Also read (both are in scope for **non-test** code too, not just tests):
 - `.claude/skills/review-diff/references/checklists.md`
+- `.claude/skills/review-diff/references/ai-antipatterns.md` — the full catalog. Anti-patterns #7–#50
+  are non-test conventions (domain/usecase/repository/service layers); apply every one whose layer
+  matches a changed file, even if it is not separately mirrored in a `.claude/rules/*.md` file.
 
 ## 2. Classify Changed Files
 
@@ -77,6 +80,12 @@ For each changed file:
 - **DI registration**: New interactors/handlers added to dependency.go
 - **Mock generation**: `//go:generate` directive on new interfaces
 - **File organization**: One resource per file (marshaller, handler)
+- **Return pattern (#50)**: EVERY usecase method that returns a domain entity sets `Preload: true`
+  on the final `Get`/`List` AND calls `BatchSet{Entity}URLs` for the returned type — **always**,
+  with **no exception for master/lookup `List`s or singleton `Get`s** that have no asset field or
+  relation today. The returned type must have its own `BatchSet{Entity}URLs` on `service.Asset`
+  (defensive no-op when assetless). Missing Preload, missing BatchSet, or borrowing the parent's
+  setter are all violations.
 
 ## 4. Architecture & Placement Check
 
@@ -145,6 +154,7 @@ For each finding, assign a `semantic_category` used by the orchestrator for dedu
 | `sortkey_pattern` | Missing Unknown/Valid/String, enum after field |
 | `nullable_usage` | Pointer used instead of nullable.Type |
 | `readonly_reference` | Constructor not setting nil, recursive RR population |
+| `preload_batchset_pattern` | Returned resource without `Preload: true` and/or `BatchSet{Entity}URLs` (#50), incl. masters/singletons |
 | `di_registration` | New interactor/handler not in dependency.go |
 | `mock_generation` | Missing `//go:generate` directive |
 | `file_organization` | Multiple resources in one file |

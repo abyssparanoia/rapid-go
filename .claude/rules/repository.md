@@ -102,39 +102,64 @@ type ListStaffsQuery struct {
 - Input layer resolves nullable to non-nullable with default (`CreatedAtDesc`)
 - Repository implementation checks `query.SortKey.Valid && query.SortKey.Value().Valid()` before applying sort
 
-### Optional Fields: Use `nullable.Type[T]` Instead of Pointers
+### Optional Fields: `null/v8` for Primitives, `nullable.Type[T]` for Custom Types
 
-For optional filter fields with custom types (enums, domain types), always use `nullable.Type[T]` instead of pointers:
+**Primitive and time fields use `null/v8` (`null.Int64`, `null.Bool`, `null.Float64`,
+`null.Time`, `null.String`). Reserve `nullable.Type[T]` for custom domain types that `null/v8`
+does NOT provide** — enums (`model.ExampleStatus`, `model.AdminRole`, sort keys), domain structs,
+and `civil.Date`. Never use `nullable.Type[int64/bool/float64/time.Time/string]` — there is a
+matching `null/v8` type for each. Optional fields must not use bare pointers.
 
 ```go
-// Good - Use nullable.Type for optional enum/custom type fields
+// Good - primitives via null/v8; custom types via nullable.Type[T]
 type ListExamplesQuery struct {
-    Status  nullable.Type[model.ExampleStatus]
-    SortKey nullable.Type[model.ExampleSortKey]
-    Role    nullable.Type[model.AdminRole]
+    IsActive null.Bool                          // primitive → null/v8
+    MinScore null.Int64                         // primitive → null/v8
+    Status   nullable.Type[model.ExampleStatus] // custom enum → nullable.Type
+    SortKey  nullable.Type[model.ExampleSortKey]
 }
 
-// Bad - Avoid pointers for optional filter fields
+// Bad - nullable.Type used for a primitive (use null.Bool / null.Int64)
 type ListExamplesQuery struct {
-    Status  *model.ExampleStatus   // Don't use pointers
-    SortKey *model.ExampleSortKey  // Don't use pointers
-    Role    *model.AdminRole       // Don't use pointers
+    IsActive nullable.Type[bool]  // WRONG → null.Bool
+    MinScore nullable.Type[int64] // WRONG → null.Int64
+}
+
+// Bad - bare pointers for optional filter fields
+type ListExamplesQuery struct {
+    Status *model.ExampleStatus // WRONG → nullable.Type[model.ExampleStatus]
 }
 ```
 
-**Why `nullable.Type[T]`:**
+In repository impls, read primitive `null/v8` fields via the typed accessor (`.Bool`, `.Int64`,
+`.Float64`), and custom `nullable.Type[T]` via `.Value()`:
 
-- Consistent with codebase conventions
-- Provides `.Valid` and `.Value()` methods for safer access
-- Works seamlessly with validation patterns in repository implementations
-- Avoids nil pointer dereference risks
+```go
+if query.IsActive.Valid {
+    mods = append(mods, dbmodel.ExampleWhere.IsActive.EQ(query.IsActive.Bool))
+}
+if query.Status.Valid && query.Status.Value().Valid() {
+    mods = append(mods, dbmodel.ExampleWhere.Status.EQ(query.Status.Value().String()))
+}
+```
+
+**Why split this way:**
+
+- `null/v8` is the canonical optional type for primitives/time across the codebase (DB models,
+  domain models, inputs all use it); `nullable.Type[T]` exists only to cover types `null/v8`
+  cannot represent (generics over custom types).
+- Both provide `.Valid` for safe access and avoid nil-pointer dereference.
 
 **When to use which:**
 | Type | Use Case |
 |------|----------|
 | `null.String` | Optional string fields (IDs, names) |
-| `null.Uint64` | Optional numeric fields (pagination) |
-| `nullable.Type[T]` | Optional enum/custom type fields (status, role, sort key) |
+| `null.Int64` | Optional integer fields |
+| `null.Float64` | Optional decimal/rate fields |
+| `null.Bool` | Optional boolean fields |
+| `null.Time` | Optional timestamp fields |
+| `null.Uint64` | Optional pagination fields |
+| `nullable.Type[T]` | Optional **custom-type** fields only: enums (status, role, sort key), domain structs, `civil.Date` |
 
 ### Base Options (defined in `base_options.go`)
 

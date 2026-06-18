@@ -63,6 +63,62 @@ func TestExampleInteractor_Create(t *testing.T) {
 }
 ```
 
+## Usecase interactor tests (MUST)
+
+Tests for `internal/usecase/*_impl.go` interactors are held to these hard requirements. The canonical
+references are `admin_tenant_impl_test.go` and `admin_staff_impl_test.go` — match their shape.
+
+1. **Table-driven only.** Every interactor method's test MUST be a single
+   `Test{Receiver}_{Method}` using `tests := map[string]testcaseFunc{...}` + a
+   `for name, tc := range tests { t.Run(name, ...) }` loop. Flat sequential tests (a `Test*` function
+   that calls the interactor directly with no `map[string]testcaseFunc`) are **prohibited** — every case,
+   including error cases, lives in the one table. (See ai-antipatterns **#3**.)
+2. **Test data from the factory only.** All fixtures MUST come from `factory.NewFactory()`. When you need
+   a new entity, or a **computed/derived value** (a `*Calculation`, box-faces set, etc.), **extend the
+   factory** — never inline `&model.X{...}` literals and never add a package-level
+   `func newThing(...)`/`func thingCalculation(...)` helper in the test file. (See ai-antipatterns
+   **#6** and **#42**.) Use `factory.CloneValue` for an independent copy.
+3. **No package-level funcs in test files.** Only `func Test*` is allowed at package level; any helper is
+   a closure inside the `Test*` function (per the helper rule below). (See ai-antipatterns **#31**.)
+4. **Case coverage.** Each method covers `invalid argument` (when the input has a validatable field),
+   `not found` (for Get/Update/Delete that fetch first), and `success`.
+5. **Parallel.** `t.Parallel()` at both the outer test and every inner `t.Run`. When a case needs a
+   deterministic ID, call `id.Mock()` inside that case's closure (matches the canonical references).
+6. **Exact mock matching.** Only `context` uses `gomock.Any()`; the `requestTime` argument of
+   `BatchSet*URLs` may also use `gomock.Any()` per the documented pattern. Everything else is matched
+   exactly. (See ai-antipatterns **#1**.)
+
+```go
+// BAD - flat sequential usecase test, inline literal fixture, package-level helper
+func awningCalculation(t time.Time) *model.AwningEstimateCalculation { return &model.AwningEstimateCalculation{...} }
+
+func TestAdminAwningEstimateInteractor_Calculate(t *testing.T) {
+    t.Parallel()
+    testdata := factory.NewFactory()
+    calc := awningCalculation(testdata.RequestTime) // ad-hoc helper + inline literal
+    // ... single case, no map[string]testcaseFunc
+}
+
+// GOOD - table-driven, factory fixture, all cases in one Test func
+func TestAdminAwningEstimateInteractor_Calculate(t *testing.T) {
+    t.Parallel()
+    type want struct { calculation *model.AwningEstimateCalculation; err error }
+    type testcase struct { param *input.AdminCalculateAwningEstimate; usecase AdminAwningEstimateInteractor; want want }
+    type testcaseFunc func(ctx context.Context, ctrl *gomock.Controller) testcase
+    tests := map[string]testcaseFunc{
+        "invalid argument": func(ctx context.Context, ctrl *gomock.Controller) testcase { /* ... */ },
+        "success": func(ctx context.Context, ctrl *gomock.Controller) testcase {
+            testdata := factory.NewFactory()
+            calc := testdata.AwningEstimateCalculation // factory fixture, not a helper
+            // ...
+        },
+    }
+    for name, tc := range tests {
+        t.Run(name, func(t *testing.T) { t.Parallel(); /* ... */ })
+    }
+}
+```
+
 ## Test Case Structure
 
 ```go

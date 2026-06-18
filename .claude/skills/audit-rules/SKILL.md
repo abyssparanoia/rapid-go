@@ -48,15 +48,20 @@ git ls-files 'db/**/migrations/**/*.sql' 'db/**/constants/**/*.yaml'
 Assign each file to exactly one partition using the table below. Files matching multiple
 patterns go to the **first** matching partition.
 
+Every non-test partition's `convention-reviewer` applies the **full** `.claude/rules/*.md` set, the
+matching `checklists.md` section, AND the **whole `ai-antipatterns.md` catalog** (#7–#50 are non-test
+conventions). The "Rule files" column below lists the *primary* rules for each partition; it is not an
+exhaustive allow-list — every rule and anti-pattern applies wherever its layer matches.
+
 | Partition | glob patterns | Reviewer | Rule files |
 |-----------|--------------|----------|------------|
-| `domain` | `internal/domain/**` (non-test) | convention-reviewer | domain-model.md, domain-errors.md, domain-service.md, repository.md |
-| `usecase` | `internal/usecase/**` (non-test) | convention-reviewer | usecase-interactor.md, domain-service.md |
-| `grpc` | `internal/infrastructure/grpc/internal/handler/**` (non-test) | convention-reviewer | grpc-handler.md |
-| `db-repo` | `internal/infrastructure/{mysql,postgresql,spanner}/**` (non-test), `internal/infrastructure/dependency/**` | convention-reviewer | repository.md, dependency-injection.md, external-service-integration.md |
+| `domain` | `internal/domain/**` (non-test) | convention-reviewer | domain-model.md, domain-errors.md, domain-service.md, repository.md, ai-antipatterns.md (non-test) |
+| `usecase` | `internal/usecase/**` (non-test) | convention-reviewer | usecase-interactor.md, domain-service.md, ai-antipatterns.md (non-test, incl. #50) |
+| `grpc` | `internal/infrastructure/grpc/internal/handler/**` (non-test) | convention-reviewer | grpc-handler.md, ai-antipatterns.md (non-test) |
+| `db-repo` | `internal/infrastructure/{mysql,postgresql,spanner}/**` (non-test), `internal/infrastructure/dependency/**` | convention-reviewer | repository.md, dependency-injection.md, external-service-integration.md, ai-antipatterns.md (non-test) |
 | `proto` | `schema/proto/**/*.proto` | convention-reviewer | proto-definition.md |
 | `migration` | `db/**/migrations/**/*.sql`, `db/**/constants/**/*.yaml` | convention-reviewer | migration.md |
-| `infra-other` | `internal/infrastructure/{cognito,firebase,gcs,s3,redis,http,aws,cmd}/**` (non-test), `cmd/**` (non-test) | convention-reviewer | external-service-integration.md, webhook-implementation.md, job-system.md, worker-pattern.md, cli-command-pattern.md |
+| `infra-other` | `internal/infrastructure/{cognito,firebase,gcs,s3,redis,http,aws,cmd}/**` (non-test), `cmd/**` (non-test) | convention-reviewer | external-service-integration.md, webhook-implementation.md, job-system.md, worker-pattern.md, cli-command-pattern.md, ai-antipatterns.md (non-test) |
 | `tests` | `**/*_test.go` | **test-reviewer** | testing.md, ai-antipatterns.md (#1-#6) |
 
 If a single partition has more than ~60 files, split it into sub-batches and run agents
@@ -173,12 +178,15 @@ Wait for all agents to complete before proceeding.
 Priority order (same as review-diff):
 
 1. **Correctness** (CL-* that break runtime behavior: missing ForUpdate, Preload, state transition via wrong method)
-2. **Convention** (CL-*: method ordering, naming, pattern compliance, null.v8/now.Now(), ReadonlyReference)
+2. **Convention** (CL-*: method ordering, naming, pattern compliance, null.v8/now.Now(), ReadonlyReference, and the **return pattern (#50)** — a resource returned without `Preload: true` + `BatchSet{Entity}URLs` is an auto-fixable convention finding, even for master/lookup lists and singleton gets; add the defensive no-op `BatchSet` to `service.Asset` if it is missing)
 3. **Anti-patterns** (AP-1–AP-6 in tests: gomock.Any() misuse, missing t.Parallel(), table-driven pattern)
-4. **Test quality** (TEST-*: missing coverage, weak assertions)
+4. **Test structure** (TEST-*/AP-3/AP-6/AP-42: converting a flat sequential test to table-driven `map[string]testcaseFunc`, and moving inline-literal / package-level-helper fixtures into `factory.NewFactory()`). This is **mechanical and IS auto-fixable** — do it, do not defer it.
+5. **Test quality** (TEST-*: weak assertions, and adding obvious `invalid argument`/`not found`/`success` cases modeled on an existing case)
 
 Do **not** auto-fix findings that require spec interpretation or cross-file architectural
-decisions — list these as manual actions in the report.
+decisions — list these as manual actions in the report. Note that "not table-driven" and
+"ad-hoc fixture instead of factory" are **NOT** in that deferred bucket: they are mechanical
+conversions (priority 4 above) and must be fixed, not deferred as "coverage gaps."
 
 ## Step 6: Verify Fixes (with Retry Loop)
 

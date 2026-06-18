@@ -36,9 +36,9 @@ schema/proto/rapid/
 - `rapid.public_api.v1`
 - `rapid.debug_api.v1`
 
-## RPC Method Ordering
+## RPC & Message Ordering
 
-**All RPC methods must be defined in the following order across all proto files:**
+**All RPC methods AND their Request/Response message definitions must be ordered as follows:**
 
 1. **Get methods** - Single resource retrieval (e.g., `GetStaff`)
 2. **List methods** - Collection retrieval with pagination (e.g., `ListStaffs`)
@@ -75,7 +75,9 @@ service AdminV1Service {
 }
 ```
 
-**Important**: This ordering applies to both `api.proto` service definitions and `api_{resource}.proto` message definitions.
+**Important**: This order applies to **both** the `api.proto` rpc definitions **and** the Request/Response message definitions inside each `api_{resource}.proto`. Within an `api_{resource}.proto`, shared input helper messages (e.g. `LeaseEstimateProductInput`) may sit at the top before the ordered Request/Response blocks.
+
+**Master / reference RPCs**: read-only RPCs that fetch supporting master/reference data for a feature (e.g. `ListLeaseProducts`, `GetLeasePricingSettings` for lease estimates) are grouped at the **top** of that feature's resource group — before its own Get/List/Create/… — because clients fetch them first to populate inputs. This is the one intentional exception to the per-resource order above.
 
 ## File Organization
 
