@@ -13,7 +13,8 @@ Audit every source file against `.claude/rules/` using **parallel reviewer agent
 1. Determine Scope      → parse optional arg, enumerate files with git ls-files
 2. Partition Files      → split by rule category (domain, usecase, grpc, db-repo,
                           proto, migration, infra-other, tests)
-3. Parallel Agent Audit → launch convention-reviewer per partition + test-reviewer
+3. Parallel Agent Audit → launch convention-reviewer per partition
+                          (+ security-perf-reviewer on non-test code partitions) + test-reviewer
 4. Aggregate Findings   → collect, deduplicate, sort
 5. Auto-Fix Issues      → edit files to fix all auto-fixable violations
 6. Verify Fixes         → codegen + lint/test retry loop
@@ -53,15 +54,20 @@ matching `checklists.md` section, AND the **whole `ai-antipatterns.md` catalog**
 conventions). The "Rule files" column below lists the *primary* rules for each partition; it is not an
 exhaustive allow-list — every rule and anti-pattern applies wherever its layer matches.
 
+Code partitions that involve handlers, usecases, repositories, external-service / IdP
+integration, or migrations **additionally** run `security-perf-reviewer` (authorization,
+transaction boundaries, IdP sync order, N+1 / preload, missing index). `domain` and `proto`
+stay convention-only (no TX / authz / query surface); `tests` stays test-reviewer.
+
 | Partition | glob patterns | Reviewer | Rule files |
 |-----------|--------------|----------|------------|
 | `domain` | `internal/domain/**` (non-test) | convention-reviewer | domain-model.md, domain-errors.md, domain-service.md, repository.md, ai-antipatterns.md (non-test) |
-| `usecase` | `internal/usecase/**` (non-test) | convention-reviewer | usecase-interactor.md, domain-service.md, ai-antipatterns.md (non-test, incl. #50) |
-| `grpc` | `internal/infrastructure/grpc/internal/handler/**` (non-test) | convention-reviewer | grpc-handler.md, ai-antipatterns.md (non-test) |
-| `db-repo` | `internal/infrastructure/{mysql,postgresql,spanner}/**` (non-test), `internal/infrastructure/dependency/**` | convention-reviewer | repository.md, dependency-injection.md, external-service-integration.md, ai-antipatterns.md (non-test) |
+| `usecase` | `internal/usecase/**` (non-test) | convention-reviewer + security-perf-reviewer | usecase-interactor.md, domain-service.md, ai-antipatterns.md (non-test, incl. #50) |
+| `grpc` | `internal/infrastructure/grpc/internal/handler/**` (non-test) | convention-reviewer + security-perf-reviewer | grpc-handler.md, ai-antipatterns.md (non-test) |
+| `db-repo` | `internal/infrastructure/{mysql,postgresql,spanner}/**` (non-test), `internal/infrastructure/dependency/**` | convention-reviewer + security-perf-reviewer | repository.md, dependency-injection.md, external-service-integration.md, ai-antipatterns.md (non-test) |
 | `proto` | `schema/proto/**/*.proto` | convention-reviewer | proto-definition.md |
-| `migration` | `db/**/migrations/**/*.sql`, `db/**/constants/**/*.yaml` | convention-reviewer | migration.md |
-| `infra-other` | `internal/infrastructure/{cognito,firebase,gcs,s3,redis,http,aws,cmd}/**` (non-test), `cmd/**` (non-test) | convention-reviewer | external-service-integration.md, webhook-implementation.md, job-system.md, worker-pattern.md, cli-command-pattern.md, ai-antipatterns.md (non-test) |
+| `migration` | `db/**/migrations/**/*.sql`, `db/**/constants/**/*.yaml` | convention-reviewer + security-perf-reviewer | migration.md |
+| `infra-other` | `internal/infrastructure/{cognito,firebase,gcs,s3,redis,http,aws,cmd}/**` (non-test), `cmd/**` (non-test) | convention-reviewer + security-perf-reviewer | external-service-integration.md, webhook-implementation.md, job-system.md, worker-pattern.md, cli-command-pattern.md, ai-antipatterns.md (non-test) |
 | `tests` | `**/*_test.go` | **test-reviewer** | testing.md, ai-antipatterns.md (#1-#6) |
 
 If a single partition has more than ~60 files, split it into sub-batches and run agents
@@ -72,9 +78,9 @@ AUDIT MODE with its own file list.
 
 ### CRITICAL: Use `subagent_type`, Do NOT Embed the Agent Definition
 
-Specify `subagent_type: "convention-reviewer"` (or `"test-reviewer"`). Never read the agent
-`.md` and paste its body into `prompt`. Doing so breaks the `model: sonnet` and read-only
-`tools` enforcement, and causes drift.
+Specify `subagent_type: "convention-reviewer"` (or `"security-perf-reviewer"` / `"test-reviewer"`).
+Never read the agent `.md` and paste its body into `prompt`. Doing so breaks the `model: sonnet`
+and read-only `tools` enforcement, and causes drift.
 
 ### Audit Mode Prompt Template
 
@@ -148,6 +154,43 @@ Agent(
 )
 ```
 
+Additionally launch `security-perf-reviewer` (same single message, `run_in_background: true`)
+for each non-test code partition — it owns authorization, transaction boundaries, IdP sync
+order, N+1 / preload, and missing-index checks that `convention-reviewer` does not perform:
+
+```
+Agent(
+  description: "Audit usecase layer (security/perf/TX)",
+  subagent_type: "security-perf-reviewer",
+  run_in_background: true,
+  prompt: "AUDIT MODE\n\nPartition: usecase\n\nFiles to audit:\n{P2 file list}"
+)
+Agent(
+  description: "Audit gRPC handlers (security/perf/TX)",
+  subagent_type: "security-perf-reviewer",
+  run_in_background: true,
+  prompt: "AUDIT MODE\n\nPartition: grpc\n\nFiles to audit:\n{P3 file list}"
+)
+Agent(
+  description: "Audit DB repositories + dependency (security/perf/TX)",
+  subagent_type: "security-perf-reviewer",
+  run_in_background: true,
+  prompt: "AUDIT MODE\n\nPartition: db-repo\n\nFiles to audit:\n{P4 file list}"
+)
+Agent(
+  description: "Audit migrations (missing index)",
+  subagent_type: "security-perf-reviewer",
+  run_in_background: true,
+  prompt: "AUDIT MODE\n\nPartition: migration\n\nFiles to audit:\n{P6 file list}"
+)
+Agent(
+  description: "Audit infra-other (security/perf/IdP sync)",
+  subagent_type: "security-perf-reviewer",
+  run_in_background: true,
+  prompt: "AUDIT MODE\n\nPartition: infra-other\n\nFiles to audit:\n{P7 file list}"
+)
+```
+
 Wait for all agents to complete before proceeding.
 
 ## Step 4: Aggregate Findings
@@ -162,13 +205,14 @@ Wait for all agents to complete before proceeding.
 
 1. Highest severity wins
 2. Most specific Fix block wins (non-empty over empty)
-3. Owner preference: convention-reviewer > test-reviewer
+3. Owner preference: convention-reviewer > security-perf-reviewer > test-reviewer
 
 ### Finding Categories Reference
 
 | Rule Prefix | Owner Agent |
 |-------------|-------------|
 | `CL-*` | convention-reviewer |
+| `SEC-*`, `PERF-*`, `TX-*` | security-perf-reviewer |
 | `TEST-*`, `AP-1`–`AP-6` | test-reviewer |
 
 ## Step 5: Auto-Fix Issues
