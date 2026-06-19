@@ -378,6 +378,41 @@ func (r *example) List(ctx context.Context, query repository.ListExamplesQuery) 
 | PostgreSQL | Double quotes      | `"created_at" DESC`     |
 | Spanner    | Backticks          | `` `created_at` DESC `` |
 
+#### Column Name References — Use Generated Constants
+
+When passing raw column name strings to `qm.OrderBy` / `qm.Where`, **always reference the SQLBoiler-generated `dbmodel.{Entity}Columns` constants** instead of hardcoding the column name.
+
+Why:
+- If the column is renamed or removed, hardcoded strings fail silently — only constant references surface as a build error.
+- Hardcoded strings can only be tracked by grep, which makes rename refactors fragile.
+- Constants enable IDE autocomplete and prevent typos.
+
+```go
+// GOOD - reference dbmodel.ExampleColumns
+mods = append(mods, qm.OrderBy(fmt.Sprintf("`%s` ASC, `%s` ASC",
+    dbmodel.ExampleColumns.CreatedAt,
+    dbmodel.ExampleColumns.ID,
+)))
+
+// GOOD - composite WHERE clauses follow the same pattern (e.g. tuple-compare cursor pagination)
+mods = append(mods, qm.Where(
+    fmt.Sprintf("(`%s` > ? OR (`%s` = ? AND `%s` > ?))",
+        dbmodel.ExampleColumns.CreatedAt,
+        dbmodel.ExampleColumns.CreatedAt,
+        dbmodel.ExampleColumns.ID,
+    ),
+    cursorTime, cursorTime, cursorID,
+))
+
+// BAD - hardcoded raw strings
+mods = append(mods, qm.OrderBy("`created_at` ASC, `id` ASC"))
+mods = append(mods, qm.Where("(`created_at` > ? OR (`created_at` = ? AND `id` > ?))", ...))
+```
+
+For JOINed queries that need the `table.column` form, use `dbmodel.{Entity}TableColumns` instead (it yields strings like `examples.created_at`).
+
+Prefer the typed builder API (`dbmodel.{Entity}Where.{Field}.EQ(...)`, `.GT(...)`, etc.) whenever it covers the predicate. Reach for `qm.Where` with raw SQL only for cases the builder cannot express — e.g. tuple-compare cursor pagination expanded as `(a > ? OR (a = ? AND b > ?))`.
+
 #### Unknown SortKey Handling
 
 **IMPORTANT**: Always return an error for Unknown SortKey values. Do not silently skip sorting.
