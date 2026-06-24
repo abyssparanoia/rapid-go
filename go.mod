@@ -54,7 +54,7 @@ require (
 	go.uber.org/mock v0.6.0
 	go.uber.org/zap v1.28.0
 	google.golang.org/api v0.283.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20260610212136-7ab31c22f7ad
+	google.golang.org/genproto/googleapis/api v0.0.0-20260622175928-b703f567277d
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260618152121-87f3d3e198d3
 	google.golang.org/grpc v1.81.1
 	google.golang.org/protobuf v1.36.11
