@@ -1,6 +1,6 @@
 ---
 description: Repository interface, implementation, and marshaller patterns
-globs:
+paths:
   - "internal/domain/repository/**/*.go"
   - "internal/infrastructure/mysql/repository/**/*.go"
   - "internal/infrastructure/mysql/internal/marshaller/**/*.go"

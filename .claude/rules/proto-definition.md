@@ -1,6 +1,6 @@
 ---
 description: Protocol Buffers definition conventions (rapid-go)
-globs:
+paths:
   - "schema/proto/**/*.proto"
 ---
 

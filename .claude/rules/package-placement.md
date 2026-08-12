@@ -1,6 +1,6 @@
 ---
 description: Where to put new Go packages — internal/pkg/ vs internal/domain/
-globs:
+paths:
   - "internal/pkg/**/*.go"
   - "internal/domain/**/*.go"
 ---

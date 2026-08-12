@@ -1,3 +1,9 @@
+---
+description: Async job queue patterns (SNS/SQS -> AWS Batch)
+paths:
+  - "**/*job*"
+---
+
 # Job System Guidelines
 
 ## Overview

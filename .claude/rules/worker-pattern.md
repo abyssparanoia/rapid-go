@@ -1,3 +1,9 @@
+---
+description: Background worker patterns (SQS/Pub-Sub subscribers)
+paths:
+  - "**/*worker*"
+---
+
 # Worker Pattern Guidelines
 
 ## Overview

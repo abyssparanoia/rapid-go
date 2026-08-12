@@ -1,6 +1,6 @@
 ---
 description: Dependency injection configuration patterns
-globs:
+paths:
   - "internal/infrastructure/dependency/**/*.go"
 ---
 

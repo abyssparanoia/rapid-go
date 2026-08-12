@@ -1,3 +1,10 @@
+---
+description: CLI command implementation patterns (./app task commands)
+paths:
+  - "internal/infrastructure/cmd/internal/task_cmd/**"
+  - "internal/usecase/task_*"
+---
+
 # CLI Command Pattern Guidelines
 
 ## Overview

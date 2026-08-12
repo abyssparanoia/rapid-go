@@ -1,6 +1,6 @@
 ---
 description: Testing conventions and patterns
-globs:
+paths:
   - "**/*_test.go"
 ---
 

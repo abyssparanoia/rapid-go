@@ -1,6 +1,6 @@
 ---
 description: External service integration patterns (Cognito, Firebase, S3, etc.)
-globs:
+paths:
   - "internal/domain/repository/*authentication*.go"
   - "internal/infrastructure/cognito/**/*.go"
   - "internal/infrastructure/firebase/**/*.go"

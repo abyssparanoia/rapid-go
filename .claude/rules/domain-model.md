@@ -1,6 +1,6 @@
 ---
 description: Domain model and entity conventions for the domain layer
-globs:
+paths:
   - "internal/domain/model/**/*.go"
 ---
 
