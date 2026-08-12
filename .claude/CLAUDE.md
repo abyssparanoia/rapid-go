@@ -94,6 +94,7 @@ Detailed coding rules are organized by theme in `.claude/rules/`:
 
 | Rule File | Applies To | Description |
 |-----------|------------|-------------|
+| `orchestration.md` | always active | Multi-agent orchestration & context budget policy (generic subagents in `.claude/agents/`: repo-explorer, researcher, deep-reasoner, focused-editor, diff-reviewer) |
 | `domain-model.md` | `internal/domain/model/**` | Domain model conventions, state change methods |
 | `domain-service.md` | `internal/domain/service/**` | Domain service patterns |
 | `domain-errors.md` | `internal/domain/errors/**` | Error definition patterns |
