@@ -1,6 +1,6 @@
 ---
 description: Invitation and approval workflow patterns for user onboarding
-globs:
+paths:
   - "internal/domain/model/*invitation*.go"
   - "internal/usecase/*invitation*.go"
 ---

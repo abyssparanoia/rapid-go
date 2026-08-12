@@ -1,6 +1,6 @@
 ---
 description: Database migration file conventions and patterns
-globs:
+paths:
   - "db/mysql/migrations/**/*.sql"
   - "db/mysql/constants/**/*.yaml"
   - "db/postgresql/migrations/**/*.sql"

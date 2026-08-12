@@ -1,6 +1,6 @@
 ---
 description: Domain service patterns for complex business logic
-globs:
+paths:
   - "internal/domain/service/**/*.go"
 ---
 

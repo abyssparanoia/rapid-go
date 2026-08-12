@@ -1,6 +1,6 @@
 ---
 description: gRPC handler implementation patterns
-globs:
+paths:
   - "internal/infrastructure/grpc/**/*.go"
 ---
 

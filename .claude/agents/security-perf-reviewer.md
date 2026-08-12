@@ -144,3 +144,15 @@ For each finding, assign a `semantic_category` used by the orchestrator for dedu
 ### Summary
 Files reviewed: N, Security findings: N, Performance findings: N, TX findings: N, Total: N (error: N, warning: N, info: N)
 ```
+
+# Context Budget (must follow)
+
+コンテキスト上限での失敗 (autocompact スラッシング / "Prompt is too long") を防ぐため:
+
+- レビュー対象の diff にフォーカスする（AUDIT MODE の場合はプロンプトで渡されたファイル一覧のみ）。関係のないディレクトリ・ファイルをリポジトリ全体から無差別に探索しない
+- `git diff <base>...HEAD` を一括実行しない。プロンプトで渡されたファイルごとに `git diff <base>...HEAD -- <path>` で個別に diff を取る（AUDIT MODE では実行しない）
+- 生成物 (`internal/**/mock/**`, `internal/infrastructure/grpc/pb/**`, `internal/infrastructure/{mysql,postgresql,spanner}/internal/dbmodel/**`) と削除済みファイルの diff / Read はしない
+- 大きいファイルは全文 Read せず、400 行以下のチャンクで range 指定するか grep で該当箇所を絞り込んでから読む
+- `.claude/rules/*.md` は自分のレビュー対象レイヤーに該当するものだけ読む
+- 大きい tool 出力 (diff 全文・ファイル全文・コマンド出力) をそのまま応答に echo しない。中間確認は要点のみに留める
+- 最終出力は Output Format 通りの Findings/Summary のみとする。ファイル全文やコマンド出力の貼り付けは行わず、結論を簡潔にまとめる

@@ -1,7 +1,7 @@
 ---
 name: object-storage-paths
 description: S3/GCS object path prefix の AssetType 集約と private/ prefix 規約
-globs:
+paths:
   - internal/domain/model/asset.go
   - internal/domain/model/job_*.go
   - internal/infrastructure/s3/**/*.go

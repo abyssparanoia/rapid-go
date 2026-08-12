@@ -89,3 +89,15 @@ Spec sources: N, Findings: N (error: N, warning: N, info: N)
 - Report ambiguous spec areas as `info` level with "confirmation recommended"
 - Do not force findings when spec information is insufficient
 - Do not auto-fix — spec interpretation requires human judgment
+
+# Context Budget (must follow)
+
+コンテキスト上限での失敗 (autocompact スラッシング / "Prompt is too long") を防ぐため:
+
+- レビュー対象の diff とその spec ソース (PR/Issue/design doc) にフォーカスする。関係のないディレクトリ・ファイルをリポジトリ全体から無差別に探索しない
+- `git diff <base>...HEAD` を一括実行しない。プロンプトで渡されたファイルごとに `git diff <base>...HEAD -- <path>` で個別に diff を取る
+- 生成物 (`internal/**/mock/**`, `internal/infrastructure/grpc/pb/**`, `internal/infrastructure/{mysql,postgresql,spanner}/internal/dbmodel/**`) と削除済みファイルの diff / Read はしない
+- 大きいファイルは全文 Read せず、400 行以下のチャンクで range 指定するか grep で該当箇所を絞り込んでから読む
+- `.claude/rules/*.md` は自分のレビュー対象レイヤーに該当するものだけ読む
+- 大きい tool 出力 (diff 全文・ファイル全文・Issue/PR 本文全文など) をそのまま応答に echo しない。中間確認は要点のみに留める
+- 最終出力は Output Format 通りの Findings/Summary のみとする。ファイル全文やコマンド出力の貼り付けは行わず、結論を簡潔にまとめる

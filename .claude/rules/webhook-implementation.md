@@ -1,3 +1,9 @@
+---
+description: Webhook endpoint patterns (HTTP -> gRPC routing)
+paths:
+  - "**/*webhook*"
+---
+
 # Webhook Implementation Guidelines
 
 ## Overview

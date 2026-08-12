@@ -1,6 +1,6 @@
 ---
 description: Usecase layer interactor implementation patterns
-globs:
+paths:
   - "internal/usecase/**/*.go"
 ---
 

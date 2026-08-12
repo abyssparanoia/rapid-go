@@ -1,6 +1,6 @@
 ---
 description: Domain error definition and handling patterns
-globs:
+paths:
   - "internal/domain/errors/**/*.go"
 ---
 

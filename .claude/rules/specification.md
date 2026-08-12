@@ -1,3 +1,9 @@
+---
+description: Specification document guidelines (docs/specifications/)
+paths:
+  - "docs/specifications/**"
+---
+
 # Specification Document Guidelines
 
 ## Overview
