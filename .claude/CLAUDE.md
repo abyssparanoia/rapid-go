@@ -149,6 +149,12 @@ Available automation skills in `.claude/skills/`:
 | `transaction has already been committed` | Transaction misuse | Ensure single `RWTx`/`ROTx` per operation flow |
 | `make` command not found or not working | Shell function override in Claude Code | Use full path `/usr/bin/make` instead of `make` |
 
+## Claude Code Settings (`.claude/settings.json`)
+
+- `.claude/settings.json` はリポジトリ全体で共有する Claude Code の設定。全員に同じ挙動を強制したいものだけをここに置き、個人の設定は `.claude/settings.local.json`(gitignore 済み)に置く。
+- `CLAUDE_CODE_THRIFTY_SONIC` を `"false"` に固定している。この feature flag が有効だと、auto mode のシステムプロンプトが「Read / Edit / Write ツールではなく Bash(cat / sed / grep)を使え」と指示する。Rules(`.claude/rules/` の `paths:` 付きルール)、Read ツールで発火する Hooks、サブディレクトリの CLAUDE.md はいずれも Read ツールの実行をトリガーに読み込まれるため、Bash で読まれると全てバイパスされてしまう。このリポジトリの Rules はほぼ全て `paths:` 付きなので、これを防ぐために無効化している。詳細: https://kawasin73.hatenablog.com/entry/2026/09/05/092056
+- この flag を削除・変更する前に、`.claude/rules/` のルールがファイル編集時に適用されることを確認すること。
+
 ## Implementation Preflight
 
 新規ファイル作成・大きな変更の前に必ず実施:
