@@ -71,10 +71,6 @@ Go-based gRPC API server with HTTP API via gRPC-Gateway.
 | `make test` | Run all tests |
 | `make lint.go` | Lint Go code |
 | `make e2e` | Run E2E tests (requires server running) |
-| `make ao-start` | Start Agent Orchestrator |
-| `make ao-stop` | Stop Agent Orchestrator |
-| `make ao-spawn ISSUE=123` | Spawn agent on specific issue |
-| `make ao-watch` | Open ao-tui dashboard |
 
 ## Layer Dependencies
 
@@ -105,13 +101,16 @@ Detailed coding rules are organized by theme in `.claude/rules/`:
 | `migration.md` | `db/{mysql,postgresql,spanner}/**` | Database migration patterns |
 | `dependency-injection.md` | `internal/infrastructure/dependency/**` | DI configuration |
 | `invitation-workflow.md` | `*invitation*` | Invitation/approval flow patterns |
-| `external-service-integration.md` | `cognito/**`, `firebase/**`, `*authentication*` | Auth (Cognito/Firebase) integration patterns |
-| `webhook-implementation.md` | `webhook/**`, `internal/infrastructure/http/internal/handler/webhook_*` | Webhook endpoint patterns (HTTP → gRPC routing) |
-| `job-system.md` | `job/**`, `cmd/app/internal/task_cmd/process_job_cmd/` | Async job queue patterns (SNS/SQS → AWS Batch) |
-| `worker-pattern.md` | `worker/**`, `cmd/app/internal/worker_cmd/` | Background worker patterns (SQS/Pub/Sub subscribers) |
+| `external-service-integration.md` | `cognito/**`, `firebase/**`, `*authentication*`, IdP-syncing usecases | Auth (Cognito/Firebase) integration patterns |
+| `webhook-implementation.md` | `**/*webhook*` | Webhook endpoint patterns (HTTP → gRPC routing) |
+| `job-system.md` | `**/*job*` | Async job queue patterns (SNS/SQS → AWS Batch) |
+| `worker-pattern.md` | `**/*worker*` | Background worker patterns (SQS/Pub/Sub subscribers) |
 | `cli-command-pattern.md` | `internal/infrastructure/cmd/internal/task_cmd/**`, `internal/usecase/task_*` | CLI command implementation patterns (`./app task` commands) |
 | `package-placement.md` | `internal/pkg/**`, `internal/domain/**` | Where to put new packages — pkg is domain-agnostic only |
 | `object-storage-paths.md` | `internal/domain/model/asset.go`, `s3/**`, `gcs/**`, `job_*` | S3/GCS path prefix 集約と private/ prefix 規約 |
+| `specification.md` | `docs/specifications/**` | Specification document (仕様書) writing guidelines |
+
+Rules are path-scoped: they load only when a matching file is Read/Edited. When creating a new file, Read an existing file of the same category first so the rule loads (see Implementation Preflight).
 
 ## Skills
 
@@ -128,13 +127,16 @@ Available automation skills in `.claude/skills/`:
 | `fix-review-comments` | Fetch unresolved GitHub PR review comments and auto-fix the code. Run `/fix-review-comments` (current branch PR) or `/fix-review-comments 123` (specific PR) |
 | `create-pull-request` | PR creation guide with branch naming and body templates |
 | `sync-claude-config` | Bidirectionally sync `.claude/` content with the rapid-go template (or a derived project added via `claude --add-dir`); opens a PR in each repo |
-| `create-ao-issue` | Agent Orchestrator 用の GitHub Issue を正しいフォーマットで作成 |
+| `sync-rules-from-pr` | Turn PR review comments into `.claude/rules/` update proposals. Run `/sync-rules-from-pr` (current branch PR), `/sync-rules-from-pr 123`, or pass a review comment URL |
+| `audit-rules` | Audit the whole codebase against `.claude/rules/` and auto-fix. Run `/audit-rules` or `/audit-rules domain` |
+| `init-new-repository` | Bootstrap a new project from this template (rename identifiers, choose DB backend) |
+| `create-ao-issue` | Agent Orchestrator 用の GitHub Issue を正しいフォーマットで作成(`/create-ao-issue` で明示起動) |
 
 **Implementation Workflow**: `add-database-table` → `add-domain-entity` → `add-api-endpoint`
 
 **Review Workflow**: Use `review-diff` to auto-fix issues, then `create-pull-request` to create the PR
 
-**Post-Review Workflow**: Use `fix-review-comments` to address reviewer feedback automatically
+**Post-Review Workflow**: Use `fix-review-comments` to address reviewer feedback, then `sync-rules-from-pr` if the feedback reveals a convention worth codifying
 
 **Investigation Workflow**: Use `code-investigation` before modifying existing code
 
@@ -163,7 +165,7 @@ Available automation skills in `.claude/skills/`:
 2. **該当する `.claude/rules/*.md` を参照する** — 対象レイヤーのルールを確認してから実装
 3. **`internal/pkg/` を検索する** — 新しいユーティリティ定義前に既存実装を確認
 4. **新規パッケージを置く位置に迷ったら `package-placement.md` を確認** — `internal/pkg/` はドメイン非依存のみ、ドメイン依存は `internal/domain/` 配下
-5. **テスト作成時は `testing.md` と `ai-antipatterns.md` を参照する**
+5. **テスト作成時は `testing.md` と `.claude/skills/review-diff/references/ai-antipatterns.md` を参照する**
 
 ## PR Checklist
 

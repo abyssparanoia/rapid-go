@@ -88,10 +88,8 @@ python3 .claude/skills/init-new-repository/scripts/init_repository.py \
   - `.envrc.tmpl` - environment variables
   - `docker-compose.yml` - removes unused database service
 - Updates .claude documentation:
-  - `.claude/rules/repository.md` - path pattern examples
+  - `.claude/rules/repository.md` - path pattern and import examples
   - `.claude/rules/dependency-injection.md` - import examples
-  - `.claude/skills/add-domain-entity/references/repository-patterns.md` - import examples
-  - `.claude/skills/add-domain-entity/references/marshaller-patterns.md` - import examples
 
 **4. Cleans up generated code:**
 - Deletes `internal/infrastructure/grpc/pb/rapid/` (will be regenerated)

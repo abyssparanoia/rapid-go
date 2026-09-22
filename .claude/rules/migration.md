@@ -177,7 +177,7 @@ Tables that receive data streamed directly from hardware devices (HW) **MUST** u
 
 ```sql
 -- Good - hardware telemetry data table
-CREATE TABLE `hw_bot_locations` ( ... );
+CREATE TABLE `hw_device_locations` ( ... );
 
 -- Bad - missing hw_ prefix
 CREATE TABLE `bot_locations` ( ... );

@@ -15,6 +15,10 @@ Create domain layer components for a new entity following DDD patterns.
 - Database table created (use **add-database-table** skill first)
 - SQLBoiler model generated via `make migrate.up`
 
+## How to Use the Rules
+
+Detailed patterns live in `.claude/rules/` (path-scoped, loaded automatically). Before writing each file, **Read an existing sibling file of the same category** (e.g. `internal/domain/model/tenant.go`). This loads the matching rule and shows the current real-world pattern. Follow the rule, not memory.
+
 ## Quick Workflow
 
 ```
@@ -38,7 +42,7 @@ Key requirements:
 - Define `ReadonlyReference` for relations (always nil in constructor)
 - Create slice type alias: `type Examples []*Example`
 
-See: [references/domain-model-patterns.md](references/domain-model-patterns.md)
+Rule: `.claude/rules/domain-model.md`
 
 ## Step 2: Add Domain Error
 
@@ -63,7 +67,7 @@ Key requirements:
 - Use `nullable.Type[T]` for optional enum/custom type filter fields
 - Embed `BaseGetOptions` / `BaseListOptions` in query structs
 
-See: [references/repository-patterns.md](references/repository-patterns.md)
+Rule: `.claude/rules/repository.md` (Interface Definition, Query Structs)
 
 ## Step 4: Create Marshaller
 
@@ -76,7 +80,7 @@ Key requirements:
 - Use var declaration pattern for nullable timestamp fields
 - Include both `ToModel` and `ToDBModel` functions
 
-See: [references/marshaller-patterns.md](references/marshaller-patterns.md)
+Rule: `.claude/rules/repository.md` (Marshaller)
 
 ## Step 5: Create Repository Implementation
 
@@ -90,7 +94,7 @@ Key requirements:
 - Implement `buildPreload` helper for relation loading
 - Use base helper functions: `addForUpdateFromBaseGetOptions`, `addForUpdateFromBaseListOptions`
 
-See: [references/repository-patterns.md](references/repository-patterns.md)
+Rule: `.claude/rules/repository.md` (Implementation, Transaction Context)
 
 ## Step 6: Generate Mocks
 

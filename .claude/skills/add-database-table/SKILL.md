@@ -98,7 +98,7 @@ CREATE INDEX "examples_idx_created_at" ON "examples" ("created_at" DESC);
 DROP TABLE IF EXISTS "examples";
 ```
 
-See [references/sql-patterns.md](references/sql-patterns.md) for advanced patterns.
+Rule: `.claude/rules/migration.md` (column types, constraint/index naming, adding columns, constant tables). Read an existing migration in `db/{database}/migrations/` first so the rule loads.
 
 ### Step 4: Run Migration
 

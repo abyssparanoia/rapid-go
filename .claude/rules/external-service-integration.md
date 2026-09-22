@@ -4,7 +4,10 @@ paths:
   - "internal/domain/repository/*authentication*.go"
   - "internal/infrastructure/cognito/**/*.go"
   - "internal/infrastructure/firebase/**/*.go"
-  - "internal/usecase/**/*_impl.go"
+  - "internal/usecase/*authentication*.go"
+  - "internal/usecase/*invitation*.go"
+  - "internal/usecase/debug*.go"
+  - "internal/usecase/task_*.go"
 ---
 
 # External Service Integration Guidelines

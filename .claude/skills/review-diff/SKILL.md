@@ -174,7 +174,7 @@ Note the winner's `rule_id` in the final report but merge all agents' notes into
 | TX boundary (RWTx, ForUpdate, nesting, long TX) | **security-perf-reviewer** only — bug-reviewer delegates |
 | IdP sync (StoreClaims, DeleteUser, order) | **security-perf-reviewer** only |
 | Input validation (`param.Validate()` missing) | **security-perf-reviewer** |
-| Migration safety + `hw_` prefix | **convention-reviewer** |
+| Migration safety + table naming | **convention-reviewer** |
 | Proto backward-compatibility | **convention-reviewer** |
 | Preload efficiency | security-perf-reviewer (`query_preload_unnecessary` / `query_preload_missing`) |
 | Logic bugs & non-TX anti-patterns | **bug-reviewer** |

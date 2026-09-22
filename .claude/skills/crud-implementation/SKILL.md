@@ -69,5 +69,5 @@ make lint.go && make test
 ## Related Skills
 
 - **code-investigation** - Analyze existing patterns before implementation
-- **review-pr** - Self-review before creating PR
+- **review-diff** - Review & auto-fix before creating PR
 - **create-pull-request** - PR creation with proper format
