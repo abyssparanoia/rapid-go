@@ -34,7 +34,7 @@ git diff --name-only $BASE...HEAD | grep -v '_test\.go$'
 ## 1. Read Anti-Pattern Reference
 
 **Must read**:
-- `.claude/skills/review-diff/references/ai-antipatterns.md` — All 39 anti-pattern definitions
+- `.claude/skills/review-diff/references/ai-antipatterns.md` — all anti-pattern definitions (skip the `## Tests` section; it belongs to test-reviewer)
 
 Also read for context:
 - `.claude/rules/usecase-interactor.md`
@@ -65,9 +65,9 @@ Also read for context:
 
 ### Full Pattern Check
 
-Also check #7-#11, #13-#18, #22-#24, #26-#30, #32-#35, #38.
+Also check every other anti-pattern in `ai-antipatterns.md` (Domain / Repository / Usecase / gRPC Handler / Proto / General sections), except the delegated ones below.
 
-**Skip (delegated)**: #1, #2, #3, #4, #5, #6 (test-reviewer), #19, #20, #21 (security-perf-reviewer).
+**Skip (delegated)**: the `## Tests` section (#1-#6) → test-reviewer; #19 ForUpdate, #20 IdP sync in TX, #21 Preload, #24 IdP delete order → security-perf-reviewer.
 
 ## 3. Logic Bug Detection
 

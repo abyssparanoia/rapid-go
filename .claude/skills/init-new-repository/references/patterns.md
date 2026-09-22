@@ -451,10 +451,8 @@ import "github.com/mycompany/awesome-api/internal/infrastructure/postgresql/repo
 ```
 
 **Database-specific files updated (PostgreSQL selection):**
-- `.claude/rules/repository.md` - path pattern examples
+- `.claude/rules/repository.md` - path pattern and import examples
 - `.claude/rules/dependency-injection.md` - import examples
-- `.claude/skills/add-domain-entity/references/repository-patterns.md` - import examples
-- `.claude/skills/add-domain-entity/references/marshaller-patterns.md` - import examples
 
 **Note:** Files under `.claude/skills/init-new-repository/` maintain both MySQL and PostgreSQL examples as templates.
 

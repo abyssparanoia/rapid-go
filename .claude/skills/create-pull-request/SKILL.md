@@ -94,4 +94,4 @@ EOF
 
 - Do NOT add AI attribution (no "Generated with Claude Code" or "Co-Authored-By: Claude")
 - Keep commit messages and PR descriptions clean
-- Run `self-review` skill before creating PR to catch issues early
+- Run `/review-diff` before creating the PR to catch issues early

@@ -13,6 +13,10 @@ Create complete API layer: usecase interactors, proto definitions, gRPC handlers
 - Repository interface and implementation ready
 - SQLBoiler models generated (`make migrate.up`)
 
+## How to Use the Rules
+
+Detailed patterns live in `.claude/rules/` (path-scoped, loaded automatically). Before writing each file, **Read an existing sibling file of the same category** (e.g. `internal/usecase/admin_tenant_impl.go`). This loads the matching rule and shows the current real-world pattern. Follow the rule, not memory.
+
 ## Workflow Overview
 
 ```
@@ -35,13 +39,11 @@ Location: `internal/usecase/input/{actor}_{entity}.go`
 Create input structs for each operation (Create, Get, List, Update, Delete).
 Each struct needs a `Validate()` method.
 
-See: [references/usecase-patterns.md](references/usecase-patterns.md#input-structs)
-
 Location: `internal/usecase/output/{actor}_{entity}.go`
 
 Create output struct only for List operations (returns slice + count).
 
-See: [references/usecase-patterns.md](references/usecase-patterns.md#output-structs)
+Rule: `.claude/rules/usecase-interactor.md` (Input Structs, Output Structs)
 
 ## Step 2: Create Interactor Interface
 
@@ -49,7 +51,7 @@ Location: `internal/usecase/{actor}_{entity}.go`
 
 Define interface with `//go:generate` directive for mock generation.
 
-See: [references/usecase-patterns.md](references/usecase-patterns.md#interactor-interface)
+Rule: `.claude/rules/usecase-interactor.md` (Interface Definition, Method Ordering)
 
 ## Step 3: Implement Interactor
 
@@ -62,7 +64,7 @@ Implement CRUD methods following transaction patterns:
 - **Update**: Validate -> RWTx(Get ForUpdate -> Update) -> Get with Preload
 - **Delete**: Validate -> RWTx(Get ForUpdate -> Delete)
 
-See: [references/usecase-patterns.md](references/usecase-patterns.md#interactor-implementation)
+Rule: `.claude/rules/usecase-interactor.md` (Implementation Structure, Method Patterns, Transaction Rules). Every interactor needs a unit test — see `.claude/rules/testing.md`.
 
 ## Step 4: Define Protocol Buffers
 
@@ -72,7 +74,7 @@ Create two files:
 
 Then add RPCs to: `schema/proto/rapid/{actor}_api/v1/api.proto`
 
-See: [references/proto-patterns.md](references/proto-patterns.md)
+Rule: `.claude/rules/proto-definition.md`
 
 ## Step 5: Generate Proto Code
 
@@ -86,7 +88,7 @@ Location: `internal/infrastructure/grpc/internal/handler/{actor}/marshaller/{ent
 
 Convert between domain models and proto messages.
 
-See: [references/handler-patterns.md](references/handler-patterns.md#marshaller)
+Rule: `.claude/rules/grpc-handler.md` (Marshaller)
 
 ## Step 7: Create Handler Methods
 
@@ -94,7 +96,7 @@ Location: `internal/infrastructure/grpc/internal/handler/{actor}/{entity}.go`
 
 Implement gRPC handler methods that delegate to interactors.
 
-See: [references/handler-patterns.md](references/handler-patterns.md#handler-methods)
+Rule: `.claude/rules/grpc-handler.md` (Handler Method Pattern, Handling Optional Proto Fields)
 
 ## Step 8: Update Handler Struct
 
@@ -102,7 +104,7 @@ Location: `internal/infrastructure/grpc/internal/handler/{actor}/handler.go`
 
 Add new interactor field and constructor parameter.
 
-See: [references/handler-patterns.md](references/handler-patterns.md#handler-struct)
+Rule: `.claude/rules/grpc-handler.md` (Handler Structure)
 
 ## Step 9: Register in DI
 
@@ -112,7 +114,7 @@ Location: `internal/infrastructure/dependency/dependency.go`
 2. Initialize repository and interactor in `Inject()` method
 3. Update `grpc/run.go` to pass interactor to handler constructor
 
-See: [references/handler-patterns.md](references/handler-patterns.md#di-registration)
+Rule: `.claude/rules/dependency-injection.md`
 
 ## Step 10: Generate Mocks & Test
 

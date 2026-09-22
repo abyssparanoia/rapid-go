@@ -2,7 +2,7 @@
 name: create-ao-issue
 description: Agent Orchestrator 用の GitHub Issue を正しいフォーマットで作成する。Goal, Acceptance Criteria, Target Files, Dependencies, Constraints を含むテンプレートに従う。
 argument-hint: "[issue-title]"
-disable-model-invocation: false
+disable-model-invocation: true
 allowed-tools: Bash(gh *)
 ---
 
@@ -45,7 +45,7 @@ Agent Orchestrator (Claude Code) が自動処理できる形式で GitHub Issue 
 ## Target Files / Scope
 - `internal/domain/model/xxx.go` (create/modify)
 - `internal/usecase/admin_xxx_impl.go` (create/modify)
-- `schema/proto/bot_drive/admin_api/v1/api_xxx.proto` (create)
+- `schema/proto/rapid/admin_api/v1/api_xxx.proto` (create)
 
 ## Dependencies
 なし (or: Blocked by: #123, #124)
@@ -131,9 +131,9 @@ EOF
 
 ### API Endpoint 追加
 ```
-- schema/proto/bot_drive/admin_api/v1/api_xxx.proto (create)
-- schema/proto/bot_drive/admin_api/v1/model_xxx.proto (create)
-- schema/proto/bot_drive/admin_api/v1/api.proto (modify)
+- schema/proto/rapid/admin_api/v1/api_xxx.proto (create)
+- schema/proto/rapid/admin_api/v1/model_xxx.proto (create)
+- schema/proto/rapid/admin_api/v1/api.proto (modify)
 - internal/usecase/input/admin_xxx.go (create)
 - internal/usecase/admin_xxx.go (create)
 - internal/usecase/admin_xxx_impl.go (create)
