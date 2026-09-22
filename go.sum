@@ -1192,6 +1192,8 @@ google.golang.org/genproto v0.0.0-20260511170946-3700d4141b60 h1:rhBdfmsOlOZIvz3
 google.golang.org/genproto v0.0.0-20260511170946-3700d4141b60/go.mod h1:8xo2Pj1b20ZOCpzlU3B9qieMwVIAXx1QVZWLMlPL6sM=
 google.golang.org/genproto/googleapis/api v0.0.0-20260904194346-d0f1323225a4 h1:NCe/UiklGd/9xjT+ROBVhJ1kf6TRQaFedsR+z7u1gvo=
 google.golang.org/genproto/googleapis/api v0.0.0-20260904194346-d0f1323225a4/go.mod h1:fJ2lYaWjqNknJyQBOCd0fA3HnEElJqGplH71a2txi+g=
+google.golang.org/genproto/googleapis/api v0.0.0-20260921155816-b14227669459 h1:GS9OIt/j7c8bvBjYNgnKQysVfmV7e4jM0H8ZK95G4t8=
+google.golang.org/genproto/googleapis/api v0.0.0-20260921155816-b14227669459/go.mod h1:PX5/4vemwVoXtwEcRDWwcR1/r0qrosfx3qoVADMwnVE=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20260825221802-da73d73af1c5 h1:1VUiZAXyC+zmiFYi+WLtBzr68Cj8wOofHjjrA/kkizc=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20260825221802-da73d73af1c5/go.mod h1:DjtHYE8FKJLivXcBEjGwndXfIC23G0VpXiXKqG179uA=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20260921155816-b14227669459 h1:b0xCahf3FK2m2Cv0p4vTozGPWncCvLfwV86UNg8xWU8=
