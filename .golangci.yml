@@ -69,7 +69,7 @@ linters:
     exhaustive:
       check:
         - switch
-        - map
+        - mapliteral
     exhaustruct:
       include:
         - github.com/abyssparanoia/rapid-go/internal/domain/model.*
@@ -136,6 +136,7 @@ linters:
         - github.com/abyssparanoia/rapid-go/internal/domain*
         - github.com/abyssparanoia/rapid-go/internal/infrastructure*
         - github.com/abyssparanoia/rapid-go/internal/usecase*
+        - github.com/abyssparanoia/goerr
         - github.com/avast/retry-go
   exclusions:
     generated: lax
