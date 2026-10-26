@@ -7,6 +7,8 @@ description: "Bidirectionally sync .claude/ content (skills, rules, agents, comm
 
 Bidirectionally syncs `.claude/` content between this project and the rapid-go upstream template, creating a PR in each repo for changes that flow in each direction.
 
+To push rapid-go's current `.claude/` (and Go/dependency state) to **all** derived repositories at once, run `/rollout-derived-repos` from rapid-go instead; it reuses this skill's token mapping and algorithm in a pull-only, non-interactive form.
+
 ## Prerequisites
 
 Both repositories must be accessible:
