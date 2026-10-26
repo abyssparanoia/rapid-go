@@ -657,7 +657,7 @@ def main():
     # Never token-replace the template-sync tooling. These files must keep rapid-go's
     # canonical tokens (module path, "rapid" service name, ...) so that /sync-claude-config
     # can still map between the derived project and rapid-go afterwards.
-    sync_tooling_dirs = {'sync-claude-config', 'init-new-repository'}
+    sync_tooling_dirs = {'sync-claude-config', 'init-new-repository', 'rollout-derived-repos'}
     sync_tooling_files = {'config-sync-classifier.md'}
     text_files = [
         p for p in text_files
