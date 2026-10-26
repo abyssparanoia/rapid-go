@@ -1,6 +1,6 @@
 ---
 name: sync-rules-from-pr
-description: Analyze GitHub PR review comments and propose updates to .claude/rules/. Use when: (1) running '/sync-rules-from-pr', (2) asked to reflect reviewer feedback into project rules or conventions, (3) a PR review surfaced a pattern worth codifying. Accepts no argument (PR for current branch), a PR number, or a single review comment URL.
+description: "Analyze GitHub PR review comments and propose updates to .claude/rules/. Use when: (1) running '/sync-rules-from-pr', (2) asked to reflect reviewer feedback into project rules or conventions, (3) a PR review surfaced a pattern worth codifying. Accepts no argument (PR for current branch), a PR number, or a single review comment URL."
 argument-hint: "[pr-number | comment-url]"
 ---
 

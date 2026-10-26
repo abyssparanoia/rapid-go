@@ -1,6 +1,6 @@
 ---
 name: create-pull-request
-description: Create pull requests following project conventions. Use when: (1) creating a PR with gh pr create, (2) writing commit messages, (3) need branch naming guidance. Covers branch naming patterns, PR title/body format, and pre-commit checks.
+description: "Create pull requests following project conventions. Use when: (1) creating a PR with gh pr create, (2) writing commit messages, (3) need branch naming guidance. Covers branch naming patterns, PR title/body format, and pre-commit checks."
 ---
 
 # PR Creation Quick Reference

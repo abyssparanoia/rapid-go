@@ -1,6 +1,6 @@
 ---
 name: fix-review-comments
-description: Fetch unresolved GitHub PR review comments and automatically fix the code. Use when: (1) running '/fix-review-comments', (2) asked to "fix review comments", "address PR comments", "respond to review", or similar. Can target the PR for the current branch, or a specific PR number (e.g. '/fix-review-comments 123'). Skips already-resolved threads and discussion-only comments that require no code change.
+description: "Fetch unresolved GitHub PR review comments and automatically fix the code. Use when: (1) running '/fix-review-comments', (2) asked to \"fix review comments\", \"address PR comments\", \"respond to review\", or similar. Can target the PR for the current branch, or a specific PR number (e.g. '/fix-review-comments 123'). Skips already-resolved threads and discussion-only comments that require no code change."
 ---
 
 # Fix Review Comments
