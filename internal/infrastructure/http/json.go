@@ -93,7 +93,7 @@ func (j *CustomJSONPb) marshalNonProtoField(v interface{}) ([]byte, error) { //n
 		return []byte("null"), nil
 	}
 	rv := reflect.ValueOf(v)
-	for rv.Kind() == reflect.Ptr {
+	for rv.Kind() == reflect.Pointer {
 		if rv.IsNil() {
 			return []byte("null"), nil
 		}
@@ -241,10 +241,10 @@ func decodeCustomJSONPb(d *json.Decoder, unmarshaler protojson.UnmarshalOptions,
 
 func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, v interface{}) error { //nolint:gocognit //
 	rv := reflect.ValueOf(v)
-	if rv.Kind() != reflect.Ptr {
+	if rv.Kind() != reflect.Pointer {
 		return fmt.Errorf("%T is not a pointer", v)
 	}
-	for rv.Kind() == reflect.Ptr {
+	for rv.Kind() == reflect.Pointer {
 		if rv.IsNil() {
 			rv.Set(reflect.New(rv.Type().Elem()))
 		}
