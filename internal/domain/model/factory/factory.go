@@ -81,7 +81,7 @@ func NewFactory() struct {
 
 func CloneValue(source interface{}, destin interface{}) {
 	x := reflect.ValueOf(source)
-	if x.Kind() == reflect.Ptr {
+	if x.Kind() == reflect.Pointer {
 		starX := x.Elem()
 		y := reflect.New(starX.Type())
 		starY := y.Elem()
