@@ -1,0 +1,21 @@
+# Registry of repositories derived from rapid-go, used by /rollout-derived-repos.
+#
+# Copy this file to .claude/derived-repos.local.yaml (gitignored — rapid-go is public,
+# derived repositories usually are not) and edit it. Never commit the real list.
+#
+# Fields per entry:
+#   slug     (required) GitHub owner/repo. `gh` must be authenticated for it.
+#   path     (optional) absolute path of a local clone. Worktrees are created from it
+#            (after `git fetch origin`); the checkout itself is never modified.
+#            If omitted or missing, the agent clones the repo into its scratch directory.
+#   notes    (optional) free text handed verbatim to that repo's agent — anything the
+#            agent must know up front (unusual stack, submodules, docs language, known holds).
+#   enabled  (optional, default true) set false to keep an entry but skip it.
+repos:
+  - slug: example-org/example-service
+    path: /Users/me/workspace/go/github.com/example-org/example-service
+    notes: "PostgreSQL only; proto lives in a git submodule; .claude docs are written in Japanese"
+  - slug: example-org/example-batch
+    notes: "uses github.com/abyssparanoia/memeduck → wrench/yo must stay held (see rollout-brief Holds)"
+  - slug: example-org/archived-service
+    enabled: false

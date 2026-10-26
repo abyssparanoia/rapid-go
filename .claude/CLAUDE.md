@@ -127,6 +127,7 @@ Available automation skills in `.claude/skills/`:
 | `fix-review-comments` | Fetch unresolved GitHub PR review comments and auto-fix the code. Run `/fix-review-comments` (current branch PR) or `/fix-review-comments 123` (specific PR) |
 | `create-pull-request` | PR creation guide with branch naming and body templates |
 | `sync-claude-config` | Bidirectionally sync `.claude/` content with the rapid-go template (or a derived project added via `claude --add-dir`); opens a PR in each repo |
+| `rollout-derived-repos` | rapid-go 起点で、登録済みの全派生リポジトリに Go/依存更新と `.claude/` 同期を並列でばら撒き、リポジトリごとに PR を作成して CI まで確認する(`/rollout-derived-repos [deps\|claude] [repo...]`、要 `.claude/derived-repos.local.yaml`) |
 | `sync-rules-from-pr` | Turn PR review comments into `.claude/rules/` update proposals. Run `/sync-rules-from-pr` (current branch PR), `/sync-rules-from-pr 123`, or pass a review comment URL |
 | `audit-rules` | Audit the whole codebase against `.claude/rules/` and auto-fix. Run `/audit-rules` or `/audit-rules domain` |
 | `init-new-repository` | Bootstrap a new project from this template (rename identifiers, choose DB backend) |
