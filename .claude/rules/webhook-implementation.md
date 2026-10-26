@@ -26,7 +26,7 @@ External Service → HTTP Server → Custom HTTP Handler → Internal gRPC → g
 ## Directory Structure
 
 ```
-schema/proto/oshipo/
+schema/proto/rapid/
 └── webhook_api/v1/              # Separate package for webhook definitions
     ├── api.proto                # Service definition
     └── api_{service}.proto      # Request/Response messages
@@ -54,17 +54,17 @@ internal/
 
 ### Step 1: Proto Definitions
 
-Create webhook-specific proto package in `schema/proto/oshipo/webhook_api/v1/`.
+Create webhook-specific proto package in `schema/proto/rapid/webhook_api/v1/`.
 
 #### Service Definition (api.proto)
 
 ```protobuf
 syntax = "proto3";
 
-package oshipo.webhook_api.v1;
+package rapid.webhook_api.v1;
 
 import "google/api/annotations.proto";
-import "oshipo/webhook_api/v1/api_{service}.proto";
+import "rapid/webhook_api/v1/api_{service}.proto";
 
 service WebhookService {
   rpc Receive{Service}Webhook(Receive{Service}WebhookRequest) returns (Receive{Service}WebhookResponse) {
@@ -86,7 +86,7 @@ service WebhookService {
 ```protobuf
 syntax = "proto3";
 
-package oshipo.webhook_api.v1;
+package rapid.webhook_api.v1;
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
@@ -185,8 +185,8 @@ func (p *WebhookReceive{Service}) Validate() error {
 package webhook
 
 import (
-    webhook_apiv1 "github.com/Mirrativ-com/livedx-oshipo-server/internal/infrastructure/grpc/pb/oshipo/webhook_api/v1"
-    "github.com/Mirrativ-com/livedx-oshipo-server/internal/usecase"
+    webhook_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/webhook_api/v1"
+    "github.com/abyssparanoia/rapid-go/internal/usecase"
 )
 
 type WebhookHandler struct {
@@ -212,10 +212,10 @@ import (
     "context"
     "time"
 
-    webhook_apiv1 "github.com/Mirrativ-com/livedx-oshipo-server/internal/infrastructure/grpc/pb/oshipo/webhook_api/v1"
-    "github.com/Mirrativ-com/livedx-oshipo-server/internal/pkg/logger"
-    "github.com/Mirrativ-com/livedx-oshipo-server/internal/pkg/logger/logger_field"
-    "github.com/Mirrativ-com/livedx-oshipo-server/internal/usecase/input"
+    webhook_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/webhook_api/v1"
+    "github.com/abyssparanoia/rapid-go/internal/pkg/logger"
+    "github.com/abyssparanoia/rapid-go/internal/pkg/logger/logger_field"
+    "github.com/abyssparanoia/rapid-go/internal/usecase/input"
     "go.uber.org/zap"
 )
 
@@ -284,8 +284,8 @@ import (
     "net/http"
     "strconv"
 
-    webhook_apiv1 "github.com/Mirrativ-com/livedx-oshipo-server/internal/infrastructure/grpc/pb/oshipo/webhook_api/v1"
-    "github.com/Mirrativ-com/livedx-oshipo-server/internal/pkg/logger"
+    webhook_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/webhook_api/v1"
+    "github.com/abyssparanoia/rapid-go/internal/pkg/logger"
     "go.uber.org/zap"
     "google.golang.org/grpc"
 )
@@ -403,7 +403,7 @@ Location: `internal/infrastructure/grpc/run.go`
 ```go
 import (
     // ... existing imports
-    webhook_apiv1 "github.com/Mirrativ-com/livedx-oshipo-server/internal/infrastructure/grpc/pb/oshipo/webhook_api/v1"
+    webhook_apiv1 "github.com/abyssparanoia/rapid-go/internal/infrastructure/grpc/pb/rapid/webhook_api/v1"
 )
 
 func NewServer(...) *grpc.Server {
@@ -981,13 +981,13 @@ func (i *interactor) Receive(...) error {
 
 ```go
 // Bad - Webhook in public_api package
-package oshipo.public_api.v1;
+package rapid.public_api.v1;
 service PublicV1Service {
     rpc ReceiveWebhook(...) returns (...);
 }
 
 // Good - Separate webhook_api package
-package oshipo.webhook_api.v1;
+package rapid.webhook_api.v1;
 service WebhookService {
     rpc ReceiveWebhook(...) returns (...);
 }

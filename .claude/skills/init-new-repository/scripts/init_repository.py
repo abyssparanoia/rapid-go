@@ -654,6 +654,16 @@ def main():
     exclude_dirs = ['.git', 'node_modules', 'vendor', 'data', '__pycache__', '.idea', '.vscode']
     text_files = find_all_text_files(repo_root, exclude_dirs)
 
+    # Never token-replace the template-sync tooling. These files must keep rapid-go's
+    # canonical tokens (module path, "rapid" service name, ...) so that /sync-claude-config
+    # can still map between the derived project and rapid-go afterwards.
+    sync_tooling_dirs = {'sync-claude-config', 'init-new-repository', 'rollout-derived-repos'}
+    sync_tooling_files = {'config-sync-classifier.md'}
+    text_files = [
+        p for p in text_files
+        if not (sync_tooling_dirs & set(p.parts) or p.name in sync_tooling_files)
+    ]
+
     print(f"Found {len(text_files)} text files to process")
 
     modified_count = 0

@@ -23,6 +23,7 @@ db/redis/dump.rdb
 sqlboiler.toml
 test-script/test-run/*
 .mcp.json
+__pycache__/
 # private registry for /rollout-derived-repos
 .claude/derived-repos.local.yaml
 

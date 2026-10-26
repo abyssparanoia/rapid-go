@@ -1,6 +1,6 @@
 ---
 name: add-database-table
-description: Create database migrations, define table schemas, and manage constant tables (enums). Use when: (1) creating a new database table, (2) running 'make migrate.create', (3) adding enum/status values, (4) modifying table structure. REQUIRED first step before add-domain-entity.
+description: "Create database migrations, define table schemas, and manage constant tables (enums). Use when: (1) creating a new database table, (2) running 'make migrate.create', (3) adding enum/status values, (4) modifying table structure. REQUIRED first step before add-domain-entity."
 ---
 
 # Add Database Table

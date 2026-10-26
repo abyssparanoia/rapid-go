@@ -1,6 +1,6 @@
 ---
 name: review-diff
-description: Review and auto-fix code changes against project conventions by diffing the current branch against the default branch (main). Use when: (1) asked to review current changes, (2) running '/review-diff', (3) after completing a feature implementation and wanting to catch issues before creating a PR. Reviews all changed files against .claude/rules/, detects common AI coding mistakes (gomock.Any() misuse, missing ForUpdate, missing Preload, direct field assignment, wrong method ordering, etc.), and automatically fixes all issues found. Does NOT require an existing PR.
+description: "Review and auto-fix code changes against project conventions by diffing the current branch against the default branch (main). Use when: (1) asked to review current changes, (2) running '/review-diff', (3) after completing a feature implementation and wanting to catch issues before creating a PR. Reviews all changed files against .claude/rules/, detects common AI coding mistakes (gomock.Any() misuse, missing ForUpdate, missing Preload, direct field assignment, wrong method ordering, etc.), and automatically fixes all issues found. Does NOT require an existing PR."
 ---
 
 # Diff Review & Auto-Fix (Parallel Agent Edition)

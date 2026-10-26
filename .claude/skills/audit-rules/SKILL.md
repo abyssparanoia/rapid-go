@@ -1,6 +1,6 @@
 ---
 name: audit-rules
-description: Audit the entire codebase for compliance with .claude/rules/ conventions. Use when: (1) running '/audit-rules', (2) asked to check whether the whole codebase follows project conventions, (3) running a periodic convention sweep before a major release. Partitions source files by rule category, launches convention-reviewer and test-reviewer agents in parallel (audit mode), aggregates findings, auto-fixes all fixable violations, verifies with lint/test, and opens a PR. Accepts an optional category argument to scope to one partition (e.g. '/audit-rules domain').
+description: "Audit the entire codebase for compliance with .claude/rules/ conventions. Use when: (1) running '/audit-rules', (2) asked to check whether the whole codebase follows project conventions, (3) running a periodic convention sweep before a major release. Partitions source files by rule category, launches convention-reviewer and test-reviewer agents in parallel (audit mode), aggregates findings, auto-fixes all fixable violations, verifies with lint/test, and opens a PR. Accepts an optional category argument to scope to one partition (e.g. '/audit-rules domain')."
 ---
 
 # Whole-Codebase Rule-Compliance Audit
