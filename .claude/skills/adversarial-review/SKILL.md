@@ -1,6 +1,6 @@
 ---
 name: adversarial-review
-description: Adversarially verify a PR or the current branch diff — assume the change is wrong and try to prove it across 5 perspectives (設計 / 理解容易性 / 命名 / テスト / 機能・性能). Use when: (1) running '/adversarial-review' (current branch) or '/adversarial-review 123' (PR number), (2) asked for 敵対的検証 / adversarial verification / "try to break this", (3) invoked from review-diff via the adversarial-reviewer agent. Limited to concerns no other reviewer, linter, or CI job owns: traces entity lifecycles across all flows, checks state left behind on mid-flow failures, empirically verifies generated outputs, and lists mutations the tests would not catch. Read-only.
+description: "Adversarially verify a PR or the current branch diff — assume the change is wrong and try to prove it across 5 perspectives (設計 / 理解容易性 / 命名 / テスト / 機能・性能). Use when: (1) running '/adversarial-review' (current branch) or '/adversarial-review 123' (PR number), (2) asked for 敵対的検証 / adversarial verification / \"try to break this\", (3) invoked from review-diff via the adversarial-reviewer agent. Limited to concerns no other reviewer, linter, or CI job owns: traces entity lifecycles across all flows, checks state left behind on mid-flow failures, empirically verifies generated outputs, and lists mutations the tests would not catch. Read-only."
 ---
 
 # Adversarial Review (敵対的検証)
