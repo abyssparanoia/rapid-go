@@ -124,6 +124,7 @@ Available automation skills in `.claude/skills/`:
 | `add-domain-entity` | Create domain model, repository interface, and implementation |
 | `add-api-endpoint` | Create usecase, proto definition, and gRPC handler |
 | `review-diff` | Review & auto-fix current branch diff against main/master. Catches AI anti-patterns and rule violations, then fixes them automatically |
+| `adversarial-review` | Adversarially verify a PR or branch diff (lifecycle tracing, empirical output checks, side-effect ordering, mutation gaps). Read-only; can post as a PR review after confirmation. Run `/adversarial-review` or `/adversarial-review 123` |
 | `fix-review-comments` | Fetch unresolved GitHub PR review comments and auto-fix the code. Run `/fix-review-comments` (current branch PR) or `/fix-review-comments 123` (specific PR) |
 | `create-pull-request` | PR creation guide with branch naming and body templates |
 | `sync-claude-config` | Bidirectionally sync `.claude/` content with the rapid-go template (or a derived project added via `claude --add-dir`); opens a PR in each repo |
@@ -135,7 +136,7 @@ Available automation skills in `.claude/skills/`:
 
 **Implementation Workflow**: `add-database-table` → `add-domain-entity` → `add-api-endpoint`
 
-**Review Workflow**: Use `review-diff` to auto-fix issues, then `create-pull-request` to create the PR
+**Review Workflow**: Use `review-diff` to auto-fix issues (includes `adversarial-review` via the `adversarial-reviewer` agent), then `create-pull-request` to create the PR
 
 **Post-Review Workflow**: Use `fix-review-comments` to address reviewer feedback, then `sync-rules-from-pr` if the feedback reveals a convention worth codifying
 
