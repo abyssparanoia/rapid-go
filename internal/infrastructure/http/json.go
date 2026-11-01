@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"math"
 	"reflect"
 	"strconv"
 
@@ -19,14 +20,20 @@ import (
 // with the "google.golang.org/protobuf/encoding/protojson" marshaler.
 // It supports the full functionality of protobuf unlike JSONBuiltin.
 //
+// It is a copy of grpc-gateway's runtime.JSONPb that uses goccy/go-json for
+// non-proto values and adds the Int64AsNumber option. Keep the shared parts in
+// sync with runtime/marshal_jsonpb.go when upgrading grpc-gateway.
+//
 // The NewDecoder method returns a DecoderWrapper, so the underlying
 // *json.Decoder methods can be used.
 type CustomJSONPb struct {
 	protojson.MarshalOptions
 	protojson.UnmarshalOptions
-	// Int64AsNumber controls whether int64/uint64 fields are serialized as JSON numbers.
-	// Default (false): int64/uint64 are serialized as strings (protobuf default for JavaScript compatibility)
-	// true: int64/uint64 are serialized as numbers (may lose precision for values > 2^53)
+	// Int64AsNumber controls whether 64-bit integer fields (int64, uint64, sint64,
+	// fixed64, sfixed64, google.protobuf.Int64Value, google.protobuf.UInt64Value)
+	// are serialized as JSON numbers, including inside repeated and map fields.
+	// Default (false): they are serialized as strings (protobuf default for JavaScript compatibility)
+	// true: they are serialized as numbers (may lose precision for values > 2^53)
 	Int64AsNumber bool
 }
 
@@ -37,28 +44,11 @@ func (*CustomJSONPb) ContentType(_ interface{}) string {
 
 // Marshal marshals "v" into JSON.
 func (j *CustomJSONPb) Marshal(v interface{}) ([]byte, error) {
-	msg, ok := v.(proto.Message)
-	if !ok {
-		return j.marshalNonProtoField(v)
-	}
-
 	var buf bytes.Buffer
 	if err := j.marshalTo(&buf, v); err != nil {
 		return nil, err
 	}
-
-	result := buf.Bytes()
-
-	// Convert int64 strings to numbers if enabled
-	if j.Int64AsNumber {
-		converted, err := j.convertInt64StringsToNumbers(result, msg)
-		if err != nil {
-			return nil, err
-		}
-		return converted, nil
-	}
-
-	return result, nil
+	return buf.Bytes(), nil
 }
 
 func (j *CustomJSONPb) marshalTo(w io.Writer, v interface{}) error {
@@ -68,6 +58,13 @@ func (j *CustomJSONPb) marshalTo(w io.Writer, v interface{}) error {
 		if err != nil {
 			return err
 		}
+		if j.Indent != "" {
+			b := &bytes.Buffer{}
+			if err = json.Indent(b, buf, "", j.Indent); err != nil {
+				return err
+			}
+			buf = b.Bytes()
+		}
 		_, err = w.Write(buf)
 		return err
 	}
@@ -75,13 +72,19 @@ func (j *CustomJSONPb) marshalTo(w io.Writer, v interface{}) error {
 	if err != nil {
 		return err
 	}
+	if j.Int64AsNumber {
+		b, err = j.convertInt64StringsToNumbers(b, p)
+		if err != nil {
+			return err
+		}
+	}
 
 	_, err = w.Write(b)
 	return err
 }
 
 // protoMessageType is stored to prevent constant lookup of the same type at runtime.
-var protoMessageType = reflect.TypeOf((*proto.Message)(nil)).Elem()
+var protoMessageType = reflect.TypeFor[proto.Message]()
 
 // marshalNonProto marshals a non-message field of a protobuf message.
 // This function does not correctly marshal arbitrary data structures into JSON,
@@ -168,9 +171,6 @@ func (j *CustomJSONPb) marshalNonProtoField(v interface{}) ([]byte, error) { //n
 			}
 			m[fmt.Sprintf("%v", k.Interface())] = (*json.RawMessage)(&buf)
 		}
-		if j.Indent != "" {
-			return json.MarshalIndent(m, "", j.Indent)
-		}
 		return json.Marshal(m)
 	}
 	if enum, ok := rv.Interface().(protoEnum); ok && !j.UseEnumNumbers {
@@ -239,7 +239,7 @@ func decodeCustomJSONPb(d *json.Decoder, unmarshaler protojson.UnmarshalOptions,
 	return unmarshaler.Unmarshal([]byte(b), p)
 }
 
-func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, v interface{}) error { //nolint:gocognit //
+func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, v interface{}) error { //nolint:gocognit,gocyclo,cyclop,funlen // mirrors grpc-gateway runtime.decodeNonProtoField
 	rv := reflect.ValueOf(v)
 	if rv.Kind() != reflect.Pointer {
 		return fmt.Errorf("%T is not a pointer", v)
@@ -268,16 +268,31 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 			return fmt.Errorf("unsupported type of map field key: %v", rv.Type().Key())
 		}
 
-		m := make(map[string]*json.RawMessage)
-		if err := d.Decode(&m); err != nil {
+		var raw json.RawMessage
+		if err := d.Decode(&raw); err != nil {
 			return err
 		}
+		m := make(map[string]*json.RawMessage)
+		if err := json.Unmarshal(raw, &m); err != nil {
+			return err
+		}
+		// json keeps the last value of a repeated key, while protojson
+		// rejects a duplicate map key, also when two spellings convert to the
+		// same key (e.g. "1" and "01"). Reject both here too.
+		if k, ok := duplicateObjectKey(raw); ok {
+			return fmt.Errorf("duplicate map key %q", k)
+		}
+		seen := make(map[any]struct{}, len(m))
 		for k, v := range m {
 			result := conv.Call([]reflect.Value{reflect.ValueOf(k)})
 			if err := result[1].Interface(); err != nil {
 				return err.(error)
 			}
 			bk := result[0]
+			if _, ok := seen[bk.Interface()]; ok {
+				return fmt.Errorf("duplicate map key %q", k)
+			}
+			seen[bk.Interface()] = struct{}{}
 			bv := reflect.New(rv.Type().Elem())
 			if v == nil {
 				null := json.RawMessage("null")
@@ -326,8 +341,14 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 		switch v := repr.(type) {
 		case string:
 			// TODO(yugui) Should use proto.StructProperties?
-			return fmt.Errorf("unmarshalling of symbolic enum %q not supported: %T", repr, rv.Interface())
+			return fmt.Errorf("unmarshaling of symbolic enum %q not supported: %T", repr, rv.Interface())
 		case float64:
+			// Enum values are int32 on the wire. A fractional or out-of-range
+			// number would otherwise be silently truncated/wrapped into a bogus
+			// enum here, unlike protojson which rejects it, so reject it too.
+			if v != math.Trunc(v) || v < math.MinInt32 || v > math.MaxInt32 {
+				return fmt.Errorf("%v is not a valid value for enum %T", repr, rv.Interface())
+			}
 			rv.Set(reflect.ValueOf(int32(v)).Convert(rv.Type()))
 			return nil
 		default:
@@ -337,14 +358,40 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 	return d.Decode(v)
 }
 
+// duplicateObjectKey returns the first key that appears more than once in the
+// JSON object in data.
+func duplicateObjectKey(data []byte) (string, bool) {
+	d := json.NewDecoder(bytes.NewReader(data))
+	if t, err := d.Token(); err != nil || t != json.Delim('{') {
+		return "", false
+	}
+	seen := make(map[string]struct{})
+	for d.More() {
+		t, err := d.Token()
+		if err != nil {
+			return "", false
+		}
+		k, _ := t.(string)
+		if _, ok := seen[k]; ok {
+			return k, true
+		}
+		seen[k] = struct{}{}
+		var v json.RawMessage
+		if err := d.Decode(&v); err != nil {
+			return "", false
+		}
+	}
+	return "", false
+}
+
 type protoEnum interface {
 	fmt.Stringer
 	EnumDescriptor() ([]byte, []int)
 }
 
-var typeProtoEnum = reflect.TypeOf((*protoEnum)(nil)).Elem()
+var typeProtoEnum = reflect.TypeFor[protoEnum]()
 
-var typeProtoMessage = reflect.TypeOf((*proto.Message)(nil)).Elem()
+var typeProtoMessage = reflect.TypeFor[proto.Message]()
 
 // Delimiter for newline encoded JSON streams.
 func (j *CustomJSONPb) Delimiter() []byte {
@@ -363,138 +410,132 @@ var convFromType = map[reflect.Kind]reflect.Value{ //nolint:exhaustive // This i
 	reflect.Slice:   reflect.ValueOf(runtime.Bytes),
 }
 
-// getFieldName returns the field name to use in JSON based on UseProtoNames setting.
-func getFieldName(fd protoreflect.FieldDescriptor, useProtoNames bool) string {
-	if useProtoNames {
-		return string(fd.Name())
-	}
-	return fd.JSONName()
-}
-
-// isInt64Kind returns true if the field kind is an int64-like type.
-func isInt64Kind(kind protoreflect.Kind) bool {
-	switch kind { //nolint:exhaustive // This is a false positive.
-	case protoreflect.Int64Kind, protoreflect.Uint64Kind, protoreflect.Sint64Kind,
-		protoreflect.Sfixed64Kind, protoreflect.Fixed64Kind:
-		return true
-	default:
-		return false
-	}
-}
-
-// convertFieldsRecursive recursively converts int64 string fields to numbers in the data structure.
-func convertFieldsRecursive(data interface{}, md protoreflect.MessageDescriptor, useProtoNames bool) interface{} { //nolint:gocognit,gocyclo // Complex type conversion logic
-	switch v := data.(type) {
-	case map[string]interface{}:
-		// Process map fields
-		result := make(map[string]interface{})
-		fields := md.Fields()
-		for key, value := range v {
-			// Find the field descriptor for this key
-			var fd protoreflect.FieldDescriptor
-			for i := 0; i < fields.Len(); i++ { //nolint:intrange
-				f := fields.Get(i)
-				if getFieldName(f, useProtoNames) == key {
-					fd = f
-					break
-				}
-			}
-
-			if fd == nil {
-				// Field not found in descriptor, keep as-is
-				result[key] = value
-				continue
-			}
-
-			// Handle repeated fields
-			if fd.IsList() {
-				if slice, ok := value.([]interface{}); ok {
-					convertedSlice := make([]interface{}, len(slice))
-					for i, item := range slice {
-						if fd.Kind() == protoreflect.MessageKind { //nolint:gocritic
-							// Nested message
-							convertedSlice[i] = convertFieldsRecursive(item, fd.Message(), useProtoNames)
-						} else if isInt64Kind(fd.Kind()) {
-							// int64 field in array
-							convertedSlice[i] = convertStringToNumber(item)
-						} else {
-							convertedSlice[i] = item
-						}
-					}
-					result[key] = convertedSlice
-				} else {
-					result[key] = value
-				}
-				continue
-			}
-
-			// Handle single fields
-			if fd.Kind() == protoreflect.MessageKind { //nolint:gocritic
-				// Nested message
-				result[key] = convertFieldsRecursive(value, fd.Message(), useProtoNames)
-			} else if isInt64Kind(fd.Kind()) {
-				// int64 field - convert string to number
-				result[key] = convertStringToNumber(value)
-			} else {
-				result[key] = value
-			}
-		}
-		return result
-
-	case []interface{}:
-		// Process array (shouldn't happen at top level for proto messages, but handle it anyway)
-		result := make([]interface{}, len(v))
-		for i, item := range v {
-			result[i] = convertFieldsRecursive(item, md, useProtoNames)
-		}
-		return result
-
-	default:
-		return data
-	}
-}
-
-// convertStringToNumber converts a string value to a number if possible.
-func convertStringToNumber(value interface{}) interface{} {
-	str, ok := value.(string)
-	if !ok {
-		return value
-	}
-
-	// Try to parse as int64 first
-	if num, err := strconv.ParseInt(str, 10, 64); err == nil {
-		return num
-	}
-
-	// Try to parse as uint64
-	if num, err := strconv.ParseUint(str, 10, 64); err == nil {
-		return num
-	}
-
-	// If parsing fails, return as-is
-	return value
-}
-
-// convertInt64StringsToNumbers uses proto reflection to convert int64/uint64 fields
-// from strings to numbers in the JSON output.
+// convertInt64StringsToNumbers uses proto reflection to convert 64-bit integer
+// fields from strings to numbers in the protojson output.
+// Numbers already present in the output are preserved verbatim (json.Number),
+// so no float64 round-trip can alter them.
 func (j *CustomJSONPb) convertInt64StringsToNumbers(jsonBytes []byte, msg proto.Message) ([]byte, error) {
-	// Parse JSON into map
-	var data map[string]interface{}
-	if err := json.Unmarshal(jsonBytes, &data); err != nil {
+	d := json.NewDecoder(bytes.NewReader(jsonBytes))
+	d.UseNumber()
+	var data interface{}
+	if err := d.Decode(&data); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal JSON for int64 conversion: %w", err)
 	}
 
-	// Get message descriptor
-	md := msg.ProtoReflect().Descriptor()
+	converted := convertInt64Message(data, msg.ProtoReflect().Descriptor(), j.UseProtoNames)
 
-	// Convert fields recursively
-	converted := convertFieldsRecursive(data, md, j.UseProtoNames)
-
-	// Marshal back to JSON
-	result, err := json.Marshal(converted)
+	var (
+		result []byte
+		err    error
+	)
+	if j.Indent != "" {
+		result, err = json.MarshalIndent(converted, "", j.Indent)
+	} else {
+		result, err = json.Marshal(converted)
+	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal converted JSON: %w", err)
 	}
 
 	return result, nil
+}
+
+const (
+	wellKnownTypesPackage protoreflect.FullName = "google.protobuf"
+	int64ValueFullName    protoreflect.FullName = "google.protobuf.Int64Value"
+	uint64ValueFullName   protoreflect.FullName = "google.protobuf.UInt64Value"
+)
+
+// convertInt64Message converts the 64-bit integer fields of a message encoded by protojson.
+func convertInt64Message(data interface{}, md protoreflect.MessageDescriptor, useProtoNames bool) interface{} {
+	if md.FullName().Parent() == wellKnownTypesPackage {
+		// protojson gives well-known types a custom representation (a bare value
+		// for wrappers / Timestamp / Duration, free-form objects for Struct / Any)
+		// that the field descriptors do not describe, so only the 64-bit wrappers
+		// are converted and the rest is left untouched.
+		switch md.FullName() {
+		case int64ValueFullName, uint64ValueFullName:
+			return convertStringToNumber(data)
+		default:
+			return data
+		}
+	}
+
+	object, ok := data.(map[string]interface{})
+	if !ok {
+		return data
+	}
+	fields := md.Fields()
+	result := make(map[string]interface{}, len(object))
+	for key, value := range object {
+		var fd protoreflect.FieldDescriptor
+		if useProtoNames {
+			fd = fields.ByName(protoreflect.Name(key))
+		} else {
+			fd = fields.ByJSONName(key)
+		}
+		if fd == nil {
+			result[key] = value
+			continue
+		}
+		result[key] = convertInt64Field(value, fd, useProtoNames)
+	}
+	return result
+}
+
+// convertInt64Field converts one field value, descending into repeated and map fields.
+func convertInt64Field(value interface{}, fd protoreflect.FieldDescriptor, useProtoNames bool) interface{} {
+	switch {
+	case fd.IsMap():
+		object, ok := value.(map[string]interface{})
+		if !ok {
+			return value
+		}
+		valueFd := fd.MapValue()
+		result := make(map[string]interface{}, len(object))
+		for key, item := range object {
+			result[key] = convertInt64Scalar(item, valueFd, useProtoNames)
+		}
+		return result
+	case fd.IsList():
+		list, ok := value.([]interface{})
+		if !ok {
+			return value
+		}
+		result := make([]interface{}, len(list))
+		for i, item := range list {
+			result[i] = convertInt64Scalar(item, fd, useProtoNames)
+		}
+		return result
+	default:
+		return convertInt64Scalar(value, fd, useProtoNames)
+	}
+}
+
+// convertInt64Scalar converts a single (non-repeated, non-map) value of the given field.
+func convertInt64Scalar(value interface{}, fd protoreflect.FieldDescriptor, useProtoNames bool) interface{} {
+	switch fd.Kind() { //nolint:exhaustive // every other kind is left as protojson emitted it
+	case protoreflect.MessageKind, protoreflect.GroupKind:
+		return convertInt64Message(value, fd.Message(), useProtoNames)
+	case protoreflect.Int64Kind, protoreflect.Uint64Kind, protoreflect.Sint64Kind,
+		protoreflect.Sfixed64Kind, protoreflect.Fixed64Kind:
+		return convertStringToNumber(value)
+	default:
+		return value
+	}
+}
+
+// convertStringToNumber turns a decimal integer string into a JSON number,
+// leaving anything else as-is.
+func convertStringToNumber(value interface{}) interface{} {
+	str, ok := value.(string)
+	if !ok {
+		return value
+	}
+	if _, err := strconv.ParseInt(str, 10, 64); err != nil {
+		if _, err := strconv.ParseUint(str, 10, 64); err != nil {
+			return value
+		}
+	}
+	return json.Number(str)
 }
