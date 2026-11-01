@@ -26,6 +26,8 @@ Replace rapid-go canonical tokens with local project values:
 | `package rapid.` | `package {service-name}.` |
 | `import "rapid/` | `import "{service-name}/` |
 | `pb/rapid/` | `pb/{service-name}/` |
+| `schema/proto/rapid/` | `schema/proto/{service-name}/` |
+| `rapid.{actor}_api.v1` (e.g. `rapid.admin_api.v1`) | `{service-name}.{actor}_api.v1` |
 | `buf.build/abyssparanoia/rapid` | `buf.build/{buf-org}/{service-name}` |
 | `rapid-go_rapid-go-network` | `{service-name}_{docker-network}` |
 | `rapid-go-network` | `{docker-network}` |
@@ -45,6 +47,8 @@ Replace local project values with rapid-go canonical tokens. This is the exact i
 | `package {service-name}.` | `package rapid.` |
 | `import "{service-name}/` | `import "rapid/` |
 | `pb/{service-name}/` | `pb/rapid/` |
+| `schema/proto/{service-name}/` | `schema/proto/rapid/` |
+| `{service-name}.{actor}_api.v1` | `rapid.{actor}_api.v1` |
 | `buf.build/{buf-org}/{service-name}` | `buf.build/abyssparanoia/rapid` |
 | `{service-name}_{docker-network}` | `rapid-go_rapid-go-network` |
 | `{docker-network}` | `rapid-go-network` |
@@ -63,12 +67,14 @@ Apply replacements **longest/most-specific first** to avoid partial matches:
 3. `buf.build/abyssparanoia/rapid` / `buf.build/{buf-org}/{service-name}` — full registry URL first
 4. `github.com/abyssparanoia/rapid-go` / `{go-module}` — full module path
 5. `pb/rapid/` / `pb/{service-name}/` — pb path
-6. `./schema/openapi/rapid/` / `./schema/openapi/{service-name}/`
-7. `import "rapid/` / `import "{service-name}/`
-8. `package rapid.` / `package {service-name}.`
-9. `# RAPID GO` / `# {project-title}` — prefixed form first
-10. `RAPID GO` / `{project-title}` — plain form second (must come after prefixed)
-11. Remaining string replacements in any order
+6. `schema/proto/rapid/` / `schema/proto/{service-name}/` — proto source path
+7. `./schema/openapi/rapid/` / `./schema/openapi/{service-name}/`
+8. `import "rapid/` / `import "{service-name}/`
+9. `package rapid.` / `package {service-name}.`
+10. `rapid.{actor}_api.v1` / `{service-name}.{actor}_api.v1` — fully-qualified proto package in prose (e.g. `rapid.admin_api.v1`)
+11. `# RAPID GO` / `# {project-title}` — prefixed form first
+12. `RAPID GO` / `{project-title}` — plain form second (must come after prefixed)
+13. Remaining string replacements in any order
 
 ## DB-Variant Content
 
