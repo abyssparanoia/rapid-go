@@ -5,14 +5,14 @@ description: "Review and auto-fix code changes against project conventions by di
 
 # Diff Review & Auto-Fix (Parallel Agent Edition)
 
-Review current branch changes against main/master using **5 specialized parallel agents**, then **automatically fix all issues found**.
+Review current branch changes against main/master using **6 specialized parallel agents** (including the adversarial reviewer), then **automatically fix all issues found**.
 
 ## Workflow
 
 ```
 1. Detect Default Branch  → find main or master
 2. Gather Changes         → git diff, changed files, classify
-3. Parallel Agent Review  → launch 5 agents simultaneously
+3. Parallel Agent Review  → launch 6 agents simultaneously (incl. adversarial-reviewer)
 4. Aggregate Findings     → collect, deduplicate, sort
 5. Auto-Fix Issues        → edit files to fix all found problems
 6. Verify Fixes           → lint, tests, code generation
@@ -50,6 +50,7 @@ Determine which agents to launch:
 - **bug-reviewer**: Always (bug & anti-pattern detection)
 - **security-perf-reviewer**: Always (security & performance)
 - **test-reviewer**: Only if `*_test.go` files exist in the diff (test quality)
+- **adversarial-reviewer**: Always (adversarial verification across 設計 / 理解容易性 / 命名 / テスト / 機能・性能, limited to concerns the other agents do not own — see `.claude/skills/adversarial-review/SKILL.md`)
 
 ## Step 3: Parallel Agent Review
 
@@ -91,6 +92,8 @@ Commit history:
 
 For **test-reviewer**, filter `{changed_files}` to `*_test.go` only.
 
+For **adversarial-reviewer**, pass all changed files (tests included — mutation analysis needs them). No commit history or PR body — spec-reviewer owns those.
+
 ### Agent Tool Call Pattern
 
 Launch all applicable agents in one message:
@@ -126,6 +129,12 @@ Agent(                                    # only if test files exist
   run_in_background: true,
   prompt: "<review context only>"
 )
+Agent(
+  description: "Adversarial verification",
+  subagent_type: "adversarial-reviewer",
+  run_in_background: true,
+  prompt: "<review context only>"
+)
 ```
 
 Wait for all agents to complete. You will be notified as each finishes.
@@ -138,7 +147,8 @@ After all agents complete:
 2. **Deduplicate** by `(file, line, semantic_category)` — see dedup rationale below
 3. **Sort** by severity: `error` first, then `warning`, then `info`
 4. **Verify coverage** — ensure every changed file was reviewed by at least one agent
-5. **Separate** auto-fixable from manual-only findings
+5. **Resolve hedged findings** — any finding (from any agent) whose text contains a hedge (`unless`, `probably`, `likely`, `may`, `might`, `if … is missing`, `did not confirm`, `did not open`, `not checked`, `〜でなければ`, `たぶん`, `おそらく`, `未確認`) is resolved by you, not passed through: run one targeted grep/Read on the hedged condition (issue all of them in parallel in one message), then keep it (rewritten without the hedge, severity per the confirmed facts) or drop it. Note dropped ones in the report as "Dropped after verification".
+6. **Separate** auto-fixable from manual-only findings
 
 ### Dedup Rationale: Why `semantic_category`, Not `rule_id`
 
@@ -149,7 +159,7 @@ Each agent defines its own rule_id prefix (`AP-*`, `SEC-*`, `CL-*`, etc.), so th
 When the dedup key collides, keep the finding with:
 1. **Highest severity** (`error` > `warning` > `info`)
 2. If tied, **most specific fix** (non-empty `Fix:` block wins over empty)
-3. If still tied, **convention-reviewer > security-perf-reviewer > bug-reviewer > test-reviewer > spec-reviewer** (preferred owner order)
+3. If still tied, **convention-reviewer > security-perf-reviewer > bug-reviewer > test-reviewer > spec-reviewer > adversarial-reviewer** (preferred owner order)
 
 Note the winner's `rule_id` in the final report but merge all agents' notes into the finding's Description so no context is lost.
 
@@ -165,6 +175,7 @@ Note the winner's `rule_id` in the final report but merge all agents' notes into
 | `PERF-*` | security-perf-reviewer | PERF-1 (N+1 query) |
 | `TX-*` | security-perf-reviewer | TX-1 (ForUpdate missing) |
 | `TEST-*` | test-reviewer | TEST-1 (insufficient coverage) |
+| `ADV-*` | adversarial-reviewer | ADV-func-1 (delete no-ops for a variant), ADV-test-2 (mutation gap) |
 
 ### Agent Scope Matrix (post-2026-04-18 refactor)
 
@@ -178,6 +189,7 @@ Note the winner's `rule_id` in the final report but merge all agents' notes into
 | Proto backward-compatibility | **convention-reviewer** |
 | Preload efficiency | security-perf-reviewer (`query_preload_unnecessary` / `query_preload_missing`) |
 | Logic bugs & non-TX anti-patterns | **bug-reviewer** |
+| Cross-flow lifecycle, failure-time consistency, empirical output checks, external platform spec, deploy safety, responsibility/changeability/consistency, readability, inline func helpers (non-test, excl. AP-28), naming clarity, E2E gaps, mutation gaps | **adversarial-reviewer** (excludes everything owned above and by golangci-lint / CI — see its Scope table) |
 
 ## Step 5: Auto-Fix Issues
 
@@ -194,6 +206,8 @@ Fix in this priority order:
 When fixing test files that use `gomock.Any()` incorrectly, replace with exact expected values using domain model constructors.
 
 **SPEC-* findings are NOT auto-fixed** — they require human judgment on specification interpretation.
+
+**ADV-* findings** are fixed only when `Auto-fixable: yes` (escaping, rename, typo, adding a well-defined test case), slotted into the priority order by perspective: 機能・性能 → 1–2 / 6, 設計・理解容易性・命名 → 3–4, テスト → 5. `Auto-fixable: no` (lifecycle policy, TX/side-effect redesign, deploy order) goes to "Issues Requiring Manual Action" with the agent's fix options.
 
 ## Step 6: Verify Fixes (with Retry Loop)
 
@@ -270,6 +284,7 @@ Never report "✅ Ready" if lint or test failed and was not re-fixed. The verify
 | bug-reviewer | N | N (E:N W:N I:N) | N |
 | security-perf-reviewer | N | N (E:N W:N I:N) | N |
 | test-reviewer | N | N (E:N W:N I:N) | N |
+| adversarial-reviewer | N | N (E:N W:N I:N) | N |
 | **Total** | | **N** | **N** |
 
 ### Auto-Fixed Issues (N)
