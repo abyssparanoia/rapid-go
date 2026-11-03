@@ -32,7 +32,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.75.7
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.114.6
 	github.com/blendle/zapdriver v1.3.1
-	github.com/caarlos0/env/v11 v11.4.1
+	github.com/caarlos0/env/v11 v11.4.2
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-faker/faker/v4 v4.12.0
