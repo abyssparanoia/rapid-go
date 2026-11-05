@@ -574,7 +574,7 @@ enum StaffRole {
 
 ### 31. Package-level private functions in domain/usecase/infrastructure layers
 
-Package-level private (non-receiver) functions are prohibited in domain, usecase, and infrastructure layers. They scatter business logic and reduce testability. The same applies to **private wrapper methods** on an implementation struct (`findXxx`, `resolveXxx`, `enrichXxx`) that merely wrap one step of a public method: the public method calls repositories / external APIs inline, in order, and builds its result once at the end. Full rule: `.claude/rules/implementation-structure.md`.
+Package-level private (non-receiver) functions are prohibited in domain, usecase, and infrastructure layers. They scatter business logic and reduce testability. The telltale shape is a function that **takes the struct's dependency as a parameter** (`cli *APIClient`, `repo repository.Staff`) or performs I/O outside a method — often chained (`findXxx` → `findXxxInPage` → `getXxx`) so two structs can share it. That logic is a **method on the struct** (private receiver methods are fine); if two structs need it, duplicate it in each. Full rule and the short list of allowed pure helpers (`handleError`, query-option builders, ctx/auth injection): `.claude/rules/implementation-structure.md`.
 
 ```go
 // BAD - package-level private functions

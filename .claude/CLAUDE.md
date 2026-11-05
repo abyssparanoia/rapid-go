@@ -90,7 +90,7 @@ Detailed coding rules are organized by theme in `.claude/rules/`:
 
 | Rule File | Applies To | Description |
 |-----------|------------|-------------|
-| `implementation-structure.md` | `internal/usecase/**`, `internal/domain/service/**`, `internal/infrastructure/**` | Implementation-layer baseline: public interface methods only (no helper funcs / wrapper methods), pointer receivers, gather inputs then build the result once |
+| `implementation-structure.md` | `internal/usecase/**`, `internal/domain/service/**`, `internal/infrastructure/**` | Implementation-layer baseline: no package-level private functions (logic needing the struct's deps is a receiver method), pointer receivers, gather inputs then build the result once |
 | `domain-model.md` | `internal/domain/model/**` | Domain model conventions, state change methods |
 | `domain-service.md` | `internal/domain/service/**` | Domain service patterns |
 | `domain-errors.md` | `internal/domain/errors/**` | Error definition patterns |

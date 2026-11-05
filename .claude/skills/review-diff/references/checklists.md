@@ -150,8 +150,8 @@ Detailed checklists for each file category. Apply the relevant sections based on
 
 ## Implementation Structure (`internal/usecase/**`, `internal/domain/service/**`, `internal/infrastructure/**`, see `implementation-structure.md`)
 
-- [ ] Implementation structs define only their interface's methods — no package-level private functions, no private wrapper methods (`findXxx` / `resolveXxx` / `enrichXxx` / `buildXxx`); the public method calls repositories / external APIs inline and in order (only sanctioned exceptions: repository `addPreload`/`buildPreload`/`buildListQuery`, domain-service dispatch methods, `<actor>_base.go` ctx/auth injection)
-- [ ] Complexity lint (gocognit/funlen) satisfied by flattening (`slices.IndexFunc`, early return), NOT by extracting a private method
+- [ ] No package-level private (receiver-less) functions in implementation packages — especially none that take the struct's dependency (`cli` / `repo` / `tx`) as a parameter or perform I/O; such logic is a method on the struct (private receiver methods are allowed; duplicate across structs rather than share via a package-level function). Allowed pure exceptions only: repository `handleError`, `addForUpdateFromBase*Options`, `with<Actor>Context` ctx/auth injection
+- [ ] Complexity lint (gocognit/funlen) satisfied by inlining/flattening or by extracting a private **method on the receiver**, never a package-level function
 - [ ] Implementation structs (incl. `*Debug` stand-ins) use pointer receivers and constructors return `&struct{}`
 - [ ] Every input (incl. values from a second query / fallback API call) is resolved BEFORE the model is built; the model is built once via constructor / marshaller, never built-then-patched (`m.Field = …`) and never patched through ad-hoc `Set{X}` on an external read model
 - [ ] Marshaller functions take every input they need as parameters and never call the client
