@@ -148,6 +148,14 @@ Detailed checklists for each file category. Apply the relevant sections based on
 - [ ] `DeleteUser` called before database deletion
 - [ ] All IdP operations within transaction boundary
 
+## Implementation Structure (`internal/usecase/**`, `internal/domain/service/**`, `internal/infrastructure/**`, see `implementation-structure.md`)
+
+- [ ] No package-level private (receiver-less) functions in implementation packages — especially none that take the struct's dependency (`cli` / `repo` / `tx`) as a parameter or perform I/O; such logic is a method on the struct (private receiver methods are allowed; duplicate across structs rather than share via a package-level function). Allowed pure exceptions only: repository `handleError`, `addForUpdateFromBase*Options`, `with<Actor>Context` ctx/auth injection
+- [ ] Complexity lint (gocognit/funlen) satisfied by inlining/flattening or by extracting a private **method on the receiver**, never a package-level function
+- [ ] Implementation structs (incl. `*Debug` stand-ins) use pointer receivers and constructors return `&struct{}`
+- [ ] Every input (incl. values from a second query / fallback API call) is resolved BEFORE the model is built; the model is built once via constructor / marshaller, never built-then-patched (`m.Field = …`) and never patched through ad-hoc `Set{X}` on an external read model
+- [ ] Marshaller functions take every input they need as parameters and never call the client
+
 ## Architecture & File Placement (All new files)
 
 - [ ] Domain layer (`internal/domain/`) has NO infrastructure dependencies (no HTTP clients, no SDK imports, no DB packages)
