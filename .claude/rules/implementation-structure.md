@@ -99,7 +99,7 @@ Where logic should live instead of a wrapper:
 | Generic, domain-agnostic utility | `internal/pkg/` (see `package-placement.md`) |
 
 Sanctioned private methods named by a layer rule remain allowed and are the **only** ones:
-repository `addPreload` / `buildPreload` (`repository.md`), and domain-service struct methods
+repository `addPreload` / `buildPreload` and the query-mod builder `buildListQuery` (`repository.md`), and domain-service struct methods
 that dispatch to model methods (`domain-service.md`).
 
 ### When a linter complains about complexity
