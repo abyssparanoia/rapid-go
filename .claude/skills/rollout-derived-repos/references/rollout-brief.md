@@ -30,7 +30,7 @@ rapid-go's `go.mod`, `.golangci.yml`, `.github/workflows/ci.yml`, `docker/*.Dock
    WT=<scratchpad>/wt/<repo-basename>-<deps|claude>
    git -C "$REPO" worktree add -b <branch> "$WT" "origin/$DEFAULT"
    ```
-   If `<branch>` already exists locally or on origin (from an earlier merged rollout), use `<branch>-YYYY-MM` instead — never delete or force-push an existing branch. Do all edits, builds, commits and pushes inside `$WT`. After the PR's CI is green: `git -C "$REPO" worktree remove "$WT"` (the branch stays pushed).
+   If `<branch>` already exists locally or on origin (from an earlier merged rollout), use `<branch>-YYYY-MM-DD` instead (a month-only suffix collides as soon as two rollouts land in one month, as in 2026-11) — never delete or force-push an existing branch. Do all edits, builds, commits and pushes inside `$WT`. After the PR's CI is green: `git -C "$REPO" worktree remove "$WT"` (the branch stays pushed).
 2. Use `/usr/bin/make` (plain `make` may be shadowed). Never `cd` in loops spanning repos; prefer `git -C` / `make -C` / absolute paths. If a repo has git submodules (`.gitmodules`), run `git -C "$WT" submodule update --init` before building.
 3. Conventions: follow the repo's own `.claude/skills/create-pull-request/SKILL.md` if present, else rapid-go's. **No AI attribution anywhere** (no "Generated with Claude", no Co-Authored-By, no trailing attribution tokens). Commit messages in the repo's prevailing style (`git log --oneline -15`). PR title in English, PR body in Japanese (same shape as the reference PRs).
 4. Do not merge anything. Do not force-push. Do not close other people's PRs (Renovate/Dependabot PRs your PR supersedes: list them in the PR body). Do not touch other repos.
@@ -81,7 +81,7 @@ When a hold stops being necessary (upstream fixed), remove the row in rapid-go s
 - go-elasticsearch v8.18+: `NestedQuery.Query` became a value type.
 - buf ≥ v1.75 requires a protobuf pseudo-version (`v1.36.13-0.2026…`) — accept it, note it in the PR body.
 
-## Workstream B — `.claude/` sync from rapid-go (branch `chore/sync-claude-config`, suffix `-YYYY-MM` if taken)
+## Workstream B — `.claude/` sync from rapid-go (branch `chore/sync-claude-config`, suffix `-YYYY-MM-DD` if taken)
 
 Pull-only sync of rapid-go's `.claude/` into this repo, in a second worktree branched from `origin/<default>`. Follow `{{RAPID_GO_ROOT}}/.claude/skills/sync-claude-config/SKILL.md` and its `references/` (token-mapping.md, sync-algorithm.md) EXCEPT: no push to rapid-go, and no interactive confirmation (the user pre-approved; you decide conflicts with the rules below).
 
