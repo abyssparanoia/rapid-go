@@ -115,12 +115,13 @@ Where logic should live instead of a package-level function:
 ### Allowed package-level private functions
 
 Only cross-cutting **pure** functions that take none of the struct's dependencies, perform no I/O,
-and carry no business logic:
+and carry no business logic — such as (names are this template's; a derived repo may spell them
+differently or lack some):
 
-- error mapping shared by every repository in the package (`repository/error.go` `handleError`)
-- query-option builders (`repository/base.go` `addForUpdateFromBaseGetOptions` / `…ListOptions`)
+- error mapping shared by every repository in the package (e.g. `repository/error.go` `handleError`)
+- query-option builders (e.g. `repository/base.go` `addForUpdateFromBaseGetOptions` / `…ListOptions`)
 - request setup every method of an external-API package needs, such as API-key / auth-header
-  injection into `ctx` (`with<Actor>Context` in a `<actor>_base.go`); it must not call any API
+  injection into `ctx` (e.g. `with<Actor>Context` in a `<actor>_base.go`); it must not call any API
 
 Anything that would need the client, a repository, or a transaction to be passed in does not qualify.
 

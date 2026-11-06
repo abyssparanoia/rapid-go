@@ -11,7 +11,7 @@ One command, run **from rapid-go**, that propagates rapid-go's HEAD state to eve
 | Workstream | What it does per repo | Branch |
 |---|---|---|
 | `deps` | Go version, direct dependencies and tool versions brought to rapid-go's current state (plus whatever small code/config fixes the bump needs) | `chore/update-go-<major.minor>-and-deps` |
-| `claude` | Pull-only `.claude/` sync from rapid-go (token-mapped, project-specific content preserved) | `chore/sync-claude-config` (suffix `-YYYY-MM` if taken) |
+| `claude` | Pull-only `.claude/` sync from rapid-go (token-mapped, project-specific content preserved) | `chore/sync-claude-config` (suffix `-YYYY-MM-DD` if taken) |
 
 Each repo gets its own agent, running in parallel, working in **git worktrees** so the user's checkouts are never touched. The orchestrator (you, in rapid-go) only surveys, briefs, collects, verifies and reports. The agents hold no decision authority: every rule they follow lives in `references/rollout-brief.md`.
 
