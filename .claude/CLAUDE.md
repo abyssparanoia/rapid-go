@@ -126,6 +126,7 @@ Available automation skills in `.claude/skills/`:
 | `add-api-endpoint` | Create usecase, proto definition, and gRPC handler |
 | `review-diff` | Review & auto-fix current branch diff against main/master. Catches AI anti-patterns and rule violations, then fixes them automatically |
 | `adversarial-review` | Adversarially verify a PR or branch diff (lifecycle tracing, empirical output checks, side-effect ordering, mutation gaps). Read-only; can post as a PR review after confirmation. Run `/adversarial-review` or `/adversarial-review 123` |
+| `review-layers` | 差分レビューの読み順を 7 層（domain/model → domain/service → usecase → domain i/f と対応する infrastructure → その他 infrastructure → テスト → 自動生成）で組む。Diffo の layers 投稿、レビューの分割提案、`review-diff` の分類で使う。振り分けは `scripts/classify_layers.py` で機械的に行い、エージェントは各層の summary / decisions だけを書く |
 | `fix-review-comments` | Fetch unresolved GitHub PR review comments and auto-fix the code. Run `/fix-review-comments` (current branch PR) or `/fix-review-comments 123` (specific PR) |
 | `create-pull-request` | PR creation guide with branch naming and body templates |
 | `sync-claude-config` | Bidirectionally sync `.claude/` content with the rapid-go template (or a derived project added via `claude --add-dir`); opens a PR in each repo |
@@ -137,7 +138,7 @@ Available automation skills in `.claude/skills/`:
 
 **Implementation Workflow**: `add-database-table` → `add-domain-entity` → `add-api-endpoint`
 
-**Review Workflow**: Use `review-diff` to auto-fix issues (includes `adversarial-review` via the `adversarial-reviewer` agent), then `create-pull-request` to create the PR
+**Review Workflow**: Use `review-diff` to auto-fix issues (includes `adversarial-review` via the `adversarial-reviewer` agent), then `create-pull-request` to create the PR。差分をステップに分けて読む・読み順を提案する時（Diffo の `layers` など）は `review-layers` の層順に従う
 
 **Post-Review Workflow**: Use `fix-review-comments` to address reviewer feedback, then `sync-rules-from-pr` if the feedback reveals a convention worth codifying
 
