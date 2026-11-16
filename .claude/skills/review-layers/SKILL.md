@@ -1,68 +1,68 @@
 ---
 name: review-layers
-description: "差分レビューの読み順をアーキテクチャの層で組む。Diffo の layers を投稿する時、PR レビューで差分をステップに分けて提案する時、review-diff で変更ファイルを分類する時に使う。トリガー: 'layers', 'レイヤー分割', '読み順', 'diffo layers', 'review order', 'ステップに分けて', 'どの順で読む'。変更ファイルを domain/model → domain/service → usecase → domain i/f と対応する infrastructure → その他 infrastructure → テスト → 自動生成 の 7 層に振り分け、層内を依存される側から並べる。振り分けはスクリプトで機械的に行い、エージェントは各層の summary と decisions だけを書く。"
+description: "Build the reading order of a diff review by architectural layer. Use when posting Diffo layers, when proposing how to split a PR review into steps, or when classifying changed files in review-diff. Triggers: 'layers', 'reading order', 'review order', 'diffo layers', 'split into steps', 'which order to read', 'レイヤー分割', '読み順'. Classifies changed files into 7 layers (domain/model → domain/service → usecase → domain i/f with its infrastructure → other infrastructure → tests → generated code) and orders each layer dependee-first. Classification is done mechanically by a script; the agent writes only each layer's summary and decisions."
 allowed-tools: Bash(python3 *classify_layers.py*)
 ---
 
 # review-layers
 
-差分を「どの順で読むか」を毎回同じにする。層の順序と層内の並びはこの SKILL.md が正で、`scripts/classify_layers.py` はその機械的な実装。コミット順・ファイル名順・ディレクトリ順では分けない。
+Make "which order to read the diff in" the same every time. The layer order and the in-layer order defined in this SKILL.md are the source of truth; `scripts/classify_layers.py` is their mechanical implementation. Never split by commit order, file name, or directory.
 
-## いつ使う
+## When to use
 
-- Diffo で PR / ブランチをレビューしていて `diffo layers` を投稿する時（`--suggest` を出した時点でこの skill を読む）
-- レビュー依頼に対して「この順で読むとよい」と分割を提案する時
-- `review-diff` で変更ファイルを分類する時（Step 2 の補助）
+- Reviewing a PR / branch in Diffo and about to post `diffo layers` (read this skill as soon as you post `--suggest`)
+- Proposing "read it in this order" in response to a review request
+- Classifying changed files in `review-diff` (supports Step 2)
 
-## 手順
+## Steps
 
-1. 変更ファイルを層に振り分ける。summary は空で出る
+1. Classify the changed files into layers. Summaries come out empty.
 
    ```bash
    python3 ${CLAUDE_SKILL_DIR}/scripts/classify_layers.py -C <repo> --base <base ref> > <scratchpad>/layers.json
    ```
 
-   - `-C` には Diffo の PR worktree（`~/.diffo/worktrees/...`）を渡せる
-   - stderr に層ごとの件数が出る。「5b. その他」に入ったファイルは規則に当たらなかったもの。層を決めて JSON を直す（設定ファイルや Makefile は 5 へ、仕様書は 0 へ）
-2. 層内の並びを確認する。同じ層に複数の集約・interactor があるときは、参照される側 → 参照する側の順に手で並べ替える（スクリプトはパス順で出す）
-3. 各層の `summary` と `decisions` を書く（下の「各層に書くこと」）。summary が空の層を投稿しない
-4. 投稿する。Diffo なら `diffo layers --stdin < <scratchpad>/layers.json`。Diffo 以外の場面（PR コメント、Slack）では層のタイトルとファイルを表にして示す
-5. レビュー中にファイルが増えたら 1 から再実行して全体を再投稿する（Diffo はタイトルが同じ層の位置を保つ）
+   - `-C` accepts a Diffo PR worktree (`~/.diffo/worktrees/...`)
+   - stderr lists the file count per layer. Files under "5b. Other" matched no rule: decide their layer and fix the JSON (config files and Makefiles go to 5, specs to 0)
+2. Check the in-layer order. When a layer holds several aggregates / interactors, reorder by hand so the referenced one comes before the one referencing it (the script emits path order)
+3. Write each layer's `summary` and `decisions` (see "What to write per layer"). Never post a layer with an empty summary
+4. Post. In Diffo: `diffo layers --stdin < <scratchpad>/layers.json`. Outside Diffo (PR comment, Slack) present the layer titles and files as a table
+5. If files are added during the review, rerun from step 1 and repost the whole set (Diffo keeps the position of layers with the same title)
 
-## 層の順序
+## Layer order
 
-| # | 層 | 入るもの |
+| # | Layer | Contents |
 | --- | --- | --- |
-| 0 | 仕様・ドキュメント | `docs/`（e2e 以外）、ADR。差分に含まれる時だけ |
-| 1 | domain/model | `internal/domain/model/*.go`（`factory/` は 6 へ）、`internal/domain/errors/` |
-| 2 | domain/service | `internal/domain/service/` の interface と `*_impl.go` |
-| 3 | usecase | `internal/usecase/input/`、`internal/usecase/output/`、interface、`*_impl.go` |
-| 4 | domain の i/f と対応する infrastructure | `internal/domain/repository/*.go` → `internal/infrastructure/<db>/internal/marshaller/` → `internal/infrastructure/<db>/repository/`、DDL（`db/<db>/migrations/`）。repository 以外の domain i/f（外部サービスなど）も、i/f → 実装の順でこの層に置く |
-| 5 | domain に紐づかない infrastructure | gRPC handler、handler の marshaller、`dependency/`、`run.go`、`cmd/`、worker、webhook、`internal/pkg/` |
-| 6 | テスト | `internal/domain/model/factory/`、`**/*_test.go`、`e2e/`、`testdata/` |
-| 7 | 自動生成 | `submodules/`、`*.pb.go`、swagger、`dbmodel/`、`schema.sql`、`mermaid.*`、mockgen の `mock/`、`go.sum` |
+| 0 | Spec / docs | `docs/` (except e2e), ADRs. Only when present in the diff |
+| 1 | domain/model | `internal/domain/model/*.go` (`factory/` goes to 6), `internal/domain/errors/` |
+| 2 | domain/service | interfaces and `*_impl.go` under `internal/domain/service/` |
+| 3 | usecase | `internal/usecase/input/`, `internal/usecase/output/`, interfaces, `*_impl.go` |
+| 4 | domain i/f with its infrastructure | `internal/domain/repository/*.go` → `internal/infrastructure/<db>/internal/marshaller/` → `internal/infrastructure/<db>/repository/`, DDL (`db/<db>/migrations/`). Non-repository domain interfaces (external services etc.) also go here, i/f → implementation |
+| 5 | Infrastructure not tied to the domain | gRPC handlers, handler marshallers, `dependency/`, `run.go`, `cmd/`, workers, webhooks, `internal/pkg/` |
+| 6 | Tests | `internal/domain/model/factory/`, `**/*_test.go`, `e2e/`, `testdata/` |
+| 7 | Generated code | `submodules/`, `*.pb.go`, swagger, `dbmodel/`, `schema.sql`, `mermaid.*`, mockgen `mock/`, `go.sum` |
 
-## 層内の並び
+## Order within a layer
 
-依存される側を先に置く。同一パッケージ内は import では決まらないので、参照する側を後ろにする。
+Dependees first. Within one package imports do not decide the order, so put the referencing side later.
 
-- model: errors → sort key・値オブジェクト → 集約本体。複数の集約は、参照される集約 → 参照する集約
+- model: errors → sort keys / value objects → aggregate. Several aggregates: referenced aggregate → referencing aggregate
 - service: interface → impl
-- usecase: input → output → interface → impl。複数の interactor は model と同じ依存順
-- 層 4: DDL → `domain/repository` の i/f → marshaller → DB 実装
-- 層 5: handler の marshaller → handler struct → handler methods → dependency → run → cmd
-- テスト: factory → model test → usecase test → infrastructure test → e2e
-- 自動生成: submodule → pb → swagger → dbmodel → schema / mermaid → mock
+- usecase: input → output → interface → impl. Several interactors follow the same dependency order as model
+- layer 4: DDL → `domain/repository` i/f → marshaller → DB implementation
+- layer 5: handler marshaller → handler struct → handler methods → dependency → run → cmd
+- tests: factory → model test → usecase test → infrastructure test → e2e
+- generated: submodule → pb → swagger → dbmodel → schema / mermaid → mock
 
-## 各層に書くこと
+## What to write per layer
 
-- `summary`: 差分の再説明ではなく、その層で決まった判断と、後の層で確認したい不変条件（例: 「終了済み行でも Update を通す。4 層の unique index が部分 index でないことと合わせて読む」）
-- `decisions`: 読み手が別の選択をしうる箇所（ロック順、既定値、400 と空リストの選択、部分 index の有無）。1 行 + 1 文の detail + 場所。無い層は省く
-- 読み方の案内に留め、良い / 悪いの判定は書かない
-- 1 つの変更行は 1 つの層にだけ入れる。ファイルの hunk が層をまたぐ時だけ `path:from-to` で分ける
+- `summary`: not a restatement of the diff. The decisions settled in this layer and the invariants to verify in later layers (e.g. "Update is allowed on closed rows. Read together with the unique index in layer 4, which is not partial")
+- `decisions`: places where a reader could reasonably choose otherwise (lock order, defaults, 400 vs empty list, partial index or not). One line + one sentence of detail + location. Omit for layers that have none
+- Guide the reading only; do not write good / bad judgments
+- A changed line belongs to exactly one layer. Split with `path:from-to` only when a file's hunks span layers
 
-## 関連ファイル
+## Related files
 
-- `scripts/classify_layers.py` — 振り分けと層内の並びの実装。層を増減する時は SKILL.md の表と同時に直す
-- `.claude/skills/review-diff/SKILL.md` — 差分レビューの実行手順（Step 2 の分類にこの層を使う）
-- `.claude/rules/implementation-structure.md` — 層ごとの責務
+- `scripts/classify_layers.py` — implementation of the classification and in-layer order. When adding or removing a layer, update the table in SKILL.md at the same time
+- `.claude/skills/review-diff/SKILL.md` — the diff review procedure (Step 2 classification uses these layers)
+- `.claude/rules/implementation-structure.md` — responsibilities per layer
