@@ -1,6 +1,6 @@
 ---
 name: review-layers
-description: "Build the reading order of a diff review by architectural layer. Use when posting Diffo layers, when proposing how to split a PR review into steps, or when classifying changed files in review-diff. Triggers: 'layers', 'reading order', 'review order', 'diffo layers', 'split into steps', 'which order to read', 'レイヤー分割', '読み順'. Classifies changed files into 7 layers (domain/model → domain/service → usecase → domain i/f with its infrastructure → other infrastructure → tests → generated code) and orders each layer dependee-first. Classification is done mechanically by a script; the agent writes only each layer's summary and decisions."
+description: "Build the reading order of a diff review by architectural layer. ALWAYS use right after opening a Diffo review in this repo (/diffo, branch or PR, any diff size) to post the layers unasked; also when proposing how to split a PR review into steps, or when classifying changed files in review-diff. Triggers: '/diffo', 'diffo', 'open a review', 'layers', 'reading order', 'review order', 'diffo layers', 'split into steps', 'which order to read', 'レイヤー分割', '読み順'. Classifies changed files into 7 layers (domain/model → domain/service → usecase → domain i/f with its infrastructure → other infrastructure → tests → generated code) and orders each layer dependee-first. Classification is done mechanically by a script; the agent writes only each layer's summary and decisions."
 allowed-tools: Bash(python3 *classify_layers.py*)
 ---
 
@@ -10,7 +10,7 @@ Make "which order to read the diff in" the same every time. The layer order and 
 
 ## When to use
 
-- Reviewing a PR / branch in Diffo and about to post `diffo layers` (read this skill as soon as you post `--suggest`)
+- Every Diffo review opened in this repo (`/diffo`, branch or PR). Post the layers right after the open and the first poll, without waiting for the reviewer to ask and regardless of diff size. The generic diffo skill gates layers on "does the change read better in order?" and "post only when asked" — in this repo that gate does not apply: the 7-layer order below IS the reading order, so skipping it is a miss, not a judgment call
 - Proposing "read it in this order" in response to a review request
 - Classifying changed files in `review-diff` (supports Step 2)
 
