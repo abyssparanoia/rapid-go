@@ -138,7 +138,7 @@ Available automation skills in `.claude/skills/`:
 
 **Implementation Workflow**: `add-database-table` → `add-domain-entity` → `add-api-endpoint`
 
-**Review Workflow**: Use `review-diff` to auto-fix issues (includes `adversarial-review` via the `adversarial-reviewer` agent), then `create-pull-request` to create the PR. When splitting a diff into reading steps or proposing a reading order (e.g. Diffo `layers`), follow the layer order in `review-layers`
+**Review Workflow**: Use `review-diff` to auto-fix issues (includes `adversarial-review` via the `adversarial-reviewer` agent), then `create-pull-request` to create the PR. Every Diffo review opened in this repo (`/diffo`, branch or PR, any diff size) gets layers: right after the open and the poll, run `review-layers` and post the 7 layers with `diffo layers --stdin` without waiting for the reviewer to ask. The generic diffo skill's "suggest layers only when the change reads better in order / post only when asked" gate does not apply here — this repo's layer order is the reading order. Any other reading-order proposal (review steps, `review-diff` classification) also follows `review-layers`
 
 **Post-Review Workflow**: Use `fix-review-comments` to address reviewer feedback, then `sync-rules-from-pr` if the feedback reveals a convention worth codifying
 
